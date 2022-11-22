@@ -7,6 +7,7 @@
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=dsr0018_olivia&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=dsr0018_olivia)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=dsr0018_olivia&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=dsr0018_olivia)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=dsr0018_olivia&metric=security_rating)](https://sonarcloud.io/dashboard?id=dsr0018_olivia)
+[![Open In Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dab0012/olivia/blob/master/Olivia.ipynb)
 
 _**Open-source Library Indexes Vulnerability Identification and Analysis**_
 
