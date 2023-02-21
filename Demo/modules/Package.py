@@ -23,7 +23,7 @@ class Package:
         self.publication_date = None
         self.mantainer = None
         self.author_data = None
-        self.dependencies : list[Dependency] = None
+        self.dependencies : list[Dependency] = []
         self.license = None
         self.requires_compilation = None
         self.in_cran = True

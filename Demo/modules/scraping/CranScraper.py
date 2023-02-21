@@ -79,12 +79,14 @@ class CranScraper:
         #region OPTIONAL TABLE DATA
 
         # Get package version
+        version = None
         try:
             version = soup.find('td', text='Version:').find_next_sibling('td').text.strip()
         except Exception as e:
             print(f'Exception getting version for package {pkg_name}: {e}')
 
         # Get publication date
+        publication_date = None    
         try:
             publication_date = soup.find(
                 'td', text='Published:').find_next_sibling('td').text.strip()
@@ -92,24 +94,28 @@ class CranScraper:
             print(f'Exception getting publication date for package {pkg_name}: {e}')
 
         # Get author
+        author = None
         try:
             author = soup.find('td', text='Author:').find_next_sibling('td').text.strip()
         except Exception as e:
             print(f'Exception getting author for package {pkg_name}: {e}')
 
         # Get mantainer
+        mantainer = None
         try:
             mantainer = soup.find('td', text='Maintainer:').find_next_sibling('td').text.strip().replace(' at ', '@')
         except Exception as e:
             print(f'Exception getting mantainer for package {pkg_name}: {e}')
 
         # Get license
+        license = None
         try:
             license = soup.find('td', text='License:').find_next_sibling('td').text.strip()
         except Exception as e:
             print(f'Exception getting license for package {pkg_name}: {e}')
 
         # Get compilation requirement
+        requires_compilation = None
         try:
             requires_compilation = soup.find('td', text='NeedsCompilation:').find_next_sibling('td').text.strip()
             requires_compilation = requires_compilation == 'yes'    # Convert to boolean
@@ -117,12 +123,14 @@ class CranScraper:
             print(f'Exception getting compilation requirement for package {pkg_name}: {e}')
 
         # Get dependencies
+        depends = None
         try:
             depends = soup.find('td', text='Depends:').find_next_sibling('td').text.strip()
         except Exception as e:
             print(f'Exception getting dependencies for package {pkg_name}: {e}')
 
         # Get imports
+        imports = None
         try:
             imports = soup.find('td', text='Imports:').find_next_sibling('td').text.strip()
         except Exception as e:
