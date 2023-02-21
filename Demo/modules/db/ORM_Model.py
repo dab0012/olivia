@@ -18,37 +18,26 @@ class Package_MySQL(Base):
     ----------
     id : int
         Id of the package
-
     name : str
         Name of the package
-
     description : str
         Description of the package
-
     version : str
         Version of the package
-
     publication_date : date
         Publication date of the package
-
     requires_compilation : bool
         True if the package requires compilation
-
     in_cran : bool
         True if the package is in CRAN
-
     in_bioconductor : bool
         True if the package is in Bioconductor
-
     mantainer : str
         Mantainer of the package
-
     author_data : str
         Authors of the package
-
     license : str
         License of the package
-
     url : str
         Url of the package
 
@@ -77,13 +66,10 @@ class Dependency_MySQL(Base):
     ----------
     id : int
         Id of the dependency
-
     name : str
         Name of the dependency
-
     version : str
         Version of the dependency
-
     type : str
         Type of the dependency
     '''
@@ -102,7 +88,6 @@ class PackageDependency_MySQL(Base):
     ----------
     package_id : int
         Id of the package
-
     dependency_id : int
         Id of the dependency
     '''
