@@ -2,8 +2,8 @@
 # Autor: Daniel Alonso Báscones
 # Email: dab0012@alu.ubu.es
 
-from sqlalchemy import Session
-from Demo.modules.db.ORM_Model import Dependency_MySQL
+from sqlalchemy.orm import Session
+from modules.db.ORM_Model import Dependency_MySQL, PackageDependency_MySQL
 
 class Dependency:
 
@@ -15,6 +15,7 @@ class Dependency:
         self.type = None
         self.version = None
 
+    # Function to create a dependency
     def create(self, name: str, type: str, version: str):
 
         self.name = name
@@ -41,15 +42,42 @@ class Dependency:
             self.version = dependency_db.version
 
     # function to save the dependency in the database
-    def save_in_db(self, session: Session):
-
-        # If the dependency does not have an id, insert it in the database
+    def save_in_db(self, session: Session, package_id: int):
+            
+        # If the dependency does not have an id
         if not self.id:
 
-            d = Dependency_MySQL(name=self.name, version=self.version, type=self.type)
-            session.add(d)
-            session.commit()
-            self.id = session.query(Dependency_MySQL).filter(Dependency_MySQL.name == self.name).first().id
+            # Check if the dependency exists in the database
+            dependency_db = session.query(Dependency_MySQL).filter(Dependency_MySQL.name == self.name).first()
+            
+            # If the dependency exists, update the dependency
+            if dependency_db:
+                self.id = dependency_db.id
+                self.update_in_db(session)
+
+            else: 
+                # If the dependency does not exist, insert it in the database
+                try:
+                    d = Dependency_MySQL(name=self.name, version=self.version, type=self.type)
+                    session.add(d)
+                    session.commit()
+                    self.id = session.query(Dependency_MySQL).filter(Dependency_MySQL.name == self.name).first().id
+                except Exception as e:
+                    print("Exception while inserting dependency in the database: ", e)
+                    session.rollback()
+
+            # Check if the dependency is already associated with the package
+            package_dependency_db = session.query(PackageDependency_MySQL).filter(PackageDependency_MySQL.package_id == package_id).filter(PackageDependency_MySQL.dependency_id == self.id).first()
+
+            # If the dependency is not associated with the package, insert the relation in the database
+            if not package_dependency_db:
+                try:
+                    p_d = PackageDependency_MySQL(package_id=package_id, dependency_id=self.id)
+                    session.add(p_d)
+                    session.commit()
+                except Exception as e:
+                    print("Exception while inserting package-dependency relation in the database: ", e)
+                    session.rollback()
 
         # If the dependency has an id, update it in the database
         else:
@@ -69,6 +97,5 @@ class Dependency:
         session.commit()
 
     # function to print the data of the Dependency class
-
     def dump(self):
         return f'{self.type}:{self.name}:{self.version}'

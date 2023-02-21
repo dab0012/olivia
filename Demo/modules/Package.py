@@ -3,8 +3,8 @@
 # Email: dab0012@alu.ubu.es
 
 from sqlalchemy.orm import Session
-from db.ORM_Model import Dependency_MySQL, Package_MySQL
-from Dependency import Dependency
+from modules.db.ORM_Model import Dependency_MySQL, Package_MySQL
+from modules.Dependency import Dependency
 
 class Package:
  
@@ -111,10 +111,12 @@ Links:
             session.add(package)
             session.commit()
 
-            # Save the dependencies in the database
+            # Get the id of the package
             self.id = session.query(Package_MySQL).filter(Package_MySQL.name == self.name).first().id
+
+            # Save the dependencies in the database
             for dependency in self.dependencies:
-                dependency.save_in_db(session)      
+                dependency.save_in_db(session, self.id)      
             
             return True
 
@@ -135,10 +137,10 @@ Links:
         package_db.version = self.version
         package_db.publication_date = self.publication_date
         package_db.mantainer = self.mantainer
-        package_db.authors_data = self.author_data
+        package_db.author_data = self.author_data
         package_db.requires_compilation = self.requires_compilation
         package_db.in_cran = self.in_cran
-        package_db.in_bioc = self.in_bioc
+        package_db.in_bioconductor = self.in_bioc
         package_db.license = self.license
         package_db.url = self.url
         session.commit()
