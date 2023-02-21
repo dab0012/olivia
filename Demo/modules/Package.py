@@ -11,13 +11,13 @@ class Package:
     Class that implements an object of type Package
     '''
  
-    def __init__(self):
+    def __init__(self, name = None):
         ''' 
         Class constructor
         '''
   
         self.id = None
-        self.name = None
+        self.name = name
         self.description = None
         self.version = None
         self.publication_date = None
@@ -145,7 +145,7 @@ Links:
             package.publication_date = self.publication_date
             package.mantainer = self.mantainer
             package.author_data = self.author_data
-            package.requires_compilation = self.requires_compilation
+            package.requires_compilation == self.requires_compilation
             package.in_cran = self.in_cran
             package.in_bioconductor = self.in_bioc
             package.license = self.license

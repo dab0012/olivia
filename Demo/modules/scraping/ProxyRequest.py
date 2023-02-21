@@ -50,7 +50,9 @@ class RequestHandler(requests.Request):
         proxies = proxies.splitlines()
 
         # Save (proxy, number_uses) in proxy list
-        self.proxies = [(f'http://{proxy}', 0) for proxy in proxies]
+        # self.proxies = [(f'http://{proxy}', 0) for proxy in proxies]
+        for proxy in proxies:
+            self.proxies.append((f'http://{proxy}', 0))
 
     def __get_next_proxy(self) -> Dict[str, str]:
         '''

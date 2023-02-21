@@ -7,3 +7,4 @@ tqdm
 requests
 BeautifulSoup4
 pickle
+request
