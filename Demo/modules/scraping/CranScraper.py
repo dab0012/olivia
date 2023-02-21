@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup
 from modules.Package import Package
 from modules.Dependency import Dependency
 from modules.scraping.ProxyRequest import RequestHandler
-
 from typing import Dict, List, Tuple
+from modules.Util import *
 
 
 class CranScraper:
@@ -71,72 +71,75 @@ class CranScraper:
         # Get Name and Description
         # ------------------------
         name = soup.title.text.split(':')[0]
-        description = soup.find('p').text.strip()
+        description = clean_string(soup.find('p').text)
 
         # Get optional table data
         # -----------------------      
 
-        #region OPTIONAL TABLE DATA
-
         # Get package version
         version = None
         try:
-            version = soup.find('td', text='Version:').find_next_sibling('td').text.strip()
+            d = soup.find('td', text='Version:').find_next_sibling('td').text
+            version = clean_string(d)
         except Exception as e:
             print(f'Exception getting version for package {pkg_name}: {e}')
 
         # Get publication date
         publication_date = None    
         try:
-            publication_date = soup.find(
-                'td', text='Published:').find_next_sibling('td').text.strip()
+            d = soup.find('td', text='Published:').find_next_sibling('td').text
+            publication_date = clean_string(d)
         except Exception as e:
             print(f'Exception getting publication date for package {pkg_name}: {e}')
 
         # Get author
         author = None
         try:
-            author = soup.find('td', text='Author:').find_next_sibling('td').text.strip()
+            d = soup.find('td', text='Author:').find_next_sibling('td').text
+            author = clean_string(d)
         except Exception as e:
             print(f'Exception getting author for package {pkg_name}: {e}')
 
         # Get mantainer
         mantainer = None
         try:
-            mantainer = soup.find('td', text='Maintainer:').find_next_sibling('td').text.strip().replace(' at ', '@')
+            d = soup.find('td', text='Maintainer:').find_next_sibling('td').text.replace(' at ', '@')
+            mantainer = clean_string(d)
         except Exception as e:
             print(f'Exception getting mantainer for package {pkg_name}: {e}')
 
         # Get license
         license = None
         try:
-            license = soup.find('td', text='License:').find_next_sibling('td').text.strip()
+            d = soup.find('td', text='License:').find_next_sibling('td').text
+            license = clean_string(d)
         except Exception as e:
             print(f'Exception getting license for package {pkg_name}: {e}')
 
         # Get compilation requirement
         requires_compilation = None
         try:
-            requires_compilation = soup.find('td', text='NeedsCompilation:').find_next_sibling('td').text.strip()
-            requires_compilation = requires_compilation == 'yes'    # Convert to boolean
+            d = soup.find('td', text='NeedsCompilation:').find_next_sibling('td').text
+            d = clean_string(d)
+            requires_compilation = (d == 'yes')    # Convert to boolean
         except Exception as e:
             print(f'Exception getting compilation requirement for package {pkg_name}: {e}')
 
         # Get dependencies
         depends = None
         try:
-            depends = soup.find('td', text='Depends:').find_next_sibling('td').text.strip()
+            d = soup.find('td', text='Depends:').find_next_sibling('td').text
+            depends = clean_string(d)
         except Exception as e:
             print(f'Exception getting dependencies for package {pkg_name}: {e}')
 
         # Get imports
         imports = None
         try:
-            imports = soup.find('td', text='Imports:').find_next_sibling('td').text.strip()
+            d = soup.find('td', text='Imports:').find_next_sibling('td').text
+            imports = clean_string(d)
         except Exception as e:
             print(f'Exception getting imports for package {pkg_name}: {e}')
-
-        #endregion
 
         # Build dictionary with package data
         return {

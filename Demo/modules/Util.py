@@ -8,7 +8,28 @@ RED = Fore.RED
 GREEN = Fore.GREEN
 
 # Function to print colored text
-def print_colored(text, color ):
+def print_colored(text, color):
     print(color, end="")
     print(text, end="")
     print(Style.RESET_ALL)
+
+def clean_string(s: str):
+    '''
+    Clean a string from whitespaces and newlines
+
+    Parameters
+    ----------
+    string : str
+        String to be cleaned
+
+    Returns
+    -------
+    str
+        Cleaned string
+    '''
+    s = s.strip()
+    s = s.replace("\r", "")
+    s = s.replace("\t", "")
+    s = s.replace("\n", "")
+    s = s.replace("  ", " ")
+    return s
