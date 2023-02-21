@@ -7,9 +7,14 @@ from modules.db.ORM_Model import Dependency_MySQL, Package_MySQL
 from modules.Dependency import Dependency
 
 class Package:
+    '''
+    Class that implements an object of type Package
+    '''
  
-    # Constructor
     def __init__(self):
+        ''' 
+        Class constructor
+        '''
   
         self.id = None
         self.name = None
@@ -25,12 +30,25 @@ class Package:
         self.in_bioc = None
         self.url = None
 
-    # Makes a representation of the object in a readable form
     def __str__(self):
+        '''
+        Makes the object printable
+
+        Returns
+        -------
+        str
+            String representation of the object
+        '''
         return self.name + " " + self.version
 
-    # Prints a representation of the object in stdout
     def dump(self):
+        '''
+        Prints a representation of the object in stdout
+
+        Returns
+        -------
+        None
+        '''
 
         mantainers_str = self.mantainer
         dependencies_str = "\n".join(f"  - {dep}" for dep in self.dependencies)
@@ -56,8 +74,20 @@ Links:
 """
         print(package_str)
 
-    # Build the object from the information in the database
     def build_from_db(self, session: Session) -> bool:
+        '''
+        Build the object from the information in the database
+        
+        Parameters
+        ----------
+        session : Session
+            Database session
+            
+        Returns
+        -------
+        bool
+            True if the package is in the database, False otherwise
+        '''
 
         # Get the package from the database
         package_db = session.query(Package_MySQL).filter(Package_MySQL.name == self.name).first()
@@ -86,8 +116,20 @@ Links:
 
         return True
     
-    # Save to database
     def save_in_db(self, session: Session) -> bool:
+        '''
+        Save the package in the database
+
+        Parameters
+        ----------
+        session : Session
+            Database session
+
+        Returns
+        -------
+        bool
+            True if the package is saved, False otherwise
+        '''
 
         # Check if the package is already in the database, 
         if self.id is not None:
@@ -120,18 +162,27 @@ Links:
             
             return True
 
-    # Update the package in the database
     def update_in_db(self, session: Session) -> bool:
+        '''
+        Update the package in the database
+
+        Parameters
+        ----------
+        session : Session
+            Database session
+
+        Returns
+        -------
+        bool
+            True if the package is updated, False otherwise
+        '''
 
         # Check if the package is in the database
-        # ---------------------------------------
         if self.id is None:
             return False
 
         # Update the package in the database
-        # ----------------------------------
         package_db = session.query(Package_MySQL).filter(Package_MySQL.id == self.id).first()
-
         package_db.name = self.name
         package_db.description = self.description
         package_db.version = self.version
