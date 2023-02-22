@@ -6,6 +6,8 @@ from colorama import Style, Fore
 
 RED = Fore.RED
 GREEN = Fore.GREEN
+YELLOW = Fore.YELLOW
+BLUE = Fore.BLUE
 
 # Function to print colored text
 def print_colored(text, color):
