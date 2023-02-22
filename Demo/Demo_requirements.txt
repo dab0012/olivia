@@ -8,3 +8,4 @@ requests
 BeautifulSoup4
 pickle5
 pybraries
+selenium
