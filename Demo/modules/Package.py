@@ -26,7 +26,7 @@ class Package:
         self.dependencies : list[Dependency] = []
         self.license = None
         self.requires_compilation = None
-        self.in_cran = True
+        self.in_cran = None
         self.in_bioc = None
         self.url = None
 

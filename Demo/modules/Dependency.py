@@ -8,16 +8,9 @@ from modules.db.ORM_Model import Dependency_MySQL, PackageDependency_MySQL
 class Dependency:
 
     # Class constructor
-    def __init__(self):
+    def __init__(self, name: str = None, type: str = None, version: str = None):
 
         self.id = None
-        self.name = None
-        self.type = None
-        self.version = None
-
-    # Function to create a dependency
-    def create(self, name: str, type: str, version: str):
-
         self.name = name
         self.type = type
         self.version = version
