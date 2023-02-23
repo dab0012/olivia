@@ -1,192 +1,183 @@
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html dir="ltr" lang="en-US" prefix="og: http://ogp.me/ns#" xmlns="http://www.w3.org/1999/xhtml">
-
 <head>
-  <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-  <meta content="en-us" http-equiv="Content-Language" />
-  <meta content="all" name="robots" />
-  <script src="/js/jquery.js" type="text/javascript"></script>
-  <script src="/js/jquery.tools.min.js"></script>
-  <title>Bioconductor - BiocViews</title>
-  <link href="/style/bioconductor.css" media="screen" rel="stylesheet" type="text/css" />
-  <link href="/favicon.ico" rel="SHORTCUT ICON" type="image/x-icon" />
-  <link href="/favicon.ico" rel="ICON" type="image/x-icon" />
-  <script src="/js/bioconductor.js" type="text/javascript"></script>
-  <script src="/js/jquery.corner.js" type="text/javascript"></script>
-  <script src="/js/jquery.timeago.js" type="text/javascript"></script>
-  <script src="/js/bioc-style.js" type="text/javascript"></script>
-  <script src="/js/versions.js" type="text/javascript"></script>
-  <!-- Google Analytics script -->
-  <script type="text/javascript">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="en-us" http-equiv="Content-Language"/>
+<meta content="all" name="robots"/>
+<script src="/js/jquery.js" type="text/javascript"></script>
+<script src="/js/jquery.tools.min.js"></script>
+<title>Bioconductor - BiocViews</title>
+<link href="/style/bioconductor.css" media="screen" rel="stylesheet" type="text/css"/>
+<link href="/favicon.ico" rel="SHORTCUT ICON" type="image/x-icon"/>
+<link href="/favicon.ico" rel="ICON" type="image/x-icon"/>
+<script src="/js/bioconductor.js" type="text/javascript"></script>
+<script src="/js/jquery.corner.js" type="text/javascript"></script>
+<script src="/js/jquery.timeago.js" type="text/javascript"></script>
+<script src="/js/bioc-style.js" type="text/javascript"></script>
+<script src="/js/versions.js" type="text/javascript"></script>
+<!-- Google Analytics script -->
+<script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-9338486-1']);
     _gaq.push(['_trackPageview']);
 
-    (function () {
+    (function() {
       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
   </script>
 </head>
-
 <body>
-  <a name="top"></a>
-  <!-- a few hooks for screen readers -->
-  <a href="#site-navigation" title="Jump to site nav"></a>
-  <a href="#site-map" title="Jump to site map"></a>
-  <div class="SiteContainer" id="SiteContainer">
-    <div class="PageContent" id="PageContent">
-      <div class="PageBreadcrumbs" id="PageBreadcrumbs">
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li>BiocViews</li>
-        </ul>
-      </div>
-      <script src="/packages/json/3.16/tree.js" type="text/javascript"></script>
-      <script src="/packages/json/3.16/bioc/packages.js" type="text/javascript"></script>
-      <script src="/packages/json/3.16/data/annotation/packages.js" type="text/javascript"></script>
-      <script src="/packages/json/3.16/data/experiment/packages.js" type="text/javascript"></script>
-      <script src="/packages/json/3.16/workflows/packages.js" type="text/javascript"></script>
-      <script src="/js/jquery.cookie.js" type="text/javascript"></script>
-      <script src="/js/jquery.hotkeys.js" type="text/javascript"></script>
-      <script src="/js/tree-widget/jquery.jstree.js" type="text/javascript"></script>
-      <script src="/js/jsnetworkx.js" type="text/javascript"></script>
-      <script src="/js/bioc_views.js" type="text/javascript"></script>
-      <!-- DataTables CSS -->
-      <link href="//ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css" rel="stylesheet"
-        type="text/css" />
-      <!-- DataTables -->
-      <script charset="utf8" src="//ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"
-        type="text/javascript"></script>
-      <link href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet" />
-      <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-      <!--<link rel="stylesheet" href="/resources/demos/style.css">-->
-      <h1>All Packages</h1>
-      <link href="/style/tree-widget/!style.css" rel="stylesheet" type="text/css">
-      <div class="biocViewsTreeContainer" id="tree_outer">
-        <div class="do_not_rebase">
-          <div style="float:left;width:33%;">
-            <h3>Bioconductor version <span id="bioc_version"></span></h3>
-            <div id="tree-toggler-div">
-              <p> </p>
-              <p>
-                <input id="tree-toggler" type="checkbox" />
-                Developers: check this box
-                to toggle the visibility of childless biocViews.
-              </p>
-            </div>
-            <div class="ui-widget">
-              <label for="autocompleter">Autocomplete biocViews search:</label>
-              <input id="autocompleter" size="35">
-              <p> </p>
-              </input>
-            </div>
-            <div id="tree"></div>
-          </div>
-          <div class="biocViewsPackages" id="packages"></div>
-          <div class="biocViewsBelowTree" id="below_tree"></div>
-        </div>
-      </div>
-      </link>
-    </div>
-  </div>
-</body>
-
+<a name="top"></a>
+<!-- a few hooks for screen readers -->
+<a href="#site-navigation" title="Jump to site nav"></a>
+<a href="#site-map" title="Jump to site map"></a>
+<div class="SiteContainer" id="SiteContainer">
+<div class="PageContent" id="PageContent">
+<div class="PageBreadcrumbs" id="PageBreadcrumbs">
+<ul>
+<li><a href="/">Home</a></li>
+<li>BiocViews</li>
+</ul>
+</div>
+<script src="/packages/json/3.16/tree.js" type="text/javascript"></script>
+<script src="/packages/json/3.16/bioc/packages.js" type="text/javascript"></script>
+<script src="/packages/json/3.16/data/annotation/packages.js" type="text/javascript"></script>
+<script src="/packages/json/3.16/data/experiment/packages.js" type="text/javascript"></script>
+<script src="/packages/json/3.16/workflows/packages.js" type="text/javascript"></script>
+<script src="/js/jquery.cookie.js" type="text/javascript"></script>
+<script src="/js/jquery.hotkeys.js" type="text/javascript"></script>
+<script src="/js/tree-widget/jquery.jstree.js" type="text/javascript"></script>
+<script src="/js/jsnetworkx.js" type="text/javascript"></script>
+<script src="/js/bioc_views.js" type="text/javascript"></script>
+<!-- DataTables CSS -->
+<link href="//ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
+<!-- DataTables -->
+<script charset="utf8" src="//ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js" type="text/javascript"></script>
+<link href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet"/>
+<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<!--<link rel="stylesheet" href="/resources/demos/style.css">-->
+<h1>All Packages</h1>
+<link href="/style/tree-widget/!style.css" rel="stylesheet" type="text/css">
+<div class="biocViewsTreeContainer" id="tree_outer">
+<div class="do_not_rebase">
+<div style="float:left;width:33%;">
+<h3>Bioconductor version <span id="bioc_version"></span></h3>
+<div id="tree-toggler-div">
+<p> </p>
+<p>
+<input id="tree-toggler" type="checkbox"/>
+                    Developers: check this box
+                    to toggle the visibility of childless biocViews.
+                </p>
+</div>
+<div class="ui-widget">
+<label for="autocompleter">Autocomplete biocViews search:</label>
+<input id="autocompleter" size="35">
+<p> </p>
+</input></div>
+<div id="tree"></div>
+</div>
+<div class="biocViewsPackages" id="packages"></div>
+<div class="biocViewsBelowTree" id="below_tree"></div>
+</div>
+</div>
+</link></div></div></body>
 </html>
 
 <div class="SiteGlobalFooter" id="SiteGlobalFooter">
-  <span class="global_footer_logo_bc noprint"><img alt="" height="51" src="/images/logo_global_footer_bioconductor.gif"
-      width="154" /></span>
-  <div class="attribution_copyright">
-    <p>Contact us: <a href="https://support.bioconductor.org/">support.bioconductor.org</a></p>
-    <p>Copyright © 2003 - 2023, Bioconductor</p>
-  </div>
-  <a name="site-map"></a> <!-- accessibility anchor -->
-  <ul class="footer_nav_list noprint">
-    <li class="footer_nav_list_element footer_nav_list_element_0">
-      <b><a href="/index.html">Home</a></b>
-    </li>
-    <li class="footer_nav_list_element footer_nav_list_element_1">
-      <ul>
-        <li><b><a href="/install/index.html">Install</a></b></li>
-        <li><a href="/install/index.html#install-R">Install R</a></li>
-        <li><a href="/install/index.html#find-bioconductor-packages">Find Bioconductor Packages</a></li>
-        <li><a href="/install/index.html#install-bioconductor-packages">Install Bioconductor Packages</a></li>
-        <li><a href="/install/index.html#update-bioconductor-packages">Update Bioconductor Packages</a></li>
-      </ul>
-    </li>
-    <li class="footer_nav_list_element footer_nav_list_element_2">
-      <ul>
-        <li><b><a href="/help/index.html">Help</a></b></li>
-        <li><a href="/packages/release/workflows/">Workflows</a></li>
-        <li><a href="/help/package-vignettes/">Package Vignettes</a></li>
-        <li><a href="/help/faq/">FAQ</a></li>
-        <li><a href="/help/support/">Support</a></li>
-        <li><a href="http://cran.r-project.org/">Using R</a></li>
-        <li><a href="/help/course-materials/">Courses</a></li>
-        <li><a href="/help/publications/">Publications</a></li>
-        <li><a href="/help/docker/">Docker Images</a></li>
-        <li><a href="https://anvil.bioconductor.org/">Bioc in AnVIL</a></li>
-        <li><a href="/help/community/">Community Resources</a></li>
-      </ul>
-    </li>
-    <li class="footer_nav_list_element footer_nav_list_element_3">
-      <ul>
-        <li><b><a href="/developers/index.html">Developers</a></b></li>
-        <li><a href="https://contributions.bioconductor.org/develop-overview.html">Package Guidelines</a></li>
-        <li><a href="https://contributions.bioconductor.org/submission-overview.html">Package Submission</a></li>
-        <li><a href="/developers/release-schedule/">Release Schedule</a></li>
-        <li><a href="https://contributions.bioconductor.org/git-version-control.html">Source Control</a></li>
-      </ul>
-    </li>
-    <li class="footer_nav_list_element footer_nav_list_element_4">
-      <ul>
-        <li><b><a href="/about/index.html">About</a></b></li>
-        <li><a href="/about/annual-reports/">Annual Reports</a></li>
-        <li><a href="/about/core-team/">Core Team</a></li>
-        <li><a href="/about/mirrors/">Mirrors</a></li>
-        <li><a href="/about/related-projects/">Related Projects</a></li>
-        <li><a href="/about/code-of-conduct/">Code of Conduct</a></li>
-      </ul>
-    </li>
-  </ul>
-  <br style="clear:both" />
+<span class="global_footer_logo_bc noprint"><img alt="" height="51" src="/images/logo_global_footer_bioconductor.gif" width="154"/></span>
+<div class="attribution_copyright">
+<p>Contact us: <a href="https://support.bioconductor.org/">support.bioconductor.org</a></p>
+<p>Copyright © 2003 - 2023, Bioconductor</p>
+</div>
+<a name="site-map"></a> <!-- accessibility anchor -->
+<ul class="footer_nav_list noprint">
+<li class="footer_nav_list_element footer_nav_list_element_0">
+<b><a href="/index.html">Home</a></b>
+</li>
+<li class="footer_nav_list_element footer_nav_list_element_1">
+<ul>
+<li><b><a href="/install/index.html">Install</a></b></li>
+<li><a href="/install/index.html#install-R">Install R</a></li>
+<li><a href="/install/index.html#find-bioconductor-packages">Find Bioconductor Packages</a></li>
+<li><a href="/install/index.html#install-bioconductor-packages">Install Bioconductor Packages</a></li>
+<li><a href="/install/index.html#update-bioconductor-packages">Update Bioconductor Packages</a></li>
+</ul>
+</li>
+<li class="footer_nav_list_element footer_nav_list_element_2">
+<ul>
+<li><b><a href="/help/index.html">Help</a></b></li>
+<li><a href="/packages/release/workflows/">Workflows</a></li>
+<li><a href="/help/package-vignettes/">Package Vignettes</a></li>
+<li><a href="/help/faq/">FAQ</a></li>
+<li><a href="/help/support/">Support</a></li>
+<li><a href="http://cran.r-project.org/">Using R</a></li>
+<li><a href="/help/course-materials/">Courses</a></li>
+<li><a href="/help/publications/">Publications</a></li>
+<li><a href="/help/docker/">Docker Images</a></li>
+<li><a href="https://anvil.bioconductor.org/">Bioc in AnVIL</a></li>
+<li><a href="/help/community/">Community Resources</a></li>
+</ul>
+</li>
+<li class="footer_nav_list_element footer_nav_list_element_3">
+<ul>
+<li><b><a href="/developers/index.html">Developers</a></b></li>
+<li><a href="https://contributions.bioconductor.org/develop-overview.html">Package Guidelines</a></li>
+<li><a href="https://contributions.bioconductor.org/submission-overview.html">Package Submission</a></li>
+<li><a href="/developers/release-schedule/">Release Schedule</a></li>
+<li><a href="https://contributions.bioconductor.org/git-version-control.html">Source Control</a></li>
+</ul>
+</li>
+<li class="footer_nav_list_element footer_nav_list_element_4">
+<ul>
+<li><b><a href="/about/index.html">About</a></b></li>
+<li><a href="/about/annual-reports/">Annual Reports</a></li>
+<li><a href="/about/core-team/">Core Team</a></li>
+<li><a href="/about/mirrors/">Mirrors</a></li>
+<li><a href="/about/related-projects/">Related Projects</a></li>
+<li><a href="/about/code-of-conduct/">Code of Conduct</a></li>
+</ul>
+</li>
+</ul>
+<br style="clear:both"/>
    
 
 </div>
 <div class="SiteMasthead" id="SiteMasthead">
-  <a name="site-navigation"></a> <!-- accessibility anchor -->
-  <span class="logo_vanity_bar noprint"></span>
-  <a href="/">
-    <img alt="Bioconductor - open source software for bioinformatics" border="0" class="masthead_logo" height="78"
-      src="/images/logo_bioconductor.gif" width="260" />
-  </a>
-  <div class="SiteMastheadRight" id="SiteMastheadRight">
-    <div class="SiteMastheadRightBackground" id="SiteMastheadRightBackground">
-      <a name="site-search"></a> <!-- accessibility anchor -->
-      <form action="/help/search/index.html" class="site_search" id="search_form" method="GET">
-        Search: <input id="q" name="q" />
-      </form>
-      <ul class="masthead_nav noprint">
-        <li class="masthead_nav_element" id="masthead_nav_element_1">
-          <a href="/">Home</a>
-        </li>
-        <li class="masthead_nav_element" id="masthead_nav_element_2">
-          <a href="/install/">Install</a>
-        </li>
-        <li class="masthead_nav_element" id="masthead_nav_element_3">
-          <a href="/help/">Help</a>
-        </li>
-        <li class="masthead_nav_element" id="masthead_nav_element_4">
-          <a href="/developers/">Developers</a>
-        </li>
-        <li class="masthead_nav_element" id="masthead_nav_element_5">
-          <a href="/about/">About</a>
-        </li>
-      </ul>
-    </div>
-  </div>
+<a name="site-navigation"></a> <!-- accessibility anchor -->
+<span class="logo_vanity_bar noprint"></span>
+<a href="/">
+<img alt="Bioconductor - open source software for bioinformatics" border="0" class="masthead_logo" height="78" src="/images/logo_bioconductor.gif" width="260"/>
+</a>
+<div class="SiteMastheadRight" id="SiteMastheadRight">
+<div class="SiteMastheadRightBackground" id="SiteMastheadRightBackground">
+<a name="site-search"></a> <!-- accessibility anchor -->
+<form action="/help/search/index.html" class="site_search" id="search_form" method="GET">
+        Search: <input id="q" name="q"/>
+</form>
+<ul class="masthead_nav noprint">
+<li class="masthead_nav_element" id="masthead_nav_element_1">
+<a href="/">Home</a>
+</li>
+<li class="masthead_nav_element" id="masthead_nav_element_2">
+<a href="/install/">Install</a>
+</li>
+<li class="masthead_nav_element" id="masthead_nav_element_3">
+<a href="/help/">Help</a>
+</li>
+<li class="masthead_nav_element" id="masthead_nav_element_4">
+<a href="/developers/">Developers</a>
+</li>
+<li class="masthead_nav_element" id="masthead_nav_element_5">
+<a href="/about/">About</a>
+</li>
+</ul>
 </div>
+</div>
+</div>
+
+
+
