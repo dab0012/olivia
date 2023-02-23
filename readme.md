@@ -1,6 +1,7 @@
 OLIVIA-FINDER
 =============
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6e2b8fd2c3b34ae3be9d00993930661f)](https://app.codacy.com/gh/dab0012/olivia?utm_source=github.com&utm_medium=referral&utm_content=dab0012/olivia&utm_campaign=Badge_Grade_Settings)
 [![Build Status](https://travis-ci.com/dab0012/olivia.svg?branch=master)](https://travis-ci.com/dab0012/olivia)
 [![codecov](https://codecov.io/gh/dab0012/olivia/branch/master/graph/badge.svg)](https://codecov.io/gh/dab0012/olivia)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0b151ed6a3794874b1d3083e2532497d)](https://www.codacy.com/manual/dab0012/olivia?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dab0012/olivia&amp;utm_campaign=Badge_Grade)
