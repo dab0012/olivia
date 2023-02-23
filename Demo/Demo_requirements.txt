@@ -9,3 +9,5 @@ BeautifulSoup4
 pickle5
 pybraries
 selenium
+networkx
+scipy
