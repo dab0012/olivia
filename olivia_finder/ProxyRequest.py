@@ -68,7 +68,7 @@ class RequestHandler():
         self.proxies = [(f'http://{proxy}', 0) for proxy in proxies]
         return True
 
-    def __get_next_proxy(self) -> Dict[str, str]:
+    def __get_next_proxy(self) -> Union[Dict[str, str], None]:
         '''
         Get next proxy from the proxy list
 

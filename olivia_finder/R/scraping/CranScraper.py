@@ -10,7 +10,7 @@ from ...Util import clean_string
 from ...ProxyRequest import RequestHandler
 from .RScraper import RScraper
 
-class Cran_Scraper(RScraper):
+class CranScraper(RScraper):
     '''
     Class that scrapes the CRAN website to obtain information about R packages
     '''
@@ -82,7 +82,7 @@ class Cran_Scraper(RScraper):
         try:
             d = soup.find('td', text='Version:').find_next_sibling('td').text
             version = clean_string(d)
-        except:
+        except Exception:
             logging.info(f'Package {pkg_name} does not have a version')
 
         # Get publication date
@@ -90,7 +90,7 @@ class Cran_Scraper(RScraper):
         try:
             d = soup.find('td', text='Published:').find_next_sibling('td').text
             publication_date = clean_string(d)
-        except:
+        except Exception:
             logging.info(f'Package {pkg_name} does not have a publication date')
 
         # Get author
@@ -98,7 +98,7 @@ class Cran_Scraper(RScraper):
         try:
             d = soup.find('td', text='Author:').find_next_sibling('td').text
             authors = clean_string(d)
-        except:
+        except Exception:
             logging.info(f'Package {pkg_name} does not have an author')
 
         # Get mantainer
@@ -106,7 +106,7 @@ class Cran_Scraper(RScraper):
         try:
             d = soup.find('td', text='Maintainer:').find_next_sibling('td').text.replace(' at ', '@')
             mantainer = clean_string(d)
-        except:
+        except Exception:
             logging.info(f'Package {pkg_name} does not have a mantainer')
 
         # Get license
@@ -114,7 +114,7 @@ class Cran_Scraper(RScraper):
         try:
             d = soup.find('td', text='License:').find_next_sibling('td').text
             license_ = clean_string(d)
-        except:
+        except Exception:
             logging.info(f'Package {pkg_name} does not have a license')
 
         # Get compilation requirement
@@ -123,7 +123,7 @@ class Cran_Scraper(RScraper):
             d = soup.find('td', text='NeedsCompilation:').find_next_sibling('td').text
             d = clean_string(d)
             requires_compilation = (d == 'yes')    # Convert to boolean
-        except:
+        except Exception:
             logging.info(f'Package {pkg_name} does not have a compilation requirement')
 
         #endregion optional data
@@ -136,7 +136,7 @@ class Cran_Scraper(RScraper):
         try:
             d = soup.find('td', text='Depends:').find_next_sibling('td').text
             depends = clean_string(d)
-        except:
+        except Exception:
             logging.info(f'Package {pkg_name} does not have dependencies')
 
         # Get imports
@@ -144,7 +144,7 @@ class Cran_Scraper(RScraper):
         try:
             d = soup.find('td', text='Imports:').find_next_sibling('td').text
             imports = clean_string(d)
-        except:
+        except Exception:
             logging.info(f'Package {pkg_name} does not have imports')
 
         # Build dictionary with package data

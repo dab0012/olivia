@@ -1,17 +1,22 @@
 # Author: Daniel Alonso Báscones
 # Date: 2022-12-23
-# Project: TFG OLIVIA
+# Project: Olivia Finder
+# Description: This module implements the request handler class to handle HTTP requests
 
 from bs4 import BeautifulSoup
 from typing import Dict, Union
 
+# Import the modules
 from ...Util  import clean_string
 from ...LoadConfig import logging
 from ...ProxyRequest import RequestHandler
 from .RScraper import RScraper
 
 
-class Bioc_Scraper(RScraper):
+class BiocScraper(RScraper):
+    '''
+    Class to scrape data from Bioconductor packages
+    '''
 
     def __init__(self, request_handler: RequestHandler) -> None:
         super().__init__(request_handler)

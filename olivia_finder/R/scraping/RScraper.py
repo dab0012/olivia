@@ -9,7 +9,7 @@ from abc                import ABC, abstractmethod
 
 # Own modules
 from ...LoadConfig      import logging
-from ...Util            import print_colored, GREEN, RED, YELLOW
+from ...Util            import print_colored, GREEN
 from ...ProxyRequest    import RequestHandler
 from ..RPackage         import RPackage
 from ..RDependency      import RDependency
