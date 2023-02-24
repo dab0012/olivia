@@ -7,7 +7,7 @@ import requests
 import random
 from bs4 import BeautifulSoup
 from typing import Dict, Union
-from LoadConfig import logging
+from .LoadConfig import logging
 
 class RequestHandler():
     ''' 

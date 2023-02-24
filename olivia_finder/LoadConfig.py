@@ -5,10 +5,12 @@
 
 import configparser
 import logging
+import os
 
 # Load the configuration from the file
 config = configparser.ConfigParser()
-config.read('config.ini')
+config_file = os.path.join(os.path.dirname(__file__), 'config.ini')
+config.read(config_file)
 
 # Configure logging from the [logging] section
 logging.basicConfig(

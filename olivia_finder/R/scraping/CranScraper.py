@@ -60,6 +60,12 @@ class CranScraper(RScraper):
         url = f'https://cran.r-project.org/package={pkg_name}'
         try:
             response = self.request_handler.do_request(url)
+
+            # Check if the package exists
+            if response.status_code == 404:
+                logging.error(f'Package {pkg_name} not found in CranScraper.__parse_pkg_data')
+                return None
+            
         except Exception as e:
             logging.error(f'Exception getting package {pkg_name} in CranScraper.__parse_pkg_data: {e}')
             return None
