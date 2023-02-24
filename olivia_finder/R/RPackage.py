@@ -3,10 +3,10 @@
 # Email: dab0012@alu.ubu.es
 
 from sqlalchemy.orm import Session
-from .R_ORM_Model import R_Dependency_MySQL, R_Package_MySQL
-from .R_Dependency import R_Dependency
+from .ROrmModel import RDependencyMySQL, RPackageMySQL
+from .RDependency import RDependency
 
-class R_Package:
+class RPackage:
     '''
     Class that implements an object of type Package
     '''
@@ -23,7 +23,7 @@ class R_Package:
         self.publication_date = None
         self.mantainer = None
         self.author_data = None
-        self.dependencies : list[R_Dependency] = []
+        self.dependencies : list[RDependency] = []
         self.license = None
         self.requires_compilation = None
         self.in_cran = None
@@ -90,7 +90,7 @@ Links:
         '''
 
         # Get the package from the database
-        package_db = session.query(R_Package_MySQL).filter(R_Package_MySQL.name == self.name).first()
+        package_db = session.query(RPackageMySQL).filter(RPackageMySQL.name == self.name).first()
 
         # If the package is not in the database, return False
         if package_db is None:
@@ -111,8 +111,8 @@ Links:
         self.url = package_db.url
 
         # Get the dependencies from the database
-        dependencies_db = session.query(R_Dependency_MySQL).filter(R_Dependency_MySQL.id == self.id).all()
-        self.dependencies = [R_Dependency().create(dep.name, dep.type, dep.version) for dep in dependencies_db]    
+        dependencies_db = session.query(RDependencyMySQL).filter(RDependencyMySQL.id == self.id).all()
+        self.dependencies = [RDependency().create(dep.name, dep.type, dep.version) for dep in dependencies_db]    
 
         return True
     
@@ -138,14 +138,14 @@ Links:
 
         else:
             # Create the package in the database
-            package = R_Package_MySQL()
+            package = RPackageMySQL()
             package.name = self.name
             package.description = self.description
             package.version = self.version
             package.publication_date = self.publication_date
             package.mantainer = self.mantainer
             package.author_data = self.author_data
-            package.requires_compilation == self.requires_compilation
+            package.requires_compilation = self.requires_compilation
             package.in_cran = self.in_cran
             package.in_bioconductor = self.in_bioc
             package.license = self.license
@@ -154,7 +154,7 @@ Links:
             session.commit()
 
             # Get the id of the package
-            self.id = session.query(R_Package_MySQL).filter(R_Package_MySQL.name == self.name).first().id
+            self.id = session.query(RPackageMySQL).filter(RPackageMySQL.name == self.name).first().id
 
             # Save the dependencies in the database
             for dependency in self.dependencies:
@@ -182,7 +182,7 @@ Links:
             return False
 
         # Update the package in the database
-        package_db = session.query(R_Package_MySQL).filter(R_Package_MySQL.id == self.id).first()
+        package_db = session.query(RPackageMySQL).filter(RPackageMySQL.id == self.id).first()
         package_db.name = self.name
         package_db.description = self.description
         package_db.version = self.version

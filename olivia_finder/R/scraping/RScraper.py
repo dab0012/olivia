@@ -1,21 +1,26 @@
 # Author: Daniel Alonso Báscones
 # Date: 2022-12-23
-# Project: TFG OLIVIA
-
+# Project: Olivia Finder
+# Description: Class that implmenets the RScraper abstract class for scraping the R repositories
 
 import re
-from typing import Dict, List, Tuple
-from abc import ABC, abstractmethod
+from typing             import Dict, List, Tuple
+from abc                import ABC, abstractmethod
 
-from ...Util import *
-from ...ProxyRequest import RequestHandler
-from ..R_Package import R_Package
-from ..R_Dependency import R_Dependency
+# Own modules
+from ...LoadConfig      import logging
+from ...Util            import print_colored, GREEN, RED, YELLOW
+from ...ProxyRequest    import RequestHandler
+from ..RPackage         import RPackage
+from ..RDependency      import RDependency
 
 
-class R_Scraper(ABC):
+class RScraper(ABC):
+    '''
+    Abstract class that implements the methods for scraping R repositories
+    '''
 
-    def __init__(self, request_handler: RequestHandler) -> None:
+    def __init__(self, rh: RequestHandler) -> None:
         '''
         Class constructor
         
@@ -29,7 +34,7 @@ class R_Scraper(ABC):
             None
         '''
 
-        self.request_handler = request_handler
+        self.request_handler = rh
 
     def __parse_dependencies(self, dependencies_str, type) -> List[Tuple[str, str]]:
         '''
@@ -54,10 +59,15 @@ class R_Scraper(ABC):
         versions = [re.findall(pattern, dep)[0] if re.findall(pattern, dep) else '' for dep in dependencies_str.split(",")]
         names = [re.sub(r'\s*\(.*\)', '', nombre.strip()) for nombre in dependencies_str.split(",")]
 
+        # Check if the lists have the same length and are not empty
+        if len(names) != len(versions) or len(names) == 0:
+            logging.error(f'Error parsing dependencies in RScraper.__parse_dependencies: {names} {versions}')
+            return []
+
         dependencies = []
         # Return list of dependency objects
         for i in range(len(names)):
-            d = R_Dependency(names[i], type, versions[i])
+            d = RDependency(names[i], type, versions[i])
             dependencies.append(d)
 
         return dependencies
@@ -66,7 +76,7 @@ class R_Scraper(ABC):
     def scrape_package(self, pkg_name) -> Dict[str, str]:
         pass
 
-    def build_list(self, pkg_list: List[str]) -> List[R_Package]:
+    def build_list(self, pkg_list: List[str]) -> List[RPackage]:
         '''
         Scrape a list of packages
 
@@ -97,10 +107,9 @@ class R_Scraper(ABC):
                 print_colored(f'Scraped package {pkg_name}: {count}/{total}', GREEN)
 
             except Exception as e:
-                print_colored(f'Exception scraping package {pkg_name} in BioconductorScraper.scrape_list: {e}', 'red')
                 error_packages.append(pkg_name)
-                print_colored(f'Error packages: {error_packages}', 'red')
-                pass
+                logging.error(f'Exception scraping package {pkg_name} in RScraper.scrape_list: {e}')
+                logging.error(f'Error packages: {error_packages}')
 
         # Try to scrape error packages
         while len(error_packages) > 0:
@@ -111,14 +120,13 @@ class R_Scraper(ABC):
                     error_packages.remove(pkg_name)
                     print_colored(f'Scraped package {pkg_name}: {count}/{len(error_packages)}', GREEN)
                 except Exception as e:
-                    print_colored(f'Exception scraping package {pkg_name} in BioconductorScraper.scrape_list: {e}', 'red')
-                    print_colored(f'Error packages: {error_packages}', 'red')
-                    pass
+                    logging.error(f'Exception scraping package {pkg_name} in RScraper.scrape_list: {e}')
+                    logging.error(f'Error packages: {error_packages}')
 
         # Return list of packages
         return packages
 
-    def build(self, pkg_name) -> R_Package:
+    def build(self, pkg_name) -> RPackage:
         '''
         Build a Package object with the data of the scraped package
 
@@ -144,10 +152,11 @@ class R_Scraper(ABC):
                 if dep_str:
                     dep_list += self.__parse_dependencies(pkg_data.get(dep_type), dep_type)
             except Exception as e:
+                logging.error(f'Exception parsing dependencies of package {pkg_name}: {e}')
                 dep_list = []
 
         # Set package attributes
-        package = R_Package()
+        package = RPackage()
         package.name = pkg_name
         package.description = pkg_data['description']
         package.version = pkg_data['version']

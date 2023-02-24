@@ -3,9 +3,10 @@
 # Email: dab0012@alu.ubu.es
 
 from sqlalchemy.orm import Session
-from .R_ORM_Model import R_Dependency_MySQL, R_PackageDependency_MySQL
+from ..LoadConfig import logging
+from .ROrmModel import RDependencyMySQL, RPackageDependencyMySQL
 
-class R_Dependency:
+class RDependency:
 
     # Class constructor
     def __init__(self, name: str = None, type: str = None, version: str = None):
@@ -27,7 +28,7 @@ class R_Dependency:
     def build_from_db(self, session: Session):
 
         # If the dependency exists, initialize the dependency
-        dependency_db = session.query(R_Dependency_MySQL).filter(R_Dependency_MySQL.id == self.id).first()
+        dependency_db = session.query(RDependencyMySQL).filter(RDependencyMySQL.id == self.id).first()
         if dependency_db:
             self.id = dependency_db.id
             self.name = dependency_db.name
@@ -41,7 +42,7 @@ class R_Dependency:
         if not self.id:
 
             # Check if the dependency exists in the database
-            dependency_db = session.query(R_Dependency_MySQL).filter(R_Dependency_MySQL.name == self.name).first()
+            dependency_db = session.query(RDependencyMySQL).filter(RDependencyMySQL.name == self.name).first()
             
             # If the dependency exists, update the dependency
             if dependency_db:
@@ -51,25 +52,25 @@ class R_Dependency:
             else: 
                 # If the dependency does not exist, insert it in the database
                 try:
-                    d = R_Dependency_MySQL(name=self.name, version=self.version, type=self.type)
+                    d = RDependencyMySQL(name=self.name, version=self.version, type=self.type)
                     session.add(d)
                     session.commit()
-                    self.id = session.query(R_Dependency_MySQL).filter(R_Dependency_MySQL.name == self.name).first().id
+                    self.id = session.query(RDependencyMySQL).filter(RDependencyMySQL.name == self.name).first().id
                 except Exception as e:
-                    print("Exception while inserting dependency in the database: ", e)
+                    logging.error("Exception while inserting dependency in the database: ", e)
                     session.rollback()
 
             # Check if the dependency is already associated with the package
-            package_dependency_db = session.query(R_PackageDependency_MySQL).filter(R_PackageDependency_MySQL.package_id == package_id).filter(R_PackageDependency_MySQL.dependency_id == self.id).first()
+            package_dependency_db = session.query(RPackageDependencyMySQL).filter(RPackageDependencyMySQL.package_id == package_id).filter(RPackageDependencyMySQL.dependency_id == self.id).first()
 
             # If the dependency is not associated with the package, insert the relation in the database
             if not package_dependency_db:
                 try:
-                    p_d = R_PackageDependency_MySQL(package_id=package_id, dependency_id=self.id)
+                    p_d = RPackageDependencyMySQL(package_id=package_id, dependency_id=self.id)
                     session.add(p_d)
                     session.commit()
                 except Exception as e:
-                    print("Exception while inserting package-dependency relation in the database: ", e)
+                    logging.error("Exception while inserting package dependency in the database: ", e)
                     session.rollback()
 
         # If the dependency has an id, update it in the database
@@ -80,11 +81,11 @@ class R_Dependency:
     def update_in_db(self, session: Session):
 
         # Update the dependency in the database
-        session.query(R_Dependency_MySQL).filter(R_Dependency_MySQL.id == self.id).update(
+        session.query(RDependencyMySQL).filter(RDependencyMySQL.id == self.id).update(
             {
-                R_Dependency_MySQL.name: self.name,
-                R_Dependency_MySQL.type: self.type,
-                R_Dependency_MySQL.version: self.version
+                RDependencyMySQL.name: self.name,
+                RDependencyMySQL.type: self.type,
+                RDependencyMySQL.version: self.version
             }
         )
         session.commit()

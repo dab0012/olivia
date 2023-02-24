@@ -3,18 +3,20 @@
 # Project: TFG OLIVIA
 
 from bs4 import BeautifulSoup
-from typing import Dict
+from typing import Dict, Union
 
-from ...Util import *
+from ...Util  import clean_string
+from ...LoadConfig import logging
 from ...ProxyRequest import RequestHandler
-from .R_Scraper import R_Scraper
+from .RScraper import RScraper
 
-class Bioc_Scraper(R_Scraper):
+
+class Bioc_Scraper(RScraper):
 
     def __init__(self, request_handler: RequestHandler) -> None:
         super().__init__(request_handler)
 
-    def scrape_package(self, pkg_name) -> Dict[str, str]:
+    def scrape_package(self, pkg_name) -> Union[Dict[str, str], None]:
         '''
         Get data from a Bioconductor packet.
         It's obtained from the package page in the Bioconductor website.
@@ -44,24 +46,24 @@ class Bioc_Scraper(R_Scraper):
         try:
             response = self.request_handler.do_request(url)
         except Exception as e:
-            print_colored(f'Exception getting package {pkg_name} in BioconductorScraper.__parse_pkg_data: {e}', 'red')
+            logging.error(f'Error in the request to the package page: {e}')
             return None
 
         # Parse HTML
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        # Get Name and Description
-        # ------------------------
-
-        # Get optional table data
-        # -----------------------      
+        # Get data
+        # ---------
         data_p = soup.find('div', class_='do_not_rebase').findAll('p')
-        description = clean_string(data_p[1].text)              # Get the package description
-        authors = clean_string(data_p[2].text )                 # Get the authors of the package
-        authors.replace('Author: ', '')                         # We removed the word 'Authors: ' from the authors
-        maintainer = clean_string(data_p[3].text)               # Get the maintainer of the package
-        maintainer = maintainer.replace('Maintainer: ', '')     # We remove the word 'Maintainer: ' from the maintainer
-        maintainer = maintainer.replace(' at ', '@')            # We change the ' at ' by the '@' of the maintainer
+        # Get the package description
+        description = clean_string(data_p[1].text)
+        # Get the authors of the package
+        authors = clean_string(data_p[2].text)
+        authors.replace('Author: ', '')                     # We remove the word 'Author: ' from the authors        
+        # Get the maintainer of the package
+        maintainer = clean_string(data_p[3].text)
+        maintainer = maintainer.replace('Maintainer: ', '') # We remove the word 'Maintainer: ' from the maintainer
+        maintainer = maintainer.replace(' at ', '@')        # We change the ' at ' by the '@' of the maintainer
 
         # Get the data from the table
         table = soup.find('table', class_='details')
@@ -74,12 +76,12 @@ class Bioc_Scraper(R_Scraper):
                 if cells[0].text == 'Version':
                     version = clean_string(cells[1].text.strip())
                 elif cells[0].text == 'License':
-                    license = clean_string(cells[1].text.strip())
+                    license_ = clean_string(cells[1].text.strip())
                 elif cells[0].text == 'Depends':
                     depends = clean_string(cells[1].text.strip())
                 elif cells[0].text == 'Imports':
                     imports = clean_string(cells[1].text.strip())
-                    
+
         # Return data
         return {
             'name': pkg_name,
@@ -88,11 +90,10 @@ class Bioc_Scraper(R_Scraper):
             'publication_date': None,
             'authors': authors,
             'mantainer': maintainer,
-            'license': license,
+            'license': license_,
             'requires_compilation': None,
             'depends': depends,
             'imports': imports,
             'url': url,
             'source': 'Bioconductor'
         }
-    

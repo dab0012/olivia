@@ -10,7 +10,7 @@ from sqlalchemy.orm import relationship
 # Base class for the model
 Base = declarative_base()
 
-class R_Package_MySQL(Base):
+class RPackageMySQL(Base):
     '''
     Table that stores the packages
 
@@ -58,7 +58,7 @@ class R_Package_MySQL(Base):
     url = Column(String(255), nullable=False)
     dependencies = relationship('Dependency_MySQL', secondary='package_dependency')
 
-class R_Dependency_MySQL(Base):
+class RDependencyMySQL(Base):
     '''
     Table that stores the dependencies of the packages
 
@@ -80,7 +80,7 @@ class R_Dependency_MySQL(Base):
     type = Column(String(255), nullable=False)
 
 
-class R_PackageDependency_MySQL(Base):
+class RPackageDependencyMySQL(Base):
     '''
     Association table between packages and dependencies
 

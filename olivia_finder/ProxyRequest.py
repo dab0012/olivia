@@ -1,12 +1,13 @@
 # Author: Daniel Alonso Báscones
 # Date: 2022-12-23
-# Project: TFG OLIVIA
+# Project: Olivia Finder
+# Description: This module implements the request handler class to handle HTTP requests
 
 import requests
 import random
 from bs4 import BeautifulSoup
-from typing import Dict
-from olivia_finder.Util import *
+from typing import Dict, Union
+from LoadConfig import logging
 
 class RequestHandler():
     ''' 
@@ -32,7 +33,6 @@ class RequestHandler():
         -------
             None
         '''
-
 
         self.proxies = {}                   # Initialize the proxy list
         self.user_agents = []               # Initialize the user agent list
@@ -60,8 +60,7 @@ class RequestHandler():
         try:
             proxies = requests.get(self.proxyscape_url).text
         except Exception as e:
-            print_colored("Error getting proxies (RequestHandler.__obtain_proxies)", RED)
-            print_colored(e, RED)
+            logging.warning("Error getting proxies (RequestHandler.__obtain_proxies): ", e)
             return False
         
         # Save (proxy, number_uses) in proxy list
@@ -89,8 +88,8 @@ class RequestHandler():
             while not self.__obtain_proxies():
                 requests_count+=1
                 if requests_count == 5:
-                    print_colored("Error getting proxies: failed 5 times (RequestHandler.__get_next_proxy)", RED)
-                    print_colored("Using default IP", YELLOW)
+                    logging.warning("Error getting proxies: failed 5 times (RequestHandler.__get_next_proxy)")
+                    logging.warning("Using default IP")
                     return None
 
         # Select the next proxy
@@ -110,14 +109,23 @@ class RequestHandler():
     def __obtain_user_agents(self, max_count=30) -> bool:
         '''
         Get user agents from the useragentstring.com API and save them in the user agent list
+
+        Parameters
+        ----------
+        max_count : int, optional
+            Maximum number of user agents to be obtained, by default 30
+
+        Returns
+        -------
+        bool
+            True if the user agents were obtained correctly, False otherwise
         '''
         # Get user agents
         # Be careful with the request!!!
         try:
             user_agents_request = requests.get(self.useragentstring_url).text
         except Exception as e:
-            print_colored("Error getting user agents (RequestHandler.__obtain_user_agents)", RED)
-            print_colored(e, RED)
+            logging.warning("Error getting user agents (RequestHandler.__obtain_user_agents): ", e)
             return False
         
         # Parse the HTML
@@ -140,8 +148,7 @@ class RequestHandler():
             return True
         
         except Exception as e:
-            print_colored("Error parsing HTML (RequestHandler.__obtain_user_agents)", RED)
-            print_colored(e, RED)
+            logging.warning("Error parsing user agents (RequestHandler.__obtain_user_agents): ", e)
             return False
 
     def __get_next_user_agent(self) -> Dict[str, str]:
@@ -163,8 +170,8 @@ class RequestHandler():
             while not self.__obtain_user_agents():
                 requests_count+=1
                 if requests_count == 5:
-                    print_colored("Error getting user agents: failed 5 times (RequestHandler.__get_random_user_agent)", RED)
-                    print_colored("Using default user agent", YELLOW)
+                    logging.warning("Error getting user agents: failed 5 times (RequestHandler.__get_next_user_agent)")
+                    logging.warning("Using default user agent")
                     return {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
 
         selected_user_agent = random.choice(self.user_agents)       # Select a random UserAgent
@@ -177,15 +184,16 @@ class RequestHandler():
 
         return {'User-Agent': selected_user_agent}
 
-    def do_request(self, url: str, retry = False, max_retry = 5) -> bytes:
+    def do_request(self, url: str, max_retry = 5) -> Union[requests.Response, None]:
         '''
         Make an HTTP request and return the HTML of the response
 
         args:
             url (str): URL of the request
+            max_retry (int): Maximum number of retries if the request fails
 
         Returns:
-            bytes: HTML of the response or None if the request fails
+            Union[requests.Response, None]: Response of the request or None if the request fails
         '''
 
         finalized = False
@@ -201,12 +209,12 @@ class RequestHandler():
                 response = requests.get(url, proxies=proxy, headers=user_agent)
                 finalized = True
             except Exception as e:
-                print_colored("Error making request (RequestHandler.do_request)", RED)
-                print_colored(e, RED)
+                logging.warning("Error making request (RequestHandler.do_request): ", e)
                 retry_count+=1
+
+                # If the request fails <max_retry> times, return None
                 if retry_count == max_retry:
-                    print_colored("Error making request: failed 5 times (RequestHandler.do_request)", RED)
+                    logging.warning("Error making request: failed 5 times (RequestHandler.do_request)")
                     return None
 
-        # return HTML
         return response
