@@ -1,0 +1,13 @@
+sqlalchemy
+mysql-connector-python
+numpy
+pandas
+matplotlib
+tqdm
+requests
+BeautifulSoup4
+pickle5
+pybraries
+selenium
+networkx
+scipy
