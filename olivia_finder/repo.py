@@ -116,18 +116,6 @@ class Repo:
         for package in self.packages:
             d['packages'].append(package.to_dict())
         return d
-
-    def to_csv(self, path: str):
-        '''
-        Save the object to a CSV file
-
-        Parameters
-        ----------
-        path : str
-            Path to the CSV file
-        '''
-        df = pd.DataFrame([self.to_dict()])
-        df.to_csv(path, index=False)
         
     @classmethod
     def load_dict(cls, data):
@@ -149,29 +137,89 @@ class Repo:
             repo.packages.append(Package.load(package))
         return repo
 
-    @classmethod
-    def load_csv(cls, path: str):
+    def to_dependency_graph(self) -> pd.DataFrame:
         '''
-        Load a Repo object from a CSV file
+        Convert the object to a dependency graph
+
+        Returns
+        -------
+        pd.DataFrame
+            Dependency graph
+        '''
+
+        rows = []
+        for package in self.packages:
+            for dependency in package.dependencies:
+                rows.append([package.name, dependency.name])
+        return pd.DataFrame(rows, columns=['source', 'target'])
+    
+    def to_package_graph(self) -> pd.DataFrame:
+        '''
+        Convert the object to a package graph
+
+        Returns
+        -------
+        pd.DataFrame
+            Package graph
+        '''
+
+        rows = []
+        for package in self.packages:
+            rows.append([package.name, package.version, package.url])
+        return pd.DataFrame(rows, columns=['name', 'version', 'url'])
+    
+    def to_package_graph_with_dependencies(self) -> pd.DataFrame:
+        '''
+        Convert the object to a package graph with dependencies and versions
+
+        Returns
+        -------
+        pd.DataFrame
+            Package graph with dependencies and versions
+        '''
+
+        rows = []
+        for package in self.packages:
+            for dependency in package.dependencies:
+                rows.append([package.name, package.version, package.url, dependency.name, dependency.version])
+        return pd.DataFrame(rows, columns=['name', 'version', 'url', 'dependency', 'dependency_version'])
+    
+    @classmethod
+    def load_csv_package_graph(cls, path: str):
+        '''
+        Load a package graph from a csv file
 
         Parameters
         ----------
         path : str
-            Path to the CSV file
+            Path to the csv file
 
-        Returns
-        -------
-        Repo
-            Repo object
         '''
-        try:
-            df = pd.read_csv(path)
-        except FileNotFoundError:
-            return None
+
+        data = pd.read_csv(path, index_col=0)
+
+        # If the csv does not have the structure of to_package_graph_with_dependencies it cannot be loaded
+        if not set(['name', 'version', 'url', 'dependency', 'dependency_version']).issubset(data.columns):
+            raise Exception('CSV file does not have the correct structure')
         
-        return cls.load_dict(df.to_dict('records')[0])
+        # We create a dictionary with the packages
+        packages = {}
+        for index, row in data.iterrows():
+            if row['name'] not in packages:
+                packages[row['name']] = Package(row['name'], row['version'], row['url'])
+            else:
+                packages[row['name']].version = row['version']
+                packages[row['name']].url = row['url']
 
-    
-        
+        # We add the dependencies
+        for index, row in data.iterrows():
+            if row['dependency'] not in packages:
+                packages[row['dependency']] = Package(row['dependency'], row['dependency_version'])
+            else:
+                packages[row['dependency']].version = row['dependency_version']
+            packages[row['name']].dependencies.append(packages[row['dependency']])
 
-
+        # We create the repository
+        repo = cls('repo_name', 'url')
+        repo.packages = list(packages.values())
+        return repo

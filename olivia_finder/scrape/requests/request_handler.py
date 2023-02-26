@@ -179,37 +179,40 @@ class RequestHandler():
 
         return {'User-Agent': selected_user_agent}
 
-    def do_request(self, url: str, max_retry = 5) -> Union[requests.Response, None]:
+    def do_request(self, url: str, count:int = 0, max_retry:int = 5) -> Union[requests.Response, None]:
         '''
         Make an HTTP request and return the HTML of the response
 
         args:
             url (str): URL of the request
-            max_retry (int): Maximum number of retries if the request fails
+            count (int): Number of times the request has been made
+            max_retry (int): Maximum number of times the request can be made
 
         Returns:
             Union[requests.Response, None]: Response of the request or None if the request fails
         '''
 
-        finalized = False
-        retry_count = 0
-        
-        while not finalized:
-            # Get proxy and user agent
-            proxy = self.__get_next_proxy()
-            user_agent = self.__get_next_user_agent()
 
-            # Make HTTP request
-            try:
-                response = requests.get(url, proxies=proxy, headers=user_agent)
-                finalized = True
-            except Exception as e:
-                logging.warning("Error making request (RequestHandler.do_request): ", e)
-                retry_count+=1
+        # Get proxy and user agent
+        proxy = self.__get_next_proxy()
+        user_agent = self.__get_next_user_agent()
 
-                # If the request fails <max_retry> times, return None
-                if retry_count == max_retry:
-                    logging.warning("Error making request: failed 5 times (RequestHandler.do_request)")
-                    return None
+        # Make HTTP request
+        try:
+            response = requests.get(url, proxies=proxy, headers=user_agent)
+
+        except Exception as e:
+            logging.warning("Error making request (RequestHandler.do_request): ", e)
+
+            # If the request fails <max_retry> times, return None
+            count+=1
+            if count == max_retry:
+                logging.warning("Error making request: failed 5 times (RequestHandler.do_request)")
+                return None
+            else:
+                # Renew proxy and user agent
+                proxy = self.__get_next_proxy()
+                user_agent = self.__get_next_user_agent()
+                return self.do_request(url, count, max_retry)
 
         return response
