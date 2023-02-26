@@ -57,12 +57,16 @@ class PypiScraper(Scraper):
                 dep_name = dependency.split(' ')[0]
                 d = Package("PyPI", dep_name)
                 dependencies.append(d) 
-    
+
+        name = data['info']['name']
+        version = data['info']['version']
+        url = data['info']['project_url']
+
         # Get the package data
         package_data = {
-            'name': data['info']['name'],
-            'version': data['info']['version'],
-            'url': data['info']['project_url'],
+            'name': name,
+            'version': version,
+            'url': url,
             'dependencies': dependencies
         }
 

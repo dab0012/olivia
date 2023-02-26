@@ -44,6 +44,10 @@ class Scraper(ABC):
         # Get package data from HTML scraping
         pkg_data = self.scrape_package(pkg_name)
 
+        if not pkg_data:
+            logging.error(f'Error scraping package {pkg_name}')
+            return None
+
         # Set package attributes
         package = Package(
             repo=self.repo_name,
