@@ -10,11 +10,11 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
-from repo import Repo
-from scrapers.cran import CranScraper
-from scrapers.bioconductor import BiocScraper
-from scrapers.requests.request_handler import RequestHandler
-import load_config
+from olivia_finder.repo import Repo
+from olivia_finder.scrape.cran import CranScraper
+from olivia_finder.scrape.bioconductor import BiocScraper
+from olivia_finder.scrape.requests.request_handler import RequestHandler
+import olivia_finder.load_config as load_config
 
 # Define the request handler
 rh = RequestHandler(max_request=20)
@@ -23,22 +23,14 @@ rh = RequestHandler(max_request=20)
 cran = Repo('CRAN', 'https://cran.r-project.org')
 bioconductor = Repo('Bioconductor', 'https://bioconductor.org')
 
+# Scrape Bioconductor packages
 bs = BiocScraper(rh)
 bioconductor.scrape_packages(bs.get_list_of_packages(), bs)
+print("Bioconductor packages scraped")
+bioconductor.to_csv("./persistence/bioconductor.csv")
 
-
-# p = bioconductor.scrape_package("a4", BiocScraper(rh))
-# p.print()
-
-#list = cran.scrape_packages(["MASS", "ggplot2"], CranScraper(rh))
-
-# for p in list:
-#     p.print()
-
-
-# package_list = CranScraper(rh).get_list_of_packages()
-# print(package_list)
-
-# bioconductor_list = BiocScraper(rh).get_list_of_packages()
-# print(bioconductor_list)
-
+# Scrape CRAN packages
+cs = CranScraper(rh)
+cran.scrape_packages(cs.get_list_of_packages(), cs)
+print("CRAN packages scraped")
+cran.to_csv("./persistence/cran.csv")

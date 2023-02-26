@@ -10,13 +10,12 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
-from util import clean_string
+from olivia_finder.util import Util
 from bs4 import BeautifulSoup
 from typing import Dict, Union, List
 import logging
-
-from .requests.request_handler import RequestHandler
-from .r import RScraper
+from olivia_finder.scrape.r import RScraper                                         
+from olivia_finder.scrape.requests.request_handler import RequestHandler
 
 
 class CranScraper(RScraper):
@@ -86,7 +85,7 @@ class CranScraper(RScraper):
         version = None
         try:
             d = soup.find('td', text='Version:').find_next_sibling('td').text
-            version = clean_string(d)
+            version = Util.clean_string(d)
         except Exception:
             logging.info(f'Package {pkg_name} does not have a version')
 
@@ -95,7 +94,7 @@ class CranScraper(RScraper):
         dep_list = []
         try:
             d = soup.find('td', text='Depends:').find_next_sibling('td').text
-            depends = clean_string(d)
+            depends = Util.clean_string(d)
             dep_list = self.parse_dependencies(depends)
         except Exception:
             logging.info(f'Package {pkg_name} does not have dependencies')
@@ -105,7 +104,7 @@ class CranScraper(RScraper):
         imp_list = []
         try:
             d = soup.find('td', text='Imports:').find_next_sibling('td').text
-            imports = clean_string(d)
+            imports = Util.clean_string(d)
             imp_list = self.parse_dependencies(imports)
         except Exception:
             logging.info(f'Package {pkg_name} does not have imports')

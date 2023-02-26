@@ -10,13 +10,15 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
-import logging                                                  # Python imports
+import logging
 from typing import Dict, Union, List
-from util import clean_string                                   # Utility imports (for cleaning strings)
-from bs4 import BeautifulSoup                                   # BeautifulSoup imports (for scraping HTML pages)
-from .requests.request_handler import RequestHandler            # Custom class for handling HTTP requests
-from .r import RScraper                                         # Custom class for scraping R packages
-from selenium import webdriver                                  # Selenium imports (for scraping JavaScript pages)  
+from bs4 import BeautifulSoup
+from olivia_finder.util import Util
+from olivia_finder.scrape.r import RScraper                                         
+from olivia_finder.scrape.requests.request_handler import RequestHandler
+
+# Selenium imports (for scraping JavaScript pages)
+from selenium import webdriver                                    
 from selenium.webdriver.common.by import By
 
 class BiocScraper(RScraper):
@@ -57,30 +59,11 @@ class BiocScraper(RScraper):
         '''
 
         # Make HTTP request to package page, the package must exist, otherwise an exception is raised
-        url = f'https://www.bioconductor.org/packages/release/bioc/html/{pkg_name}.html'
-        try:
-            response = self.request_handler.do_request(url)
-        except Exception as e:
-            logging.error(f'Error in the request to the package page: {e}')
-            return None
-
-        # Parse HTML
-        soup = BeautifulSoup(response.text, 'html.parser')
-
-        # # Get data
-        # # ---------
-        # data_p = soup.find('div', class_='do_not_rebase').findAll('p')
-        # # Get the package description
-        # description = clean_string(data_p[1].text)
-        # # Get the authors of the package
-        # authors = clean_string(data_p[2].text)
-        # authors.replace('Author: ', '')                     # We remove the word 'Author: ' from the authors        
-        # # Get the maintainer of the package
-        # maintainer = clean_string(data_p[3].text)
-        # maintainer = maintainer.replace('Maintainer: ', '') # We remove the word 'Maintainer: ' from the maintainer
-        # maintainer = maintainer.replace(' at ', '@')        # We change the ' at ' by the '@' of the maintainer
+        url = f'{self.BIOCONDUCTOR_PACKAGE_DATA_URL}{pkg_name}.html'
+        response = self.request_handler.do_request(url)
 
         # Get the data from the table
+        soup = BeautifulSoup(response.text, 'html.parser')
         table = soup.find('table', class_='details')
         rows = table.find_all('tr')
 
@@ -91,34 +74,22 @@ class BiocScraper(RScraper):
             cells = row.find_all('td')
             if len(cells) > 0:
                 if cells[0].text == 'Version':
-                    version = clean_string(cells[1].text.strip())
-                # elif cells[0].text == 'License':
-                #     license_ = clean_string(cells[1].text.strip())
+                    version = Util.clean_string(cells[1].text.strip())
                 elif cells[0].text == 'Depends':
-                    depends = clean_string(cells[1].text.strip())
+                    depends = Util.clean_string(cells[1].text.strip())
                     if depends != '':
                         dep_list = self.parse_dependencies(depends)
                 elif cells[0].text == 'Imports':
-                    imports = clean_string(cells[1].text.strip())
+                    imports = Util.clean_string(cells[1].text.strip())
                     if imports != '':
                         imp_list = self.parse_dependencies(imports)
                     
         # Return data
         return {
             'name': pkg_name,
-            # 'description': description,
             'version': version,
-            # 'publication_date': None,
-            # 'authors': authors,
-            # 'mantainer': maintainer,
-            # 'license': license_,
-            # 'requires_compilation': None,
-            # 'depends': depends,
-            # 'imports': imports,
             'url': url,
             'dependencies': dep_list + imp_list
-
-            # 'source': 'Bioconductor'
         }
 
     def get_list_of_packages(self) -> List[str]:

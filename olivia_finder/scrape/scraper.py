@@ -12,7 +12,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 
 import logging
 from abc import ABC, abstractmethod
-from package import Package
+from olivia_finder.package import Package
 import tqdm
 
 class Scraper(ABC):

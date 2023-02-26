@@ -12,19 +12,11 @@ Copyright (c) 2023 Daniel Alonso Báscones
 
 import re
 import logging
-from typing             import Dict, List, Tuple
-from abc                import ABC, abstractmethod
-
-# # Own modules
-# # Add the path to the root of the project
-# import sys, os
-# # if the path does not exist, add it
-# if not os.path.abspath('..') in sys.path:
-#     sys.path.append(os.path.abspath('..'))  
-
-from package import Package
-from scraper import Scraper
-from .requests.request_handler import RequestHandler
+from abc import ABC, abstractmethod
+from typing import Dict, List, Tuple
+from olivia_finder.package import Package
+from olivia_finder.scrape.scraper import Scraper
+from olivia_finder.scrape.requests.request_handler import RequestHandler
 
 class RScraper(Scraper, ABC):
     '''
