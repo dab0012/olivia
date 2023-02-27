@@ -41,7 +41,7 @@ class PypiScraper(Scraper):
 
         # Get the package page
         url = f'{self.PYPI_PACKAGE_DATA_URL}{pkg_name}/json'
-        response = self.request_handler.do_request(url)
+        url_, response = self.request_handler.do_request(url)
 
         # Check if the package exists
         if response.status_code == 404:
@@ -83,7 +83,7 @@ class PypiScraper(Scraper):
 
         '''
         # Get the HTML
-        response = self.request_handler.do_request(self.PYPI_PACKAGE_LIST_URL)
+        url_, response = self.request_handler.do_request(self.PYPI_PACKAGE_LIST_URL)
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # Get the list of packages

@@ -67,7 +67,7 @@ class CranScraper(RScraper):
         # Make HTTP request to package page, the package must exist, otherwise an exception is raised
         url = f'{self.CRAN_PACKAGE_DATA_URL}{pkg_name}'
         try:
-            response = self.request_handler.do_request(url)
+            url_, response = self.request_handler.do_request(url)
 
             # Check if the package exists
             if response.status_code == 404:

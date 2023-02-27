@@ -12,6 +12,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 
 import logging
 from abc import ABC, abstractmethod
+from multiprocessing import Pool
 from olivia_finder.package import Package
 import tqdm
 
@@ -39,6 +40,15 @@ class Scraper(ABC):
                 logging.error(f'Error scraping package {pkg}: {e}')
         return packages
 
+    # def build_list(self, pkg_list, num_processes=8):
+    #     with Pool(num_processes) as pool:
+    #         results = []
+    #         for pkg in tqdm.tqdm(pkg_list):
+    #             result = pool.apply_async(self.build, args=(pkg,))
+    #             results.append(result)
+    #         packages = [result.get() for result in results]
+    #     return packages
+
     def build(self, pkg_name):
         
         # Get package data from HTML scraping
@@ -48,15 +58,10 @@ class Scraper(ABC):
             logging.error(f'Error scraping package {pkg_name}')
             return None
 
-        # Set package attributes
-        package = Package(
-            repo=self.repo_name,
-            name=pkg_name,
-            version=pkg_data.get('version'),
-            url=pkg_data.get('url'),
-            dependencies=pkg_data.get('dependencies'),
-        )
-
-        # Return package
-        return package
+        return Package(
+                repo=self.repo_name,
+                name=pkg_name,
+                version=pkg_data.get('version'),
+                url=pkg_data.get('url'),
+                dependencies=pkg_data.get('dependencies'))
 

@@ -15,11 +15,17 @@ from olivia_finder.repo import Repo
 # from olivia_finder.scrape.bioconductor import BiocScraper
 from olivia_finder.scrape.pypi import PypiScraper
 from olivia_finder.scrape.requests.request_handler import RequestHandler
+from olivia_finder.scrape.requests.proxy_handler import NoProxy, ProxyHandler
+from olivia_finder.scrape.requests.useragent_handler import UserAgentHandler
+
 import olivia_finder.load_config as load_config
 import pickle
 
 # Define the request handler
-rh = RequestHandler(max_request=20)
+ph = ProxyHandler()
+uh = UserAgentHandler()
+rh = RequestHandler(ph, uh)
+
 
 # Scrape Bioconductor packages
 # ----------------------------------------------------------------------------

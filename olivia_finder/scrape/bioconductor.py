@@ -60,7 +60,7 @@ class BiocScraper(RScraper):
 
         # Make HTTP request to package page, the package must exist, otherwise an exception is raised
         url = f'{self.BIOCONDUCTOR_PACKAGE_DATA_URL}{pkg_name}.html'
-        response = self.request_handler.do_request(url)
+        url_, response = self.request_handler.do_request(url)
 
         # Get the data from the table
         soup = BeautifulSoup(response.text, 'html.parser')
