@@ -10,6 +10,8 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
+import requests
+import tqdm
 from olivia_finder.util import Util
 from bs4 import BeautifulSoup
 from typing import Dict, Union, List
@@ -39,6 +41,61 @@ class CranScraper(RScraper):
         '''
         super().__init__(rh, 'CRAN')
 
+    def parse_html(self, response: requests.Response) -> Dict[str, str]:
+        '''
+        Parse the HTML of a package page in the CRAN website
+
+        Parameters
+        ----------
+        response : requests.Response
+            Response of the HTTP request to the package page
+
+        Returns
+        -------
+        Dict[str, str]
+            Dictionary with the data of the package
+
+        '''
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Get package version
+        version = None
+        try:
+            d = soup.find('td', text='Version:').find_next_sibling('td').text
+            version = Util.clean_string(d)
+        except Exception:
+            logging.info(f'Package does not have a version')
+
+        # Get depends
+        depends = None
+        dep_list = []
+        try:
+            d = soup.find('td', text='Depends:').find_next_sibling('td').text
+            depends = Util.clean_string(d)
+            dep_list = self.parse_dependencies(depends)
+        except Exception:
+            logging.info(f'Package does not have dependencies')
+
+        # Get imports
+        imports = None
+        imp_list = []
+        try:
+            d = soup.find('td', text='Imports:').find_next_sibling('td').text
+            imports = Util.clean_string(d)
+            imp_list = self.parse_dependencies(imports)
+        except Exception:
+            logging.info(f'Package does not have imports')
+
+        # Build dictionary with package data
+        # we consider that dependencies and imports are the same level of importance
+        # so we add them to the same list
+        dependencies = [set(dep_list + imp_list)]
+
+        return {
+            'version': version,
+            'dependencies': dependencies
+        }
+
     def scrape_package(self, pkg_name) -> Union[Dict[str, str], None]:
         '''
         Get data from a CRAN packet.
@@ -67,7 +124,7 @@ class CranScraper(RScraper):
         # Make HTTP request to package page, the package must exist, otherwise an exception is raised
         url = f'{self.CRAN_PACKAGE_DATA_URL}{pkg_name}'
         try:
-            url_, response = self.request_handler.do_request(url)
+            response = self.request_handler.do_request(url)[1]
 
             # Check if the package exists
             if response.status_code == 404:
@@ -78,48 +135,67 @@ class CranScraper(RScraper):
             logging.error(f'Exception getting package {pkg_name} in CranScraper.__parse_pkg_data: {e}')
             return None
 
-        # Parse HTML
-        soup = BeautifulSoup(response.text, 'html.parser')
+        # Parse HTML (get data for version, depends and imports)
+        logging.info(f'Parsing HTML of package {pkg_name}')
+        data = self.parse_html(response)
 
-        # Get package version
-        version = None
-        try:
-            d = soup.find('td', text='Version:').find_next_sibling('td').text
-            version = Util.clean_string(d)
-        except Exception:
-            logging.info(f'Package {pkg_name} does not have a version')
-
-        # Get depends
-        depends = None
-        dep_list = []
-        try:
-            d = soup.find('td', text='Depends:').find_next_sibling('td').text
-            depends = Util.clean_string(d)
-            dep_list = self.parse_dependencies(depends)
-        except Exception:
-            logging.info(f'Package {pkg_name} does not have dependencies')
-
-        # Get imports
-        imports = None
-        imp_list = []
-        try:
-            d = soup.find('td', text='Imports:').find_next_sibling('td').text
-            imports = Util.clean_string(d)
-            imp_list = self.parse_dependencies(imports)
-        except Exception:
-            logging.info(f'Package {pkg_name} does not have imports')
-
-        # Build dictionary with package data
-        # we consider that dependencies and imports are the same level of importance
-        # so we add them to the same list
-        dependencies = [set(dep_list + imp_list)]
-
+        # Return as dictionary
         return {
             'name': pkg_name,
-            'version': version,
+            'version': data['version'],
             'url': url,
-            'dependencies': dependencies
+            'dependencies': data['dependencies'],
         }
+    
+    def scrape_package_list(self, pkg_list: list, progress_bar: tqdm.tqdm = None) -> list:
+        '''
+        Scrape a list of packages with the RequestHandler multiprocessing capabilities
+
+        Parameters
+        ----------
+        pkg_list : list
+            List of packages to scrape
+
+        Returns
+        -------
+        list
+            List of scraped packages
+
+        '''
+        # Get the list of requests to do
+        urls = []
+        for pkg_name in pkg_list:
+            urls.append(f'{self.CRAN_PACKAGE_DATA_URL}{pkg_name}')
+
+        # Make the requests
+        responses = self.request_handler.do_parallel_requests(urls, progress_bar)
+
+        # Parse the responses
+        packages = []
+        for key_url in responses.keys():
+            response = responses[key_url]
+  
+            if response.status_code == 404:
+                logging.error(f'Package {key_url} not found in Cran')
+                self.not_found.append(key_url)
+                continue
+
+            # Parse HTML
+            data = self.parse_html(response)
+
+            # compose the package
+            # Get the name of the package from the url
+            # "https://cran.r-project.org/package=" + "pkg_name"
+            pkg = {
+                'name': key_url[len(self.CRAN_PACKAGE_DATA_URL):],
+                'version': data['version'],
+                'url': key_url,
+                'dependencies': data['dependencies'],
+            }
+
+            packages.append(pkg)
+
+        return packages
 
     def get_list_of_packages(self) -> List[str]:
         '''
@@ -133,7 +209,7 @@ class CranScraper(RScraper):
         '''
 
         try:
-            response = self.request_handler.do_request(self.CRAN_PACKAGE_LIST_URL)
+            response = self.request_handler.do_request(self.CRAN_PACKAGE_LIST_URL)[1]
         except Exception as e:
             logging.error(f'Exception getting list of packages in CranScraper.get_list_of_packages: {e}')
             return []

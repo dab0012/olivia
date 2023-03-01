@@ -57,3 +57,7 @@ class RScraper(Scraper, ABC):
     @abstractmethod
     def scrape_package(self, pkg_name) -> Dict[str, str]:
         pass
+
+    @abstractmethod
+    def scrape_package_list(self, pkg_list, progress_bar) -> List[Package]:
+        pass
