@@ -26,50 +26,6 @@ class Repo:
         self.url = url
         self.packages = []
 
-    def scrape_package(self, pkg_name: str, scraper: Scraper) -> Package:
-        '''
-        Scrape a package from a repository
-
-        Parameters
-        ----------
-        pkg_name : str
-            Name of the package
-        scraper : Scraper
-            Scraper object
-
-        Returns
-        -------
-        Package
-            Package object
-        '''
-        return scraper.build(pkg_name)
-    
-    def scrape_packages(self, pkg_names: List[str], scraper: Scraper) -> List[Package]:
-        '''
-        Scrape a list of packages from a repository
-
-        Parameters
-        ----------
-        pkg_names : List[str]
-            List of package names
-        scraper : Scraper
-            Scraper object
-
-        Returns
-        -------
-        List[Package]
-            List of Package objects
-        '''
-
-        progress = tqdm.tqdm(total=len(pkg_names))
-        for pkg_name in pkg_names:
-            pkg = self.scrape_package(pkg_name, scraper)
-            if pkg:
-                self.packages.append(pkg)
-            progress.update(1)
-        progress.close()
-        return self.packages
-    
     def __str__(self):
         '''
         String representation of the object
@@ -95,9 +51,63 @@ class Repo:
     def __hash__(self):
         '''
         Hash function
+
+        Returns
+        -------
+        int
+            Hash value
         '''
         return hash(self.name + self.url)
     
+    def obtain_package(self, pkg_name: str, scraper: Scraper) -> Package:
+        '''
+        Scrape a package from a repository
+
+        Parameters
+        ----------
+        pkg_name : str
+            Name of the package
+        scraper : Scraper
+            Scraper object
+
+        Returns
+        -------
+        Package
+            Package object
+        '''
+        return scraper.build_obj(pkg_name)
+    
+    def obtain_packages(self, 
+                        pkg_names: List[str], scraper: Scraper, 
+                        extend_repo = False) -> List[Package]:
+        '''
+        Scrape a list of packages from a repository
+
+        Parameters
+        ----------
+        pkg_names : List[str]
+            List of package names
+        scraper : Scraper
+            Scraper object
+        extend_repo : bool, optional
+            If True, the packages are added to the repo data structure, by default False
+
+        Returns
+        -------
+        List[Package]
+            List of Package objects
+        '''
+        progress = tqdm.tqdm(total=len(pkg_names))
+        packages = []
+        packages = scraper.scrape_package_list(pkg_names, progress)
+        progress.close()
+
+        # Add packages to the repo
+        if extend_repo:
+            self.packages.extend(packages)
+
+        return packages
+
     def to_dict(self) -> dict:
         '''
         Convert the object to a dictionary
@@ -107,7 +117,6 @@ class Repo:
         dict
             Dictionary representation of the object
         '''
-
         d = {
             'name': self.name,
             'url': self.url,
@@ -137,23 +146,23 @@ class Repo:
             repo.packages.append(Package.load(package))
         return repo
 
-    def to_dependency_graph(self) -> pd.DataFrame:
+    def to_adj_list(self) -> pd.DataFrame:
         '''
-        Convert the object to a dependency graph
+        Convert the object to a adjacency list
 
         Returns
         -------
         pd.DataFrame
             Dependency graph
         '''
-
         rows = []
         for package in self.packages:
             for dependency in package.dependencies:
                 rows.append([package.name, dependency.name])
+                
         return pd.DataFrame(rows, columns=['source', 'target'])
     
-    def to_package_graph(self) -> pd.DataFrame:
+    def to_package_list(self) -> pd.DataFrame:
         '''
         Convert the object to a package graph
 
@@ -162,13 +171,12 @@ class Repo:
         pd.DataFrame
             Package graph
         '''
-
         rows = []
         for package in self.packages:
             rows.append([package.name, package.version, package.url])
         return pd.DataFrame(rows, columns=['name', 'version', 'url'])
     
-    def to_package_graph_with_dependencies(self) -> pd.DataFrame:
+    def to_full_adj_list(self) -> pd.DataFrame:
         '''
         Convert the object to a package graph with dependencies and versions
 
@@ -185,7 +193,7 @@ class Repo:
         return pd.DataFrame(rows, columns=['name', 'version', 'url', 'dependency', 'dependency_version'])
     
     @classmethod
-    def load_csv_package_graph(cls, path: str):
+    def load_full_adj_list_csv(cls, path: str):
         '''
         Load a package graph from a csv file
 
