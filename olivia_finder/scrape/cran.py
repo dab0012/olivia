@@ -110,11 +110,15 @@ class CranScraper(RScraper):
             logging.info(f'Package {pkg_name} does not have imports')
 
         # Build dictionary with package data
+        # we consider that dependencies and imports are the same level of importance
+        # so we add them to the same list
+        dependencies = [set(dep_list + imp_list)]
+
         return {
             'name': pkg_name,
             'version': version,
             'url': url,
-            'dependencies': dep_list + imp_list,
+            'dependencies': dependencies
         }
 
     def get_list_of_packages(self) -> List[str]:
