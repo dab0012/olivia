@@ -1,5 +1,4 @@
-import logging
-import requests
+import logging, requests, tqdm
 from typing import Tuple, Union
 from threading import Lock
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -15,8 +14,23 @@ class RequestHandler:
 
     def __init__(self, 
                  proxy_handler: ProxyHandler, 
-                 useragents_handler: UserAgentHandler, max_retry = 5, request_timeout=10):
+                 useragents_handler: UserAgentHandler, max_retry = 5, request_timeout=10, num_processes=8):
+        '''
+        Constructor of the class
 
+        Parameters
+        ----------
+        proxy_handler : ProxyHandler
+            ProxyHandler object to manage the proxies
+        useragents_handler : UserAgentHandler
+            UserAgentHandler object to manage the user agents
+        max_retry : int, optional
+            Maximum number of retries to do a request, by default 5
+        request_timeout : int, optional
+            Timeout of the requests, by default 10
+        num_processes : int, optional
+            Number of processes to do the requests, by default 8
+        '''
         self.proxy_handler = proxy_handler
         self.useragents_handler = useragents_handler
         self.lock = Lock()
@@ -24,11 +38,24 @@ class RequestHandler:
         self.current_useragent_index = 0
         self.max_retry = max_retry
         self.request_timeout = request_timeout
-    
-
+        self.num_processes = num_processes
     
     def do_request(self, url, retry_count=0) -> Union[Tuple[str, requests.Response], None]:
+        '''
+        Do a request to the given url
 
+        Parameters
+        ----------
+        url : str
+            URL to do the request
+        retry_count : int, optional
+            Number of retries, by default 0
+
+        Returns
+        -------
+        Union[Tuple[str, requests.Response], None]
+            Tuple with the url and the response if the request was successful, None otherwise
+        '''
         # Get proxy
         proxy = self.proxy_handler.get_next_proxy()
         if proxy is not None:
@@ -58,15 +85,29 @@ class RequestHandler:
                 logging.error(f"Max retry count reached for {url}")
                 return (url, None)
             
-    def do_parallel_requests(self, urls, num_processes):
+    def do_parallel_requests(self, urls, progress_bar: tqdm.tqdm = None):
+        '''
+        Do parallel requests to the given urls
 
+        Parameters
+        ----------
+        urls : List[str]
+            List of URLs to do the requests
+        progress_bar : tqdm.tqdm, optional
+            Progress bar to update, by default None, is passed as value, then the progress bar is updated
+
+        Returns
+        -------
+        Dict[str, requests.Response]
+            Dictionary with the url as key and the response as value
+        '''
         # Check if num_processes is greater than the number of urls and adjust accordingly
-        if num_processes > len(urls):
-            num_processes = len(urls)
+        if self.num_processes > len(urls):
+            self.num_processes = len(urls)
 
         # Do parallel requests
         results = {}
-        with ThreadPoolExecutor(max_workers=num_processes) as executor:
+        with ThreadPoolExecutor(max_workers=self.num_processes) as executor:
 
             # init desired results
             for url in urls:
@@ -81,6 +122,10 @@ class RequestHandler:
                 else:
                     with self.lock:
                         response = future.result()
+
+                        # Update progress bar
+                        if progress_bar is not None:
+                            progress_bar.update(1)
 
                         # Check if response is not None
                         if response is not None:

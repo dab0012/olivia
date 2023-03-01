@@ -16,6 +16,8 @@ from multiprocessing import Pool
 from olivia_finder.package import Package
 import tqdm
 
+from olivia_finder.scrape.requests.request_handler import RequestHandler
+
 class Scraper(ABC):
 
     """
@@ -23,33 +25,53 @@ class Scraper(ABC):
     """
 
     def __init__(self, rh, repo_name):
-        self.request_handler = rh
+        self.request_handler: RequestHandler = rh
         self.repo_name = repo_name
 
     @abstractmethod
     def scrape_package(self, pkg_name):
         pass
 
-    def build_list(self, pkg_list):
-        packages = []
-        for pkg in tqdm.tqdm(pkg_list):
-            try:
-                package = self.build(pkg)
-                packages.append(package)
-            except Exception as e:
-                logging.error(f'Error scraping package {pkg}: {e}')
-        return packages
+    @abstractmethod
+    def scrape_package_list(self, pkg_list, progress_bar):
+        pass
 
-    # def build_list(self, pkg_list, num_processes=8):
-    #     with Pool(num_processes) as pool:
-    #         results = []
-    #         for pkg in tqdm.tqdm(pkg_list):
-    #             result = pool.apply_async(self.build, args=(pkg,))
-    #             results.append(result)
-    #         packages = [result.get() for result in results]
-    #     return packages
+    def build_obj_list(self, pkg_list):
+        '''
+        Build a list of Package objects from a list of package names
+        
+        Parameters
+        ----------
+        pkg_list : list
+            List of package names
+                
+        Returns
+        -------
+        list
+            List of Package objects
+        '''
+        
+        pb = tqdm.tqdm(total=len(pkg_list), desc='Scraping packages')
+        package_list = self.scrape_package_list(pkg_list, progress_bar=pb)
+        pb.close()
 
-    def build(self, pkg_name):
+        return package_list
+
+
+    def build_obj(self, pkg_name):
+        '''
+        Build a Package object from a package name
+
+        Parameters
+        ----------
+        pkg_name : str
+            Name of the package
+
+        Returns
+        -------
+        Package
+            Package object
+        '''
         
         # Get package data from HTML scraping
         pkg_data = self.scrape_package(pkg_name)
