@@ -98,13 +98,12 @@ class Repo:
             List of Package objects
         '''
         progress = tqdm.tqdm(total=len(pkg_names))
-        packages = []
-        packages = scraper.scrape_package_list(pkg_names, progress)
+        packages = scraper.build_obj_list(pkg_names, progress)
         progress.close()
 
         # Add packages to the repo
         if extend_repo:
-            self.packages.extend(packages)
+            self.packages += packages
 
         return packages
 
@@ -160,7 +159,7 @@ class Repo:
             for dependency in package.dependencies:
                 rows.append([package.name, dependency.name])
                 
-        return pd.DataFrame(rows, columns=['source', 'target'])
+        return pd.DataFrame(rows, columns=['name', 'dependency'])
     
     def to_package_list(self) -> pd.DataFrame:
         '''
@@ -188,8 +187,12 @@ class Repo:
 
         rows = []
         for package in self.packages:
-            for dependency in package.dependencies:
-                rows.append([package.name, package.version, package.url, dependency.name, dependency.version])
+            if package.dependencies:
+                for dependency in package.dependencies:
+                    rows.append([package.name, package.version, package.url, dependency.name, dependency.version])
+            else:
+                rows.append([package.name, package.version, package.url, None, None])
+
         return pd.DataFrame(rows, columns=['name', 'version', 'url', 'dependency', 'dependency_version'])
     
     @classmethod

@@ -10,10 +10,9 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
-import logging
+import logging, requests
 from typing import Dict, Union, List
 from bs4 import BeautifulSoup
-from olivia_finder.package import Package
 from olivia_finder.util import Util
 from olivia_finder.scrape.r import RScraper                                         
 from olivia_finder.scrape.requests.request_handler import RequestHandler
@@ -34,116 +33,10 @@ class BiocScraper(RScraper):
     def __init__(self, request_handler: RequestHandler) -> None:
         super().__init__(request_handler, 'Bioconductor')
 
-    def parse_html(self, response: str) -> Dict[str, str]:
-        # Get the data from the table
-        soup = BeautifulSoup(response.text, 'html.parser')
-        table = soup.find('table', class_='details')
-        rows = table.find_all('tr')
-
-        # For each row, we get the cells if they are of interest
-        dep_list = []
-        imp_list = []
-        for row in rows:
-            cells = row.find_all('td')
-            if len(cells) > 0:
-                if cells[0].text == 'Version':
-                    version = Util.clean_string(cells[1].text.strip())
-                elif cells[0].text == 'Depends':
-                    depends = Util.clean_string(cells[1].text.strip())
-                    if depends != '':
-                        dep_list = self.parse_dependencies(depends)
-                elif cells[0].text == 'Imports':
-                    imports = Util.clean_string(cells[1].text.strip())
-                    if imports != '':
-                        imp_list = self.parse_dependencies(imports)
-
-        # Return the data
-        return {
-            'version': version,
-            'dependencies': [set(dep_list + imp_list)]
-        }
-
-    def scrape_package(self, pkg_name) -> Union[Dict[str, str], None]:
-        '''
-        Get data from a Bioconductor packet.
-        It's obtained from the package page in the Bioconductor website.
-        This function has to be called from the get_pkg_data function.
-        Obtain the data through HTML scraping on the page, in addition, if any of the optional data is not found, the rest of the data is continued
-
-        Parameters
-        ----------
-        pkg_name : str
-            Name of the package
-
-        Returns
-        -------
-        Dict[str, str]
-            Dictionary with the data of the package
-
-        Raises
-        ------
-        Exception
-            If the package is not found or any of the optional data is not found
-            If any of the optional data is not found, the scraper will continue handling the rest of the data
-
-        '''
-
-        # Make HTTP request to package page, the package must exist, otherwise an exception is raised
-        url = f'{self.BIOCONDUCTOR_PACKAGE_DATA_URL}{pkg_name}.html'
-        response = self.request_handler.do_request(url)[1]
-
-        # Parse the response
-        response_data = self.parse_html(response)
-                    
-        # Return data
-        return {
-            'name': pkg_name,
-            'version': response_data['version'],
-            'url': url,
-            'dependencies': response_data['dependencies']
-        }
-    
-    def scrape_package_list(self, pkg_list, progress_bar) -> List[Package]:
-        '''
-        Get data from a list of Bioconductor packets.
-        It's obtained from the package page in the Bioconductor website.
-        This function has to be called from the get_pkg_data function.
-        Obtain the data through HTML scraping on the page, in addition, if any of the optional data is not found, the rest of the data is continued
-
-        Parameters
-        ----------
-        pkg_list : List[str]
-            List of packages
-        progress_bar : tqdm
-            Progress bar
-
-        Returns
-        -------
-        List[Package]
-            List of packages
-
-        Raises
-        ------
-        Exception
-            If the package is not found or any of the optional data is not found
-            If any of the optional data is not found, the scraper will continue handling the rest of the data
-
-        '''
-        # # Get the list of requests to do
-        # urls = []
-        # for pkg_name in pkg_list:
-        #     url = f'{self.BIOCONDUCTOR_PACKAGE_DATA_URL}{pkg_name}.html'
-        #     urls.append((url, pkg_name))
-
-        # # Do the requests with the request handler parallelized
-        # responses = self.request_handler.do_parallel_requests(urls, urls, progress_bar=progress_bar)
-
-        # # Parse the responses
-        # pkg_list = []
-        # for response in responses:
-        pass
-
-    def get_list_of_packages(self) -> List[str]:
+    """
+    Implementation of Scraper.obtain_package_names()
+    """
+    def obtain_package_names(self) -> List[str]:
         '''
         Get the list of packages from the Bioconductor website
 
@@ -196,3 +89,126 @@ class BiocScraper(RScraper):
             return None
 
         return bioc_packages
+
+    """
+    Implementation of Scraper.build_urls()
+    """
+    def build_urls(self, pckg_names: list) -> List[str]:
+        '''
+        Build the URLs to scrape the data of the packages
+
+        Parameters
+        ----------
+        pckg_names : list
+            List of package names
+
+        Returns
+        -------
+        list[str]
+            List of URLs to scrape the data of the packages
+        '''
+
+        # Build the URLs
+        urls = []
+        for pckg_name in pckg_names:
+            urls.append(f'{self.BIOCONDUCTOR_PACKAGE_DATA_URL}{pckg_name}.html')
+
+        return urls
+
+    """
+    Implementation of Scraper.parser()
+    """
+    def parser(self, response: requests.Response) -> Dict[str, str]:
+        '''
+        Parse the response from the Bioconductor website
+        It's obtained from the list of packages in the Bioconductor website
+
+        Parameters
+        ----------
+        response : requests.Response
+            Response from the Bioconductor website
+
+        Returns
+        -------
+        Dict[str, str]
+            Dictionary with the data of the package
+
+        '''
+        
+        # Get the data from the table
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        name = soup.find('h1').text.strip()
+        url = response.url
+
+        table = soup.find('table', class_='details')
+        rows = table.find_all('tr')
+
+        # For each row, we get the cells if they are of interest
+        dep_list = []
+        imp_list = []
+        for row in rows:
+            cells = row.find_all('td')
+            if len(cells) > 0:
+                if cells[0].text == 'Version':
+                    version = Util.clean_string(cells[1].text.strip())
+                elif cells[0].text == 'Depends':
+                    depends = Util.clean_string(cells[1].text.strip())
+                    if depends != '':
+                        dep_list = self.parse_dependencies(depends)
+                elif cells[0].text == 'Imports':
+                    imports = Util.clean_string(cells[1].text.strip())
+                    if imports != '':
+                        imp_list = self.parse_dependencies(imports)
+
+        # Return the data
+        return {
+            'name': name,
+            'version': version,
+            'dependencies': list(set(dep_list + imp_list)),
+            'url': url
+        }
+
+    """
+    Implementation of Scraper.scrape_package_data()
+    """
+    def scrape_package_data(self, pkg_name) -> Union[Dict[str, str], None]:
+        '''
+        Get data from a Bioconductor packet.
+        It's obtained from the package page in the Bioconductor website.
+        This function has to be called from the get_pkg_data function.
+        Obtain the data through HTML scraping on the page, in addition, if any of the optional data is not found, the rest of the data is continued
+
+        Parameters
+        ----------
+        pkg_name : str
+            Name of the package
+
+        Returns
+        -------
+        Dict[str, str]
+            Dictionary with the data of the package
+
+        Raises
+        ------
+        Exception
+            If the package is not found or any of the optional data is not found
+            If any of the optional data is not found, the scraper will continue handling the rest of the data
+
+        '''
+
+        # Make HTTP request to package page, the package must exist, otherwise an exception is raised
+        url = f'{self.BIOCONDUCTOR_PACKAGE_DATA_URL}{pkg_name}.html'
+        response = self.request_handler.do_request(url)[1]
+
+        # Parse the response
+        response_data = self.parser(response)
+                    
+        # Return data
+        return {
+            'name': pkg_name,
+            'version': response_data['version'],
+            'url': url,
+            'dependencies': response_data['dependencies']
+        }
+    

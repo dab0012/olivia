@@ -20,7 +20,7 @@ from olivia_finder.scrape.requests.request_handler import RequestHandler
 
 class RScraper(Scraper, ABC):
     '''
-    Abstract class that implements the methods for scraping R repositories
+    Abstract class that implements the common methods for scraping R repositories
     '''
 
     def __init__(self, rh: RequestHandler, repo) -> None:
@@ -55,9 +55,17 @@ class RScraper(Scraper, ABC):
         return dependencies
 
     @abstractmethod
-    def scrape_package(self, pkg_name) -> Dict[str, str]:
+    def obtain_package_names(self) -> List[Dict[str, str]]:
         pass
 
     @abstractmethod
-    def scrape_package_list(self, pkg_list, progress_bar) -> List[Package]:
+    def build_urls(self, pckg_names: List[str]) -> List[str]:
+        pass
+
+    @abstractmethod
+    def parser(self, response) -> Dict[str, str]:
+        pass
+
+    @abstractmethod
+    def scrape_package_data(self, pkg_name) -> Dict[str, str]:
         pass

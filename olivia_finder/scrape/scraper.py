@@ -10,12 +10,10 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
-import logging
+import logging, requests, tqdm
+from typing import List
 from abc import ABC, abstractmethod
-from multiprocessing import Pool
 from olivia_finder.package import Package
-import tqdm
-
 from olivia_finder.scrape.requests.request_handler import RequestHandler
 
 class Scraper(ABC):
@@ -27,38 +25,25 @@ class Scraper(ABC):
     def __init__(self, rh, repo_name):
         self.request_handler: RequestHandler = rh
         self.repo_name = repo_name
+        self.not_found = []
 
     @abstractmethod
-    def scrape_package(self, pkg_name):
+    def obtain_package_names(self) -> List[dict]:
         pass
 
     @abstractmethod
-    def scrape_package_list(self, pkg_list, progress_bar):
+    def build_urls(self, pckg_names: list) -> List[str]:
         pass
 
-    def build_obj_list(self, pkg_list):
-        '''
-        Build a list of Package objects from a list of package names
-        
-        Parameters
-        ----------
-        pkg_list : list
-            List of package names
-                
-        Returns
-        -------
-        list
-            List of Package objects
-        '''
-        
-        pb = tqdm.tqdm(total=len(pkg_list), desc='Scraping packages')
-        package_list = self.scrape_package_list(pkg_list, progress_bar=pb)
-        pb.close()
+    @abstractmethod
+    def parser(self, response: requests.Response) -> dict:
+        pass
 
-        return package_list
+    @abstractmethod
+    def scrape_package_data(self, pkg_name) -> dict:
+        pass
 
-
-    def build_obj(self, pkg_name):
+    def build_obj(self, pkg_name) -> Package:
         '''
         Build a Package object from a package name
 
@@ -74,7 +59,7 @@ class Scraper(ABC):
         '''
         
         # Get package data from HTML scraping
-        pkg_data = self.scrape_package(pkg_name)
+        pkg_data = self.scrape_package_data(pkg_name)
 
         if not pkg_data:
             logging.error(f'Error scraping package {pkg_name}')
@@ -87,3 +72,50 @@ class Scraper(ABC):
                 url=pkg_data.get('url'),
                 dependencies=pkg_data.get('dependencies'))
 
+    def build_obj_list(self, pckg_names: list, pb: tqdm.tqdm) -> list:
+        '''
+        Build a list of Package objects from a list of urls
+
+        Parameters
+        ----------
+        urls : list
+            List of urls to scrape
+        parse_source : function
+            Function to parse the source of the url
+
+        Returns
+        -------
+        list
+            List of Package objects
+        '''
+
+        # Build the urls
+        urls = self.build_urls(pckg_names)
+
+        # Do the requests with the RequestHandler parallelly
+        responses = self.request_handler.do_parallel_requests(urls, progress_bar=pb)
+
+        # Parse the responses
+        packages = []
+        for key_url in responses.keys():
+            response = responses[key_url]
+
+            # Check if the package exists
+            if response.status_code == 404:
+                logging.error(f'Package {key_url} not found')
+                continue
+
+            # Parse the soruce data
+            package_data = self.parser(response)
+
+            # Build the Package object
+            p = Package(
+                repo=self.repo_name,
+                name=package_data.get('name'),
+                version=package_data.get('version'),
+                url=package_data.get('url'),
+                dependencies=package_data.get('dependencies'))
+
+            packages.append(p)
+
+        return packages

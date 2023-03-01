@@ -1,18 +1,18 @@
-from __future__ import annotations
-from abc import ABC
 import logging 
 from olivia_finder.scrape.requests.proxy_builder import NoProxy, ProxyBuilder
 
-class ProxyHandler(ABC):
+class ProxyHandler():
     '''Handles proxy rotation and proxy usage'''
 
     # Contains a list of tuples (proxy, uses)
     proxy_uses = {}
     proxy_list = []
-
-    def __init__(self, proxy_builder: ProxyBuilder = NoProxy(), proxy_max_uses=20):
+    
+    def __init__(self, proxy_builder: ProxyBuilder = None, proxy_max_uses=20):
         self.proxy_max_uses = proxy_max_uses
         self.proxy_builder = proxy_builder
+        if proxy_builder is None:
+            self.proxy_builder = NoProxy()
         self.proxy_list = self.proxy_builder.get_proxies()
 
     def get_next_proxy(self):

@@ -68,7 +68,7 @@ class RequestHandler:
         try:
             # if response == OK, return response
             with requests.Session() as session:
-                response = session.get(url, headers=headers, proxies={'http': proxy, 'https': proxy}, timeout=self.request_timeout)
+                response = session.get(url, headers=headers, proxies={'http': proxy}, timeout=self.request_timeout)
             return (url, response)
         
         except Exception as e:
