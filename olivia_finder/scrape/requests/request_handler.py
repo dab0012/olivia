@@ -14,7 +14,7 @@ class RequestHandler:
 
     def __init__(self, 
                  proxy_handler: ProxyHandler, 
-                 useragents_handler: UserAgentHandler, max_retry = 5, request_timeout=10, num_processes=8):
+                 useragents_handler: UserAgentHandler, max_retry = 5, request_timeout=10, num_processes=32):
         '''
         Constructor of the class
 
