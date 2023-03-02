@@ -57,7 +57,7 @@ class Repo:
         int
             Hash value
         '''
-        return hash(self.name + self.url)
+        return hash(self.name + self.url + len(self.packages))
     
     def obtain_package(self, pkg_name: str, scraper: Scraper) -> Package:
         '''

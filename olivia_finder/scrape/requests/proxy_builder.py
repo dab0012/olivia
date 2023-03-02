@@ -5,7 +5,7 @@ import requests
 class ProxyBuilder(ABC):
     '''Builds a list of proxies'''
 
-    def __init__(self, proxy_list_timeout=10):
+    def __init__(self, proxy_list_timeout=20):
         self.proxy_list_timeout = proxy_list_timeout
         
     @abstractmethod
