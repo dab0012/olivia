@@ -72,17 +72,11 @@ class RequestHandler:
             return (url, response)
         
         except Exception as e:
-
-            # if response != OK, retry request if retry_count < max_retry
-            logging.error(f"Error: {e}")
-            logging.error(f"Proxy: {proxy}")
-            logging.error(f"Useragent: {headers['User-Agent']}")
-            logging.info(f"Retrying request: {url}")
-
+            logging.debug(f"Exception doing request to {url}: {e}") 
             if retry_count < self.max_retry:
                 return self.do_request(url, retry_count=retry_count+1)
             else:
-                logging.error(f"Max retry count reached for {url}")
+                logging.debug(f"Max retry count reached for {url}")
                 return (url, None)
             
     def do_parallel_requests(self, urls, progress_bar: tqdm.tqdm = None):
@@ -118,7 +112,7 @@ class RequestHandler:
             futures = [executor.submit(self.do_request, url) for url in urls]
             for future in as_completed(futures):
                 if isinstance(future.result(), Exception):
-                    logging.error(f"Error: {future.result()}")
+                    logging.debug('Exception in thread: %s', future.result())
                 else:
                     with self.lock:
                         response = future.result()

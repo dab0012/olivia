@@ -22,7 +22,7 @@ class UserAgentHandler():
                 self.useragents = f.read().split('\n')
                 loaded_with_file = True
         except FileNotFoundError:
-            logging.info('Useragents file not found. Loading from web.')
+            logging.debug('Useragents file not found. Loading from  API...')
 
         # Load useragents from web
         if not loaded_with_file:
@@ -60,7 +60,7 @@ class UserAgentHandler():
         try:
             user_agents_request = requests.get(self.USERAGENTSTRING_URL).text
         except Exception as e:
-            logging.warning("Error getting user agents (RequestHandler.__obtain_user_agents): ", e)
+            logging.debug("Error getting user agents (RequestHandler.__obtain_user_agents): ", e)
             return []
         
         # Parse the HTML
@@ -76,10 +76,9 @@ class UserAgentHandler():
                 ua_list.append(ua)
 
             return ua_list
-
         
         except Exception as e:
-            logging.warning("Error parsing user agents (RequestHandler.load_from_API): ", e)
+            logging.debug("Error parsing user agents (RequestHandler.load_from_API): ", e)
             return []
 
 

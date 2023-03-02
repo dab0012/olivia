@@ -19,18 +19,16 @@ class ProxyHandler():
 
         # Check if proxies are empty and get new ones
         if len(self.proxy_list) == 0:
-            logging.info("No proxies available, trying to get new ones")
             self.proxy_list = self.proxy_builder.get_proxies()
 
         # Check if proxies are still empty
         if len(self.proxy_list) == 0:
-            logging.warning("No proxies available, proceeding without proxies")
             return None
 
         # proxy rotation
         proxy = self.proxy_list.pop(0)
         self.proxy_list.append(proxy)
-        logging.info(f"Proxy {proxy} selected")
+        logging.debug(f"Proxy {proxy} selected")
 
         # Handle proxy usage lifetime
         self.handle_lifetime(proxy)
@@ -46,5 +44,4 @@ class ProxyHandler():
         # remove proxy if it has been used more than the limit
         if self.proxy_uses[proxy] > self.proxy_max_uses:
             del self.proxy_uses[proxy]
-            logging.info(f"Proxy {proxy} removed from list: max uses reached")
-  
+            logging.debug(f"Proxy {proxy} removed from list, used {self.proxy_uses[proxy]} times")
