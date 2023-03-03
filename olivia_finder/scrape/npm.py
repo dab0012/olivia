@@ -173,8 +173,8 @@ class NpmScraper(Scraper):
         if start_key is None:
             params = {'limit': size}
         else:
-            start_key = "\"" + start_key + "\""
-            params = {'startkey': start_key, 'limit': size}
+            encode_start_key = "\"" + start_key + "\""
+            params = {'startkey': encode_start_key, 'limit': size}
 
         # Retry the request if it fails
         response = self.request_handler.do_request(self.NPM_PACKAGE_LIST_URL, params=params, retry_count=retries)[1]
@@ -200,9 +200,9 @@ class NpmScraper(Scraper):
             logging.error(f'Error: {data["error"]}')
             logging.error(f'Retrying, times left: {retries}')
             return self.__download_page(start_key, progress_bar, size, retries-1)
-        
-        progress_bar.update(1)
-        return data['rows']
+        else:
+            progress_bar.update(1)
+            return data['rows']
     
     def build_urls(self, pckg_names: List[str]) -> List[str]:
         '''
