@@ -14,7 +14,7 @@ class RequestHandler:
 
     def __init__(self, 
                  proxy_handler: ProxyHandler, 
-                 useragents_handler: UserAgentHandler, max_retry = 5, request_timeout=10, num_processes=32):
+                 useragents_handler: UserAgentHandler, max_retry = 5, request_timeout=15, num_processes=32):
         '''
         Constructor of the class
 
@@ -40,7 +40,7 @@ class RequestHandler:
         self.request_timeout = request_timeout
         self.num_processes = num_processes
     
-    def do_request(self, url, retry_count=0) -> Union[Tuple[str, requests.Response], None]:
+    def do_request(self, url, params = None, retry_count=0) -> Union[Tuple[str, requests.Response], None]:
         '''
         Do a request to the given url
 
@@ -68,7 +68,7 @@ class RequestHandler:
         try:
             # if response == OK, return response
             with requests.Session() as session:
-                response = session.get(url, headers=headers, proxies={'http': proxy}, timeout=self.request_timeout)
+                response = session.get(url, headers=headers, proxies={'http': proxy}, timeout=self.request_timeout, params=params)
             return (url, response)
         
         except Exception as e:

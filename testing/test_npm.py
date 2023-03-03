@@ -12,18 +12,32 @@ from olivia_finder.scrape.npm import NpmScraper
 from olivia_finder.scrape.requests.request_handler import RequestHandler
 from olivia_finder.scrape.requests.useragent_handler import UserAgentHandler
 from olivia_finder.scrape.requests.proxy_builder import GeonodeProxy
+from olivia_finder.config import LoggerConfiguration
+
+# Configure the logger
+LoggerConfiguration('testing/npm.log', 'DEBUG').aply_config()
+
 
 npm = Repo('NPM', 'https://www.npmjs.com/package/')
+
 # Define the request handler
-ph = ProxyHandler(GeonodeProxy())
-uh = UserAgentHandler()
-rh = RequestHandler(ph, uh)
+rh = RequestHandler(
+    proxy_handler           = ProxyHandler(GeonodeProxy()), 
+    useragents_handler      = UserAgentHandler(),
+    request_timeout         = 30
+)
 
 # Initialize cran scraper
 ns = NpmScraper(rh)
 
 # Get the list of packages
 packages = ns.obtain_package_names()
+
+# Get the startkeys for future implementations and save them
+startkeys = ns.GET_NAMES_KEYS
+with open('testing/npm_startkeys.pkl', 'wb') as f:
+    pickle.dump(startkeys, f)
+
 
 # Save the list of packages
 print('Saving package names...')

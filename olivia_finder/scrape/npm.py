@@ -40,6 +40,12 @@ class NpmScraper(Scraper):
 
         super().__init__(rh, 'NPM')
 
+        # List of keys to get the list of packages when downloading the pages
+        # This is an auxiliary list to avoid downloading the same page twice while the implementation is not finished
+        # It will be removed in the future
+        self.GET_NAMES_KEYS = []
+
+
     # def obtain_package_names(self, page_size=2000, num_threads=32) -> List[dict]:
     #     '''
     #     Obtain the names of the packages in the repository
@@ -95,21 +101,42 @@ class NpmScraper(Scraper):
     def obtain_package_names(self, page_size=100) -> List[dict]:
 
         # Get the total number of packages
-        response = requests.get(self.NPM_PACKAGE_REGISTRY_URL)
+        # response = requests.get(self.NPM_PACKAGE_REGISTRY_URL)
+        response = self.request_handler.do_request(self.NPM_PACKAGE_REGISTRY_URL)[1]
         total_packages = response.json()['doc_count']
 
-        # Get the list of packages in chunks of 100 without using threads
-        # -----------------------------------------
-
+        # Calculate the number of pages (chunks)
         num_pages = (total_packages // page_size) + 1
         progress_bar = tqdm(total=num_pages)
         last_key = None
+
+        logging.info('Descargando paquetes de NPM')
+        logging.info(f'Número de paquetes: {total_packages}')
+        logging.info(f'Número de páginas: {num_pages}')
+        logging.info(f'Tamaño de página: {page_size}')
+
 
         pages = []
         for i in range(num_pages):
             page = self.__download_page(last_key, progress_bar, page_size)
             pages.append(page)
+            logging.info(f'Downloaded page {i} of {num_pages}')
+
+            # get the last key of the page for the next iter
             last_key = page[-1]['id']
+        
+
+            # -----------------------------------------
+            # Store the chunk first key in the list of keys
+            # This is an auxiliary list to avoid downloading the same page twice while the implementation is not finished
+            # It will be removed in the future
+
+            first_key = page[0]['id']
+            self.GET_NAMES_KEYS.append(first_key)
+            logging.debug(f'Added key {first_key} to the list of keys')
+
+            # -----------------------------------------
+
             progress_bar.update(1)
         
         # process the pages
@@ -121,7 +148,7 @@ class NpmScraper(Scraper):
         return package_names
 
     # Function to download a page of documents
-    def __download_page(self, start_key, progress_bar:tqdm, size, retries=5):
+    def __download_page(self, start_key, progress_bar:tqdm, size=1000, retries=5):
         '''
         Download a page of documents
 
@@ -134,6 +161,7 @@ class NpmScraper(Scraper):
         size : int
             Size of the page
         retries : int, optional
+            Number of retries, by default 5
 
         Returns
         -------
@@ -141,9 +169,6 @@ class NpmScraper(Scraper):
             List of documents
         '''
 
-        # Try to do the request
-        response = None
-        
         # Fix for the first page
         if start_key is None:
             params = {'limit': size}
@@ -151,32 +176,33 @@ class NpmScraper(Scraper):
             start_key = "\"" + start_key + "\""
             params = {'startkey': start_key, 'limit': size}
 
-        try:
-            response = requests.get(self.NPM_PACKAGE_LIST_URL, params=params)
-        except Exception as e:
-            print(e)
-            for i in range(5):
-                try:
-                    response = requests.get(self.NPM_PACKAGE_LIST_URL, params=params)
-                    break
-                except Exception as e:
-                    print(e)
-                    continue
-
+        # Retry the request if it fails
+        response = self.request_handler.do_request(self.NPM_PACKAGE_LIST_URL, params=params, retry_count=retries)[1]
+   
         # If the response is None, return an empty list
         if response is None:
             print('Error getting response')
             return []
                         
         # If the response returns an error, return an empty list
-        data = response.json()
+        try:
+            data = response.json()
+        except Exception as e:
+            logging.error(f'EXCEPTION at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
+            logging.error(f'Error parsing JSON: {e}')
+            logging.error(f'Response: {response.text}')
+            logging.error(f'Params: {params}')
+            logging.error(f'Retrying, times left: {retries}')
+            return self.__download_page(start_key, progress_bar, size, retries-1)
+            
         if data.keys() == {'error', 'reason'}:
-            print(data['reason'])
-            return []
+            logging.error(f'Server error at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
+            logging.error(f'Error: {data["error"]}')
+            logging.error(f'Retrying, times left: {retries}')
+            return self.__download_page(start_key, progress_bar, size, retries-1)
         
         progress_bar.update(1)
         return data['rows']
-
     
     def build_urls(self, pckg_names: List[str]) -> List[str]:
         '''
