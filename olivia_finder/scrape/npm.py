@@ -40,45 +40,79 @@ class NpmScraper(Scraper):
 
         super().__init__(rh, 'NPM')
 
-    def obtain_package_names(self, page_size=2000, num_threads=32) -> List[dict]:
-        '''
-        Obtain the names of the packages in the repository
+    # def obtain_package_names(self, page_size=2000, num_threads=32) -> List[dict]:
+    #     '''
+    #     Obtain the names of the packages in the repository
 
-        Returns
-        -------
-        List[dict]
-            List of dictionaries with the name of the package and the url
-        '''
+    #     Returns
+    #     -------
+    #     List[dict]
+    #         List of dictionaries with the name of the package and the url
+    #     '''
+
+    #     # Get the total number of packages
+    #     response = requests.get(self.NPM_PACKAGE_REGISTRY_URL)
+    #     total_packages = response.json()['doc_count']
+
+    #     # Get the list of packages
+    #     # ------------------------
+
+    #     # Build the list of start keys
+    #     start_keys = []
+    #     iters = (total_packages // page_size) + 1
+    #     for i in range(iters):
+    #         start_keys.append(str(i))
+    #         i += page_size
+            
+    #     # show progress of download chunks
+    #     progress_bar = tqdm(total=len(start_keys))
+    #     progress_bar.set_description('Descargando paquetes')
+
+    #     func = partial(
+    #         self.__download_page,           # function to execute
+    #         progress_bar=progress_bar,      # progress bar
+    #     )
+
+    #     pages = []
+    #     with ThreadPoolExecutor(max_workers=num_threads) as executor:
+    #         pages = list(executor.map(func, start_keys))
+    #         logging.info('Descargadas todos los chunks de paquetes de NPM')
+
+    #     # Get the complete list of package names        
+    #     package_names = []
+    #     for page in pages:
+
+    #         # If the page is empty
+    #         if not page:
+    #             logging.debug('Chunk de paquetes de NPM vacío')
+    #             continue
+
+    #         for row in page:
+    #             package_names.append(row['id'])
+
+    #     return package_names
+
+    def obtain_package_names(self, page_size=100) -> List[dict]:
 
         # Get the total number of packages
         response = requests.get(self.NPM_PACKAGE_REGISTRY_URL)
         total_packages = response.json()['doc_count']
 
-        # Get the list of packages
-        # ------------------------
+        # Get the list of packages in chunks of 100 without using threads
+        # -----------------------------------------
 
-        # Build the list of start keys
-        start_keys = []
-        iters = (total_packages // page_size) + 1
-        for i in range(iters):
-            start_keys.append(str(i))
-            i += page_size
-            
-        # show progress of download chunks
-        progress_bar = tqdm(total=len(start_keys))
-        progress_bar.set_description('Descargando paquetes')
-
-        func = partial(
-            self.__download_page,           # function to execute
-            progress_bar=progress_bar,      # progress bar
-        )
+        num_pages = (total_packages // page_size) + 1
+        progress_bar = tqdm(total=num_pages)
+        last_key = None
 
         pages = []
-        with ThreadPoolExecutor(max_workers=num_threads) as executor:
-            pages = list(executor.map(func, start_keys))
-            logging.info('Descargadas todos los chunks de paquetes de NPM')
-
-        # Get the complete list of package names        
+        for i in range(num_pages):
+            page = self.__download_page(last_key, progress_bar, page_size)
+            pages.append(page)
+            last_key = page[-1]['id']
+            progress_bar.update(1)
+        
+        # process the pages
         package_names = []
         for page in pages:
             for row in page:
@@ -87,14 +121,40 @@ class NpmScraper(Scraper):
         return package_names
 
     # Function to download a page of documents
-    def __download_page(self, start_key, progress_bar:tqdm, size=2000):
-        params = {'limit': size, 'start_key': start_key}
+    def __download_page(self, start_key, progress_bar:tqdm, size, retries=5):
+        '''
+        Download a page of documents
+
+        Parameters
+        ----------
+        start_key : str
+            Start key of the page
+        progress_bar : tqdm
+            Progress bar to show the progress of the download
+        size : int
+            Size of the page
+        retries : int, optional
+
+        Returns
+        -------
+        List[dict]
+            List of documents
+        '''
+
+        # Try to do the request
+        response = None
         
+        # Fix for the first page
+        if start_key is None:
+            params = {'limit': size}
+        else:
+            start_key = "\"" + start_key + "\""
+            params = {'startkey': start_key, 'limit': size}
+
         try:
             response = requests.get(self.NPM_PACKAGE_LIST_URL, params=params)
         except Exception as e:
             print(e)
-            # If there is an error retry the request 5 more times
             for i in range(5):
                 try:
                     response = requests.get(self.NPM_PACKAGE_LIST_URL, params=params)
@@ -102,9 +162,21 @@ class NpmScraper(Scraper):
                 except Exception as e:
                     print(e)
                     continue
+
+        # If the response is None, return an empty list
+        if response is None:
+            print('Error getting response')
+            return []
                         
+        # If the response returns an error, return an empty list
+        data = response.json()
+        if data.keys() == {'error', 'reason'}:
+            print(data['reason'])
+            return []
+        
         progress_bar.update(1)
-        return response.json()['rows']
+        return data['rows']
+
     
     def build_urls(self, pckg_names: List[str]) -> List[str]:
         '''
