@@ -10,12 +10,13 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
-import logging, requests
+import requests
 from typing import Dict, Union
 from bs4 import BeautifulSoup
 from olivia_finder.requests.request_handler import RequestHandler
 from olivia_finder.scraping.scraper import Scraper
 from olivia_finder.package import Package
+from olivia_finder.util import UtilLogger
 
 class PypiScraper(Scraper):
     ''' 
@@ -24,8 +25,8 @@ class PypiScraper(Scraper):
 
     # Class variables
     PYPI_PACKAGE_LIST_URL = "https://pypi.org/simple/"
-    PYPI_PACKAGE_DATA_URL = "https://pypi.org/pypi/"    # PYPI_PACKAGE_DATA_URL = "https://pypi.org/pypi/{package_name}/json"
-
+    PYPI_PACKAGE_DATA_URL = "https://pypi.org/pypi/"    
+    
     def __init__(self, rh: RequestHandler) -> None:
         '''
         Constructor of the class
@@ -51,7 +52,7 @@ class PypiScraper(Scraper):
             List of packages
 
         '''
-        # Get the HTML
+        # Get the HTML of the page
         response = self.request_handler.do_request(self.PYPI_PACKAGE_LIST_URL)[1]
         soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -142,7 +143,7 @@ class PypiScraper(Scraper):
         # Check if the package exists
         if response.status_code == 404:
             self.not_found.append(pkg_name)
-            logging.warning(f'Package {pkg_name} not found in {self.name}')
+            UtilLogger.log(f'Package {pkg_name} not found in {self.name}')
             return None
 
         # Parse the JSON

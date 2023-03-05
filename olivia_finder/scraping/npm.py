@@ -12,21 +12,21 @@ Copyright (c) 2023 Daniel Alonso Báscones
 
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
-import logging, requests
+import requests
 from typing import List
 from tqdm import tqdm
 from olivia_finder.requests.request_handler import RequestHandler
 from olivia_finder.scraping.scraper import Scraper
 from olivia_finder.package import Package
+from olivia_finder.util import UtilLogger
 
 class NpmScraper(Scraper):
     '''
     Class that scrapes the NPM website to obtain information about JavaScript packages
     '''
 
-    NPM_PACKAGE_REGISTRY_URL = 'https://skimdb.npmjs.com/registry'
-    NPM_PACKAGE_LIST_URL = 'https://skimdb.npmjs.com/registry/_all_docs'
-    NPM_REPO_URL = 'https://www.npmjs.com/package'
+    # Constants
+    NPM_PACKAGEs_URL = 'https://libraries.io/search?order=desc&platforms=npm&sort=rank'
 
     def __init__(self, rh: RequestHandler) -> None:
         '''
@@ -45,60 +45,7 @@ class NpmScraper(Scraper):
         # It will be removed in the future
         self.GET_NAMES_KEYS = []
 
-
-    # def obtain_package_names(self, page_size=2000, num_threads=32) -> List[dict]:
-    #     '''
-    #     Obtain the names of the packages in the repository
-
-    #     Returns
-    #     -------
-    #     List[dict]
-    #         List of dictionaries with the name of the package and the url
-    #     '''
-
-    #     # Get the total number of packages
-    #     response = requests.get(self.NPM_PACKAGE_REGISTRY_URL)
-    #     total_packages = response.json()['doc_count']
-
-    #     # Get the list of packages
-    #     # ------------------------
-
-    #     # Build the list of start keys
-    #     start_keys = []
-    #     iters = (total_packages // page_size) + 1
-    #     for i in range(iters):
-    #         start_keys.append(str(i))
-    #         i += page_size
-            
-    #     # show progress of download chunks
-    #     progress_bar = tqdm(total=len(start_keys))
-    #     progress_bar.set_description('Descargando paquetes')
-
-    #     func = partial(
-    #         self.__download_page,           # function to execute
-    #         progress_bar=progress_bar,      # progress bar
-    #     )
-
-    #     pages = []
-    #     with ThreadPoolExecutor(max_workers=num_threads) as executor:
-    #         pages = list(executor.map(func, start_keys))
-    #         logging.info('Descargadas todos los chunks de paquetes de NPM')
-
-    #     # Get the complete list of package names        
-    #     package_names = []
-    #     for page in pages:
-
-    #         # If the page is empty
-    #         if not page:
-    #             logging.debug('Chunk de paquetes de NPM vacío')
-    #             continue
-
-    #         for row in page:
-    #             package_names.append(row['id'])
-
-    #     return package_names
-
-    def obtain_package_names(self, page_size=100) -> List[dict]:
+    def obtain_package_names(self, page_size=100, save_chunks = False, save_folder = None) -> List[dict]:
 
         # Get the total number of packages
         # response = requests.get(self.NPM_PACKAGE_REGISTRY_URL)
@@ -110,64 +57,29 @@ class NpmScraper(Scraper):
         progress_bar = tqdm(total=num_pages)
         last_key = None
 
-        logging.info('Descargando paquetes de NPM')
-        logging.info(f'Número de paquetes: {total_packages}')
-        logging.info(f'Número de páginas: {num_pages}')
-        logging.info(f'Tamaño de página: {page_size}')
-
-
         pages = []
         for i in range(num_pages):
             page = self.__download_page(last_key, progress_bar, page_size)
             pages.append(page)
-            logging.info(f'Downloaded page {i} of {num_pages}')
+            UtilLogger.logg(f'Downloaded page {i} of {num_pages}', 'INFO')
 
             # get the last key of the page for the next iter
             last_key = page[-1]['id']
         
-
-            # -----------------------------------------
-            # Store the chunk first key in the list of keys
-            # This is an auxiliary list to avoid downloading the same page twice while the implementation is not finished
-            # It will be removed in the future
-
-            first_key = page[0]['id']
-            self.GET_NAMES_KEYS.append(first_key)
-            logging.debug(f'Added key {first_key} to the list of keys')
-
-            # -----------------------------------------
+            if save_chunks:
+                UtilLogger.logg(f'Saving chunk {i} of {num_pages}', 'INFO')
+                with open(f'{save_folder}/chunk_{i}.json', 'w') as f:
+                    f.write(str(page))            
 
             progress_bar.update(1)
-        
+
         # process the pages
-        package_names = []
-        for page in pages:
-            for row in page:
-                package_names.append(row['id'])
+        package_names = [row['id'] for page in pages for row in page]
 
         return package_names
 
     # Function to download a page of documents
-    def __download_page(self, start_key, progress_bar:tqdm, size=1000, retries=5):
-        '''
-        Download a page of documents
-
-        Parameters
-        ----------
-        start_key : str
-            Start key of the page
-        progress_bar : tqdm
-            Progress bar to show the progress of the download
-        size : int
-            Size of the page
-        retries : int, optional
-            Number of retries, by default 5
-
-        Returns
-        -------
-        List[dict]
-            List of documents
-        '''
+    def __download_page(self, start_key, progress_bar: tqdm, size: int = 1000, retries: int = 5)-> List[dict]:
 
         # Fix for the first page
         if start_key is None:
@@ -177,7 +89,10 @@ class NpmScraper(Scraper):
             params = {'startkey': encode_start_key, 'limit': size}
 
         # Retry the request if it fails
-        response = self.request_handler.do_request(self.NPM_PACKAGE_LIST_URL, params=params, retry_count=retries)[1]
+        response = self.request_handler.do_request(
+            self.NPM_PACKAGE_LIST_URL, 
+            params=params, retry_count=retries
+        )[1]
    
         # If the response is None, return an empty list
         if response is None:
@@ -188,21 +103,21 @@ class NpmScraper(Scraper):
         try:
             data = response.json()
         except Exception as e:
-            logging.error(f'EXCEPTION at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
-            logging.error(f'Error parsing JSON: {e}')
-            logging.error(f'Response: {response.text}')
-            logging.error(f'Params: {params}')
-            logging.error(f'Retrying, times left: {retries}')
+            UtilLogger.logg(f'EXCEPTION at __download_page: url={self.NPM_PACKAGE_LIST_URL}', 'ERROR')
+            UtilLogger.logg(f'Error parsing JSON: {e}', 'ERROR')
+            UtilLogger.logg(f'Response: {response.text}', 'ERROR')
+            UtilLogger.logg(f'Params: {params}', 'ERROR')
+            UtilLogger.logg(f'Retrying, times left: {retries}', 'ERROR')
             return self.__download_page(start_key, progress_bar, size, retries-1)
             
         if data.keys() == {'error', 'reason'}:
-            logging.error(f'Server error at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
-            logging.error(f'Error: {data["error"]}')
-            logging.error(f'Retrying, times left: {retries}')
             return self.__download_page(start_key, progress_bar, size, retries-1)
+        
         else:
             progress_bar.update(1)
-            return data['rows']
+
+            # Fix of selecting by last key
+            return data['rows'][1:]
     
     def build_urls(self, pckg_names: List[str]) -> List[str]:
         '''

@@ -13,7 +13,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 import logging, requests
 from typing import Dict, Union, List
 from bs4 import BeautifulSoup
-from util import Util
+from olivia_finder.util import Util
 from olivia_finder.scraping.r import RScraper                                         
 from olivia_finder.requests.request_handler import RequestHandler
 
