@@ -14,7 +14,7 @@ import logging, requests, tqdm
 from typing import List
 from abc import ABC, abstractmethod
 from olivia_finder.package import Package
-from olivia_finder.scrape.requests.request_handler import RequestHandler
+from olivia_finder.requests.request_handler import RequestHandler
 
 class Scraper(ABC):
 
@@ -26,6 +26,7 @@ class Scraper(ABC):
         self.request_handler: RequestHandler = rh
         self.repo_name = repo_name
         self.not_found = []
+        self.LOGGER = rh.LOGGER
 
     @abstractmethod
     def obtain_package_names(self) -> List[dict]:

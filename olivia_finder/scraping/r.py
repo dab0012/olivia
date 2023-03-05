@@ -15,18 +15,16 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Dict, List, Tuple
 from olivia_finder.package import Package
-from olivia_finder.scrape.scraper import Scraper
-from olivia_finder.scrape.requests.request_handler import RequestHandler
+from olivia_finder.requests.request_handler import RequestHandler
+from olivia_finder.scraping.scraper import Scraper
 
 class RScraper(Scraper, ABC):
     '''
     Abstract class that implements the common methods for scraping R repositories
     '''
 
-    def __init__(self, rh: RequestHandler, repo) -> None:
-
-        self.request_handler = rh
-        self.repo_name = repo
+    def __init__(self, rh: RequestHandler, repo: str) -> None:
+        super().__init__(rh, repo)
 
     def parse_dependencies(self, dependencies_str) -> List[Tuple[str, str]]:
 

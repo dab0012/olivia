@@ -14,7 +14,7 @@ import tqdm
 import pandas as pd
 from typing import List
 from olivia_finder.package import Package
-from olivia_finder.scrape.scraper import Scraper
+from olivia_finder.scraping.scraper import Scraper
 
 class Repo:
     '''

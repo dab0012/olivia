@@ -15,8 +15,8 @@ from functools import partial
 import logging, requests
 from typing import List
 from tqdm import tqdm
-from olivia_finder.scrape.requests.request_handler import RequestHandler
-from olivia_finder.scrape.scraper import Scraper
+from olivia_finder.requests.request_handler import RequestHandler
+from olivia_finder.scraping.scraper import Scraper
 from olivia_finder.package import Package
 
 class NpmScraper(Scraper):
