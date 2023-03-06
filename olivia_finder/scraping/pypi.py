@@ -11,7 +11,8 @@ Copyright (c) 2023 Daniel Alonso Báscones
 '''
 
 import requests
-from typing import Dict, Union
+from typing_extensions import override
+from typing import Dict, List, Union
 from bs4 import BeautifulSoup
 from olivia_finder.requests.request_handler import RequestHandler
 from olivia_finder.scraping.scraper import Scraper
@@ -39,17 +40,18 @@ class PypiScraper(Scraper):
         '''
         super().__init__(rh, 'PyPI')
 
-    """
-    Implementation of Scraper.obtain_package_names()
-    """
-    def obtain_package_names(self) -> list:
+    # Override methods of the abstract class Scraper
+    # ----------------------------------------------
+
+    @override
+    def obtain_package_names(self) -> List[str]:
         '''
-        Get the list of packages from the PyPI website
+        Get the list of packages names from the PyPI website
 
         Returns
         -------
         list
-            List of packages
+            List of package names
 
         '''
         # Get the HTML of the page
@@ -63,10 +65,8 @@ class PypiScraper(Scraper):
 
         return packages
     
-    """ 
-    Implementation of Scraper.bulid_urls()
-    """ 
-    def build_urls(self, pkg_list: list) -> list:
+    @override
+    def build_urls(self, pkg_list: list) -> List[str]:
         '''
         Build the list of URLs to scrape
 
@@ -88,9 +88,7 @@ class PypiScraper(Scraper):
 
         return urls
 
-    """
-    Implementation of Scraper.parser()
-    """
+    @override
     def parser(self, response: requests.Response) -> Dict[str, str]:
         '''
         Parse the JSON data of a package
@@ -131,9 +129,7 @@ class PypiScraper(Scraper):
 
         return package_data    
 
-    """
-    Implementation of Scraper.scrape_package_data()
-    """
+    @override
     def scrape_package_data(self, pkg_name) -> Union[Dict[str, str], None]:
 
         # Get the package page

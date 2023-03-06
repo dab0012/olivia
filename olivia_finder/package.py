@@ -17,14 +17,12 @@ class Package:
     Class that represents a package
     '''
 
-    def __init__(self, repo: str, name: str, version: str = None, url: str = None, dependencies: list[Package] = None):
+    def __init__(self, name: str, version: str = None, url: str = None, dependencies: list[Package] = None):
         '''
         Constructor
 
         Parameters
         ----------
-        repo : str
-            Name of the repository
         name : str
             Name of the package
         version : str, optional
@@ -35,13 +33,19 @@ class Package:
             List of dependencies, by default None
         '''
 
-        self.repo = repo
         self.name = name
         self.version = version
         self.url = url
         self.dependencies = dependencies
 
-    def print(self):
+    def print(self) -> None:
+        '''
+        Print the package data
+
+        Returns
+        -------
+        None
+        '''
         print("Package:")
         print("  repo: " + self.repo)
         print("  name: " + self.name)
@@ -124,7 +128,7 @@ class Package:
             Package loaded from the dictionary
         '''
 
-        package = cls(data['name'], data['version'], data['author'], data['url'], data['dependencies'])
+        package = cls(data['name'], data['version'], data['url'], data['dependencies'])
         return package
 
     def to_dict(self):
@@ -136,12 +140,19 @@ class Package:
         dict
             Dictionary with the data
         '''
-        return {
-            'repo': self.repo,
+
+        # Create the dictionary
+        data = {
             'name': self.name,
             'version': self.version,
             'url': self.url,
-            'dependencies': self.dependencies
+            'dependencies': []
         }
+
+        # Add the dependencies as a dictionary
+        for dependency in self.dependencies:
+            data['dependencies'].append(dependency.to_dict())
+
+        return data
     
 

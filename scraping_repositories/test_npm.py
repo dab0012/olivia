@@ -20,13 +20,13 @@ sys.path.insert(0, parentdir)
 # Imports
 # ----------------------------------------------------------------------------
 import pickle, time
-from olivia_finder.repo import Repo
+from olivia_finder.repo import Repository
 from olivia_finder.scraping.npm import NpmScraper
 from olivia_finder.requests.proxy_handler import ProxyHandler
 from olivia_finder.requests.request_handler import RequestHandler
 from olivia_finder.requests.useragent_handler import UserAgentHandler
 
-npm = Repo('NPM', 'https://www.npmjs.com')
+npm = Repository('NPM', 'https://www.npmjs.com')
 
 # Define the request handler
 ph = ProxyHandler()

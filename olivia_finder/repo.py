@@ -13,26 +13,52 @@ Copyright (c) 2023 Daniel Alonso Báscones
 import tqdm
 import pandas as pd
 from typing import List
+from olivia_finder.data_source import DataSource
 from olivia_finder.package import Package
 from olivia_finder.scraping.scraper import Scraper
 
-class Repo:
+class Repository():
     '''
     Class that represents a repository
     '''
 
-    def __init__(self, name: str, url: str):
+    # Attributes
+    data_source: DataSource = None
+    packages: List[Package] = []
+    NAME: str = None
+    URL: str = None
+
+    def __init__(self, data_source: DataSource, name: str = None, url: str = None):
+        '''
+        Constructor
+
+        Parameters
+        ----------
+        data_source : DataSource
+            Data source of the repository
+
+        name : str, optional
+            Name of the repository, by default None
+
+        url : str, optional
+            URL of the repository, by default None
+        '''
+        self.data_source = data_source
         self.name = name
         self.url = url
-        self.packages = []
-
-    def __str__(self):
+        
+    def __str__(self) -> str:
         '''
         String representation of the object
+
+        Returns
+        -------
+        str
+            String representation of the object
         '''
-        return self.name + " " + self.url
+        return self.name + ":" + self.url + ":" + self.data_source.get_info()
     
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         '''
         Equality operator
         
@@ -46,9 +72,9 @@ class Repo:
         bool
             True if both objects are equal, False otherwise
         '''
-        return self.name == other.name and self.url == other.url
+        return self.name == other.name and self.url == other.url and self.packages == other.packages
     
-    def __hash__(self):
+    def __hash__(self) -> int:
         '''
         Hash function
 
@@ -59,7 +85,7 @@ class Repo:
         '''
         return hash(self.name + self.url + len(self.packages))
     
-    def obtain_package(self, pkg_name: str, scraper: Scraper) -> Package:
+    def obtain_package(self, pkg_name: str) -> Package:
         '''
         Scrape a package from a repository
 
@@ -75,11 +101,9 @@ class Repo:
         Package
             Package object
         '''
-        return scraper.build_obj(pkg_name)
+        return self.data_source.obtain_package(pkg_name)
     
-    def obtain_packages(self, 
-                        pkg_names: List[str], scraper: Scraper, 
-                        extend_repo = False) -> List[Package]:
+    def obtain_packages(self, pkg_names: List[str], extend_repo = False) -> List[Package]:
         '''
         Scrape a list of packages from a repository
 
@@ -87,8 +111,8 @@ class Repo:
         ----------
         pkg_names : List[str]
             List of package names
-        scraper : Scraper
-            Scraper object
+        data_source : DataSource
+            Data source of the repository
         extend_repo : bool, optional
             If True, the packages are added to the repo data structure, by default False
 
@@ -98,12 +122,13 @@ class Repo:
             List of Package objects
         '''
         progress = tqdm.tqdm(total=len(pkg_names))
-        packages = scraper.build_obj_list(pkg_names, progress)
+        packages = self.data_source.obtain_dependency_network(pkg_names, progress)
         progress.close()
 
         # Add packages to the repo
         if extend_repo:
             self.packages += packages
+            self.packages = list(set(self.packages))
 
         return packages
 
