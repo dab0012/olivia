@@ -26,26 +26,28 @@
 
 Based on previous TFG notebooks
 
-- [OLIVIA Model :chart_with_upwards_trend:](https://github.com/dsr0018/olivia/blob/master/A-Model.ipynb)
-- [OLIVIA Analysis :mag:](https://github.com/dsr0018/olivia/blob/master/B-Analysis.ipynb)
-- [OLIVIA Imunization :syringe:](https://github.com/dsr0018/olivia/blob/master/C-Immunization.ipynb)
-<br><br>
+- [:chart_with_upwards_trend: OLIVIA Model](https://github.com/dsr0018/olivia/blob/master/A-Model.ipynb)
+- [:mag: OLIVIA Analysis](https://github.com/dsr0018/olivia/blob/master/B-Analysis.ipynb)
+- [:syringe: OLIVIA Imunization](https://github.com/dsr0018/olivia/blob/master/C-Immunization.ipynb)
+
+<br>
+
+----
+
+<br>
 
 ## Introduction
----
 
 Olivia Finder is a Python library that allows users to obtain from package data to be used with the Olivia project, an open-source library that indexes vulnerability identification and analysis. Olivia is designed to help software developers and centralised package managers understand the risks of using dependencies in their projects.
 <br><br>
 
 ## Intended audience
----
 
 Olivia Finder is intended for use by developers, researchers, and centralised package managers interested in vulnerability identification and analysis.
 First, it is designed for joint use with Olivia
 <br><br>
 
 ## Key features
-------------
 
 Olivia Finder offers the following features:
 
@@ -54,25 +56,24 @@ Olivia Finder offers the following features:
 <br><br>
 
 ## Getting started
----------------
 
 Lorem..
 <br><br>
 
 ## License
--------
 
 Olivia Finder is distributed under the MIT License. See LICENSE file for details.
 <br><br>
 
 ## Acknowledgements
-----------------
 
 Olivia Finder uses data from the Olivia project, which was created by Daniel Setó Rey. The Olivia project is distributed under the MIT License. See [https://github.com/dsr0018/olivia](https://github.com/dsr0018/olivia) for more information.
 <br><br>
 
 
 ---
+
+<br>
 
 **Author:** *Daniel Alonso Báscones*
 
