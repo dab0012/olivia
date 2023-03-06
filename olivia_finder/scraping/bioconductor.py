@@ -36,19 +36,15 @@ class BiocScraper(RScraper):
     """
     Implementation of Scraper.obtain_package_names()
     """
-    def obtain_package_names(self) -> List[str]:
+    def obtain_package_names(self) -> Union[List[str], None]:
         '''
         Get the list of packages from the Bioconductor website
 
         Returns
         -------
-        List[str]
-            List of packages
 
-        Raises
-        ------
-        Exception
-            If the list of packages is not found
+        Union[List[str], None]
+            List of packages if the operation is successful, None otherwise
         '''
 
         # Make HTTP request to the list of packages page

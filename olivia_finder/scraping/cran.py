@@ -145,7 +145,7 @@ class CranScraper(RScraper, Scraper):
             d = soup.find('h2').text
             name = Util.clean_string(d).split(':')[0]
         except Exception:
-            UtilLogger.logg(self.LOGGER, f'Package does not have a name', "DEBUG")
+            UtilLogger.logg(self.LOGGER, 'Package does not have a name', "DEBUG")
 
         # Get package version
         version = None
@@ -153,7 +153,7 @@ class CranScraper(RScraper, Scraper):
             d = soup.find('td', text='Version:').find_next_sibling('td').text
             version = Util.clean_string(d)
         except Exception:
-            UtilLogger.logg(self.LOGGER, f'Package does not have a version', "DEBUG")
+            UtilLogger.logg(self.LOGGER, 'Package does not have a version', "DEBUG")
 
         # Get depends
         dep_list = []
@@ -162,7 +162,7 @@ class CranScraper(RScraper, Scraper):
             depends = Util.clean_string(d)
             dep_list = self.parse_dependencies(depends)
         except Exception:
-            UtilLogger.logg(self.LOGGER, f'Package does not have dependencies', "DEBUG")
+            UtilLogger.logg(self.LOGGER, 'Package does not have dependencies', "DEBUG")
 
         # Get imports
         imp_list = []
@@ -171,7 +171,7 @@ class CranScraper(RScraper, Scraper):
             imports = Util.clean_string(d)
             imp_list = self.parse_dependencies(imports)
         except Exception:
-            UtilLogger.logg(self.LOGGER, f'Package does not have imports', "DEBUG")
+            UtilLogger.logg(self.LOGGER, 'Package does not have imports', "DEBUG")
 
         # Build dictionary with package data
         # we consider that dependencies and imports are the same level of importance

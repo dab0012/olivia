@@ -21,8 +21,8 @@ class UserAgentHandler():
     # Attributes
     # ----------------
     USERAGENTSTRING_URL                 =   'https://www.useragentstring.com/pages/useragentstring.php?name=All'
-    useragents_list: List[str]          =   []
-    LOGER: logging.Logger               =   None
+    useragents_list: List[str]
+    LOGER: logging.Logger
 
     def __init__(self, useragents_file_path: str = None, logger: logging.Logger = None) -> None:
         '''
@@ -44,14 +44,14 @@ class UserAgentHandler():
             return
 
         # Load useragents from web
-        loaded_with_api = self._load_from_API()
+        loaded_with_api = self._load_from_api()
         if loaded_with_api:
             UtilLogger.logg(self.LOGER, f"Useragents loaded from API: {self.USERAGENTSTRING_URL}", "DEBUG")
             return
 
         # If the list is empty, return default useragent
         self.useragents_list = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36']
-        UtilLogger.logg(self.LOGER, f"Useragents list empty. Using default useragent", "DEBUG")
+        UtilLogger.logg(self.LOGER, "Useragents list is empty. Using default useragent", "DEBUG")
 
     def _load_from_file(self, file_path:str) -> bool:
         '''
@@ -78,7 +78,7 @@ class UserAgentHandler():
             UtilLogger.logg(self.LOGER, f"Useragents file not found: {file_path}", "DEBUG")
             return False
     
-    def _load_from_API(self) -> bool:
+    def _load_from_api(self) -> bool:
         
         '''
         Get user agents from the useragentstring.com API and save them in the user agent list
@@ -97,6 +97,7 @@ class UserAgentHandler():
             user_agents_request = requests.get(self.USERAGENTSTRING_URL).text
         except Exception as e:
             UtilLogger.logg(self.LOGER, f"Error getting user agents from API: {self.USERAGENTSTRING_URL}", "DEBUG")
+            UtilLogger.logg(self.LOGER, f"Error: {e}", "DEBUG")
             return False
         
         # Parse the HTML
@@ -114,6 +115,7 @@ class UserAgentHandler():
         
         except Exception as e:
             UtilLogger.logg(self.LOGER, f"Error parsing user agents from API: {self.USERAGENTSTRING_URL}", "DEBUG")
+            UtilLogger.logg(self.LOGER, f"Error: {e}", "DEBUG")
             return False
 
     def get_next_useragent(self) -> str:
@@ -125,7 +127,7 @@ class UserAgentHandler():
         str
             A random useragent
         '''
-        UtilLogger.logg(self.LOGER, f"Getting random useragent", "DEBUG")
+        UtilLogger.logg(self.LOGER, "Getting next useragent", "DEBUG")
         # Get a random useragent
         index = random.randint(0, len(self.useragents_list) - 1)
         return self.useragents_list[index]

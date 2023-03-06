@@ -11,7 +11,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 '''
 
 from logging import Logger
-from typing import List, Union 
+from typing import List, Optional, Union 
 from olivia_finder.requests.proxy_builder import ProxyBuilder
 from olivia_finder.util import UtilLogger
 
@@ -23,7 +23,7 @@ class ProxyHandler():
     proxy_builders: List[ProxyBuilder] = []     # List of proxy builders
     proxy_list: List[str] = []                  # proxy_list is a list str with the proxies
     proxy_uses: dict = {}                       # A dictionary with the number of uses for each proxy, uses the proxy as key
-    logger: Logger = None                       # Logger to use
+    logger: Optional[Logger] = None                       # Logger to use
 
     def __init__(self, 
                  builders: List[ProxyBuilder] = None, 
@@ -73,7 +73,7 @@ class ProxyHandler():
         Union[str, None]
             Next proxy or None if there are no proxies
         '''
-        UtilLogger.logg(self.logger, f"Getting next proxy", "DEBUG")
+        UtilLogger.logg(self.logger, "Getting next proxy", "DEBUG")
 
         # Check if proxies are empty and get new ones
         if len(self.proxy_list) == 0:

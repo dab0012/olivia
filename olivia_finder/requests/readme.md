@@ -1,25 +1,17 @@
-**requests library**
+**Custom requests library**
 ================
 
-/*
- * File:              readme.md
- * Project:           Olivia-Finder
- * Created Date:      Saturday March 4th 2023
- * Author:            Daniel Alonso Báscones
- * Last Modified:     Saturday March 4th 2023 11:43:48 am
- * Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
- * -----
- * Copyright (c) 2023 Daniel Alonso Báscones
- * -----
- */
 
-**A Python library for sending HTTP requests. This library is composed of four modules:**
+**A custom Python library for sending HTTP requests**
+
+This library is composed of four modules:
 
 `request_handler`, `useragents_handler`, `proxy_handler`, and `proxy_builder`.
 
----
-**<ins>Modules**
----
+<br>
+
+
+# **Modules**
 
 ## **request_handler**
 
@@ -41,7 +33,8 @@ The `RequestHandler` is a class that handles HTTP requests in a more transparent
 
     Do parallel requests to the given urls.
 
----
+<br>
+
 ## **useragents_handler**
 
 This module contains the `UserAgentsHandler` class, which is responsible for getting a random user agent. It provides a method for getting a random user agent.
@@ -62,7 +55,8 @@ This module contains the `UserAgentsHandler` class, which is responsible for get
     
     Returns a random user agent from the list.
 
----
+<br>
+
 ## **proxy_handler**
 
 The `ProxyHandler` class is used to handle proxy rotation and usage. It provides a method `get_next_proxy()` that returns a randomly selected proxy from the list of available proxies. The selected proxy is then rotated to the end of the list to prevent it from being used too frequently.
@@ -93,7 +87,7 @@ The `ProxyHandler` class has the following methods:
     
     gets a list of `ProxyBuilder` objects that are available for use.
 
----
+<br>
 
 ## **proxy_builder**
 
@@ -110,5 +104,19 @@ The implementations of `ProxyBuilder` each retrieve proxies from a specific webs
 
 Each implementation has a `URL` class variable that specifies the URL from which it retrieves proxies.
 
+<br>
+
 ---
 
+
+    /*
+    * File:              readme.md
+    * Project:           Olivia-Finder
+    * Created Date:      Saturday March 4th 2023
+    * Author:            Daniel Alonso Báscones
+    * Last Modified:     Saturday March 4th 2023 11:43:48 am
+    * Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
+    * -----
+    * Copyright (c) 2023 Daniel Alonso Báscones
+    * -----
+    */

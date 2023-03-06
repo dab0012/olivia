@@ -12,7 +12,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 
 import tqdm
 import pandas as pd
-from typing import List
+from typing import List, Optional
 from olivia_finder.data_source import DataSource
 from olivia_finder.package import Package
 from olivia_finder.scraping.scraper import Scraper
@@ -25,8 +25,8 @@ class Repository():
     # Attributes
     data_source: DataSource = None
     packages: List[Package] = []
-    NAME: str = None
-    URL: str = None
+    NAME: Optional[str] = None
+    URL: Optional[str] = None
 
     def __init__(self, data_source: DataSource, name: str = None, url: str = None):
         '''
@@ -44,8 +44,8 @@ class Repository():
             URL of the repository, by default None
         '''
         self.data_source = data_source
-        self.name = name
-        self.url = url
+        self.NAME = name
+        self.URL = url
         
     def __str__(self) -> str:
         '''
@@ -56,7 +56,7 @@ class Repository():
         str
             String representation of the object
         '''
-        return self.name + ":" + self.url + ":" + self.data_source.get_info()
+        return self.NAME + ":" + self.URL + ":" + self.data_source.get_info()
     
     def __eq__(self, other) -> bool:
         '''
@@ -72,7 +72,7 @@ class Repository():
         bool
             True if both objects are equal, False otherwise
         '''
-        return self.name == other.name and self.url == other.url and self.packages == other.packages
+        return self.NAME == other.name and self.URL == other.url and self.packages == other.packages
     
     def __hash__(self) -> int:
         '''
@@ -83,7 +83,7 @@ class Repository():
         int
             Hash value
         '''
-        return hash(self.name + self.url + len(self.packages))
+        return hash(self.NAME + self.URL + len(self.packages))
     
     def obtain_package(self, pkg_name: str) -> Package:
         '''
@@ -142,8 +142,8 @@ class Repository():
             Dictionary representation of the object
         '''
         d = {
-            'name': self.name,
-            'url': self.url,
+            'name': self.NAME,
+            'url': self.URL,
             'packages': []
         }
         for package in self.packages:
@@ -236,7 +236,7 @@ class Repository():
 
         # If the csv does not have the structure of to_package_graph_with_dependencies it cannot be loaded
         if not set(['name', 'version', 'url', 'dependency', 'dependency_version']).issubset(data.columns):
-            raise Exception('CSV file does not have the correct structure')
+            raise RepositoryLoadError('The csv file does not have the structure of to_package_graph_with_dependencies')
         
         # We create a dictionary with the packages
         packages = {}
@@ -259,3 +259,13 @@ class Repository():
         repo = cls('repo_name', 'url')
         repo.packages = list(packages.values())
         return repo
+    
+
+    
+class RepositoryLoadError(Exception):
+    """Raised when there is an error loading the repository"""
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+

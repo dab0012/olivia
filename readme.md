@@ -30,11 +30,7 @@ Based on previous TFG notebooks
 - [:mag: OLIVIA Analysis](https://github.com/dsr0018/olivia/blob/master/B-Analysis.ipynb)
 - [:syringe: OLIVIA Imunization](https://github.com/dsr0018/olivia/blob/master/C-Immunization.ipynb)
 
-<br>
-
 ----
-
-<br>
 
 ## Introduction
 

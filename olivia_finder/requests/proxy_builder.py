@@ -195,26 +195,3 @@ class GeonodeProxy(ProxyBuilder):
             proxies.append(f"{ip}:{port}")
 
         return proxies
-
-# class NoProxy(ProxyBuilder):
-#     '''
-#     Proxy builder for no proxy
-#     This class implements the ProxyBuilder interface.
-#     It returns an empty list of proxies
-#     '''
-#     def parse(self, response:requests.Response = None) -> List[str]:
-#         '''
-#         Parses the proxy list
-
-#         Parameters
-#         ----------
-#         response : requests.Response
-#             Response to parse
-        
-#         Returns
-#         -------
-#         List[str]
-#             List of proxies
-#         '''
-
-#         return []

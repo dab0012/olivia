@@ -36,8 +36,7 @@ class DataSource(ABC):
         # if description is not defined, use the default one else use the one defined
         if description is None:
             self.description = "No description available."
-
-        elif description is not None:
+        else:
             self.description = description
         
     def load_data(self, persistence_path = None) -> dict:
@@ -83,12 +82,6 @@ class DataSource(ABC):
         # return the data as a dictionary
         return pickled_data
         
-
-        """
-        Cleans old data from persistence.
-        """
-        raise NotImplementedError("clean_old_data method not implemented in subclass.")
-
     def get_info(self) -> str:
         """
         Returns information about the data source.

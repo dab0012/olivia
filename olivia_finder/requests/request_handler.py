@@ -28,15 +28,15 @@ class RequestHandler:
     '''
     # Attributes
     # ----------
-    proxy_handler: ProxyHandler                 = None     # Proxy handler to use
-    useragents_handler: UserAgentHandler        = None     # User agent handler to use
-    current_proxy_index: int                    = 0        # Current proxy index
-    current_useragent_index: int                = 0        # Current user agent index
+    proxy_handler: ProxyHandler                            # Proxy handler to use
+    useragents_handler: UserAgentHandler                   # User agent handler to use
+    current_proxy_index: int                               # Current proxy index
+    current_useragent_index: int                           # Current user agent index
+    LOCK: Lock                                             # Lock to use
+    LOGGER: logging.Logger                                 # Logger to use
     REQUEST_MAX_RETRIES: int                    = 5        # Maximum number of retries for each request
     REQUEST_TIMEOUT: int                        = 30       # Timeout for each request
-    LOCK: Lock                                  = None     # Lock to use for thread safety
     NUM_PROCESSES: int                          = 4        # Number of processes to use for parallel requests
-    LOGGER: logging.Logger                      = None     # Logger to use
 
     def __init__(self, 
                  proxy_handler: ProxyHandler, useragents_handler: UserAgentHandler, 
@@ -61,6 +61,11 @@ class RequestHandler:
             If True, a logger is configured and used
         '''
 
+        # Configure logger
+        if use_logger:
+            self.LOGGER = UtilLogger.prepare_loger("RequestHandler")
+            UtilLogger.logg(self.LOGGER, "Logger configured", "INFO")
+
         self.proxy_handler = proxy_handler
         self.useragents_handler = useragents_handler
         self.LOCK = Lock()
@@ -78,11 +83,6 @@ class RequestHandler:
             raise ValueError("num_processes must be greater than 0")
         else:
             self.NUM_PROCESSES = num_processes
-
-        # Configure logger
-        if use_logger:
-            self.LOGGER = UtilLogger.prepare_loger("RequestHandler")
-            UtilLogger.logg(self.LOGGER, "Logger configured", "INFO")
 
     def do_request(self, url:str, params:dict = None) -> Union[Tuple[str, requests.Response], None]:
         '''
@@ -112,12 +112,13 @@ class RequestHandler:
             with self.LOCK:
                 if self.proxy_handler is not None:
                     proxy = self.proxy_handler.get_next_proxy()
+                    proxy = f"http://{proxy}"
+                    UtilLogger.logg(self.LOGGER, f"Using proxy: {proxy}", "DEBUG")
                 if self.useragents_handler is not None:
                     headers = {'User-Agent': self.useragents_handler.get_next_useragent()}
+                    UtilLogger.logg(self.LOGGER, f"Using user agent: {headers['User-Agent']}", "DEBUG")
         except Exception as e:
             raise RequestError(url, f"Exception getting proxy and user agent: {e}", self.LOGGER) from e
-
-        UtilLogger.logg(self.LOGGER, f"Using proxy: {proxy} and user agent: {headers['User-Agent']}", "DEBUG")
 
         # Do the request
         try:
@@ -125,7 +126,7 @@ class RequestHandler:
                 response = session.get(
                     url, 
                     headers=headers,
-                    proxies={'http': proxy}, 
+                    proxies=proxy, 
                     timeout=self.REQUEST_TIMEOUT, 
                     params=params
                 )
@@ -161,16 +162,6 @@ class RequestHandler:
         if self.NUM_PROCESSES > len(url_list):
             self.NUM_PROCESSES = len(url_list)
 
-        # Define a helper function to do the request with retries
-        def do_request_with_retry(url, params):
-            retry_count = 0
-            while retry_count < self.REQUEST_MAX_RETRIES:
-                response = self.do_request(url, params)
-                if response[1] is not None:
-                    return response
-                retry_count += 1
-            return (url, None)
-
         # Do requests in parallel
         with ThreadPoolExecutor(max_workers=self.NUM_PROCESSES) as executor:
 
@@ -179,9 +170,9 @@ class RequestHandler:
 
             # Do requests with retries
             if param_list is None:
-                futures = [executor.submit(do_request_with_retry, url, None) for url in url_list]
+                futures = [executor.submit(self._do_request_with_retry, url, None) for url in url_list]
             else:
-                futures = [executor.submit(do_request_with_retry, url, params) for url, params in zip(url_list, param_list)]
+                futures = [executor.submit(self._do_request_with_retry, url, params) for url, params in zip(url_list, param_list)]
 
             # Get results
             for future in as_completed(futures):
@@ -202,6 +193,26 @@ class RequestHandler:
 
         return results
     
+    def _do_request_with_retry(self, url: str, params: dict) -> Union[Tuple[str, requests.Response], None]:
+        '''
+        Do a request to the given url with retries
+
+        Parameters
+        ----------
+        url : str
+            URL to do the request
+        params : dict, optional
+            Parameters to pass to the request, by default None
+        
+        '''
+        retry_count = 0
+        while retry_count < self.REQUEST_MAX_RETRIES:
+            response = self.do_request(url, params)
+            if response[1] is not None:
+                return (url, response[1])
+            retry_count += 1
+        return (url, None)
+
 class RequestError(Exception):
     """Raised when there is an error making a request."""
 
