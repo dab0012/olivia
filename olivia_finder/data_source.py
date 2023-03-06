@@ -39,48 +39,48 @@ class DataSource(ABC):
         else:
             self.description = description
         
-    def load_data(self, persistence_path = None) -> dict:
-        """
-        Loads the data from the persistence directory.
-        It loads the latest data file.
+    # def load_data(self, persistence_path = None) -> dict:
+    #     """
+    #     Loads the data from the persistence directory.
+    #     It loads the latest data file.
 
-        Parameters
-        ----------
-        persistence_path : str
-            Path to the persistence directory.
+    #     Parameters
+    #     ----------
+    #     persistence_path : str
+    #         Path to the persistence directory.
 
-        Returns
-        -------
-        dict
-            Dictionary with the data. The keys are the names of the data sources and the values are the data.
-            keys : ['package_list', 'dependency_graph', 'info']
-        """
+    #     Returns
+    #     -------
+    #     dict
+    #         Dictionary with the data. The keys are the names of the data sources and the values are the data.
+    #         keys : ['package_list', 'dependency_graph', 'info']
+    #     """
 
-        # If persistence_path is not defined, use the default one
-        if persistence_path is None:
-            persistence_path = self.PERSISTENCE_PATH
+    #     # If persistence_path is not defined, use the default one
+    #     if persistence_path is None:
+    #         persistence_path = self.PERSISTENCE_PATH
 
-        # If persistence_path is still not defined, raise an error
-        if persistence_path is None:
-            raise ValueError("persistence_path is not defined.")
+    #     # If persistence_path is still not defined, raise an error
+    #     if persistence_path is None:
+    #         raise ValueError("persistence_path is not defined.")
         
-        # Get the latest data file
-        files = os.listdir(persistence_path)
+    #     # Get the latest data file
+    #     files = os.listdir(persistence_path)
 
-        # Filter the files by the name of the data source and sort them by timestamp
-        files = [f for f in files if f.startswith(self.name)]
-        files.sort()
+    #     # Filter the files by the name of the data source and sort them by timestamp
+    #     files = [f for f in files if f.startswith(self.name)]
+    #     files.sort()
 
-        # Get the latest file
-        latest_file = files[-1]
-        filepath = os.path.join(persistence_path, latest_file)
+    #     # Get the latest file
+    #     latest_file = files[-1]
+    #     filepath = os.path.join(persistence_path, latest_file)
 
-        # Load the data from ods (olivia data source) file format and unpickle it
-        # its a pickle file with the package name list as a csv and the package graph as a csv an a csv file with info about the data source
-        pickled_data = pickle.load(open(filepath, "rb"))
+    #     # Load the data from ods (olivia data source) file format and unpickle it
+    #     # its a pickle file with the package name list as a csv and the package graph as a csv an a csv file with info about the data source
+    #     pickled_data = pickle.load(open(filepath, "rb"))
 
-        # return the data as a dictionary
-        return pickled_data
+    #     # return the data as a dictionary
+    #     return pickled_data
         
     def get_info(self) -> str:
         """

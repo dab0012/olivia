@@ -21,13 +21,13 @@ sys.path.insert(0, parentdir)
 # Imports
 # ----------------------------------------------------------------------------
 import pickle, time
-from olivia_finder.repo import Repository
+from olivia_finder.package_manager import PackageManager
 from olivia_finder.scraping.cran import CranScraper
 from olivia_finder.requests.proxy_handler import ProxyHandler
 from olivia_finder.requests.request_handler import RequestHandler
 from olivia_finder.requests.useragent_handler import UserAgentHandler
 
-cran = Repository('CRAN', 'https://cran.r-project.org')
+cran = PackageManager('CRAN', 'https://cran.r-project.org')
 
 # Define the request handler
 ph = ProxyHandler()

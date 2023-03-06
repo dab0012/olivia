@@ -15,11 +15,10 @@ import pandas as pd
 from typing import List, Optional
 from olivia_finder.data_source import DataSource
 from olivia_finder.package import Package
-from olivia_finder.scraping.scraper import Scraper
 
-class Repository():
+class PackageManager():
     '''
-    Class that represents a repository
+    Class that represents a package manager
     '''
 
     # Attributes
@@ -35,13 +34,13 @@ class Repository():
         Parameters
         ----------
         data_source : DataSource
-            Data source of the repository
+            Data source of the package manager
 
         name : str, optional
-            Name of the repository, by default None
+            Name of the package manager, by default None
 
         url : str, optional
-            URL of the repository, by default None
+            URL of the package manager, by default None
         '''
         self.data_source = data_source
         self.NAME = name
@@ -87,7 +86,7 @@ class Repository():
     
     def obtain_package(self, pkg_name: str) -> Package:
         '''
-        Scrape a package from a repository
+        Scrape a package from a package manager
 
         Parameters
         ----------
@@ -105,14 +104,14 @@ class Repository():
     
     def obtain_packages(self, pkg_names: List[str], extend_repo = False) -> List[Package]:
         '''
-        Scrape a list of packages from a repository
+        Scrape a list of packages from a package manager
 
         Parameters
         ----------
         pkg_names : List[str]
             List of package names
         data_source : DataSource
-            Data source of the repository
+            Data source of the package manager
         extend_repo : bool, optional
             If True, the packages are added to the repo data structure, by default False
 
@@ -236,7 +235,7 @@ class Repository():
 
         # If the csv does not have the structure of to_package_graph_with_dependencies it cannot be loaded
         if not set(['name', 'version', 'url', 'dependency', 'dependency_version']).issubset(data.columns):
-            raise RepositoryLoadError('The csv file does not have the structure of to_package_graph_with_dependencies')
+            raise PackageManagerLoadError('The csv file does not have the structure of to_package_graph_with_dependencies')
         
         # We create a dictionary with the packages
         packages = {}
@@ -255,15 +254,13 @@ class Repository():
                 packages[row['dependency']].version = row['dependency_version']
             packages[row['name']].dependencies.append(packages[row['dependency']])
 
-        # We create the repository
+        # We create the package manager
         repo = cls('repo_name', 'url')
         repo.packages = list(packages.values())
         return repo
     
-
-    
-class RepositoryLoadError(Exception):
-    """Raised when there is an error loading the repository"""
+class PackageManagerLoadError(Exception):
+    """Raised when there is an error loading the package manager"""
 
     def __init__(self, message):
         self.message = message
