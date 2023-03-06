@@ -1,5 +1,4 @@
-**OLIVIA-FINDER**
-=============
+# **OLIVIA-FINDER**
 
 **Codacy QA**:
 
@@ -26,9 +25,9 @@
 
 Based on previous TFG notebooks
 
-- [:chart_with_upwards_trend: OLIVIA Model](https://github.com/dsr0018/olivia/blob/master/A-Model.ipynb)
-- [:mag: OLIVIA Analysis](https://github.com/dsr0018/olivia/blob/master/B-Analysis.ipynb)
-- [:syringe: OLIVIA Imunization](https://github.com/dsr0018/olivia/blob/master/C-Immunization.ipynb)
+  - [:chart_with_upwards_trend: OLIVIA Model](https://github.com/dsr0018/olivia/blob/master/A-Model.ipynb)
+  - [:mag: OLIVIA Analysis](https://github.com/dsr0018/olivia/blob/master/B-Analysis.ipynb)
+  - [:syringe: OLIVIA Imunization](https://github.com/dsr0018/olivia/blob/master/C-Immunization.ipynb)
 
 ----
 
@@ -47,8 +46,8 @@ First, it is designed for joint use with Olivia
 
 Olivia Finder offers the following features:
 
-* Access to data to be used with Olivia project.
-* Easy integration with Python projects.
+  - Access to data to be used with Olivia project.
+  - Easy integration with Python projects.
 <br><br>
 
 ## Getting started
@@ -65,7 +64,6 @@ Olivia Finder is distributed under the MIT License. See LICENSE file for details
 
 Olivia Finder uses data from the Olivia project, which was created by Daniel Setó Rey. The Olivia project is distributed under the MIT License. See [https://github.com/dsr0018/olivia](https://github.com/dsr0018/olivia) for more information.
 <br><br>
-
 
 ---
 

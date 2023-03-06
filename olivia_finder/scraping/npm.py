@@ -10,8 +10,6 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
-from concurrent.futures import ThreadPoolExecutor
-from functools import partial
 import requests
 from typing import List
 from tqdm import tqdm
