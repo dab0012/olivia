@@ -14,39 +14,36 @@
 # for row in rows:
 #     print(row.project_name)
 
+#
 
-from google.cloud import bigquery
-import os
-import pandas as pd
+# Fix path
+# ----------------------------------------------------------------------------
+import os, sys, inspect
+# Add olivia_finder directory to the path
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+parentdir = os.path.dirname(parentdir)
+sys.path.insert(0, parentdir)
+# ----------------------------------------------------------------------------
 
-class BigQueryClient:
-    def __init__(self, key_file_path):
-        # Set the environment variable for the service account key file path
-        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = key_file_path
+from olivia_finder.bigquery.librariesio_bigquery import LibrariesioBigQuery
 
-        # Create a BigQuery client object
-        self.client = bigquery.Client()
+# Testing the class
 
-    def run_query(self, query):
-        # Run the query and return the result
-        query_job = self.client.query(query)
-        return query_job.result()
+libio = LibrariesioBigQuery('NPM')
 
-if __name__ == '__main__':
-    # Set the path to the service account key file
-    KEY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'key.json')
+# Testing the method get_suported_package_managers
+# supoorted_platforms = libio.get_suported_package_managers()
+# print(supoorted_platforms)
 
-    # Create a BigQuery client object using the service account key file
-    bq_client = BigQueryClient(KEY_FILE)
+#Testing the method obtain_package_names
+# package_names = libio.obtain_package_names(1000)
+# print(package_names)
 
-    # Define the query
-    QUERY = ('SELECT * FROM `bigquery-public-data.libraries_io.dependencies` WHERE platform="NPM"')
+# Testing the method obtain_package
+package = libio.obtain_package('@specron/sandbox')
 
-    # Run the query and print the result
-    rows = bq_client.run_query(QUERY)
-    df = rows.to_dataframe()
- 
-    #save pandas dataframe to csv
-    OUT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'out.csv')
-
-    df.to_csv('output.csv', index=False)
+if package is not None:
+    package.print()
+else:
+    print('Package not found')

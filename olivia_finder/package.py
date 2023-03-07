@@ -47,10 +47,9 @@ class Package:
         None
         '''
         print("Package:")
-        print("  repo: " + self.repo)
-        print("  name: " + self.name)
-        print("  version: " + self.version)
-        print("  url: " + self.url)
+        print(f"  name: {self.name}")
+        print(f"  version: {self.version}")
+        print(f"  url: {self.url}")
         print("  dependencies:")
         for dependency in self.dependencies:
             print("    " + str(dependency))
@@ -91,9 +90,9 @@ class Package:
         str
             String representation of the package
         '''
-        if self.version == "" or self.version is None:
-            self.version = "*"
-        return self.repo + ":" + self.name + ":" + self.version
+        if self.version is None:
+            return f'Name:{self.name};Version:?'
+        return f"Name:{self.name};Version:{self.version}"
 
     def update(self, data) -> None:
         '''
