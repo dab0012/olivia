@@ -13,7 +13,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 from typing import List
 import logging, random, requests
 from bs4 import BeautifulSoup
-from olivia_finder.util import Util, UtilLogger
+from olivia_finder.util import Util, UtilConfig, UtilLogger
 
 class UserAgentHandler():
     '''Handles useragents'''
@@ -23,8 +23,9 @@ class UserAgentHandler():
     USERAGENTSTRING_URL                 =   'https://www.useragentstring.com/pages/useragentstring.php?name=All'
     useragents_list: List[str]
     LOGER: logging.Logger
+    DATA_FILE: str
 
-    def __init__(self, useragents_file_path: str = None, logger: logging.Logger = None) -> None:
+    def __init__(self) -> None:
         '''
         Constructor
 
@@ -33,25 +34,25 @@ class UserAgentHandler():
         useragents_file_path : str, optional
             Path to the file containing the useragents, by default None
         '''
-        self.LOGER = logger
 
         loaded_with_file = loaded_with_api = False
+        self.DATA_FILE = UtilConfig.get_value_config_file("folders", "data_dir") + "useragents.txt"
 
         # Load useragents from file
-        loaded_with_file = self._load_from_file(useragents_file_path)
+        loaded_with_file = self._load_from_file(self.DATA_FILE)
         if loaded_with_file:
-            UtilLogger.logg(self.LOGER, f"Useragents loaded from file: {useragents_file_path}", "DEBUG")
+            UtilLogger.logg(f"Useragents loaded from file: {self.DATA_FILE}")
             return
 
         # Load useragents from web
         loaded_with_api = self._load_from_api()
         if loaded_with_api:
-            UtilLogger.logg(self.LOGER, f"Useragents loaded from API: {self.USERAGENTSTRING_URL}", "DEBUG")
+            UtilLogger.logg(f"Useragents loaded from API: {self.USERAGENTSTRING_URL}")
             return
 
         # If the list is empty, return default useragent
         self.useragents_list = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36']
-        UtilLogger.logg(self.LOGER, "Useragents list is empty. Using default useragent", "DEBUG")
+        UtilLogger.logg("Useragents list is empty. Using default useragent")
 
     def _load_from_file(self, file_path:str) -> bool:
         '''
@@ -75,7 +76,7 @@ class UserAgentHandler():
                 return True
             
         except FileNotFoundError:
-            UtilLogger.logg(self.LOGER, f"Useragents file not found: {file_path}", "DEBUG")
+            UtilLogger.logg(f"Useragents file not found: {file_path}")
             return False
     
     def _load_from_api(self) -> bool:
@@ -96,8 +97,8 @@ class UserAgentHandler():
         try:
             user_agents_request = requests.get(self.USERAGENTSTRING_URL).text
         except Exception as e:
-            UtilLogger.logg(self.LOGER, f"Error getting user agents from API: {self.USERAGENTSTRING_URL}", "DEBUG")
-            UtilLogger.logg(self.LOGER, f"Error: {e}", "DEBUG")
+            UtilLogger.logg(f"Error getting user agents from API: {self.USERAGENTSTRING_URL}")
+            UtilLogger.logg(f"Error: {e}")
             return False
         
         # Parse the HTML
@@ -114,8 +115,8 @@ class UserAgentHandler():
             return True
         
         except Exception as e:
-            UtilLogger.logg(self.LOGER, f"Error parsing user agents from API: {self.USERAGENTSTRING_URL}", "DEBUG")
-            UtilLogger.logg(self.LOGER, f"Error: {e}", "DEBUG")
+            UtilLogger.logg(f"Error parsing user agents from API: {self.USERAGENTSTRING_URL}")
+            UtilLogger.logg(f"Error: {e}")
             return False
 
     def get_next_useragent(self) -> str:
@@ -127,7 +128,7 @@ class UserAgentHandler():
         str
             A random useragent
         '''
-        UtilLogger.logg(self.LOGER, "Getting next useragent", "DEBUG")
+        UtilLogger.logg("Getting next useragent")
         # Get a random useragent
         index = random.randint(0, len(self.useragents_list) - 1)
         return self.useragents_list[index]

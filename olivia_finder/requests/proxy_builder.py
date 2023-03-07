@@ -53,18 +53,18 @@ class ProxyBuilder(ABC):
         try:
             response = requests.get(self.URL, timeout=self.proxy_list_timeout)
         except requests.exceptions.RequestException as e:
-            UtilLogger.logg(self.logger, f"Error getting proxies from {self.__class__.__name__}", "DEBUG")
-            UtilLogger.logg(self.logger, f"Error: {e}", "DEBUG")
+            UtilLogger.logg(f"Error getting proxies from {self.__class__.__name__}")
+            UtilLogger.logg(f"Error: {e}")
             return []
         
         # Parse the response
         proxies = []
         if response.status_code == 200:
             proxies = self.parse(response)
-            UtilLogger.logg(self.logger, f"Found {len(proxies)} proxies from {self.__class__.__name__}", "DEBUG")
+            UtilLogger.logg(f"Found {len(proxies)} proxies from {self.__class__.__name__}")
         else:
-            UtilLogger.logg(self.logger, f"Error getting proxies from {self.__class__.__name__}", "DEBUG")
-            UtilLogger.logg(self.logger, f"Request returned status code: {response.status_code}", "DEBUG")
+            UtilLogger.logg(f"Error getting proxies from {self.__class__.__name__}")
+            UtilLogger.logg(f"Request returned status code: {response.status_code}")
 
         return proxies
 

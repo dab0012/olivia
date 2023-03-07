@@ -10,15 +10,15 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
-import logging, requests, tqdm, os
+import tqdm
 from typing import List, Tuple, Union
 from threading import Lock
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from olivia_finder.config import LoggerConfiguration
 from olivia_finder.util import UtilLogger, UtilMultiThreading
 from olivia_finder.requests.proxy_handler import ProxyHandler
 from olivia_finder.requests.useragent_handler import UserAgentHandler
+import requests
 
 class RequestHandler:
     '''
@@ -33,7 +33,6 @@ class RequestHandler:
     current_proxy_index: int                               # Current proxy index
     current_useragent_index: int                           # Current user agent index
     LOCK: Lock                                             # Lock to use
-    LOGGER: logging.Logger                                 # Logger to use
     REQUEST_MAX_RETRIES: int                    = 5        # Maximum number of retries for each request
     REQUEST_TIMEOUT: int                        = 30       # Timeout for each request
     NUM_PROCESSES: int                          = 4        # Number of processes to use for parallel requests
@@ -62,9 +61,7 @@ class RequestHandler:
         '''
 
         # Configure logger
-        if use_logger:
-            self.LOGGER = UtilLogger.prepare_loger("RequestHandler")
-            UtilLogger.logg(self.LOGGER, "Logger configured", "INFO")
+        UtilLogger.logg("Logger configured")
 
         self.proxy_handler = proxy_handler
         self.useragents_handler = useragents_handler
@@ -77,7 +74,7 @@ class RequestHandler:
         # Check number of processes
         recommended_num_processes = UtilMultiThreading.recommended_threads()
         if num_processes > recommended_num_processes:
-            UtilLogger.logg(self.LOGGER, f"Number of processes ({num_processes}) is greater than the recommended number ({recommended_num_processes}).", "WARNING")
+            UtilLogger.logg(f"Number of processes ({num_processes}) is greater than the recommended number ({recommended_num_processes}).", "WARNING")
             self.NUM_PROCESSES = recommended_num_processes
         elif num_processes < 1:
             raise ValueError("num_processes must be greater than 0")
@@ -111,16 +108,17 @@ class RequestHandler:
         try:
             with self.LOCK:
                 if self.proxy_handler is not None:
-                    proxy = self.proxy_handler.get_next_proxy()
-                    proxy = f"http://{proxy}"
-                    UtilLogger.logg(self.LOGGER, f"Using proxy: {proxy}", "DEBUG")
+                    proxy_url = self.proxy_handler.get_next_proxy()
+                    proxy = {"http": proxy_url}
+                    UtilLogger.logg(f"Using proxy: {proxy}")
                 if self.useragents_handler is not None:
                     headers = {'User-Agent': self.useragents_handler.get_next_useragent()}
-                    UtilLogger.logg(self.LOGGER, f"Using user agent: {headers['User-Agent']}", "DEBUG")
+                    UtilLogger.logg(f"Using user agent: {headers['User-Agent']}")
         except Exception as e:
             raise RequestError(url, f"Exception getting proxy and user agent: {e}", self.LOGGER) from e
 
         # Do the request
+        response = None
         try:
             with requests.Session() as session:
                 response = session.get(
@@ -132,7 +130,7 @@ class RequestHandler:
                 )
 
             # Response is ok
-            UtilLogger.logg(self.LOGGER, f"Response status code: {response.status_code}", "DEBUG")
+            UtilLogger.logg(f"Response status code: {response.status_code}")
             return (url, response)
                    
         # Handle exceptions
@@ -177,7 +175,7 @@ class RequestHandler:
             # Get results
             for future in as_completed(futures):
                 if isinstance(future.result(), Exception):
-                    UtilLogger.logg(self.LOGGER, f"Exception in thread: {future.result()}", "ERROR")
+                    UtilLogger.logg(f"Exception in thread: {future.result()}")
                 else:
                     with self.LOCK:
                         response = future.result()
@@ -216,21 +214,22 @@ class RequestHandler:
 class RequestError(Exception):
     """Raised when there is an error making a request."""
 
-    def __init__(self, response:requests.Response, message:str, logger:logging.Logger = None):
+    def __init__(self, response:requests.Response, message:str):
 
-        self.response = response
-        proxy_used = response.request.proxy
-        useragent_used = response.request.headers['User-Agent']
+        if response is not None:
+            proxy_used = response.request.proxy
+            useragent_used = response.request.headers['User-Agent']
+            base_message = f"Request to {response.url} failed with status code {response.status_code}:\n"
+            base_message += f"Proxy used: {proxy_used}\n"
+            base_message += f"User-Agent used: {useragent_used}\n"
+        else:
+            base_message = f"Request failed: response is None"
 
-        base_message = f"Request to {response.url} failed with status code {response.status_code}:\n"
-        base_message += f"Proxy used: {proxy_used}\n"
-        base_message += f"User-Agent used: {useragent_used}\n"
         self.message = base_message + message
-
         super().__init__(self.message)
 
         # Log error
-        UtilLogger.logg(logger, self.message, "ERROR")
+        UtilLogger.logg(self.message)
         
     def __str__(self):
         return self.message

@@ -10,10 +10,10 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
-import logging, requests
+import requests
 from typing import Dict, Union, List
 from bs4 import BeautifulSoup
-from olivia_finder.util import Util
+from olivia_finder.util import Util, UtilConfig, UtilLogger
 from olivia_finder.scraping.r import RScraper                                         
 from olivia_finder.requests.request_handler import RequestHandler
 
@@ -51,13 +51,14 @@ class BiocScraper(RScraper):
         # Is necessary to use Selenium because the list of packages is loaded dynamically
         # with JavaScript, we need to render the page to get the list of packages
         
-        # Create the Selenium driver
+        # Load the Selenium driver
+        driver_path = UtilConfig.get_value_config_file("selenium", "driver_path")
         try:
             driver_options = webdriver.FirefoxOptions()
             driver_options.headless = True
-            driver = webdriver.Firefox(options=driver_options)
+            driver = webdriver.Firefox(options=driver_options, executable_path=driver_path)
         except Exception as e:
-            logging.error(f'Error creating the Selenium driver: {e}')
+            UtilLogger.log(f'Error creating the Selenium driver: {e}')
             return None
 
         # Scraping webpage with package list
@@ -66,7 +67,7 @@ class BiocScraper(RScraper):
             table = driver.find_element(By.ID, "biocViews_package_table")
             table_content = table.get_attribute("innerHTML")
         except Exception as e:
-            logging.error(f'Error scraping the webpage with the list of packages: {e}')
+            UtilLogger.log(f'Error scraping the webpage with the list of packages: {e}')
             return None
 
         # Close the driver
@@ -81,7 +82,7 @@ class BiocScraper(RScraper):
                     if cell.find("a"):
                         bioc_packages.append(cell.find("a").text)
         except Exception as e:
-            logging.error(f'Error processing the HTML to obtain packages: {e}')
+            UtilLogger.log(f'Error processing the HTML to obtain packages: {e}')
             return None
 
         return bioc_packages

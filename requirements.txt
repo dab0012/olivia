@@ -6,5 +6,3 @@ BeautifulSoup4
 pickle5
 selenium
 colorama
-google-cloud-storage
-db-dtypes

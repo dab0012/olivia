@@ -10,13 +10,14 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
-import logging, requests, tqdm
+import requests, tqdm
 from typing_extensions import override
 from typing import Dict, List, Union
 from abc import abstractmethod
 from olivia_finder.data_source import DataSource
 from olivia_finder.package import Package
 from olivia_finder.requests.request_handler import RequestHandler
+from olivia_finder.util import UtilLogger
 
 class Scraper(DataSource):
     """
@@ -28,7 +29,6 @@ class Scraper(DataSource):
         self.request_handler: RequestHandler = request_handler
         self.repo_name = repo_name
         self.not_found = []
-        self.LOGGER = request_handler.LOGGER
 
     # Overrided methods
     # -----------------
@@ -37,10 +37,11 @@ class Scraper(DataSource):
     def obtain_package(self, pkg_name) -> Package:
     
         # Get package data from HTML scraping
+        UtilLogger.log(f'Scraping package {pkg_name}')
         pkg_data = self.scrape_package_data(pkg_name)
 
         if not pkg_data:
-            logging.error(f'Error scraping package {pkg_name}')
+            UtilLogger.log(f'Error scraping package {pkg_name}')
             return None
 
         return Package(
@@ -80,7 +81,7 @@ class Scraper(DataSource):
 
             # Check if the package exists
             if response.status_code == 404:
-                logging.error(f'Package {key_url} not found')
+                UtilLogger.log(f'Package {key_url} not found')
                 continue
 
             # Parse the soruce data

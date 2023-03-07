@@ -37,7 +37,7 @@ class RScraper(Scraper, ABC):
 
         # Check if the lists have the same length and are not empty
         if len(names) != len(versions) or len(names) == 0:
-            logging.error(f'Error parsing dependencies in RScraper.__parse_dependencies: {names} {versions}')
+            UtilLogger.log(f'Error parsing dependencies in RScraper.__parse_dependencies: {names} {versions}')
             return []
 
         dependencies = []

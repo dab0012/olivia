@@ -25,10 +25,9 @@ class ProxyHandler():
     proxy_uses: dict = {}                       # A dictionary with the number of uses for each proxy, uses the proxy as key
     logger: Optional[Logger] = None                       # Logger to use
 
-    def __init__(self, 
+    def __init__(self,
                  builders: List[ProxyBuilder] = None, 
                  proxy_max_uses: int = PROXY_MAX_USES, 
-                 logger: Logger = None
                 ):
         '''
         Constructor
@@ -39,12 +38,9 @@ class ProxyHandler():
             List of proxy builders
         proxy_max_uses : int, optional
             Maximum number of uses for each proxy, by default 50
-        logger : logging.Logger, optional
-            Logger to use, by default None
         '''
         
         # Set attributes
-        self.logger = logger                                # Set logger
         self.PROXY_MAX_USES = proxy_max_uses                # Set proxy max uses
         if builders is None:                                # Set proxy builder, load default if none is provided
             self.proxy_builders = self._get_available_builders()
@@ -58,9 +54,8 @@ class ProxyHandler():
         # Get proxies from builder
         self.proxy_list = self._get_proxies()
 
-        if self.logger is not None:
-            UtilLogger.logg(self.logger, f"Proxy Handler initialized with {len(self.proxy_list)} proxies", "DEBUG")
-            UtilLogger.logg(self.logger, f"Buidlers: {self.proxy_builders}", "DEBUG")
+        UtilLogger.logg(f"Proxy Handler initialized with {len(self.proxy_list)} proxies")
+        UtilLogger.logg(f"Buidlers: {self.proxy_builders}")
 
 
 
@@ -73,22 +68,22 @@ class ProxyHandler():
         Union[str, None]
             Next proxy or None if there are no proxies
         '''
-        UtilLogger.logg(self.logger, "Getting next proxy", "DEBUG")
+        UtilLogger.logg("Getting next proxy")
 
         # Check if proxies are empty and get new ones
         if len(self.proxy_list) == 0:
-            UtilLogger.logg(self.logger, "No proxies available, trying to get new ones", "DEBUG")
+            UtilLogger.logg("No proxies available, trying to get new ones")
             self.proxy_list = self._get_proxies()
 
-        # Check if proxies are still empty
-        if len(self.proxy_list) == 0:
-            UtilLogger.logg(self.logger, "No proxies available after trying to get new ones", "DEBUG")
-            return None
+            # Check if proxies are still empty
+            if len(self.proxy_list) == 0:
+                UtilLogger.logg("No proxies available after trying to get new ones")
+                return None
 
         # proxy rotation
         proxy = self.proxy_list.pop(0)
         self.proxy_list.append(proxy)
-        UtilLogger.logg(self.logger, f"Proxy list rotated, new: {self.proxy_list[0]}", "DEBUG")
+        UtilLogger.logg(f"Proxy list rotated, new: {self.proxy_list[0]}")
 
         # Handle proxy usage lifetime
         self.handle_lifetime(proxy)
@@ -115,7 +110,7 @@ class ProxyHandler():
         if self.proxy_uses[proxy] > self.PROXY_MAX_USES:
             del self.proxy_uses[proxy]
             self.proxy_list.remove(proxy)
-            UtilLogger.logg(self.logger, f"Proxy {proxy} removed from list", "DEBUG")
+            UtilLogger.logg(f"Proxy {proxy} removed from list")
 
 
     def _get_proxies(self) -> List[str]:
@@ -133,9 +128,7 @@ class ProxyHandler():
 
         # remove duplicates
         proxies = list(set(proxies))
-
-        if self.logger is not None:
-            UtilLogger.logg(self.logger, f"Proxies len: {len(proxies)}", "DEBUG")
+        UtilLogger.logg(f"Proxies len: {len(proxies)}")
 
         return proxies
     
@@ -153,6 +146,6 @@ class ProxyHandler():
 
             # append builder object
             builders.append(builder())
-            UtilLogger.logg(self.logger, f"Added {builder.__name__} to proxy builders", "DEBUG")
+            UtilLogger.logg(f"Added {builder.__name__} to proxy builders")
 
         return builders

@@ -18,7 +18,6 @@ from olivia_finder.scraping.r import RScraper
 from olivia_finder.scraping.scraper import Scraper
 from olivia_finder.requests.request_handler import RequestHandler
 
-
 class CranScraper(RScraper, Scraper):
     '''
     Class that scrapes the CRAN website to obtain information about R packages
@@ -57,7 +56,7 @@ class CranScraper(RScraper, Scraper):
         try:
             response = self.request_handler.do_request(self.CRAN_PACKAGE_LIST_URL)[1]
         except Exception as e:
-            UtilLogger.logg(self.LOGGER, f'Exception getting list of packages in CranScraper.obtain_package_names: {e}', "DEBUG")
+            UtilLogger.logg(f'Exception getting list of packages in CranScraper.obtain_package_names: {e}')
             return []
 
         # Parse HTML
@@ -87,11 +86,11 @@ class CranScraper(RScraper, Scraper):
 
                     # We add the package name to the list of packages
                     packages.append(package_name)
-                    UtilLogger.logg(self.LOGGER, f'Package {package_name} added to the list of packages', "DEBUG")
+                    UtilLogger.logg(f'Package {package_name} added to the list of packages')
                    
                 # If an error occurs, we show the error message
                 except Exception as e:
-                    UtilLogger.logg(self.LOGGER, f'Exception getting package name in CranScraper.get_list_of_packages: {e}', "DEBUG")
+                    UtilLogger.logg(f'Exception getting package name in CranScraper.get_list_of_packages: {e}')
                     continue
 
         return packages
@@ -145,7 +144,7 @@ class CranScraper(RScraper, Scraper):
             d = soup.find('h2').text
             name = Util.clean_string(d).split(':')[0]
         except Exception:
-            UtilLogger.logg(self.LOGGER, 'Package does not have a name', "DEBUG")
+            UtilLogger.logg('Package does not have a name')
 
         # Get package version
         version = None
@@ -153,7 +152,7 @@ class CranScraper(RScraper, Scraper):
             d = soup.find('td', text='Version:').find_next_sibling('td').text
             version = Util.clean_string(d)
         except Exception:
-            UtilLogger.logg(self.LOGGER, 'Package does not have a version', "DEBUG")
+            UtilLogger.logg('Package does not have a version')
 
         # Get depends
         dep_list = []
@@ -162,7 +161,7 @@ class CranScraper(RScraper, Scraper):
             depends = Util.clean_string(d)
             dep_list = self.parse_dependencies(depends)
         except Exception:
-            UtilLogger.logg(self.LOGGER, 'Package does not have dependencies', "DEBUG")
+            UtilLogger.logg('Package does not have dependencies')
 
         # Get imports
         imp_list = []
@@ -171,7 +170,7 @@ class CranScraper(RScraper, Scraper):
             imports = Util.clean_string(d)
             imp_list = self.parse_dependencies(imports)
         except Exception:
-            UtilLogger.logg(self.LOGGER, 'Package does not have imports', "DEBUG")
+            UtilLogger.logg('Package does not have imports')
 
         # Build dictionary with package data
         # we consider that dependencies and imports are the same level of importance
@@ -219,15 +218,15 @@ class CranScraper(RScraper, Scraper):
 
         # Check if the package exists
         if response.status_code == 404:
-            UtilLogger.logg(self.LOGGER, f'Package {pkg_name} not found', "DEBUG")
+            UtilLogger.logg(f'Package {pkg_name} not found')
             return None
             
         # Parse HTML (get data for version, depends and imports)
-        UtilLogger.logg(self.LOGGER, f'Parsing HTML of package {pkg_name}', "DEBUG")
+        UtilLogger.logg(f'Parsing HTML of package {pkg_name}')
         data = self.parser(response)
 
         # Return as dictionary
-        UtilLogger.logg(self.LOGGER, f'Package {pkg_name} data ok', "DEBUG")
+        UtilLogger.logg(f'Package {pkg_name} data ok')
         return {
             'name': pkg_name,
             'version': data['version'],

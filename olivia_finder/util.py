@@ -10,11 +10,8 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
-import logging
-import os
+import logging, os, configparser    
 from colorama import Style, Fore
-
-from olivia_finder.config import LoggerConfiguration
 
 class Util:
     '''
@@ -90,13 +87,16 @@ class Util:
             Util.print_colored(text, Util.BLUE)
             print(Style.BRIGHT)
 
+'''
+Logger utility class
+'''
 class UtilLogger:
     '''
     Utility class for logging
     '''
 
     @staticmethod
-    def logg(logger: logging.Logger, text: str, logging_level: str = "NOTSET"):
+    def logg(text: str):
         '''
         Log a text
 
@@ -110,27 +110,24 @@ class UtilLogger:
             Logging level, by default "NOTSET"
         '''
 
-        # Check if the logger is not None
-        if logger is None:
-            return
+        logger = LoggerConfiguration().get_logger()
+        level = LoggerConfiguration().get_level()
         
         # Check if the style is valid
-        if logging_level not in ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "NOTSET"]:
+        if level not in ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]:
             return
         
         # Log the text
-        if logging_level == "CRITICAL":
+        if level == "CRITICAL":
             logger.critical(text)
-        elif logging_level == "ERROR":
+        elif level == "ERROR":
             logger.error(text)
-        elif logging_level == "WARNING":
+        elif level == "WARNING":
             logger.warning(text)
-        elif logging_level == "INFO":
+        elif level == "INFO":
             logger.info(text)
-        elif logging_level == "DEBUG":
+        elif level == "DEBUG":
             logger.debug(text)
-        elif logging_level == "NOTSET":
-            logger.log(text)
 
     @staticmethod
     def get_current_timestamp():
@@ -145,30 +142,89 @@ class UtilLogger:
         import datetime
         return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    @staticmethod
-    def prepare_loger(filename_tag: str) -> logging.Logger:
+class LoggerConfiguration:
+    '''
+    Class to configure the logger
+    '''
+
+    _instance = None
+
+    def __new__(cls):
         '''
-        Prepare the logger
+        Constructor of the class
+        
+        Returns
+        -------
+        LoggerConfiguration
+            LoggerConfiguration object
+            
+            '''
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            # Load data from ini file
+            cp = configparser.ConfigParser()
+
+            # Get the logging format
+            try:
+                cp.read('config.ini')
+                logging_format = cp['logger']['format']
+                date_format = cp['logger']['date_format']
+                level = cp['logger']['level']
+                filename = cp['logger']['filename']
+            except:
+                # Fix not found in config.ini
+                logging_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+                date_format = '%d-%b-%y %H:%M:%S'
+                level = 'DEBUG'
+                filename = 'olivia_finder.log'
+
+            cls._instance.filename = filename
+            cls._instance.level = level
+            cls._instance.format = logging_format
+            cls._instance.date_format = date_format
+
+            logging.basicConfig(
+                filename=cls._instance.filename,
+                level=logging.getLevelName(cls._instance.level),
+                format=cls._instance.format,
+                datefmt=cls._instance.date_format
+            )
+
+            cls._instance.logger = logging.getLogger(__name__)
+
+            # Get loger folder from config.ini
+            log_dir = UtilConfig.get_value_config_file("folders", "log_dir")
+
+            # Make directory if it does not exist
+            os.makedirs(log_dir, exist_ok=True)
+            
+        return cls._instance
+
+    def get_logger(self) -> logging.Logger:
+        '''
+        Get the logger
 
         Returns
         -------
         logging.Logger
-            Logger
+            Logger object
         '''
-        # Make a log file
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        current_timestamp = UtilLogger.get_current_timestamp()
-        filename = current_dir + os.sep + "logs" + os.sep + f"{filename_tag}_{current_timestamp}.log"
+        return self.logger
+    
+    def get_level(self) -> str:
+        '''
+        Get the logging level
 
-        # Create logs directory if it does not exist
-        if not os.path.exists(current_dir + os.sep + "logs"):
-            os.makedirs(current_dir + os.sep + "logs")
+        Returns
+        -------
+        str
+            Logging level
+        '''
+        return self.level
 
-        logger_config = LoggerConfiguration(filename = filename, level = logging.DEBUG)
-        logger_config.aply_config()
-
-        return logger_config.get_logger()
-
+'''
+Multithreading utility class
+'''
 class UtilMultiThreading:
     """
     Utility class for multithreading
@@ -190,6 +246,33 @@ class UtilMultiThreading:
         else:
             return 1
 
+'''
+Config utility class
+'''
+class UtilConfig:
 
+    INI_FILE = "olivia_finder/config.ini"
+
+    @staticmethod
+    def get_value_config_file(section:str, key: str):
+        """
+        Get a value from a config file
+
+        Parameters
+        ----------
+        section : str
+            Section of the config file
+        key : str
+            Key of the config file
+    
+        Returns
+        -------
+        str
+            Value of the key
+        """
+        import configparser
+        config = configparser.ConfigParser()
+        config.read(UtilConfig.INI_FILE)
+        return config[section][key]
 
 

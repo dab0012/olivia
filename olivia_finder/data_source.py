@@ -1,8 +1,19 @@
+'''
+File:              data_source.py
+Project:           Olivia-Finder
+Created Date:      Monday March 6th 2023
+Author:            Daniel Alonso Báscones
+Last Modified:     Monday March 6th 2023 6:45:45 pm
+Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
+-----
+Copyright (c) 2023 Daniel Alonso Báscones
+-----
+'''
+
+
 from abc import ABC, abstractmethod
-import os, pickle
 from typing import List
 from olivia_finder.package import Package
-
 
 class DataSource(ABC):
     """

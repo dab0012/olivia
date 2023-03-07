@@ -10,13 +10,14 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
+import os
 import requests
 from typing import List
 from tqdm import tqdm
 from olivia_finder.requests.request_handler import RequestHandler
 from olivia_finder.scraping.scraper import Scraper
 from olivia_finder.package import Package
-from olivia_finder.util import UtilLogger
+from olivia_finder.util import UtilConfig, UtilLogger
 
 class NpmScraper(Scraper):
     '''
@@ -24,7 +25,9 @@ class NpmScraper(Scraper):
     '''
 
     # Constants
-    NPM_PACKAGEs_URL = 'https://libraries.io/search?order=desc&platforms=npm&sort=rank'
+    NPM_PACKAGE_REGISTRY_URL    = 'https://skimdb.npmjs.com/registry'
+    NPM_PACKAGE_LIST_URL        = 'https://skimdb.npmjs.com/registry/_all_docs'
+    NPM_REPO_URL                = 'https://www.npmjs.com/package'
 
     def __init__(self, rh: RequestHandler) -> None:
         '''
@@ -35,15 +38,14 @@ class NpmScraper(Scraper):
         rh : RequestHandler
             RequestHandler object to make HTTP requests
         '''
-
         super().__init__(rh, 'NPM')
+        self.output_folder = UtilConfig.get_value_config_file("folders", "persistence_dir")
+        self.chunks_folder = self.output_folder + '/chunks'
 
-        # List of keys to get the list of packages when downloading the pages
-        # This is an auxiliary list to avoid downloading the same page twice while the implementation is not finished
-        # It will be removed in the future
-        self.GET_NAMES_KEYS = []
+        # Create the chunks folder if it does not exist
+        os.makedirs(self.chunks_folder, exist_ok=True)
 
-    def obtain_package_names(self, page_size=100, save_chunks = False, save_folder = None) -> List[dict]:
+    def obtain_package_names(self, page_size=100, save_chunks = False) -> List[dict]:
 
         # Get the total number of packages
         # response = requests.get(self.NPM_PACKAGE_REGISTRY_URL)
@@ -57,16 +59,24 @@ class NpmScraper(Scraper):
 
         pages = []
         for i in range(num_pages):
-            page = self.__download_page(last_key, progress_bar, page_size)
+            page = self.__download_page(last_key, page_size)
+
+            # check if the page is empty
+            if len(page) == 0:
+                UtilLogger.logg(f'Empty page {i} of {num_pages}')
+                UtilLogger.logg(f'Last key: {last_key}')
+                continue
+
             pages.append(page)
-            UtilLogger.logg(f'Downloaded page {i} of {num_pages}', 'INFO')
+            UtilLogger.logg(f'Downloaded page {i} of {num_pages}')
 
             # get the last key of the page for the next iter
             last_key = page[-1]['id']
         
+            # Save chunk if is set
             if save_chunks:
-                UtilLogger.logg(f'Saving chunk {i} of {num_pages}', 'INFO')
-                with open(f'{save_folder}/chunk_{i}.json', 'w') as f:
+                UtilLogger.logg(f'Saving chunk {i} of {num_pages}')
+                with open(f'{self.chunks_folder}/chunk_{i}.json', 'w') as f:
                     f.write(str(page))            
 
             progress_bar.update(1)
@@ -77,7 +87,7 @@ class NpmScraper(Scraper):
         return package_names
 
     # Function to download a page of documents
-    def __download_page(self, start_key, progress_bar: tqdm, size: int = 1000, retries: int = 5)-> List[dict]:
+    def __download_page(self, start_key = None, size: int = 1000, retries: int = 5)-> List[dict]:
 
         # Fix for the first page
         if start_key is None:
@@ -86,34 +96,27 @@ class NpmScraper(Scraper):
             encode_start_key = "\"" + start_key + "\""
             params = {'startkey': encode_start_key, 'limit': size}
 
-        # Retry the request if it fails
-        response = self.request_handler.do_request(
-            self.NPM_PACKAGE_LIST_URL, 
-            params=params, retry_count=retries
-        )[1]
+        response = self.request_handler.do_request(self.NPM_PACKAGE_LIST_URL, params=params)[1]
    
         # If the response is None, return an empty list
         if response is None:
-            print('Error getting response')
+            UtilLogger.logg(f'None response at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
             return []
                         
         # If the response returns an error, return an empty list
         try:
             data = response.json()
         except Exception as e:
-            UtilLogger.logg(f'EXCEPTION at __download_page: url={self.NPM_PACKAGE_LIST_URL}', 'ERROR')
-            UtilLogger.logg(f'Error parsing JSON: {e}', 'ERROR')
-            UtilLogger.logg(f'Response: {response.text}', 'ERROR')
-            UtilLogger.logg(f'Params: {params}', 'ERROR')
-            UtilLogger.logg(f'Retrying, times left: {retries}', 'ERROR')
-            return self.__download_page(start_key, progress_bar, size, retries-1)
+            UtilLogger.logg(f'EXCEPTION at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
+            UtilLogger.logg(f'Error parsing JSON: {e}')
+            UtilLogger.logg(f'Response: {response.text}')
+            UtilLogger.logg(f'Params: {params}')
+            UtilLogger.logg(f'Retrying, times left: {retries}')
+            return self.__download_page(start_key, size, retries-1)
             
         if data.keys() == {'error', 'reason'}:
-            return self.__download_page(start_key, progress_bar, size, retries-1)
-        
+            return self.__download_page(start_key, size, retries-1)
         else:
-            progress_bar.update(1)
-
             # Fix of selecting by last key
             return data['rows'][1:]
     
@@ -217,7 +220,6 @@ class NpmScraper(Scraper):
             return None
         
         # Parse the response
-        logging.info(f'Parsing JSON data of {package_name}')
         data = self.parser(response)
 
         # Check if the package exists

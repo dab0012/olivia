@@ -12,6 +12,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 # Fix path
 # ----------------------------------------------------------------------------
 import os, sys, inspect
+
 # Add olivia_finder directory to the path
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -25,22 +26,28 @@ from olivia_finder.scraping.npm import NpmScraper
 from olivia_finder.requests.proxy_handler import ProxyHandler
 from olivia_finder.requests.request_handler import RequestHandler
 from olivia_finder.requests.useragent_handler import UserAgentHandler
+from olivia_finder.logger import LoggerConfiguration
+
+
+LoggerConfiguration()
 
 npm = PackageManager('NPM', 'https://www.npmjs.com')
 
 # Define the request handler
 ph = ProxyHandler()
 uh = UserAgentHandler()
-rh = RequestHandler(ph, uh, use_logger=True)
+rh = RequestHandler(ph, uh, use_logger=True, request_timeout=60)
 
 # Initialize npm scraper
 ns = NpmScraper(rh)
+
+
 
 # get list of packages
 # time test
 print("Getting list of packages...")
 start_time = time.time()
-npm_packages = ns.obtain_package_names()
+npm_packages = ns.obtain_package_names(save_chunks=True)
 print("--- %s seconds ---" % (time.time() - start_time))
 
 # Define output file and folder
