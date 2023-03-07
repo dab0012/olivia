@@ -19,6 +19,9 @@
 # Fix path
 # ----------------------------------------------------------------------------
 import os, sys, inspect
+
+import pandas as pd
+
 # Add olivia_finder directory to the path
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -27,12 +30,14 @@ sys.path.insert(0, parentdir)
 # ----------------------------------------------------------------------------
 
 from olivia_finder.bigquery.librariesio_bigquery import LibrariesioBigQuery
+from olivia_finder.package_manager import PackageManager
+
 
 # Testing the class
 
-libio = LibrariesioBigQuery('NPM')
+libio = LibrariesioBigQuery('CRAN')
 
-# Testing the method get_suported_package_managers
+#Testing the method get_suported_package_managers
 # supoorted_platforms = libio.get_suported_package_managers()
 # print(supoorted_platforms)
 
@@ -41,9 +46,21 @@ libio = LibrariesioBigQuery('NPM')
 # print(package_names)
 
 # Testing the method obtain_package
-package = libio.obtain_package('@specron/sandbox')
+# package_list = libio.obtain_dependency_network()
+# for package in package_list:
+#     package.print()
 
-if package is not None:
-    package.print()
-else:
-    print('Package not found')
+
+pm = PackageManager(
+    data_source=libio,
+    name = 'CRAN'
+)
+
+# # Get package name list
+# package_names = libio.obtain_package_names()
+pm.obtain_packages(extend_repo=True)
+
+df : pd.DataFrame = pm.to_full_adj_list()
+
+# Save the dataframe
+df.to_csv('CRAN.csv', index=False)

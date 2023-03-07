@@ -102,7 +102,7 @@ class PackageManager():
         '''
         return self.data_source.obtain_package(pkg_name)
     
-    def obtain_packages(self, pkg_names: List[str], extend_repo = False) -> List[Package]:
+    def obtain_packages(self, pkg_names: List[str]=None, extend_repo = False) -> List[Package]:
         '''
         Scrape a list of packages from a package manager
 
@@ -120,9 +120,12 @@ class PackageManager():
         List[Package]
             List of Package objects
         '''
-        progress = tqdm.tqdm(total=len(pkg_names))
-        packages = self.data_source.obtain_dependency_network(pkg_names, progress)
-        progress.close()
+        if pkg_names:
+            progress = tqdm.tqdm(total=len(pkg_names))
+            packages = self.data_source.obtain_dependency_network(pkg_names, progress)
+            progress.close()
+        else:
+            packages = self.data_source.obtain_dependency_network()
 
         # Add packages to the repo
         if extend_repo:

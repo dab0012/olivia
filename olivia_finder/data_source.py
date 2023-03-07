@@ -122,7 +122,7 @@ class DataSource(ABC):
         pass
     
     @abstractmethod
-    def obtain_dependency_network(self, pckg_names: List[str]) -> List[Package]:
+    def obtain_dependency_network(self, pckg_names: List[str] = None, progress = None) -> List[Package]:
         '''
         Build a list of Package objects from a list of package names to be
         used as a dependency network

@@ -17,7 +17,7 @@ class Package:
     Class that represents a package
     '''
 
-    def __init__(self, name: str, version: str = None, url: str = None, dependencies: list[Package] = None):
+    def __init__(self, name: str, version: str = None, url: str = None, dependencies: list[Package] = []):
         '''
         Constructor
 
