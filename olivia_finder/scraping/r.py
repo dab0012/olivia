@@ -17,6 +17,7 @@ from typing import Dict, List, Tuple
 from olivia_finder.package import Package
 from olivia_finder.requests.request_handler import RequestHandler
 from olivia_finder.scraping.scraper import Scraper
+from olivia_finder.util import UtilLogger
 
 class RScraper(Scraper, ABC):
     '''
@@ -44,7 +45,6 @@ class RScraper(Scraper, ABC):
         # Return list of dependency objects
         for i in range(len(names)):
             d = Package(
-                repo=self.repo_name,
                 name=names[i],
                 version=versions[i]
             )
