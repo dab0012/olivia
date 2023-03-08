@@ -74,7 +74,7 @@ class RequestHandler:
         # Check number of processes
         recommended_num_processes = UtilMultiThreading.recommended_threads()
         if num_processes > recommended_num_processes:
-            UtilLogger.logg(f"Number of processes ({num_processes}) is greater than the recommended number ({recommended_num_processes}).", "WARNING")
+            UtilLogger.logg(f"Number of processes ({num_processes}) is greater than the recommended number ({recommended_num_processes}).")
             self.NUM_PROCESSES = recommended_num_processes
         elif num_processes < 1:
             raise ValueError("num_processes must be greater than 0")
@@ -115,7 +115,7 @@ class RequestHandler:
                     headers = {'User-Agent': self.useragents_handler.get_next_useragent()}
                     UtilLogger.logg(f"Using user agent: {headers['User-Agent']}")
         except Exception as e:
-            raise RequestError(url, f"Exception getting proxy and user agent: {e}", self.LOGGER) from e
+            raise RequestError(url, f"Exception getting proxy and user agent: {e}") from e
 
         # Do the request
         response = None
@@ -135,7 +135,7 @@ class RequestHandler:
                    
         # Handle exceptions
         except Exception as e:
-            raise RequestError(response, f"Exception doing request: {e}", self.LOGGER) from e
+            raise RequestError(response, f"Exception doing request: {e}") from e
       
     def do_parallel_requests(self, url_list:List[str], param_list:List[dict] = None, progress_bar:tqdm.tqdm = None):
         '''
