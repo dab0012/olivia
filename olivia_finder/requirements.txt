@@ -1,0 +1,7 @@
+pandas
+tqdm
+requests
+BeautifulSoup4
+colorama
+selenium
+webdriver-manager

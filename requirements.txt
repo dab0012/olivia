@@ -1,8 +1,0 @@
-numpy
-pandas
-tqdm
-requests
-BeautifulSoup4
-pickle5
-selenium
-colorama
