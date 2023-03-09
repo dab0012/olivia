@@ -23,7 +23,7 @@ class PackageManager():
 
     # Attributes
     data_source: DataSource
-    packages: List[Package]
+    packages: set[Package]
 
     def __init__(self, data_source: DataSource):
         '''
@@ -38,7 +38,7 @@ class PackageManager():
             raise ValueError("Data source cannot be None")
         
         self.data_source = data_source
-        self.packages = []
+        self.packages = set()
     
     def obtain_package(self, pkg_name: str) -> Package:
         '''
@@ -56,7 +56,12 @@ class PackageManager():
         Package
             Package object
         '''
-        return self.data_source.obtain_package(pkg_name)
+
+        pkg_data = self.data_source.obtain_package_data(pkg_name)
+        if pkg_data is None:
+            return None
+        else:
+            return Package.load(pkg_data)
     
     def obtain_packages(self, pkg_names: Optional[List[str]] = None, extend_repo = False, show_progress: bool = False) -> List[Package]:
         '''
@@ -83,17 +88,21 @@ class PackageManager():
         else:
             progress_bar = None
 
-        packages = self.data_source.obtain_dependency_network(pkg_names, progress_bar=progress_bar)
-        
+        # Obtain the packages
+        package_list = []
+        packages_data = self.data_source.obtain_packages_data(pkg_names, progress_bar=progress_bar)
+        for pkg_data in packages_data:
+            if pkg_data is not None:
+                package_list.append(Package.load(pkg_data))
+
         if progress_bar is not None:
             progress_bar.close()
 
         # Add packages to the repo
         if extend_repo:
-            self.packages += packages
-            self.packages = list(set(self.packages))
+            self.packages.update(package_list)
 
-        return packages
+        return package_list
 
     def to_dict(self) -> dict:
         '''

@@ -12,7 +12,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 
 import pandas as pd
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import tqdm
 
@@ -79,38 +79,37 @@ class DataSource(ABC):
 
         ---
         Returns
-        -   List[str]   (List of package names)
+        -   List[str] -> List of package names
         """
         pass
 
     @abstractmethod
-    def obtain_package(self, package_name: str) -> Package:
+    def obtain_package_data(self, package_name: str) -> Dict:
         """
-        Obtains the package from the data source given its name.
-        To be implemented in subclasses.
+        Obtains the data of a package from the data source.
 
         ---
         Parameters
-        -   package_name: str  (Name of the package)
+        -   package_name: str -> Name of the package to be obtained
 
         ---
         Returns
-        -   Package (Package object)
+        -   Dict -> Dictionary with the data of the package
         """
         pass
     
     @abstractmethod
-    def obtain_dependency_network(self, pckg_names: Optional[List[str]] = None, progress_bar: Optional[tqdm.tqdm] = None) -> List[Package]:
+    def obtain_packages_data(self, pckg_names: Optional[List[str]] = None, progress_bar: Optional[tqdm.tqdm] = None) -> List[Dict]:
         '''
-        Build a list of Package objects from a list of package names to be used as a dependency network
+        Obtains the data of a list of package names from the data source.
 
         ---
         Parameters
-        -   pckg_names: List[str]   -> List of package names to be used as a dependency network
-        -   progress_bar: tqdm.tqdm -> Progress bar to be used to show the progress of the operation
+        -   pckg_names: List[str]  -> List of package names to be obtained
+        -   progress_bar: tqdm.tqdm -> Progress bar to show the progress
 
         ---
         Returns
-        -   List[Package] -> List of Package objects
+        -   List[Dict] -> List of dictionaries with the data of the packages
         '''
         pass

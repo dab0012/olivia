@@ -11,10 +11,11 @@ Copyright (c) 2023 Daniel Alonso Báscones
 '''
 
 import requests
-from typing import Dict, Optional, Union, List
-from bs4 import BeautifulSoup
-from ..util import Util, UtilLogger
-from .r import RScraper                                         
+from typing     import Dict, Optional, Union, List
+from bs4        import BeautifulSoup
+from .r         import RScraper                                         
+from .scraper   import ScraperError
+from ..util     import Util, UtilLogger
 from ..requests.request_handler import RequestHandler
 
 # Selenium imports (for scraping JavaScript pages)
@@ -71,7 +72,6 @@ class BiocScraper(RScraper):
         
         # Create the driver
         
-
         try:
             driver_options = webdriver.FirefoxOptions()
             driver_options.headless = True
@@ -198,27 +198,23 @@ class BiocScraper(RScraper):
         This function has to be called from the get_pkg_data function.
         Obtain the data through HTML scraping on the page, in addition, if any of the optional data is not found, the rest of the data is continued
 
+        ---
         Parameters
-        ----------
-        pkg_name : str
-            Name of the package
+        -   pkg_name: str -> Name of the package to get the data
 
+        ---
         Returns
-        -------
-        Dict[str, str]
-            Dictionary with the data of the package
-
-        Raises
-        ------
-        Exception
-            If the package is not found or any of the optional data is not found
-            If any of the optional data is not found, the scraper will continue handling the rest of the data
-
+        -   Union[Dict[str, str], None] -> Dictionary with the data of the package if the operation is successful, None otherwise
         '''
 
         # Make HTTP request to package page, the package must exist, otherwise an exception is raised
         url = f'{self.BIOCONDUCTOR_PACKAGE_DATA_URL}{pkg_name}.html'
         response = self.request_handler.do_request(url)[1]
+
+        # Check if response is valid (not 404)
+        if response.status_code == 404:
+            UtilLogger.log(f'Package {pkg_name} not found')
+            raise ScraperError(f'Package {pkg_name} not found')
 
         # Parse the response
         response_data = self.parser(response)

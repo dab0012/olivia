@@ -66,7 +66,7 @@ class CSVNetwork(DataSource):
         """
         pass
 
-    def obtain_package(self, package_name: str) -> Package:
+    def obtain_package_data(self, package_name: str) -> Package:
         """
         Obtains the package from the dataframe.
 
@@ -92,7 +92,7 @@ class CSVNetwork(DataSource):
 
     
     @abstractmethod
-    def obtain_dependency_network(self, pckg_names: List[str] = None, progress = None) -> List[Package]:
+    def obtain_packages_data(self, pckg_names: List[str] = None, progress = None) -> List[Package]:
         '''
         Build a list of Package objects from a list of package names to be
         used as a dependency network

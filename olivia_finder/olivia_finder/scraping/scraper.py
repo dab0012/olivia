@@ -15,7 +15,6 @@ from typing_extensions import override
 from typing import Dict, List, Union
 from abc import abstractmethod
 from ..data_source import DataSource
-from ..package import Package
 from ..requests.request_handler import RequestHandler
 from ..util import UtilLogger
 
@@ -54,12 +53,11 @@ class Scraper(DataSource):
 
     # Overrided methods
     # -----------------
-
     @override
-    def obtain_package(self, pkg_name: str) -> Package:
+    def obtain_package_data(self, pkg_name: str) -> Dict:
         """
-        Obtain a Package object from a package name
-        -   Implements :func:`DataSource.obtain_package`
+        Scrape a package from a package manager
+        -   Implements :func:`DataSource.obtain_package_data`
 
         ---
         Parameters
@@ -67,37 +65,26 @@ class Scraper(DataSource):
 
         ---
         Returns
-        -   Package -> Package object
+        -   Dict -> Package data
         """
-
-        # Get package data from HTML scraping
         UtilLogger.log(f'Scraping package {pkg_name}')
         pkg_data = self.scrape_package_data(pkg_name)
+        return pkg_data
 
-        if not pkg_data:
-            UtilLogger.log(f'Error scraping package {pkg_name}')
-            return None
-
-        return Package(
-                name=pkg_name,
-                version=pkg_data.get('version'),
-                url=pkg_data.get('url'),
-                dependencies=pkg_data.get('dependencies'))
-
-    @override
-    def obtain_dependency_network(self, pckg_names: list[str] = None, progress_bar: tqdm.tqdm = None) -> List[Package]:
+    @override 
+    def obtain_packages_data(self, pckg_names: list[str] = None, progress_bar: tqdm.tqdm = None) -> List[Dict]:
         '''
-        Build a list of Package objects from a list of package names
-        -   Implements :func:`DataSource.obtain_dependency_network`
+        Scrape a list of packages from a package manager
+        -   Implements :func:`DataSource.obtain_packages_data`
 
         ---
         Parameters
-        -   pckg_names: list[str]   -> List of package names
+        -   pckg_names: list[str]  -> List of package names
         -   progress_bar: tqdm.tqdm -> Progress bar
 
         ---
         Returns
-        -   List[Package] -> List of Package objects
+        -   List[Dict] -> List of package data
         '''
 
         # If pckg_names is None, obtain the package names from the data source
@@ -126,15 +113,7 @@ class Scraper(DataSource):
 
             # Parse the soruce data
             package_data = self.parser(response)
-
-            # Build the Package object
-            p = Package(
-                name=package_data.get('name'),
-                version=package_data.get('version'),
-                url=package_data.get('url'),
-                dependencies=package_data.get('dependencies'))
-
-            packages.append(p)
+            packages.append(package_data)
 
         return packages
 
@@ -152,3 +131,22 @@ class Scraper(DataSource):
     @abstractmethod
     def scrape_package_data(self, pkg_name: str) -> Union[Dict[str, str], None]:
         pass
+
+class ScraperError(Exception):
+    """
+    Exception for the Scraper class
+    """
+    
+    def __init__(self, message: str):
+        '''
+        Constructor
+        
+        ---
+        Parameters
+        -   message: str -> Error message
+        '''
+        self.message = message
+        UtilLogger.log(f'ScraperError: {message}')
+
+    def __str__(self):
+        return self.message
