@@ -10,14 +10,11 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
+import tqdm
 import pandas as pd
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
-
-import tqdm
-
-from .util import UtilLogger
-from .package import Package
+from .util.logger import UtilLogger
 
 class DataSource(ABC):
     """
@@ -113,3 +110,16 @@ class DataSource(ABC):
         -   List[Dict] -> List of dictionaries with the data of the packages
         '''
         pass
+
+
+    def enable_logger(self):
+        """
+        Enables the logger
+        """
+        UtilLogger.enable_logger()
+
+    def disable_logger(self):
+        """
+        Disables the logger
+        """
+        UtilLogger.disable_logger()

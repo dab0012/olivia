@@ -15,7 +15,7 @@ from abc import ABC, abstractmethod
 from typing import List
 from bs4 import BeautifulSoup
 import requests
-from ..util import UtilLogger
+from ..util.logger import UtilLogger
 
 class ProxyBuilder(ABC):
     '''

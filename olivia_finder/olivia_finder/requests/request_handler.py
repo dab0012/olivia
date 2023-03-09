@@ -10,14 +10,14 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
-import tqdm
+import tqdm, requests
 from typing import List, Optional, Tuple, Union
 from threading import Lock
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from ..util import UtilLogger, UtilMultiThreading
 from .proxy_handler import ProxyHandler
 from .useragent_handler import UserAgentHandler
-import requests
+from ..util.logger import UtilLogger
+from ..util.util import Util
 
 class RequestHandler:
     '''
@@ -77,7 +77,7 @@ class RequestHandler:
         self.REQUEST_TIMEOUT = request_timeout
 
         # Check number of processes
-        recommended_num_processes = UtilMultiThreading.recommended_threads()
+        recommended_num_processes = Util.recommended_threads()
         if num_processes > recommended_num_processes:
             UtilLogger.log(f"Number of processes ({num_processes}) is greater than the recommended number ({recommended_num_processes}).")
             self.NUM_PROCESSES = recommended_num_processes

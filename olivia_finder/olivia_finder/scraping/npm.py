@@ -10,14 +10,14 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
-import os
-import requests
+import os, requests
 from typing import List
 from tqdm import tqdm
-from ..requests.request_handler import RequestHandler
 from .scraper import Scraper
+from ..util.config_ini import Configuration
+from ..util.logger import UtilLogger
+from ..requests.request_handler import RequestHandler
 from ..package import Package
-from ..util import UtilConfig, UtilLogger
 
 class NpmScraper(Scraper):
     '''
@@ -39,7 +39,7 @@ class NpmScraper(Scraper):
             RequestHandler object to make HTTP requests
         '''
         super().__init__(rh, 'NPM')
-        self.output_folder = UtilConfig.get_value_config_file("folders", "persistence_dir")
+        self.output_folder = Configuration().get_key("folders", "persistence_dir")
         self.chunks_folder = self.output_folder + '/chunks'
 
         # Create the chunks folder if it does not exist

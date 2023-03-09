@@ -15,8 +15,9 @@ from typing     import Dict, Optional, Union, List
 from bs4        import BeautifulSoup
 from .r         import RScraper                                         
 from .scraper   import ScraperError
-from ..util     import Util, UtilLogger
 from ..requests.request_handler import RequestHandler
+from ..util.logger import UtilLogger
+from ..util.util import Util
 
 # Selenium imports (for scraping JavaScript pages)
 from selenium import webdriver                                    
@@ -184,7 +185,7 @@ class BiocScraper(RScraper):
         return {
             'name': name,
             'version': version,
-            'dependencies': list(set(dep_list + imp_list)),
+            'dependencies': dep_list + imp_list,
             'url': url
         }
 

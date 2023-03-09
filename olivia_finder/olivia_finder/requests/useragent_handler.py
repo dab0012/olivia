@@ -13,17 +13,20 @@ Copyright (c) 2023 Daniel Alonso Báscones
 from typing import List
 import logging, random, requests
 from bs4 import BeautifulSoup
-from ..util import Util, UtilConfig, UtilLogger
+from ..util.logger import UtilLogger
+from ..util.config_ini import Configuration
+from ..util.util import Util
 
 class UserAgentHandler():
     '''Handles useragents'''
 
     # Attributes
     # ----------------
-    USERAGENTSTRING_URL                 =   'https://www.useragentstring.com/pages/useragentstring.php?name=All'
-    useragents_list: List[str]
-    LOGER: logging.Logger
+    USERAGENTSTRING_URL = 'https://www.useragentstring.com/pages/useragentstring.php?name=All'
     DATA_FILE: str
+
+    useragents_list: List[str]
+    my_logger: logging.Logger
 
     def __init__(self) -> None:
         '''
@@ -36,7 +39,7 @@ class UserAgentHandler():
         '''
 
         loaded_with_file = loaded_with_api = False
-        self.DATA_FILE = UtilConfig.get_value_config_file("folders", "data_dir") + "useragents.txt"
+        self.DATA_FILE = Configuration().get_key("folders", "data_dir") + "useragents.txt"
 
         # Load useragents from file
         loaded_with_file = self._load_from_file(self.DATA_FILE)

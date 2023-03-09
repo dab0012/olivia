@@ -110,7 +110,7 @@ class Package:
         if 'url' in data:
             self.url = data['url']
         if 'dependencies' in data:
-            self.dependencies = data['dependencies']
+            self.dependencies = set(data['dependencies'])
             
     @classmethod
     def load(cls, data):
@@ -128,7 +128,14 @@ class Package:
             Package loaded from the dictionary
         '''
 
-        package = cls(data['name'], data['version'], data['url'], data['dependencies'])
+        # Create the packages of the dependencies
+        dependencies = []
+        for dependency in data['dependencies']:
+            p = Package(dependency['name'], dependency['version'])
+            dependencies.append(p)
+
+
+        package = cls(data['name'], data['version'], data['url'], dependencies)
         return package
 
     def to_dict(self):

@@ -16,7 +16,7 @@ from typing import Dict, List, Union
 from abc import abstractmethod
 from ..data_source import DataSource
 from ..requests.request_handler import RequestHandler
-from ..util import UtilLogger
+from ..util.logger import UtilLogger
 
 class Scraper(DataSource):
     """
@@ -37,7 +37,11 @@ class Scraper(DataSource):
         -   name: str                           -> Name of the data source
         -   description: str                    -> Description of the data source
         -   request_handler: RequestHandler     -> Object to perform the requests
+        -   use_logger: bool                    -> Use the logger
         """
+
+        # Call the super constructor
+        super().__init__(name, description, use_logger)
 
         # if request_handler is None build a generic RequestHandler
         if request_handler is None:
@@ -48,8 +52,7 @@ class Scraper(DataSource):
         # Initialize the not_found list for storing the packages that are not found
         self.not_found = []
 
-        # Call the super constructor
-        super().__init__(name, description, use_logger)
+
 
     # Overrided methods
     # -----------------

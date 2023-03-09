@@ -16,7 +16,7 @@ from typing import Dict, List, Tuple
 from ..package import Package
 from ..requests.request_handler import RequestHandler
 from .scraper import Scraper
-from ..util import UtilLogger
+from ..util.logger import UtilLogger
 
 class RScraper(Scraper, ABC):
     '''
@@ -37,7 +37,7 @@ class RScraper(Scraper, ABC):
         # Call the super constructor
         super().__init__(name, description, request_handler, use_logger)
 
-    def parse_dependencies(self, dependencies_str) -> List[Tuple[str, str]]:
+    def parse_dependencies(self, dependencies_str) -> List[Dict[str, str]]:
         '''
         Parse the dependencies string and return a list of tuples with the name and version of each dependency
 
@@ -47,7 +47,7 @@ class RScraper(Scraper, ABC):
 
         ---
         Returns
-        -   List[Tuple[str, str]] -> List of tuples with the name and version of each dependency
+        -   List[Dict[str, str]] -> List of dictionaries with the name and version of each dependency
         '''
 
         # Remove unnecessary line breaks, tabs, and spaces
@@ -62,14 +62,13 @@ class RScraper(Scraper, ABC):
             UtilLogger.log(f'Error parsing dependencies in RScraper.__parse_dependencies: {names} {versions}')
             return []
 
+        # Return list of dependency dictionaries
         dependencies = []
-        # Return list of dependency objects
         for i in range(len(names)):
-            d = Package(
-                name=names[i],
-                version=versions[i]
-            )
-            dependencies.append(d)
+            dependencies.append({
+                'name': names[i],
+                'version': versions[i]
+            })
 
         return dependencies
 

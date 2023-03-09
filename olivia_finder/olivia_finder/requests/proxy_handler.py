@@ -13,7 +13,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 from logging import Logger
 from typing import List, Optional, Union 
 from .proxy_builder import ProxyBuilder
-from ..util import UtilLogger
+from ..util.logger import UtilLogger
 
 class ProxyHandler():
     '''Handles proxy rotation and proxy usage'''

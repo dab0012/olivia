@@ -13,10 +13,11 @@ Copyright (c) 2023 Daniel Alonso Báscones
 import requests
 from bs4 import BeautifulSoup
 from typing import Dict, Union, List
-from ..util import Util, UtilLogger
 from .r import RScraper     
 from .scraper import Scraper
 from ..requests.request_handler import RequestHandler
+from ..util.logger import UtilLogger
+from ..util.util import Util
 
 class CranScraper(RScraper, Scraper):
     '''

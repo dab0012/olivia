@@ -14,10 +14,10 @@ import requests
 from typing_extensions import override
 from typing import Dict, List, Union
 from bs4 import BeautifulSoup
-from ..requests.request_handler import RequestHandler
 from .scraper import Scraper
+from ..requests.request_handler import RequestHandler
 from ..package import Package
-from ..util import UtilLogger
+from ..util.logger import UtilLogger
 
 class PypiScraper(Scraper):
     ''' 
