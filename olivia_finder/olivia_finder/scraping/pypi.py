@@ -14,7 +14,7 @@ import requests
 from typing_extensions import override
 from typing import Dict, List
 from bs4 import BeautifulSoup
-from olivia_finder.scraping.scraper import Scraper
+from olivia_finder.scraping.scraper import Scraper, ScraperError
 from olivia_finder.requests.request_handler import RequestHandler
 
 class PypiScraper(Scraper):
@@ -76,13 +76,13 @@ class PypiScraper(Scraper):
         try:
             # Get the list of packages
             pakage_list = [a.text for a in soup.find_all('a')]
-        except Exception:
-            return []
+        except Exception as e:
+            raise ScraperError(f'Error obtaining the list of packages from {self.PYPI_PACKAGE_LIST_URL}') from e
         
         return pakage_list
     
     @override
-    def _Scraper_build_url(self, pkg_name: str) -> str:
+    def _build_url(self, pkg_name: str) -> str:
         '''
         Build the URL to scrape a package
         Implements the abstract method of Scraper class
@@ -99,7 +99,7 @@ class PypiScraper(Scraper):
         return f'{self.PYPI_PACKAGE_DATA_URL}{pkg_name}/json'
 
     @override
-    def _Scraper__parser(self, response: requests.Response) -> Dict:
+    def _parser(self, response: requests.Response) -> Dict:
         '''
         Parse the JSON data of a package and return the package data as a dictionary
         
@@ -127,10 +127,21 @@ class PypiScraper(Scraper):
 
         dependencies = []
         if data['info']['requires_dist'] is not None:
-            dependencies.extend(
-                dependency.split(' ')[0]    # The name of the dependency
-                for dependency in data['info']['requires_dist']
-            )
+            dependencies_raw = data['info']['requires_dist']
+            
+            # Build a dictionary with the dependencies to avoid duplicates with different versions
+            dependencies_dict = {}
+            
+            for dependency in dependencies_raw:
+                
+                # Split the dependency in name and version
+                dependency_data = dependency.split(' ')
+                dependencies_dict[dependency_data[0]] = dependency_data[1]
+                
+            # Build the list of dependencies as dictionaries
+            dependencies = [{'name': name, 'version': version} for name, version in dependencies_dict.items()]
+            
+            
         # Build the dictionary and return it
         return {
             'name': data['info']['name'],

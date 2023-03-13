@@ -13,10 +13,8 @@ Copyright (c) 2023 Daniel Alonso Báscones
 import re
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
-from typing_extensions import override
 from olivia_finder.requests.request_handler import RequestHandler
 from olivia_finder.scraping.scraper import Scraper
-from olivia_finder.util.logger import UtilLogger
 
 class RScraper(Scraper, ABC):
     '''
@@ -43,7 +41,7 @@ class RScraper(Scraper, ABC):
         '''
         super().__init__(name, description, request_handler)
 
-    def __parse_dependencies(self, dependencies_str: str) -> List[Dict[str, str]]:
+    def _parse_dependencies(self, dependencies_str: str) -> List[Dict[str, str]]:
         '''
         Parse the dependencies string and return a list of tuples with the name and version of each dependency
         This method is used common of all the scrapers that implement this class so it is private and it is called from the

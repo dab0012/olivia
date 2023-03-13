@@ -14,6 +14,7 @@ import tqdm, pandas as pd
 from typing import Dict, List, Optional, Union
 from olivia_finder.package import Package
 from olivia_finder.data_source import DataSource
+import pickle
 
 class PackageManager():
     '''
@@ -45,7 +46,7 @@ class PackageManager():
 
     # Attributes
     data_source: DataSource
-    packages: Dict[Package]
+    packages: Dict[str, Package]
 
     def __init__(self, data_source: DataSource):
         '''
@@ -56,6 +57,20 @@ class PackageManager():
 
         self.data_source = data_source
         self.packages = {}
+    
+    def save(self, path:str):
+        '''
+        Save the package manager to a file
+        
+        Parameters
+        ----------
+        path : str
+            Path of the file to save the package manager
+        '''
+        # Use pickle to save the package manager
+        
+        with open(path, "wb") as f:
+            pickle.dump(self, f, protocol=pickle.HIGHEST_PROTOCOL)   
     
     # --------------------------------
     #region Builders
@@ -80,6 +95,9 @@ class PackageManager():
         '''
 
         package_data = self.data_source.obtain_package_data(package_name)
+        
+        
+        
         return None if package_data is None else Package.load(package_data)
     
     def obtain_packages(
@@ -128,7 +146,8 @@ class PackageManager():
 
         # Add packages to the repo
         if extend:
-            self.packages.update(package_list)
+            for package in package_list:
+                self.packages[package.name] = package
 
         return package_list
 

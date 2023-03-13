@@ -12,13 +12,12 @@ Copyright (c) 2023 Daniel Alonso Báscones
 
 import requests
 from bs4 import BeautifulSoup
-from typing import Dict, Optional, Union, List
+from typing import Dict, Optional, List
 from typing_extensions import override
+from olivia_finder.scraping.scraper import ScraperError
 from olivia_finder.requests.request_handler import RequestHandler
 from olivia_finder.util.util import Util
 from olivia_finder.scraping.r import RScraper 
-from olivia_finder.util.logger import UtilLogger                                        
-from olivia_finder.scraping.scraper import ScraperError
 
 # Selenium imports (for scraping JavaScript pages)
 from selenium import webdriver                                    
@@ -67,14 +66,19 @@ class BiocScraper(RScraper):
         super().__init__(name, description, request_handler)
 
     @override
-    def obtain_package_names(self) -> Union[List[str], None]:
+    def obtain_package_names(self) -> List[str]:
         '''
         Get the list of packages from the Bioconductor website
 
         Returns
         -------
-        Union[List[str], None]
-            The list of packages or None if an error occurred
+        List[str]
+            List of package names
+            
+        Raises
+        ------
+        ScraperError
+            If the list of packages cannot be obtained
             
         Example
         -------
@@ -103,16 +107,16 @@ class BiocScraper(RScraper):
                 options = driver_options, 
                 # executable_path = driver_path
             )
-        except Exception as e:
-            return None
+        except ScraperError("Exception occurred while creating the Selenium driver.") as e:
+            raise e
 
         # Scraping webpage with package list
         try:
             driver.get(self.BIOCONDUCTOR_LIST_URL)
             table = driver.find_element(By.ID, "biocViews_package_table")
             table_content = table.get_attribute("innerHTML")
-        except Exception as e:
-            return None
+        except ScraperError("Exception occurred while scraping the Bioconductor website.") as e:
+            raise e
 
         # Close the driver
         driver.close()
@@ -127,13 +131,16 @@ class BiocScraper(RScraper):
                     for cell in row.find_all("td")
                     if cell.find("a")
                 )
-        except Exception as e:
-            return None
-
+        except ScraperError("Exception occurred while processing the HTML.") as e:
+            raise e
+        
+        # Sort the list of packages
+        packages.sort()
+        
         return packages
     
     @override
-    def _Sraper__build_url(self, package_name: str) -> str:
+    def _build_url(self, package_name: str) -> str:
         '''
         Build the URL of the package page in the Bioconductor website
 
@@ -150,7 +157,7 @@ class BiocScraper(RScraper):
         return f'{self.BIOCONDUCTOR_PACKAGE_DATA_URL}{package_name}.html'
 
     @override
-    def _Scraper__parser(self, response: requests.Response) -> Dict[str, str]:
+    def _parser(self, response: requests.Response) -> Dict[str, str]:
         '''
         Parse the response from the Bioconductor website
         It's obtained from the list of packages in the Bioconductor website
@@ -185,17 +192,22 @@ class BiocScraper(RScraper):
                 elif cells[0].text == 'Depends':
                     depends = Util.clean_string(cells[1].text.strip())
                     if depends != '':
-                        dep_list = self.__parse_dependencies(depends)
+                        dep_list = self._parse_dependencies(depends)
                 elif cells[0].text == 'Imports':
                     imports = Util.clean_string(cells[1].text.strip())
                     if imports != '':
-                        imp_list = self.__parse_dependencies(imports)
+                        imp_list = self._parse_dependencies(imports)
+                        
+        # Remove duplicates from the dependencies
+        for dep in dep_list:
+            if dep in imp_list:
+                imp_list.remove(dep)
 
         # Return the data
         return {
             'name': name,
             'version': version,
-            'dependencies': list(set(dep_list + imp_list)),
+            'dependencies': list(dep_list + imp_list),
             'url': url
         }
 

@@ -18,7 +18,6 @@ from olivia_finder.scraping.scraper import Scraper
 from olivia_finder.util.config_ini import Configuration
 from olivia_finder.util.logger import UtilLogger
 from olivia_finder.requests.request_handler import RequestHandler
-from olivia_finder.package import Package
 
 class NpmScraper(Scraper):
     '''

@@ -107,14 +107,7 @@ class UtilLogger:
         '''
         UtilLogger.STATUS = True
         logging.disable(logging.NOTSET)
-
-        # Enable configured levels, if not, set to DEBUG
-        try:
-            level = int(Configuration().get_key("logger", "level"))
-        except Exception:
-            level = logging.DEBUG
-
-        logging.getLogger().setLevel(level)
+        UtilLogger.init_logger()
 
 
     @staticmethod

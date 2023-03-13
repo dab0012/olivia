@@ -15,7 +15,7 @@ from typing_extensions import override
 from bs4 import BeautifulSoup
 from typing import Dict, List, Optional
 from olivia_finder.scraping.r import RScraper
-from olivia_finder.scraping.scraper import Scraper
+from olivia_finder.scraping.scraper import Scraper, ScraperError
 from olivia_finder.requests.request_handler import RequestHandler
 from olivia_finder.util.logger import UtilLogger
 from olivia_finder.util.util import Util
@@ -90,24 +90,25 @@ class CranScraper(RScraper, Scraper):
 
         # We iterate over each row of the table to get the names of the packages
         for row in rows:
-            if cells := row.find_all("td"):
-                try: 
-                    # We extract the name of the package
-                    # The name is in the first cell of the row
-                    package_name = cells[0].find("a").text   
+            if not (cells := row.find_all("td")):
+                continue
+            try: 
+                # We extract the name of the package
+                # The name is in the first cell of the row
+                package_name = cells[0].find("a").text   
 
-                    # We add the package name to the list of packages
-                    packages.append(package_name)
-                    UtilLogger.log(f'Package {package_name} added to the list of packages')
+                # We add the package name to the list of packages
+                packages.append(package_name)
+                UtilLogger.log(f'Package {package_name} added to the list of packages')
 
-                # If an error occurs, we show the error message
-                except Exception:
-                    continue
+            # If an error occurs, we show the error message
+            except ScraperError("Error while obtaining the name of a package"):
+                continue
 
         return packages
 
     @override
-    def _Scraper__build_url(self, package_name: str) -> str:
+    def _build_url(self, package_name: str) -> str:
         '''
         Build the URL of a package page in the CRAN website
 
@@ -125,7 +126,7 @@ class CranScraper(RScraper, Scraper):
         return f'{self.CRAN_PACKAGE_DATA_URL}{package_name}'
 
     @override
-    def _Scraper__parser(self, response: requests.Response) -> Dict[str, str]:
+    def _parser(self, response: requests.Response) -> Dict[str, str]:
         '''
         Parse the HTML of a package page in the CRAN website
 
@@ -152,23 +153,23 @@ class CranScraper(RScraper, Scraper):
 
         # Get package version
         version = None
-        with contextlib.suppress(Exception):
+        with contextlib.suppress(ScraperError(f"Error while obtaining the version of the package {name}")):
             d = soup.find('td', text='Version:').find_next_sibling('td').text
             version = Util.clean_string(d)
 
         # Get depends
         dep_list = []
-        with contextlib.suppress(Exception):
+        with contextlib.suppress(ScraperError(f"Error while obtaining the dependencies of the package {name}")):
             d = soup.find('td', text='Depends:').find_next_sibling('td').text
             depends = Util.clean_string(d)
-            dep_list = self.__parse_dependencies(depends)
+            dep_list = self._parse_dependencies(depends)
 
         # Get imports
         imp_list = []
-        with contextlib.suppress(Exception):
+        with contextlib.suppress(ScraperError(f"Error while obtaining the imports of the package {name}")):
             d = soup.find('td', text='Imports:').find_next_sibling('td').text
             imports = Util.clean_string(d)
-            imp_list = self.__parse_dependencies(imports)
+            imp_list = self._parse_dependencies(imports)
             
         # Build dictionary with package data
         # we consider that dependencies and imports are the same level of importance

@@ -12,7 +12,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 
 import requests, tqdm
 from typing_extensions import override
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Tuple
 from abc import abstractmethod
 from olivia_finder.data_source import DataSource
 from olivia_finder.requests.request_handler import RequestHandler
@@ -42,6 +42,7 @@ class Scraper(DataSource):
     # Attributes
     # ----------
     request_handler: RequestHandler
+    not_found: List[str]
 
     def __init__(
         self, 
@@ -67,7 +68,7 @@ class Scraper(DataSource):
 
     #region Private methods
 
-    def __build_urls(self, package_names: List[str]) -> List[str]:
+    def _build_urls(self, package_names: List[str]) -> List[str]:
         '''
         Build the urls for scraping the packages of the package_names list
         
@@ -82,10 +83,10 @@ class Scraper(DataSource):
             List of urls to scrape
         '''
         
-        return [self.__build_url(package_name) for package_name in package_names]
+        return [self._build_url(package_name) for package_name in package_names]
     
     @abstractmethod
-    def __build_url(self, package_name: str) -> str:
+    def _build_url(self, package_name: str) -> str:
         '''
         Build the url for scraping the package
         To be implemented by the child class
@@ -93,7 +94,7 @@ class Scraper(DataSource):
         pass
         
     @abstractmethod 
-    def __parser(self, response: requests.Response) -> Dict[str, str]:
+    def _parser(self, response: requests.Response) -> Dict[str, str]:
         '''
         Parse the response from the request, it should return a dictionary with the package data
         as string values.
@@ -162,15 +163,14 @@ class Scraper(DataSource):
         # Get the package page
         UtilLogger.log(f'Scraping package {package_name}')
         response = self.request_handler.do_request(
-            self.__build_url(package_name)
+            self._build_url(package_name)
         )[1]
 
         # Return None if the package is not found, otherwise return the package data
-        parsed_response = None if response.status_code == 404 else self.__parser(response)
+        parsed_response = None if response.status_code == 404 else self._parser(response)
 
         if parsed_response is None:
-            self.not_found.append(package_name)
-            UtilLogger.log(f'Package {package_name} not found')
+            raise ScraperError(f'Package {package_name} not found')
         else:
             UtilLogger.log(f'Package {package_name} scraped successfully')
             
@@ -182,7 +182,7 @@ class Scraper(DataSource):
         package_names:  Optional[List[str]] = None,
         progress_bar:   Optional[tqdm.tqdm] = None,
         full_scrape:    Optional[bool] = False
-    ) -> List[Dict]:
+    ) -> Tuple[List[Dict], List[str]]:
         '''
         Scrape a list of packages from a package manager, if the package is not found, it is added to the not_found list
         Implements the abstract method of the DataSource class
@@ -199,8 +199,8 @@ class Scraper(DataSource):
     
         Returns
         -------
-        List[Dict]
-            List of package data as a dictionary, if the package is not found, it returns None
+        Tuple[list[dict], list[str]]
+            Tuple with the list of packages data and the list of packages not found
             
         Examples
         --------
@@ -241,23 +241,25 @@ class Scraper(DataSource):
 
         # Build the urls
         UtilLogger.log('Building urls')
-        urls = self.__build_urls(package_names)
+        urls = self._build_urls(package_names)
 
         # Do the requests with the RequestHandler parallelism
         responses = self.request_handler.do_parallel_requests(urls, progress_bar=progress_bar)
 
         # Parse the responses
         packages = []
+        not_found = []
         for key_url in responses.keys():
             response = responses[key_url]
 
             # Check if the package exists
             if response.status_code == 404:
+                not_found.append(key_url)
                 UtilLogger.log(f'Package {key_url} not found, status code: {response.status_code}, url: {response.url}, skipping...')
                 continue
 
             # Parse the source data and add it to the list
-            packages.append(self.__parser(response))
+            packages.append(self._parser(response))
 
         return packages
 
@@ -282,11 +284,12 @@ class ScraperError(Exception):
         Message of the exception
     """
     
-    def __init__(self, message: str):
+    def __init__(self, message: str = ''):
         '''Constructor'''
         
+        
         self.message = message
-        UtilLogger.log(f'ScraperError: {message}')
+        UtilLogger.log(str(self))
 
     def __str__(self):
         """
@@ -297,4 +300,5 @@ class ScraperError(Exception):
         str
             String representation of the exception
         """
-        return self.message
+        return (f'ScraperError: {self.message}\n{str(super.__name__)}')
+    

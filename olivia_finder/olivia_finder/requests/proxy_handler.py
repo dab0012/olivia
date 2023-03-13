@@ -82,7 +82,7 @@ class ProxyHandler():
         # proxy rotation
         proxy = self.proxy_list.pop(0)
         self.proxy_list.append(proxy)
-        UtilLogger.log(f"Proxy list rotated, new: {self.proxy_list[0]}")
+        UtilLogger.log(f"Proxy list rotated, using {proxy}, next will be {self.proxy_list[0]}")
 
         # Handle proxy usage lifetime
         self.__handle_lifetime(proxy)
@@ -104,7 +104,10 @@ class ProxyHandler():
             Proxy as str f'http://{ip}:{port}'    
         '''
         # add proxy to dict if it is not there or increase its usage           
-        self.proxy_uses[proxy] += 1 if proxy in self.proxy_uses else 1
+        if proxy not in self.proxy_uses:
+            self.proxy_uses[proxy] = 1
+        else:
+            self.proxy_uses[proxy] += 1
 
         # remove proxy if it has been used more than the limit
         if self.proxy_uses[proxy] > self.PROXY_MAX_USES:

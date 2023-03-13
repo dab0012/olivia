@@ -13,6 +13,7 @@ import tqdm, os, pandas as pd
 from typing import Dict, List, Optional
 from typing_extensions import override
 from olivia_finder.data_source import DataSource
+from olivia_finder.util.logger import UtilLogger
 
 class CSVNetwork(DataSource):
     """
@@ -106,6 +107,7 @@ class CSVNetwork(DataSource):
     #region Overridden methods
     @override
     def obtain_package_names(self) -> List[str]:
+        # sourcery skip: inline-immediately-returned-variable, skip-sorted-list-construction
         """
         Obtains the list of packages from the data source, sorted alphabetically.
 
@@ -115,7 +117,9 @@ class CSVNetwork(DataSource):
             The list of package names in the data source        
         """
         package_names = list(self.data[self.dependent_field].unique())
-        return package_names.sort()
+        package_names.sort()
+        
+        return package_names
     
     @override
     def obtain_package_data(self, package_name: str) -> Dict:
@@ -135,8 +139,22 @@ class CSVNetwork(DataSource):
 
         # Get the dat rows of the package
         package_rows = self.data[self.data[self.dependent_field] == package_name]
-        data = {row[self.dependency_field]: row["version"] for row in package_rows.iterrows()[1]}
-        return data
+        
+        if package_rows.empty:
+            UtilLogger.log(f"Package {package_name} not found in data.")
+            raise ValueError(f"Package {package_name} not found in data.")
+
+        dependencies_data = package_rows.values.tolist()
+        dependencies = [
+            {"name": dependency_data[3], "version": dependency_data[4]} for dependency_data in dependencies_data
+        ]
+        # Return the data
+        return {
+            "name": package_name,
+            "version": package_rows.iloc[0]["version"],
+            "url": package_rows.iloc[0]["url"],
+            "dependencies": dependencies
+        }
     
     @override
     def obtain_packages_data(self, package_name_list: Optional[List[str]] = None, progress_bar: Optional[tqdm.tqdm] = None) -> List[Dict]:
@@ -161,9 +179,19 @@ class CSVNetwork(DataSource):
         if package_name_list is None:
             package_name_list = self.obtain_package_names()
             
-        if progress_bar is None:
-            progress_bar = tqdm.tqdm(package_name_list)
+        progress_bar = tqdm.tqdm(package_name_list) if progress_bar is None else progress_bar
             
-        return [self.obtain_package_data(package_name) for package_name in progress_bar]
+        packages = []
+        for package_name in package_name_list:
+            try:
+                packages.append(self.obtain_package_data(package_name))
+            except ValueError:
+                UtilLogger.log(f"Package {package_name} not found in data.")
+                self.not_found.append(package_name)
+                continue
+            
+            progress_bar.update() if progress_bar is not None else None
+            
+        return packages
 
     #endregion
