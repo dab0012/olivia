@@ -14,7 +14,18 @@ import configparser
 
 class Configuration:
     """
-    Utility class for config.ini
+    Utility class for config.ini file
+    This class is a singleton, so it can be used as a global variable.
+    The config.ini file must be in the same folder as this file.    
+
+    Attributes
+    ----------
+    _ini_file : str
+        Path to the config file  
+    _instance : Configuration
+        Singleton instance
+    _config : dict
+        Configurations read from the config file
     """
 
     # Class variables
@@ -22,8 +33,6 @@ class Configuration:
     _ini_file = "./config.ini"        # Path to the config file
     _instance = None                              # Singleton instance
     _config = {}                                  # Configurations read from the config file
-
-
 
     def __new__(cls):
         '''
@@ -43,16 +52,29 @@ class Configuration:
 
     def get_key(self, section:str, key: str):
         '''
-        Get a value from the config file
-        
-        ---
-        Parameters
-        -   section: str -> Section of the config file
-        -   key: str -> Key of the config file
+        Get a value from the config file by section and key
 
-        ---
+        Parameters
+        ----------
+        section : str
+            Section of the config file
+        key : str
+            Key of the config file
+
         Returns
-        -   str -> Value of the key, or None if not found
+        -------
+        str
+            Value of the key in the section
+        
+        Raises
+        ------
+        keyError
+            If the key is not found in the section            
         '''
 
-        return self._config[section][key]
+        try:
+            value = self._config[section][key]
+        except KeyError as e:
+            raise Exception(f"Key {key} not found in section {section} of config.ini") from e
+        
+        return value

@@ -8,12 +8,8 @@ Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
 -----
 Copyright (c) 2023 Daniel Alonso Báscones
 -----
+
+Description
+-----------
+This file is the entry point of the olivia_finder package.
 '''
-
-# Imports
-
-from .csv_network import CSVNetwork
-from .data_source import DataSource
-from .package_manager import PackageManager
-from .package import Package
-from .util import *

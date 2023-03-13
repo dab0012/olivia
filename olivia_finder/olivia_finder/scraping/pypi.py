@@ -12,143 +12,129 @@ Copyright (c) 2023 Daniel Alonso Báscones
 
 import requests
 from typing_extensions import override
-from typing import Dict, List, Union
+from typing import Dict, List
 from bs4 import BeautifulSoup
-from .scraper import Scraper
-from ..requests.request_handler import RequestHandler
-from ..package import Package
-from ..util.logger import UtilLogger
+from olivia_finder.scraping.scraper import Scraper
+from olivia_finder.requests.request_handler import RequestHandler
 
 class PypiScraper(Scraper):
     ''' 
     Class that scrapes the PyPI website to obtain information about Python packages
     Implements the abstract class Scraper and accordingly DataSource class
+    
+    Attributes
+    ----------
+    NAME : str
+        Name of the scraper
+    DESCRIPTION : str
+        Description of the scraper
+    PYPI_PACKAGE_LIST_URL : str
+        URL of the PyPI website where the list of packages is located
+    PYPI_PACKAGE_DATA_URL : str
+        URL of the PyPI website where the data of a package is located
     '''
 
-    # Class variables
-    NAME: str                   = "PyPI Scraper"
-    DESCRIPTION: str            = "Scraper class implementation for the PyPI package network."    
+    # Class variables  
     PYPI_PACKAGE_LIST_URL: str  = "https://pypi.org/simple/"
     PYPI_PACKAGE_DATA_URL: str  = "https://pypi.org/pypi/"
+    NAME: str                   = "PyPI Scraper"
+    DESCRIPTION: str            = "Scraper class implementation for the PyPI package network."  
 
     def __init__(self, request_handler: RequestHandler = None):
         '''
         Constructor
-
-        ---
-        Parameters
-        -   request_handler: RequestHandler -> Object to perform the requests
         '''
 
         super().__init__(self.NAME, self.DESCRIPTION, request_handler)
 
     @override
     def obtain_package_names(self) -> List[str]:
-        '''        
-        Get the list of packages names from the PyPI website
-        -   Implements :func:`DataSource.obtain_package_names`
+        '''
+        Obtain the list of packages names from the PyPI website
+        Implements the abstract method of DataSource class
 
-        ---
         Returns
-        -   List[str] -> List of packages names
+        -------
+        List[str]
+            List of packages names
+            
+        Handles
+        -------
+        Exception
+            If there is an error obtaining the list of packages, it returns an empty list
+            
+        Example
+        -------
+        >>> pypi_scraper = PypiScraper()
+        >>> pypi_scraper.obtain_package_names()
+        ['package1', 'package2', ...]        
         '''
         # Get the HTML of the page
         response = self.request_handler.do_request(self.PYPI_PACKAGE_LIST_URL)[1]
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        # Get the list of packages
-        packages = []
-        for a in soup.find_all('a'):
-            packages.append(a.text)
-
-        return packages
+        
+        try:
+            # Get the list of packages
+            pakage_list = [a.text for a in soup.find_all('a')]
+        except Exception:
+            return []
+        
+        return pakage_list
     
     @override
-    def build_urls(self, pkg_list: List[str]) -> List[str]:
+    def _Scraper_build_url(self, pkg_name: str) -> str:
         '''
-        Build the list of URLs to scrape
-        -   Implements :func:`Scraper.build_urls`
-
-        ---
+        Build the URL to scrape a package
+        Implements the abstract method of Scraper class
         Parameters
-        -   pkg_list: List[str] -> List of packages names
+        ----------
+        pkg_name : str
+            Name of the package
 
-        ---
         Returns
-        -   List[str] -> List of URLs to scrape
+        -------
+        str
+            URL to scrape
         '''
-        urls = []
-        for pkg_name in pkg_list:
-            url = f'{self.PYPI_PACKAGE_DATA_URL}{pkg_name}/json'
-            urls.append(url)
-
-        return urls
+        return f'{self.PYPI_PACKAGE_DATA_URL}{pkg_name}/json'
 
     @override
-    def parser(self, response: requests.Response) -> Dict[str, str]:
+    def _Scraper__parser(self, response: requests.Response) -> Dict:
         '''
-        Parse the JSON data of a package
-        -   Implements :func:`Scraper.parser`
-
-        ---
+        Parse the JSON data of a package and return the package data as a dictionary
+        
         Parameters
-        -   response: requests.Response -> Response of the request
-
-        ---
+        ----------
+        response : requests.Response
+            Response of the request to the package data URL
+        
         Returns
-        -   Dict[str, str] -> Dictionary with the package data
-
+        -------
+        Dict
+            Dictionary with the package data in the following format:
+            {
+                'name': name: str,
+                'version': version: str,
+                'url': url: str,
+                'dependencies': dependencies: List[str]
+            }
         '''
         # Parse the JSON
         data = response.json()
 
-        # Get the dependencies if they exist
+        # Get the dependencies if they exist, build the list of dependencies as Package objects
+        # TODO: The parser should return a list of strings with the dependencies names, not Package objects
+
         dependencies = []
         if data['info']['requires_dist'] is not None:
-            for dependency in data['info']['requires_dist']:
-                dep_name = dependency.split(' ')[0]
-                d = Package("PyPI", dep_name)
-                dependencies.append(d) 
-
-        name = data['info']['name']
-        version = data['info']['version']
-        url = data['info']['project_url']
-
-        # Get the package data
-        package_data = {
-            'name': name,
-            'version': version,
-            'url': url,
-            'dependencies': dependencies
-        }
-
-        return package_data    
-
-    @override
-    def scrape_package_data(self, pkg_name: str) -> Union[Dict[str, str], None]:
-        '''
-        Scrape the data of a package
-        -   Implements :func:`Scraper.scrape_package_data`
-
-        ---
-        Parameters
-        -   pkg_name: str -> Name of the package to scrape
-
-        ---
-        Returns
-        -   Union[Dict[str, str], None] -> Dictionary with the package data or None if the package doesn't exist
-        '''
-
-        # Get the package page
-        url = f'{self.PYPI_PACKAGE_DATA_URL}{pkg_name}/json'
-        response = self.request_handler.do_request(url)[1]
-
-        # Check if the package exists
-        if response.status_code == 404:
-            self.not_found.append(pkg_name)
-            UtilLogger.log(f'Package {pkg_name} not found in {self.name}')
-            return None
-
-        # Parse the JSON
-        return self.parser(response)
-
+            dependencies.extend(
+                dependency.split(' ')[0]    # The name of the dependency
+                for dependency in data['info']['requires_dist']
+            )
+        # Build the dictionary and return it
+        return {
+            'name': data['info']['name'],
+            'version': data['info']['version'],
+            'url': data['info']['project_url'],
+            'dependencies': dependencies,
+        }    

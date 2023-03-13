@@ -10,55 +10,72 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
-import requests
+import contextlib, requests
+from typing_extensions import override
 from bs4 import BeautifulSoup
-from typing import Dict, Union, List
-from .r import RScraper     
-from .scraper import Scraper
-from ..requests.request_handler import RequestHandler
-from ..util.logger import UtilLogger
-from ..util.util import Util
+from typing import Dict, List, Optional
+from olivia_finder.scraping.r import RScraper
+from olivia_finder.scraping.scraper import Scraper
+from olivia_finder.requests.request_handler import RequestHandler
+from olivia_finder.util.logger import UtilLogger
+from olivia_finder.util.util import Util
 
 class CranScraper(RScraper, Scraper):
     '''
     Class that scrapes the CRAN website to obtain information about R packages
+    
+    Attributes
+    ----------
+    CRAN_PACKAGE_LIST_URL : str
+        URL of the page that contains the list of packages
+    CRAN_PACKAGE_DATA_URL : str
+        URL of the page that contains the data of a package
+    
+    Parameters
+    ----------
+    name : Optional[str]
+        Name of the data source
+    description : Optional[str]
+        Description of the data source
+    request_handler : Optional[RequestHandler]
+        Request handler for the scraper, if None, it will be initialized with a generic RequestHandler    
     '''
 
     # Class variables
-    CRAN_PACKAGE_LIST_URL = "https://cran.r-project.org/web/packages/available_packages_by_name.html"
-    CRAN_PACKAGE_DATA_URL = "https://cran.r-project.org/package="
-
-    def __init__(self, rh: RequestHandler) -> None:
+    CRAN_PACKAGE_LIST_URL: str  = "https://cran.r-project.org/web/packages/available_packages_by_name.html"
+    CRAN_PACKAGE_DATA_URL: str  = "https://cran.r-project.org/package="
+    NAME: str                   = "CRAN Scraper"
+    DESCRIPTION: str            = "Scraper class implementation for the CRAN package manager."
+    
+    def __init__(
+        self, 
+        name: Optional[str] = NAME, 
+        description: Optional[str] = DESCRIPTION, 
+        request_handler: Optional[RequestHandler] = None, 
+    ):
         '''
         Constructor of the class
-        
-        Parameters
-        ----------
-        rh : RequestHandler
-            RequestHandler object to make HTTP requests
-
         '''
-        super().__init__(rh, 'CRAN')
+        super().__init__(name, description, request_handler)
 
-    """
-    Implementation of Scraper.obtain_package_names()
-    """
+    @override
     def obtain_package_names(self) -> List[str]:
         '''
-        Get the list of packages in the CRAN repository
+        Get the list of packages in the CRAN website, by scraping the HTML of the page
 
         Returns
         -------
         List[str]
             List of packages
-
+            
+        Examples
+        --------
+        >>> from olivia_finder.scraping.cran import CranScraper
+        >>> cs = CranScraper()
+        >>> package_names = cs.obtain_package_names()
         '''
 
-        try:
-            response = self.request_handler.do_request(self.CRAN_PACKAGE_LIST_URL)[1]
-        except Exception as e:
-            UtilLogger.log(f'Exception getting list of packages in CranScraper.obtain_package_names: {e}')
-            return []
+        response = self.request_handler.do_request(self.CRAN_PACKAGE_LIST_URL)[1]
 
         # Parse HTML
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -71,15 +88,9 @@ class CranScraper(RScraper, Scraper):
 
         packages = []
 
-        # We iterate over each row of the table
+        # We iterate over each row of the table to get the names of the packages
         for row in rows:
-
-            # We extract the cells of the current row
-            cells = row.find_all("td")
-
-            package_name = ""
-            # If there are cells in the row
-            if cells:
+            if cells := row.find_all("td"):
                 try: 
                     # We extract the name of the package
                     # The name is in the first cell of the row
@@ -88,41 +99,33 @@ class CranScraper(RScraper, Scraper):
                     # We add the package name to the list of packages
                     packages.append(package_name)
                     UtilLogger.log(f'Package {package_name} added to the list of packages')
-                   
+
                 # If an error occurs, we show the error message
-                except Exception as e:
-                    UtilLogger.log(f'Exception getting package name in CranScraper.get_list_of_packages: {e}')
+                except Exception:
                     continue
 
         return packages
 
-    """
-    Implementation of Scraper.build_urls()
-    """
-    def build_urls(self, pckg_names: List[str]) -> List[str]:
+    @override
+    def _Scraper__build_url(self, package_name: str) -> str:
         '''
-        Build the URLs of the packages in the CRAN repository
+        Build the URL of a package page in the CRAN website
 
         Parameters
         ----------
-        pckg_names : List[str]
-            List of package names
+        package_name : str
+            Name of the package
 
         Returns
         -------
-        List[str]
-            List of URLs
+        str
+            URL of the package page
 
         '''
-        urls = []
-        for pckg_name in pckg_names:
-            urls.append(self.CRAN_PACKAGE_DATA_URL + pckg_name)
-        return urls
+        return f'{self.CRAN_PACKAGE_DATA_URL}{package_name}'
 
-    """
-    Implementation of Scraper.parser()
-    """
-    def parser(self, response: requests.Response) -> Dict[str, str]:
+    @override
+    def _Scraper__parser(self, response: requests.Response) -> Dict[str, str]:
         '''
         Parse the HTML of a package page in the CRAN website
 
@@ -145,34 +148,28 @@ class CranScraper(RScraper, Scraper):
             d = soup.find('h2').text
             name = Util.clean_string(d).split(':')[0]
         except Exception:
-            UtilLogger.log('Package does not have a name')
+            return None
 
         # Get package version
         version = None
-        try:
+        with contextlib.suppress(Exception):
             d = soup.find('td', text='Version:').find_next_sibling('td').text
             version = Util.clean_string(d)
-        except Exception:
-            UtilLogger.log('Package does not have a version')
 
         # Get depends
         dep_list = []
-        try:
+        with contextlib.suppress(Exception):
             d = soup.find('td', text='Depends:').find_next_sibling('td').text
             depends = Util.clean_string(d)
-            dep_list = self.parse_dependencies(depends)
-        except Exception:
-            UtilLogger.log('Package does not have dependencies')
+            dep_list = self.__parse_dependencies(depends)
 
         # Get imports
         imp_list = []
-        try:
+        with contextlib.suppress(Exception):
             d = soup.find('td', text='Imports:').find_next_sibling('td').text
             imports = Util.clean_string(d)
-            imp_list = self.parse_dependencies(imports)
-        except Exception:
-            UtilLogger.log('Package does not have imports')
-
+            imp_list = self.__parse_dependencies(imports)
+            
         # Build dictionary with package data
         # we consider that dependencies and imports are the same level of importance
         # so we add them to the same list
@@ -184,54 +181,3 @@ class CranScraper(RScraper, Scraper):
             'dependencies': dependencies,
             'url': f'{self.CRAN_PACKAGE_DATA_URL}{name}'
         }
-
-    """
-    Implementation of Scraper.scrape_package_data()
-    """
-    def scrape_package_data(self, pkg_name) -> Union[Dict[str, str], None]:
-        '''
-        Get data from a CRAN packet.
-        It's obtained from the package page in the CRAN website.
-        This function has to be called from the get_pkg_data function.
-        Obtain the data through HTML scraping on the page, in addition, if any of the optional data is not found, the rest of the data is continued
-
-        Parameters
-        ----------
-        pkg_name : str
-            Name of the package
-
-        Returns
-        -------
-        Dict[str, str]
-            Dictionary with the data of the package
-
-        Raises
-        ------
-        Exception
-            If the package is not found or any of the optional data is not found
-            If any of the optional data is not found, the scraper will continue handling the rest of the data
-
-        '''
-
-        # Make HTTP request to package page, the package must exist, otherwise an exception is raised
-        url = f'{self.CRAN_PACKAGE_DATA_URL}{pkg_name}'
-        response = self.request_handler.do_request(url)[1]
-
-        # Check if the package exists
-        if response.status_code == 404:
-            UtilLogger.log(f'Package {pkg_name} not found')
-            return None
-            
-        # Parse HTML (get data for version, depends and imports)
-        UtilLogger.log(f'Parsing HTML of package {pkg_name}')
-        data = self.parser(response)
-
-        # Return as dictionary
-        UtilLogger.log(f'Package {pkg_name} data ok')
-        return {
-            'name': pkg_name,
-            'version': data['version'],
-            'url': url,
-            'dependencies': data['dependencies'],
-        }
-    

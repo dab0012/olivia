@@ -9,11 +9,3 @@ Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
 Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
-
-# Imports
-from .scraper import Scraper
-from.r import RScraper
-from .bioconductor import BiocScraper
-from .cran import CranScraper
-from .pypi import PypiScraper
-from .npm import NpmScraper

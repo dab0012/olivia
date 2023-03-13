@@ -11,9 +11,8 @@ Copyright (c) 2023 Daniel Alonso Báscones
 '''
 
 class Util:
-
     '''
-    Utility class
+    Utility class with some useful methods
     '''
 
     # region Strings
@@ -23,20 +22,21 @@ class Util:
         '''
         Clean a string from whitespaces and newlines
 
-        ---
         Parameters
-        -   s: str -> String to be cleaned
+        ----------
+        s : str
+            String to be cleaned
 
-        ---
         Returns
-        -   str -> Cleaned string
+        -------
+        str
+            Cleaned string
         '''
         s = s.strip()
         s = s.replace("\r", "")
         s = s.replace("\t", "")
         s = s.replace("\n", "")
-        s = s.replace("  ", " ")
-        return s
+        return s.replace("  ", " ")
 
     # A dictionary with some ANSI color codes
     STYLES = {
@@ -56,10 +56,22 @@ class Util:
         Print colored text
         Color must be a Fore.*** constant or a ANSI color code
 
-        ---
         Parameters
-        -   text: str -> Text to be printed
-        -   color: str -> Color of the text
+        ----------
+        text : str
+            Text to be printed
+        color : str
+            Color of the text
+
+        Raises
+        ------
+        ValueError
+            If the color is not valid
+
+        Examples
+        --------
+        >>> Util.print_colored("Hello world", Fore.RED)
+        >>> Util.print_colored("Hello world", "\033[91m")
         '''
 
         print(color, end="")
@@ -70,14 +82,26 @@ class Util:
     def print_styled(text, style):
         '''
         Print text with a style:
-
         Supported styles:
         -   [bold, underline, italic, error, success, warning, info]
 
-        ---
         Parameters
-        -   text: str -> Text to be printed
-        -   style: str -> Style of the text
+        ----------
+        text : str
+            Text to be printed
+        style : str
+            Style of the text
+
+        Raises
+        ------
+        ValueError
+            If the style is not valid
+        
+        Examples
+        --------
+        >>> Util.print_styled("Hello world", "bold")
+        >>> Util.print_styled("Hello world", "underline")
+        >>> Util.print_styled("Hello world", "italic")
         '''
 
         # Check if the style is valid
@@ -95,9 +119,14 @@ class Util:
         '''
         Get the current timestamp
 
-        ---
         Returns
-        -   str -> Current timestamp
+        -------
+        str
+            Current timestamp
+
+        Examples
+        --------
+        >>> Util.timestamp()
         '''
         import datetime
         return datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
@@ -107,9 +136,14 @@ class Util:
         """
         Gets the recommended number of threads to use.
 
-        ---
         Returns
-        -   int -> Recommended number of threads
+        -------
+        int
+            The recommended number of threads to use
+        
+        Examples
+        --------
+        >>> Util.recommended_threads()
         """
         # We get the number of cores available in the system
         import multiprocessing

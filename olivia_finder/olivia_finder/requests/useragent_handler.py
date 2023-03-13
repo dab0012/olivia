@@ -38,18 +38,13 @@ class UserAgentHandler():
             Path to the file containing the useragents, by default None
         '''
 
-        loaded_with_file = loaded_with_api = False
         self.DATA_FILE = Configuration().get_key("folders", "data_dir") + "useragents.txt"
 
-        # Load useragents from file
-        loaded_with_file = self._load_from_file(self.DATA_FILE)
-        if loaded_with_file:
+        if self._load_from_file(self.DATA_FILE):
             UtilLogger.log(f"Useragents loaded from file: {self.DATA_FILE}")
             return
 
-        # Load useragents from web
-        loaded_with_api = self._load_from_api()
-        if loaded_with_api:
+        if self._load_from_api():
             UtilLogger.log(f"Useragents loaded from API: {self.USERAGENTSTRING_URL}")
             return
 

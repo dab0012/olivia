@@ -11,115 +11,125 @@ Copyright (c) 2023 Daniel Alonso Báscones
 '''
 
 import tqdm
-import pandas as pd
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
-from .util.logger import UtilLogger
 
 class DataSource(ABC):
     """
     Interface class for data sources.
+    
+    Attributes
+    ----------
+    name : str
+        Name of the data source
+    description : str
+        Description of the data source
+    not_found : List[str]
+        List of packages that are not found
     """
     # Attributes
     # ---------------------
     name: str                   # Name of the data source
     description: str            # Description of the data source
-    PERSISTENCE_PATH:str        # Path to the persistence directory
-    data: pd.DataFrame          # Data loaded from file
-    use_logger: bool            # If True, use logger
-
+    not_found: List[str]        # List of packages that are not found
+    
     # Methods
     # ---------------------
-    def __init__(self, name = None, description = None, use_logger = False):
+    def __init__(self, name:Optional[str] = None, description:Optional[str] = None):
         """
-        Constructor
-
-        ---
-        Parameters
-        -   name : str          (Name of the data source)
-        -   description : str   (Description of the data source)
-
+        Constructor,
+        If name is not defined, its used the class name.
+        If description is not defined, use the default one else use the one defined.
         """
-        # If name is not defined, use the class name
-        if name is None:
-            self.name = self.__class__.__name__
-        else:
-            self.name = name
-
-        # if description is not defined, use the default one else use the one defined
+        self.name = self.__class__.__name__ if name is None else name
         if description is None:
             self.description = "No description available."
         else:
             self.description = description
-
-        if use_logger:
-            UtilLogger.init_logger()
+            
+        # Initialize the not_found list for storing the packages that are not found
+        self.not_found = []
         
     def get_info(self) -> str:
         """
         Gets a string with the information of the data source.
 
-        ---
         Returns
-        -   str (String with the information of the data source)
+        -------
+        str
+            The information of the data source
         """
 
         return f"Name: {self.name}\nDescription: {self.description}"
 
-    # Abstract methods to be implemented in subclasses
     # ------------------------------------------------
+    #region Abstract Methods
 
     @abstractmethod
     def obtain_package_names(self) -> List[str]:
         """
         Obtains the list of packages from the data source.
 
-        ---
         Returns
-        -   List[str] -> List of package names
+        -------
+        List[str]
+            The list of packages
+
+        Raises
+        ------
+        NotImplementedError
+            If the method is not implemented in the subclass
         """
         pass
 
     @abstractmethod
     def obtain_package_data(self, package_name: str) -> Dict:
         """
-        Obtains the data of a package from the data source.
+        Obtains the data of a package from the data source as a dictionary.
 
-        ---
-        Parameters
-        -   package_name: str -> Name of the package to be obtained
+        Parameters  
+        ----------
+        package_name : str
+            The name of the package
 
-        ---
-        Returns
-        -   Dict -> Dictionary with the data of the package
+        Returns 
+        -------
+        Dict
+            The data of the package
+
+        Raises
+        ------
+        NotImplementedError
+            If the method is not implemented in the subclass
         """
         pass
     
     @abstractmethod
-    def obtain_packages_data(self, pckg_names: Optional[List[str]] = None, progress_bar: Optional[tqdm.tqdm] = None) -> List[Dict]:
+    def obtain_packages_data(
+        self, 
+        package_name_list: Optional[List[str]] = None, 
+        progress_bar: Optional[tqdm.tqdm] = None
+    ) -> List[Dict]:
         '''
         Obtains the data of a list of package names from the data source.
 
-        ---
         Parameters
-        -   pckg_names: List[str]  -> List of package names to be obtained
-        -   progress_bar: tqdm.tqdm -> Progress bar to show the progress
-
-        ---
+        ----------
+        package_name_list : Optional[List[str]], optional
+            The list of package names, by default None
+        progress_bar : Optional[tqdm.tqdm], optional
+            The progress bar, by default None
+            
         Returns
-        -   List[Dict] -> List of dictionaries with the data of the packages
+        -------
+        List[Dict]
+            The list of packages data   
+            
+        Raises
+        ------
+        NotImplementedError
+            If the method is not implemented in the subclass
         '''
         pass
-
-
-    def enable_logger(self):
-        """
-        Enables the logger
-        """
-        UtilLogger.enable_logger()
-
-    def disable_logger(self):
-        """
-        Disables the logger
-        """
-        UtilLogger.disable_logger()
+    
+    #endregion

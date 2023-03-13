@@ -10,206 +10,207 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
-import tqdm
-import pandas as pd
-from typing import List, Optional
-from .data_source import DataSource
-from .package import Package
+import tqdm, pandas as pd
+from typing import Dict, List, Optional, Union
+from olivia_finder.package import Package
+from olivia_finder.data_source import DataSource
 
 class PackageManager():
     '''
-    Class that represents a package manager
+    Class that represents a package manager, which is a collection of packages
+    
+    Parameters
+    ----------
+    data_source : DataSource
+        Data source of the package manager
+        
+    Raises
+    ------
+    ValueError
+        If the data source is invalid
+    
+    Attributes
+    ----------
+    data_source : DataSource
+        Data source of the package manager
+    packages : set[Package]
+        Set of packages of the package manager
+        
+    Examples
+    --------
+    >>> from olivia_finder.package_manager import PackageManager
+    >>> from olivia_finder.data_source import DataSource
+    >>> package_manager = PackageManager(DataSource())
     '''
 
     # Attributes
     data_source: DataSource
-    packages: set[Package]
+    packages: Dict[Package]
 
     def __init__(self, data_source: DataSource):
         '''
         Constructor
-
-        Parameters
-        ----------
-        data_source : DataSource
-            Data source of the package manager
         '''
         if data_source is None:
             raise ValueError("Data source cannot be None")
-        
+
         self.data_source = data_source
-        self.packages = set()
+        self.packages = {}
     
-    def obtain_package(self, pkg_name: str) -> Package:
+    # --------------------------------
+    #region Builders
+    def obtain_package(self, package_name: str) -> Union[Package, None]:
         '''
-        Scrape a package from a package manager
+        Builds a Package object from the package manager's data source
 
         Parameters
         ----------
-        pkg_name : str
+        package_name : str
             Name of the package
-        scraper : Scraper
-            Scraper object
 
         Returns
         -------
-        Package
-            Package object
+        Union[Package, None]
+            Package object if the package exists, None otherwise
+            
+        Examples
+        --------
+        >>> package = package_manager.obtain_package("package_name")
+        >>> print(package.name)
         '''
 
-        pkg_data = self.data_source.obtain_package_data(pkg_name)
-        if pkg_data is None:
-            return None
-        else:
-            return Package.load(pkg_data)
+        package_data = self.data_source.obtain_package_data(package_name)
+        return None if package_data is None else Package.load(package_data)
     
-    def obtain_packages(self, pkg_names: Optional[List[str]] = None, extend_repo = False, show_progress: bool = False) -> List[Package]:
+    def obtain_packages(
+        self, 
+        package_names: Optional[List[str]] = None, 
+        extend = Optional[False], 
+        show_progress: Optional[bool] = False) -> List[Package]:
         '''
-        Scrape a list of packages from a package manager
+        Obtain a list of packages from the package manager's data source
 
-        ---
         Parameters
-        -   pkg_names: List[str]   -> List of package names to get from data source
-        -   extend_repo: bool      -> If True, the packages are added to the package manager package list
-        -   show_progress: bool    -> If True, a progress bar is shown
-
-        ---
+        ----------
+        package_names : Optional[List[str]], optional
+            List of package names to obtain, by default None
+            
+        extend : Optional[bool], optional
+            If True, the packages will be added to the existing ones, by default False
+        
+        show_progress : Optional[bool], optional
+            If True, a progress bar will be shown, by default False
+        
         Returns
-        -   List[Package]          -> List of packages
-
+        -------
+        List[Package]
+            List of packages obtained from the data source
+            
+        Examples
+        --------
+        >>> packages = package_manager.obtain_packages()
+        >>> print(packages[0].name)
         '''
 
         # Obtain the packages if the list is empty
-        if pkg_names is None or len(pkg_names) == 0:
-            pkg_names = self.data_source.obtain_package_names()
+        if package_names is None or len(package_names) == 0:
+            package_names = self.data_source.obtain_package_names()
 
-        if show_progress:
-            progress_bar = tqdm.tqdm(total=len(pkg_names))
-        else:
-            progress_bar = None
-
-        # Obtain the packages
-        package_list = []
-        packages_data = self.data_source.obtain_packages_data(pkg_names, progress_bar=progress_bar)
-        for pkg_data in packages_data:
-            if pkg_data is not None:
-                package_list.append(Package.load(pkg_data))
-
+        progress_bar = tqdm.tqdm(total=len(package_names)) if show_progress else None
+        packages_data = self.data_source.obtain_packages_data(package_names, progress_bar=progress_bar)
+        package_list = [
+            Package.load(pkg_data)
+            for pkg_data in packages_data
+            if pkg_data is not None
+        ]
         if progress_bar is not None:
             progress_bar.close()
 
         # Add packages to the repo
-        if extend_repo:
+        if extend:
             self.packages.update(package_list)
 
         return package_list
 
-    def to_dict(self) -> dict:
-        '''
-        Convert the object to a dictionary
-
-        Returns
-        -------
-        dict
-            Dictionary representation of the object
-        '''
-        d = {
-            'name': self.NAME,
-            'url': self.URL,
-            'packages': []
-        }
-        for package in self.packages:
-            d['packages'].append(package.to_dict())
-        return d
-        
+    #endregion Builders
+    # --------------------------------
+    #region Loaders
+    
     @classmethod
-    def load_dict(cls, data):
+    def load_from_dict(cls, data):
         '''
-        Load a Repo object from a dictionary
+        Load a dictionary into a PackageManager object
 
         Parameters
         ----------
         data : dict
-            Dictionary representation of the object
-
+            Dictionary to load
+            
         Returns
         -------
-        Repo
-            Repo object
+        PackageManager
+            PackageManager object loaded from the dictionary
+            
+        Raises
+        ------
+        PackageManagerLoadError
+            If the dictionary does not have the structure of : {'name': str, 'url': str, 'packages': List[dict]}
+        
+        Examples
+        --------
+        >>> pm_dict = pm.to_dict()
+        >>> pm = PackageManager.load_dict(pm_dict)
+        >>> print(pm.name)
+        >>> print(pm.url)
         '''
-        repo = cls(data['name'], data['url'])
-        for package in data['packages']:
-            repo.packages.append(Package.load(package))
-        return repo
-
-    def to_adj_list(self) -> pd.DataFrame:
-        '''
-        Convert the object to a adjacency list
-
-        Returns
-        -------
-        pd.DataFrame
-            Dependency graph
-        '''
-        rows = []
-        for package in self.packages:
-            for dependency in package.dependencies:
-                rows.append([package.name, dependency.name])
-                
-        return pd.DataFrame(rows, columns=['name', 'dependency'])
-    
-    def to_package_list(self) -> pd.DataFrame:
-        '''
-        Convert the object to a package graph
-
-        Returns
-        -------
-        pd.DataFrame
-            Package graph
-        '''
-        rows = []
-        for package in self.packages:
-            rows.append([package.name, package.version, package.url])
-        return pd.DataFrame(rows, columns=['name', 'version', 'url'])
-    
-    def to_full_adj_list(self) -> pd.DataFrame:
-        '''
-        Convert the object to a package graph with dependencies and versions
-
-        Returns
-        -------
-        pd.DataFrame
-            Package graph with dependencies and versions
-        '''
-
-        rows = []
-        for package in self.packages:
-            if package.dependencies:
-                for dependency in package.dependencies:
-                    rows.append([package.name, package.version, package.url, dependency.name, dependency.version])
-            else:
-                rows.append([package.name, package.version, package.url, None, None])
-
-        return pd.DataFrame(rows, columns=['name', 'version', 'url', 'dependency', 'dependency_version'])
+        try:
+            pm_dict = cls(data['name'], data['url'])
+            for package in data['packages']:
+                pm_dict.packages.append(Package.load(package))
+            return pm_dict
+        except KeyError as e:
+            raise PackageManagerLoadError(f"Invalid dictionary format: {e}") from e
     
     @classmethod
-    def load_full_adj_list_csv(cls, path: str):
+    def load_csv_adjlist(cls, csv_path: str):
         '''
-        Load a package graph from a csv file
-
+        Load a csv file into a PackageManager object
+        
         Parameters
         ----------
-        path : str
+        csv_path : str
             Path to the csv file
-
+        
+        Returns
+        -------
+        PackageManager
+            PackageManager object loaded from the csv file
+            
+        Raises
+        ------
+        PackageManagerLoadError
+            If the csv file does not have the structure of : [name, version, url, dependency, dependency_version]
+            
+        Examples
+        --------
+        >>> pm = PackageManager.load_csv_adjlist('path/to/csv')
+        >>> print(pm.name)
+        >>> print(pm.url)
+            
         '''
 
-        data = pd.read_csv(path, index_col=0)
+        data = pd.read_csv(csv_path, index_col=0)
 
         # If the csv does not have the structure of to_package_graph_with_dependencies it cannot be loaded
-        if not set(['name', 'version', 'url', 'dependency', 'dependency_version']).issubset(data.columns):
+        if not {
+            'name',
+            'version',
+            'url',
+            'dependency',
+            'dependency_version',
+        }.issubset(data.columns):
             raise PackageManagerLoadError('The csv file does not have the structure of to_package_graph_with_dependencies')
-        
+
         # We create a dictionary with the packages
         packages = {}
         for row in data.iterrows()[1]:
@@ -228,12 +229,125 @@ class PackageManager():
             packages[row['name']].dependencies.append(packages[row['dependency']])
 
         # We create the package manager
-        repo = cls('repo_name', 'url')
-        repo.packages = list(packages.values())
-        return repo
+        package_manager = cls('repo_name', 'url')
+        package_manager.packages = list(packages.values())
+        return package_manager
     
+    #endregion
+    # --------------------------------
+    #region Getters
+    
+    def get_package(self, package_name: str) -> Union[Package, None]:
+        '''
+        Obtain a package from the package manager
+        
+        Parameters
+        ----------
+        package_name : str
+            Name of the package
+            
+        Returns
+        -------
+        Union[Package, None]
+            Package object if the package exists, None otherwise
+            
+        Examples
+        --------
+        >>> package = package_manager.get_package("package_name")
+        >>> print(package.name)
+        '''
+        return self.packages.get(package_name, None)
+    
+    def get_package_list(self) -> List[Package]:
+        '''
+        Obtain the list of packages of the package manager
+        
+        Returns
+        -------
+        List[Package]
+            List of packages of the package manager
+            
+        Examples
+        --------
+        >>> package_list = package_manager.get_package_list()
+        '''
+        return list(self.packages.values())
+        
+    #endregion
+    # --------------------------------
+    #region Export
+    
+    def export_adjlist(self) -> pd.DataFrame:
+        '''
+        Convert the object to a adjacency list, where each row represents a dependency
+        If a package has'nt dependencies, it will appear in the list with dependency field empty
+        
+        Returns
+        -------
+        pd.DataFrame
+            Dependency network as an adjacency list
+        
+        Examples
+        --------
+        >>> adj_list = package_manager.export_adjlist()
+        >>> print(adj_list)
+            [name, dependency]
+        '''
+        rows = []
+        for package in self.packages:
+            rows.extend(
+                [package.name, dependency.name]
+                for dependency in package.dependencies
+            )
+        return pd.DataFrame(rows, columns=['name', 'dependency'])
+    
+    def export_full_adjlist(self) -> pd.DataFrame:
+        '''
+        Convert the object to a adjacency list, where each row represents a dependency
+        If a package has'nt dependencies, it will appear in the list with dependency field empty
+        The version of the package and the dependency will be included
+        
+        Returns
+        -------
+        pd.DataFrame
+            Dependency network as an adjacency list
+
+        Examples
+        --------
+        >>> adj_list = package_manager.export_full_adjlist()
+        >>> print(adj_list)
+            [name, version, dependency, dependency_version]
+        '''
+
+        rows = []
+        for package in self.packages:
+            if package.dependencies:
+                rows.extend(
+                    [
+                        package.name,
+                        package.version,
+                        package.url,
+                        dependency.name,
+                        dependency.version,
+                    ]
+                    for dependency in package.dependencies
+                )
+            else:
+                rows.append([package.name, package.version, package.url, None, None])
+
+        return pd.DataFrame(rows, columns=['name', 'version', 'url', 'dependency', 'dependency_version'])
+    
+    #endregion Export
+
 class PackageManagerLoadError(Exception):
-    """Raised when there is an error loading the package manager"""
+    """
+    Raised when there is an error loading the package manager
+    
+    Attributes
+    ----------
+    message : str
+        Error message
+    """
 
     def __init__(self, message):
         self.message = message
