@@ -26,8 +26,6 @@ class Scraper(DataSource):
     ----------
     request_handler : RequestHandler
         Request handler for the scraper
-    not_found : list[str]
-        List of packages that are not found
         
     Parameters
     ----------
@@ -42,7 +40,6 @@ class Scraper(DataSource):
     # Attributes
     # ----------
     request_handler: RequestHandler
-    not_found: List[str]
 
     def __init__(
         self, 
@@ -261,7 +258,7 @@ class Scraper(DataSource):
             # Parse the source data and add it to the list
             packages.append(self._parser(response))
 
-        return packages
+        return packages, not_found
 
     @abstractmethod
     def obtain_package_names(self) -> List[str]:

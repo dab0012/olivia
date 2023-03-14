@@ -146,7 +146,7 @@ class CSVNetwork(DataSource):
 
         dependencies_data = package_rows.values.tolist()
         dependencies = [
-            {"name": dependency_data[3], "version": dependency_data[4]} for dependency_data in dependencies_data
+            {"name": dependency_data[4], "version": dependency_data[5]} for dependency_data in dependencies_data
         ]
         # Return the data
         return {

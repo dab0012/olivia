@@ -70,7 +70,31 @@ class PackageManager():
         # Use pickle to save the package manager
         
         with open(path, "wb") as f:
-            pickle.dump(self, f, protocol=pickle.HIGHEST_PROTOCOL)   
+            pickle.dump(self, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+    @staticmethod
+    def load(path:str):
+        '''
+        Load the package manager from a file
+        
+        Parameters
+        ----------
+        path : str
+            Path of the file to load the package manager
+        '''
+
+        pm: PackageManager = None
+
+        # Try to load the package manager from the file
+        try:
+            # Use pickle to load the package manager
+            with open(path, "rb") as f:
+                pm = pickle.load(f)
+        except Exception as e:
+            print("Error loading the package manager from file:", e)
+            return None
+        
+        return pm
     
     # --------------------------------
     #region Builders
@@ -95,16 +119,14 @@ class PackageManager():
         '''
 
         package_data = self.data_source.obtain_package_data(package_name)
-        
-        
-        
         return None if package_data is None else Package.load(package_data)
     
     def obtain_packages(
         self, 
         package_names: Optional[List[str]] = None, 
-        extend = Optional[False], 
-        show_progress: Optional[bool] = False) -> List[Package]:
+        extend: Optional[bool] = False, 
+        show_progress: Optional[bool] = False
+    ) -> List[Package]:
         '''
         Obtain a list of packages from the package manager's data source
 
@@ -339,20 +361,23 @@ class PackageManager():
         '''
 
         rows = []
-        for package in self.packages:
+        for package_name in self.packages:
+
+            package = self.get_package(package_name)
+
             if package.dependencies:
                 rows.extend(
                     [
-                        package.name,
-                        package.version,
-                        package.url,
-                        dependency.name,
-                        dependency.version,
+                        package_name.name,
+                        package_name.version,
+                        package_name.url,
+                        dependency["name"],
+                        dependency["version"]
                     ]
-                    for dependency in package.dependencies
+                    for dependency in package_name.dependencies
                 )
             else:
-                rows.append([package.name, package.version, package.url, None, None])
+                rows.append([package_name.name, package_name.version, package_name.url, None, None])
 
         return pd.DataFrame(rows, columns=['name', 'version', 'url', 'dependency', 'dependency_version'])
     
