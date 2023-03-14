@@ -42,26 +42,42 @@ class CSVNetwork(DataSource):
     data: pd.DataFrame
     dependent_field: str
     dependency_field: str
+    dependent_version_field: str
+    dependent_url_field: str
     
     # Class Methods
     # ---------------------
-    def load_data(self, file_path:str, dependent_field:str, dependency_field:str):
-        """Loads the data from a CSV file.
+    @classmethod
+    def load_data(
+            cls, 
+            file_path:str, 
+            dependent_field:str,
+            dependency_field:str,
+            dependent_version_field:str = None,
+            dependent_url_field:str = None
+        ):
+        """
+        Loads the data from a CSV file like [name,version,url,dependency,dependency_version]
+        The dependent_version_field and dependent_url_field parameters are optional
 
         Parameters
         ----------
         file_path : str
             The path to the CSV file
         dependent_field : str
-            The name of the field that contains the dependent packages
+            The name of the field that contains the dependent package names
         dependency_field : str
-            The name of the field that contains the dependency packages
+            The name of the field that contains the dependency packages names
+        dependent_version_field : str, optional
+            The name of the field that contains the dependent packages versions, by default None
+        dependent_url_field : str, optional
+            The name of the field that contains the dependent packages urls, by default None
             
         Raises
         ------
-        FileNotFoundError
+        FileNotFoundError: Exception
             If the file does not exist
-        ValueError
+        ValueError: Exception
             If the file path is None
             If the file is not a CSV file
             If the dependent field is None
@@ -91,17 +107,19 @@ class CSVNetwork(DataSource):
         
         # Load the data
         # -------------
-        self.data = pd.read_csv(file_path)
+        cls.data = pd.read_csv(file_path)
         
         # Check if the fields are in the data
-        if dependent_field not in self.data.columns:
+        if dependent_field not in cls.data.columns:
             raise ValueError(f"Field {dependent_field} not found on data.")
         
-        if dependency_field not in self.data.columns:
+        if dependency_field not in cls.data.columns:
             raise ValueError(f"Field {dependency_field} not found on data.")
         
-        self.dependent_field = dependent_field
-        self.dependency_field = dependency_field
+        cls.dependent_field = dependent_field
+        cls.dependency_field = dependency_field
+        cls.dependent_url_field = dependent_url_field
+        cls.dependent_version_field = dependent_version_field
 
     # ---------------------
     #region Overridden methods
@@ -137,22 +155,37 @@ class CSVNetwork(DataSource):
             The data of the package in the form of a dictionary
         """
 
-        # Get the dat rows of the package
+        # Get the with dependent field == package_name
         package_rows = self.data[self.data[self.dependent_field] == package_name]
         
         if package_rows.empty:
             UtilLogger.log(f"Package {package_name} not found in data.")
             raise ValueError(f"Package {package_name} not found in data.")
 
+        # Get the dependencies
+        dependencies = []
         dependencies_data = package_rows.values.tolist()
-        dependencies = [
-            {"name": dependency_data[4], "version": dependency_data[5]} for dependency_data in dependencies_data
-        ]
+        for dependency_data in dependencies_data:
+            dependency_name = dependency_data[3]
+            try:
+                dependency_version = dependency_data[4]
+            except IndexError:
+                dependency_version = None
+
+            # Build the dependency dictionary
+            dependency = {
+                "name": dependency_name,
+                "version": dependency_version
+            }
+
+            # Add the dependency to the list
+            dependencies.append(dependency)
+
         # Return the data
         return {
             "name": package_name,
-            "version": package_rows.iloc[0]["version"],
-            "url": package_rows.iloc[0]["url"],
+            "version": package_rows[self.dependent_version_field].values[0] if self.dependent_version_field is not None else None,
+            "url": package_rows[self.dependent_url_field].values[0] if self.dependent_url_field is not None else None,
             "dependencies": dependencies
         }
     

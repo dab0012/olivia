@@ -12,6 +12,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 
 import tqdm, pandas as pd
 from typing import Dict, List, Optional, Union
+from olivia_finder.olivia_finder.csv_network import CSVNetwork
 from olivia_finder.package import Package
 from olivia_finder.data_source import DataSource
 import pickle
@@ -213,7 +214,16 @@ class PackageManager():
             raise PackageManagerLoadError(f"Invalid dictionary format: {e}") from e
     
     @classmethod
-    def load_csv_adjlist(cls, csv_path: str):
+    def load_csv_adjlist(
+        cls,
+        csv_path: str,
+        dependent_field: Optional[str],
+        dependency_field: Optional[str],
+        version_field: Optional[str] ,
+        dependency_version_field: Optional[str],
+        url_field: Optional[str],
+        default_format: Optional[bool] = False
+    ):
         '''
         Load a csv file into a PackageManager object
         
@@ -239,41 +249,50 @@ class PackageManager():
         >>> print(pm.url)
             
         '''
-
-        data = pd.read_csv(csv_path, index_col=0)
-
-        # If the csv does not have the structure of to_package_graph_with_dependencies it cannot be loaded
-        if not {
-            'name',
-            'version',
-            'url',
-            'dependency',
-            'dependency_version',
-        }.issubset(data.columns):
-            raise PackageManagerLoadError('The csv file does not have the structure of to_package_graph_with_dependencies')
-
-        # We create a dictionary with the packages
-        packages = {}
-        for row in data.iterrows()[1]:
-            if row['name'] not in packages:
-                packages[row['name']] = Package(row['name'], row['version'], row['url'])
+        try:
+            data = pd.read_csv(csv_path)
+        except Exception as e:
+            raise PackageManagerLoadError(f"Error loading csv file: {e}") from e
+        
+        csv_fields = []
+        
+        if default_format:
+            # If the csv has the structure of full_adjlist.csv, we use the default fields
+            dependent_field = 'name'
+            dependency_field = 'dependency'
+            version_field = 'version'
+            dependency_version_field = 'dependency_version'
+            url_field = 'url'
+            csv_fields = ["dependent", "dependency", "version", "dependency_version", "url"]
+        else:
+            # If the csv does not have the structure of full_adjlist.csv, we check if the mandatory fields are specified
+            if dependent_field is None or dependency_field is None:
+                raise PackageManagerLoadError("Dependent and dependency fields must be specified")
             else:
-                packages[row['name']].version = row['version']
-                packages[row['name']].url = row['url']
+                csv_fields = [dependent_field, dependency_field]
+                # If the optional fields are specified, we add them to the list
+                if version_field is not None:
+                    csv_fields.append(version_field)
+                if dependency_version_field is not None:
+                    csv_fields.append(dependency_version_field)
+                if url_field is not None:
+                    csv_fields.append(url_field)
+            
+        # If the csv does not have the specified fields, we raise an error
+        if not all([col in data.columns for col in csv_fields]):
+            raise PackageManagerLoadError("Invalid csv format")
 
-        # We add the dependencies
-        for row in data.iterrows()[1]:
-            if row['dependency'] not in packages:
-                packages[row['dependency']] = Package(row['dependency'], row['dependency_version'])
-            else:
-                packages[row['dependency']].version = row['dependency_version']
-            packages[row['name']].dependencies.append(packages[row['dependency']])
+        # We create the data source
+        data_source = CSVNetwork.load_data(
+            csv_path, dependent_field, dependency_field, version_field, dependency_version_field, url_field
+        )
+        data_source.name = "CSV File"
+        data_source.url = csv_path
 
         # We create the package manager
-        package_manager = cls('repo_name', 'url')
-        package_manager.packages = list(packages.values())
-        return package_manager
-    
+        cls = cls(data_source)
+
+
     #endregion
     # --------------------------------
     #region Getters
@@ -368,16 +387,16 @@ class PackageManager():
             if package.dependencies:
                 rows.extend(
                     [
-                        package_name.name,
-                        package_name.version,
-                        package_name.url,
-                        dependency["name"],
-                        dependency["version"]
+                        package.name,
+                        package.version,
+                        package.url,
+                        dependency.name,
+                        dependency.version
                     ]
-                    for dependency in package_name.dependencies
+                    for dependency in package.dependencies
                 )
             else:
-                rows.append([package_name.name, package_name.version, package_name.url, None, None])
+                rows.append([package.name, package.version, package.url, None, None])
 
         return pd.DataFrame(rows, columns=['name', 'version', 'url', 'dependency', 'dependency_version'])
     
