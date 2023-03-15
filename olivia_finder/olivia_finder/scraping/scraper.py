@@ -115,7 +115,7 @@ class Scraper(DataSource):
     #region Public methods
     
     @override
-    def obtain_package_data(self, package_name: str) -> Dict:
+    def obtain_package_data(self, package_name: str, override_previous: Optional[bool] = False ) -> Dict:
         """
         Scrape a package from a package manager, if the package is not found, it is added to the not_found list
         Implements the abstract method of the DataSource class
@@ -301,5 +301,5 @@ class ScraperError(Exception):
         str
             String representation of the exception
         """
-        return (f'ScraperError: {self.message}\n{str(super.__name__)}')
+        return (f'ScraperError: {self.message}')
     

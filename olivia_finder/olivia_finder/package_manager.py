@@ -10,6 +10,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
 
+from __future__ import annotations
 import tqdm, pandas as pd
 from typing import Dict, List, Optional, Union
 from olivia_finder.csv_network import CSVNetwork
@@ -73,8 +74,8 @@ class PackageManager():
         with open(path, "wb") as f:
             pickle.dump(self, f, protocol=pickle.HIGHEST_PROTOCOL)
 
-    @staticmethod
-    def load(path:str):
+    @classmethod
+    def load(cls, path:str):
         '''
         Load the package manager from a file
         
@@ -84,21 +85,20 @@ class PackageManager():
             Path of the file to load the package manager
         '''
 
-        pm: PackageManager = None
 
         # Try to load the package manager from the file
         try:
             # Use pickle to load the package manager
             with open(path, "rb") as f:
-                pm = pickle.load(f)
+                cls = pickle.load(f)
         except Exception as e:
             print("Error loading the package manager from file:", e)
             return None
         
-        return pm
+        return cls
     
     # --------------------------------
-    # region Builders
+    # region Build Packages
     def obtain_package(self, package_name: str) -> Union[Package, None]:
         '''
         Builds a Package object from the package manager's data source
@@ -158,12 +158,14 @@ class PackageManager():
             package_names = self.data_source.obtain_package_names()
 
         progress_bar = tqdm.tqdm(total=len(package_names)) if show_progress else None
-        packages_data = self.data_source.obtain_packages_data(package_names, progress_bar=progress_bar)
-        package_list = [
-            Package.load(pkg_data)
-            for pkg_data in packages_data
-            if pkg_data is not None
-        ]
+        packages_data = self.data_source.obtain_packages_data(package_names, progress_bar=progress_bar)[0]
+        # package_list = [Package.load(package_data) for package_data in packages_data]
+        package_list = []
+        for package_data in packages_data:
+            package = Package.load(package_data)
+            package_list.append(package)
+
+
         if progress_bar is not None:
             progress_bar.close()
 
@@ -174,48 +176,13 @@ class PackageManager():
 
         return package_list
 
-    #endregion Builders
+    #endregion Build Packages
+    
     # --------------------------------
     # region Loaders
-    
-    @classmethod
-    def load_from_dict(cls, data):
-        '''
-        Load a dictionary into a PackageManager object
-
-        Parameters
-        ----------
-        data : dict
-            Dictionary to load
-            
-        Returns
-        -------
-        PackageManager
-            PackageManager object loaded from the dictionary
-            
-        Raises
-        ------
-        PackageManagerLoadError
-            If the dictionary does not have the structure of : {'name': str, 'url': str, 'packages': List[dict]}
         
-        Examples
-        --------
-        >>> pm_dict = pm.to_dict()
-        >>> pm = PackageManager.load_dict(pm_dict)
-        >>> print(pm.name)
-        >>> print(pm.url)
-        '''
-        try:
-            pm_dict = cls(data['name'], data['url'])
-            for package in data['packages']:
-                pm_dict.packages.append(Package.load(package))
-            return pm_dict
-        except KeyError as e:
-            raise PackageManagerLoadError(f"Invalid dictionary format: {e}") from e
-    
-    @classmethod
+    @staticmethod
     def load_csv_adjlist(
-        cls,
         csv_path: str,
         dependent_field: Optional[str] = None,
         dependency_field: Optional[str] = None,
@@ -223,7 +190,7 @@ class PackageManager():
         dependency_version_field: Optional[str] = None,
         url_field: Optional[str] = None,
         default_format: Optional[bool] = False
-    ):
+    ) -> PackageManager:
         '''
         Load a csv file into a PackageManager object
         
@@ -297,10 +264,7 @@ class PackageManager():
         data_source.url = csv_path
 
         # We create the package manager
-        cls = cls(data_source)
-        
-        return cls
-
+        return PackageManager(data_source)
 
     #endregion
     # --------------------------------

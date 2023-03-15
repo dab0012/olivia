@@ -24,14 +24,11 @@ class DataSource(ABC):
         Name of the data source
     description : str
         Description of the data source
-    not_found : List[str]
-        List of packages that are not found
     """
     # Attributes
     # ---------------------
     name: str                   # Name of the data source
     description: str            # Description of the data source
-    not_found: List[str]        # List of packages that are not found
     
     # Methods
     # ---------------------
@@ -46,9 +43,6 @@ class DataSource(ABC):
             self.description = "No description available."
         else:
             self.description = description
-            
-        # Initialize the not_found list for storing the packages that are not found
-        self.not_found = []
         
     def get_info(self) -> str:
         """
@@ -83,7 +77,7 @@ class DataSource(ABC):
         pass
 
     @abstractmethod
-    def obtain_package_data(self, package_name: str) -> Dict:
+    def obtain_package_data(self, package_name: str, override_previous: Optional[bool] = True) -> Dict:
         """
         Obtains the data of a package from the data source as a dictionary.
 
@@ -91,6 +85,8 @@ class DataSource(ABC):
         ----------
         package_name : str
             The name of the package
+        override_previous : Optional[bool], optional
+            If the data is already obtained, override it, by default None
 
         Returns 
         -------

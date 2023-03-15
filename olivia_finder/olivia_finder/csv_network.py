@@ -9,6 +9,7 @@ Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
 Copyright (c) 2023 Daniel Alonso Báscones
 -----
 '''
+from __future__ import annotations
 import tqdm, os, pandas as pd
 from typing import Dict, List, Optional
 from typing_extensions import override
@@ -47,16 +48,15 @@ class CSVNetwork(DataSource):
     
     # Class Methods
     # ---------------------
-    @classmethod
+    @staticmethod
     def load_data(
-            cls, 
             file_path:str, 
             dependent_field:str,
             dependency_field:str,
-            dependent_version_field:str = None,
-            dependency_version_field:str = None,
-            dependent_url_field:str = None
-        ):
+            dependent_version_field:str     = None,
+            dependency_version_field:str    = None,
+            dependent_url_field:str         = None
+        ) -> CSVNetwork:
         """
         Loads the data from a CSV file like [name,version,url,dependency,dependency_version]
         The dependent_version_field and dependent_url_field parameters are optional
@@ -108,27 +108,27 @@ class CSVNetwork(DataSource):
         
         # Load the data
         # -------------
-        cls.data = pd.read_csv(file_path)
+        data = pd.read_csv(file_path)
         
         # Check if the fields are in the data
-        if dependent_field not in cls.data.columns:
+        if dependent_field not in data.columns:
             raise ValueError(f"Field {dependent_field} not found on data.")
         
-        if dependency_field not in cls.data.columns:
+        if dependency_field not in data.columns:
             raise ValueError(f"Field {dependency_field} not found on data.")
         
-        cls.dependent_field = dependent_field
-        cls.dependency_field = dependency_field
-        cls.dependent_url_field = dependent_url_field
-        cls.dependent_version_field = dependent_version_field
-        cls.dependency_version_field = dependency_version_field
-        
-        # Init the dictionary of packages with the pakages in the data
-        package_names = cls.obtain_package_names()
-        for package_name in package_names:
-            cls.packages[package_name] = None
-        
-        return cls()
+        # Create a instance of the class
+        csv_datasource = CSVNetwork()
+        # Set the attributes
+        csv_datasource.data = data
+        csv_datasource.dependent_field = dependent_field
+        csv_datasource.dependency_field = dependency_field
+        csv_datasource.dependent_version_field = dependent_version_field
+        csv_datasource.dependency_version_field = dependency_version_field
+        csv_datasource.dependent_url_field = dependent_url_field
+
+        # Return the instance
+        return csv_datasource
 
     # ---------------------
     #region Overridden methods
@@ -149,7 +149,7 @@ class CSVNetwork(DataSource):
         return package_names
     
     @override
-    def obtain_package_data(self, package_name: str) -> Dict:
+    def obtain_package_data(self, package_name: str, override_previous: Optional[bool] = True) -> Dict:
         """
         Obtains the package from the dataframe
         
@@ -157,6 +157,8 @@ class CSVNetwork(DataSource):
         ----------
         package_name : str
             The name of the package to obtain the data from
+        filter : Optional[str], optional
+            The filter to apply to the data, by default None
         
         Returns
         -------
@@ -164,23 +166,30 @@ class CSVNetwork(DataSource):
             The data of the package in the form of a dictionary
         """
 
-        # Get the with dependent field == package_name
+        # Get the rows of the package
         package_rows = self.data[self.data[self.dependent_field] == package_name]
-        
+
+        # Remove the previous data with the same name but different version
+        if override_previous:
+            # Get the last row
+            last_version = package_rows[self.dependent_version_field].max()
+            package_rows = package_rows[package_rows[self.dependent_version_field] == last_version]
+
         if package_rows.empty:
             UtilLogger.log(f"Package {package_name} not found in data.")
             raise ValueError(f"Package {package_name} not found in data.")
 
         # Get the dependencies
         dependencies = []
-        dependencies_data = package_rows.values.tolist()
-        for dependency_data in dependencies_data:
-            dependency_name = dependency_data[3]
-            try:
-                dependency_version = dependency_data[4]
-            except IndexError:
-                dependency_version = None
 
+        # Get a list of rows
+        package_rows = package_rows.to_dict("records")
+
+        for row in package_rows:
+            # Get the dependency name and version
+            dependency_name = row[self.dependency_field]
+            dependency_version = row[self.dependency_version_field] if self.dependency_version_field is not None else None
+            
             # Build the dependency dictionary
             dependency = {
                 "name": dependency_name,
@@ -193,8 +202,8 @@ class CSVNetwork(DataSource):
         # Return the data
         return {
             "name": package_name,
-            "version": package_rows[self.dependent_version_field].values[0] if self.dependent_version_field is not None else None,
-            "url": package_rows[self.dependent_url_field].values[0] if self.dependent_url_field is not None else None,
+            "version": package_rows[0][self.dependent_version_field] if self.dependent_version_field is not None else None,
+            "url": package_rows[0][self.dependent_url_field] if self.dependent_url_field is not None else None,
             "dependencies": dependencies
         }
     
