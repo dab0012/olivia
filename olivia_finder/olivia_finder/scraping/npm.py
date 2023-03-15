@@ -1,13 +1,12 @@
+""""""
 '''
-File:              npm.py
-Project:           Olivia-Finder
-Created Date:      Thursday March 2nd 2023
-Author:            Daniel Alonso Báscones
-Last Modified:     Thursday March 2nd 2023 3:07:37 pm
-Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
------
+·········································································
+File: npm.py
+Project: Olivia-Finder
+Created Date: Thursday March 2nd 2023
+Author: Daniel Alonso Báscones
 Copyright (c) 2023 Daniel Alonso Báscones
------
+·········································································
 '''
 
 import os, requests
@@ -17,7 +16,7 @@ from tqdm import tqdm
 from olivia_finder.scraping.scraper import Scraper
 from olivia_finder.util.config_ini import Configuration
 from olivia_finder.util.logger import UtilLogger
-from olivia_finder.requests.request_handler import RequestHandler
+from olivia_finder.myrequests.request_handler import RequestHandler
 
 class NpmScraper(Scraper):
     '''
@@ -271,3 +270,5 @@ class NpmScraper(Scraper):
         }
 
     #endregion
+    
+    

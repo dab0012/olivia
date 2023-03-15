@@ -1,28 +1,28 @@
+""""""
 '''
-File:              r.py
-Project:           Olivia-Finder
-Created Date:      Friday February 24th 2023
-Author:            Daniel Alonso Báscones
-Last Modified:     Friday February 24th 2023 7:01:45 pm
-Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
------
+·········································································
+File: r.py
+Project: Olivia-Finder
+Created Date: Friday February 24th 2023
+Author: Daniel Alonso Báscones
 Copyright (c) 2023 Daniel Alonso Báscones
------
+·········································································
 '''
+
 
 import re
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
-from olivia_finder.requests.request_handler import RequestHandler
+from olivia_finder.myrequests.request_handler import RequestHandler
 from olivia_finder.scraping.scraper import Scraper
 
 class RScraper(Scraper, ABC):
     '''
     Abstract class that implements the common methods for scraping R repositories
     
-    Parameters
+    Parameters 
     ----------
-    name : str
+    name : str 
         The name of the data source
     description : str
         The description of the data source

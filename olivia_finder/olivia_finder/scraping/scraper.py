@@ -1,13 +1,12 @@
+""""""
 '''
-File:              scraper.py
-Project:           Olivia-Finder
-Created Date:      Friday February 24th 2023
-Author:            Daniel Alonso Báscones
-Last Modified:     Friday February 24th 2023 6:39:40 pm
-Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
------
+·········································································
+File: scraper.py
+Project: Olivia-Finder
+Created Date: Friday February 24th 2023
+Author: Daniel Alonso Báscones
 Copyright (c) 2023 Daniel Alonso Báscones
------
+·········································································
 '''
 
 import requests, tqdm
@@ -15,8 +14,9 @@ from typing_extensions import override
 from typing import Dict, List, Optional, Tuple
 from abc import abstractmethod
 from olivia_finder.data_source import DataSource
-from olivia_finder.requests.request_handler import RequestHandler
+from olivia_finder.myrequests.request_handler import RequestHandler
 from olivia_finder.util.logger import UtilLogger
+
 
 class Scraper(DataSource):
     """
@@ -129,32 +129,11 @@ class Scraper(DataSource):
         -------
         Dict
             Package data as a dictionary, if the package is not found, it returns None
-            format: 
-            {
-                'name': str,
-                'description': str,
-                'version': str,
-                'url': str,
-                'dependencies': list[dict] = [  # list of dictionaries with the dependencies data
-                    {'name': str, 'version': str},
-                    {'name': str, 'version': str},
-                    ...
-                ]
-            }
             
         Examples
         --------
         >>> scraper = Scraper()
         >>> scraper.obtain_package_data('numpy')
-        {   'name': 'numpy',
-            'description': 'NumPy is the fundamental package for array computing with Python.',
-            'version': '1.21.2',
-            'url': 'https://numpy.org/',
-            'dependencies': [
-                {'name': 'python', 'version': '>=3.7'},
-                {'name': 'python-pip', 'version': '>=3.7'}
-            ]
-        }
         """
         
         # Get the package page
@@ -203,28 +182,6 @@ class Scraper(DataSource):
         --------
         >>> scraper = Scraper()
         >>> scraper.obtain_packages_data(['numpy', 'pandas'])
-        [
-            {   
-                'name': 'numpy',
-                'description': 'NumPy is the fundamental package for array computing with Python.',
-                'version': '1.21.2',
-                'url': 'https://numpy.org/',
-                'dependencies': [
-                    {'name': 'python', 'version': '>=3.7'},
-                    ...
-                ]
-            },
-            {
-                'name': 'pandas',
-                'description': 'pandas is a fast, powerful, flexible and easy to use open source data analysis and manipulation tool, built on top of the Python programming language.',
-                'version': '1.3.2',
-                'url': 'https://pandas.pydata.org/',
-                'dependencies': [
-                    {'name': 'python', 'version': '>=3.7'},
-                    ...
-                ]
-            }
-        ]
         '''
 
         # If package_names is None, obtain the package names from the data source

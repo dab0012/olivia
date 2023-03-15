@@ -1,21 +1,21 @@
+""""""
 '''
-File:              pypi.py
-Project:           Olivia-Finder
-Created Date:      Sunday February 26th 2023
-Author:            Daniel Alonso Báscones
-Last Modified:     Sunday February 26th 2023 5:20:41 pm
-Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
------
+·········································································
+File: pypi.py
+Project: Olivia-Finder
+Created Date: Sunday February 26th 2023
+Author: Daniel Alonso Báscones
 Copyright (c) 2023 Daniel Alonso Báscones
------
+·········································································
 '''
+
 
 import requests
 from typing_extensions import override
 from typing import Dict, List
 from bs4 import BeautifulSoup
 from olivia_finder.scraping.scraper import Scraper, ScraperError
-from olivia_finder.requests.request_handler import RequestHandler
+from olivia_finder.myrequests.request_handler import RequestHandler
 
 class PypiScraper(Scraper):
     ''' 

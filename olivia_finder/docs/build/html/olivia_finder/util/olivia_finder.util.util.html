@@ -1,0 +1,279 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>olivia_finder.util.util module &#8212; Olivia Finder  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="olivia_finder.csv_network module" href="../olivia_finder.csv_network.html" />
+    <link rel="prev" title="olivia_finder.util.logger module" href="olivia_finder.util.logger.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-olivia_finder.util.util">
+<span id="olivia-finder-util-util-module"></span><h1>olivia_finder.util.util module<a class="headerlink" href="#module-olivia_finder.util.util" title="Permalink to this heading">¶</a></h1>
+<p>File:              util.py
+Project:           Olivia-Finder
+Created Date:      Thursday March 9th 2023
+Author:            Daniel Alonso Báscones
+Last Modified:     Thursday March 9th 2023 4:47:21 pm
+Modified By:       The developer formerly known as dab0012 &lt;at&gt; alu.ubu.es
+—–
+Copyright (c) 2023 Daniel Alonso Báscones
+—–</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="olivia_finder.util.util.Util">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.util.util.</span></span><span class="sig-name descname"><span class="pre">Util</span></span><a class="reference internal" href="../../_modules/olivia_finder/util/util.html#Util"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.util.util.Util" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Utility class with some useful methods</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#olivia_finder.util.util.Util.clean_string" title="olivia_finder.util.util.Util.clean_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_string</span></code></a>(s)</p></td>
+<td><p>Clean a string from whitespaces and newlines</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#olivia_finder.util.util.Util.print_colored" title="olivia_finder.util.util.Util.print_colored"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_colored</span></code></a>(text, color)</p></td>
+<td><p>Print colored text Color must be a Fore.*** constant or a ANSI color code</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#olivia_finder.util.util.Util.print_styled" title="olivia_finder.util.util.Util.print_styled"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_styled</span></code></a>(text, style)</p></td>
+<td><p>Print text with a style: Supported styles: -   [bold, underline, italic, error, success, warning, info]</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#olivia_finder.util.util.Util.recommended_threads" title="olivia_finder.util.util.Util.recommended_threads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recommended_threads</span></code></a>()</p></td>
+<td><p>Gets the recommended number of threads to use.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#olivia_finder.util.util.Util.timestamp" title="olivia_finder.util.util.Util.timestamp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">timestamp</span></code></a>()</p></td>
+<td><p>Get the current timestamp</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.util.util.Util.clean_string">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clean_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/olivia_finder/util/util.html#Util.clean_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.util.util.Util.clean_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean a string from whitespaces and newlines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>s</strong><span class="classifier">str</span></dt><dd><p>String to be cleaned</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>Cleaned string</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="olivia_finder.util.util.Util.STYLES">
+<span class="sig-name descname"><span class="pre">STYLES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'bold':</span> <span class="pre">'\x1b[1m',</span> <span class="pre">'end':</span> <span class="pre">'\x1b[0m',</span> <span class="pre">'error':</span> <span class="pre">'\x1b[91m',</span> <span class="pre">'info':</span> <span class="pre">'\x1b[94m',</span> <span class="pre">'italic':</span> <span class="pre">'\x1b[3m',</span> <span class="pre">'success':</span> <span class="pre">'\x1b[92m',</span> <span class="pre">'underline':</span> <span class="pre">'\x1b[4m',</span> <span class="pre">'warning':</span> <span class="pre">'\x1b[93m'}</span></em><a class="headerlink" href="#olivia_finder.util.util.Util.STYLES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.util.util.Util.print_colored">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print_colored</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/olivia_finder/util/util.html#Util.print_colored"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.util.util.Util.print_colored" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print colored text
+Color must be a Fore.*** constant or a ANSI color code</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>text</strong><span class="classifier">str</span></dt><dd><p>Text to be printed</p>
+</dd>
+<dt><strong>color</strong><span class="classifier">str</span></dt><dd><p>Color of the text</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><dl class="simple">
+<dt>ValueError</dt><dd><p>If the color is not valid</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Util</span><span class="o">.</span><span class="n">print_colored</span><span class="p">(</span><span class="s2">&quot;Hello world&quot;</span><span class="p">,</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Util</span><span class="o">.</span><span class="n">print_colored</span><span class="p">(</span><span class="s2">&quot;Hello world&quot;</span><span class="p">,</span> <span class="s2">&quot;[91m&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.util.util.Util.print_styled">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print_styled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/olivia_finder/util/util.html#Util.print_styled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.util.util.Util.print_styled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print text with a style:
+Supported styles:
+-   [bold, underline, italic, error, success, warning, info]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>text</strong><span class="classifier">str</span></dt><dd><p>Text to be printed</p>
+</dd>
+<dt><strong>style</strong><span class="classifier">str</span></dt><dd><p>Style of the text</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><dl class="simple">
+<dt>ValueError</dt><dd><p>If the style is not valid</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Util</span><span class="o">.</span><span class="n">print_styled</span><span class="p">(</span><span class="s2">&quot;Hello world&quot;</span><span class="p">,</span> <span class="s2">&quot;bold&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Util</span><span class="o">.</span><span class="n">print_styled</span><span class="p">(</span><span class="s2">&quot;Hello world&quot;</span><span class="p">,</span> <span class="s2">&quot;underline&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Util</span><span class="o">.</span><span class="n">print_styled</span><span class="p">(</span><span class="s2">&quot;Hello world&quot;</span><span class="p">,</span> <span class="s2">&quot;italic&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.util.util.Util.timestamp">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timestamp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/olivia_finder/util/util.html#Util.timestamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.util.util.Util.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current timestamp</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>str</dt><dd><p>Current timestamp</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Util</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.util.util.Util.recommended_threads">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">recommended_threads</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/olivia_finder/util/util.html#Util.recommended_threads"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.util.util.Util.recommended_threads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the recommended number of threads to use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>int</dt><dd><p>The recommended number of threads to use</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Util</span><span class="o">.</span><span class="n">recommended_threads</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Olivia Finder</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../olivia_finder.html">olivia_finder package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../olivia_finder.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../olivia_finder.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../olivia_finder.html#module-olivia_finder">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../olivia_finder.html">olivia_finder package</a><ul>
+  <li><a href="olivia_finder.util.html">olivia_finder.util package</a><ul>
+      <li>Previous: <a href="olivia_finder.util.logger.html" title="previous chapter">olivia_finder.util.logger module</a></li>
+      <li>Next: <a href="../olivia_finder.csv_network.html" title="next chapter">olivia_finder.csv_network module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Daniel Alonso Báscones.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/olivia_finder/util/olivia_finder.util.util.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

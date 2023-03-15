@@ -1,0 +1,254 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>olivia_finder.scraping.pypi &#8212; Olivia Finder  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for olivia_finder.scraping.pypi</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">·········································································</span>
+<span class="sd">File: pypi.py</span>
+<span class="sd">Project: Olivia-Finder</span>
+<span class="sd">Created Date: Sunday February 26th 2023</span>
+<span class="sd">Author: Daniel Alonso Báscones</span>
+<span class="sd">Copyright (c) 2023 Daniel Alonso Báscones</span>
+<span class="sd">·········································································</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">override</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">from</span> <span class="nn">olivia_finder.scraping.scraper</span> <span class="kn">import</span> <span class="n">Scraper</span><span class="p">,</span> <span class="n">ScraperError</span>
+<span class="kn">from</span> <span class="nn">olivia_finder.myrequests.request_handler</span> <span class="kn">import</span> <span class="n">RequestHandler</span>
+
+<div class="viewcode-block" id="PypiScraper"><a class="viewcode-back" href="../../../olivia_finder/scraping/olivia_finder.scraping.pypi.html#olivia_finder.scraping.pypi.PypiScraper">[docs]</a><span class="k">class</span> <span class="nc">PypiScraper</span><span class="p">(</span><span class="n">Scraper</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">    Class that scrapes the PyPI website to obtain information about Python packages</span>
+<span class="sd">    Implements the abstract class Scraper and accordingly DataSource class</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    NAME : str</span>
+<span class="sd">        Name of the scraper</span>
+<span class="sd">    DESCRIPTION : str</span>
+<span class="sd">        Description of the scraper</span>
+<span class="sd">    PYPI_PACKAGE_LIST_URL : str</span>
+<span class="sd">        URL of the PyPI website where the list of packages is located</span>
+<span class="sd">    PYPI_PACKAGE_DATA_URL : str</span>
+<span class="sd">        URL of the PyPI website where the data of a package is located</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># Class variables  </span>
+    <span class="n">PYPI_PACKAGE_LIST_URL</span><span class="p">:</span> <span class="nb">str</span>  <span class="o">=</span> <span class="s2">&quot;https://pypi.org/simple/&quot;</span>
+    <span class="n">PYPI_PACKAGE_DATA_URL</span><span class="p">:</span> <span class="nb">str</span>  <span class="o">=</span> <span class="s2">&quot;https://pypi.org/pypi/&quot;</span>
+    <span class="n">NAME</span><span class="p">:</span> <span class="nb">str</span>                   <span class="o">=</span> <span class="s2">&quot;PyPI Scraper&quot;</span>
+    <span class="n">DESCRIPTION</span><span class="p">:</span> <span class="nb">str</span>            <span class="o">=</span> <span class="s2">&quot;Scraper class implementation for the PyPI package network.&quot;</span>  
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_handler</span><span class="p">:</span> <span class="n">RequestHandler</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Constructor</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">DESCRIPTION</span><span class="p">,</span> <span class="n">request_handler</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PypiScraper.obtain_package_names"><a class="viewcode-back" href="../../../olivia_finder/scraping/olivia_finder.scraping.pypi.html#olivia_finder.scraping.pypi.PypiScraper.obtain_package_names">[docs]</a>    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">obtain_package_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Obtain the list of packages names from the PyPI website</span>
+<span class="sd">        Implements the abstract method of DataSource class</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[str]</span>
+<span class="sd">            List of packages names</span>
+<span class="sd">            </span>
+<span class="sd">        Handles</span>
+<span class="sd">        -------</span>
+<span class="sd">        Exception</span>
+<span class="sd">            If there is an error obtaining the list of packages, it returns an empty list</span>
+<span class="sd">            </span>
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        &gt;&gt;&gt; pypi_scraper = PypiScraper()</span>
+<span class="sd">        &gt;&gt;&gt; pypi_scraper.obtain_package_names()</span>
+<span class="sd">        [&#39;package1&#39;, &#39;package2&#39;, ...]        </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Get the HTML of the page</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_handler</span><span class="o">.</span><span class="n">do_request</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_LIST_URL</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Get the list of packages</span>
+            <span class="n">pakage_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)]</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ScraperError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error obtaining the list of packages from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_LIST_URL</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+        
+        <span class="k">return</span> <span class="n">pakage_list</span></div>
+    
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">_build_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pkg_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Build the URL to scrape a package</span>
+<span class="sd">        Implements the abstract method of Scraper class</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pkg_name : str</span>
+<span class="sd">            Name of the package</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            URL to scrape</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_DATA_URL</span><span class="si">}{</span><span class="n">pkg_name</span><span class="si">}</span><span class="s1">/json&#39;</span>
+
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Parse the JSON data of a package and return the package data as a dictionary</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        response : requests.Response</span>
+<span class="sd">            Response of the request to the package data URL</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Dict</span>
+<span class="sd">            Dictionary with the package data in the following format:</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;name&#39;: name: str,</span>
+<span class="sd">                &#39;version&#39;: version: str,</span>
+<span class="sd">                &#39;url&#39;: url: str,</span>
+<span class="sd">                &#39;dependencies&#39;: dependencies: List[str]</span>
+<span class="sd">            }</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Parse the JSON</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="c1"># Get the dependencies if they exist, build the list of dependencies as Package objects</span>
+        <span class="c1"># TODO: The parser should return a list of strings with the dependencies names, not Package objects</span>
+
+        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;info&#39;</span><span class="p">][</span><span class="s1">&#39;requires_dist&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dependencies_raw</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;info&#39;</span><span class="p">][</span><span class="s1">&#39;requires_dist&#39;</span><span class="p">]</span>
+            
+            <span class="c1"># Build a dictionary with the dependencies to avoid duplicates with different versions</span>
+            <span class="n">dependencies_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            
+            <span class="k">for</span> <span class="n">dependency</span> <span class="ow">in</span> <span class="n">dependencies_raw</span><span class="p">:</span>
+                
+                <span class="c1"># Split the dependency in name and version</span>
+                <span class="n">dependency_data</span> <span class="o">=</span> <span class="n">dependency</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+                <span class="n">dependencies_dict</span><span class="p">[</span><span class="n">dependency_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">dependency_data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                
+            <span class="c1"># Build the list of dependencies as dictionaries</span>
+            <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="n">version</span><span class="p">}</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">version</span> <span class="ow">in</span> <span class="n">dependencies_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+            
+            
+        <span class="c1"># Build the dictionary and return it</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;info&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;info&#39;</span><span class="p">][</span><span class="s1">&#39;version&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;info&#39;</span><span class="p">][</span><span class="s1">&#39;project_url&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;dependencies&#39;</span><span class="p">:</span> <span class="n">dependencies</span><span class="p">,</span>
+        <span class="p">}</span>    </div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Olivia Finder</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../olivia_finder/olivia_finder.html">olivia_finder package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Daniel Alonso Báscones.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

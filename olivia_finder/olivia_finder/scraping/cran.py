@@ -1,14 +1,15 @@
+
+""""""
 '''
-File:              cran.py
-Project:           Olivia-Finder
-Created Date:      Friday February 24th 2023
-Author:            Daniel Alonso Báscones
-Last Modified:     Friday February 24th 2023 6:59:08 pm
-Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
------
+·········································································
+File: cran.py
+Project: Olivia-Finder
+Created Date: Friday February 24th 2023
+Author: Daniel Alonso Báscones
 Copyright (c) 2023 Daniel Alonso Báscones
------
+·········································································
 '''
+
 
 import contextlib, requests
 from typing_extensions import override
@@ -16,7 +17,7 @@ from bs4 import BeautifulSoup
 from typing import Dict, List, Optional
 from olivia_finder.scraping.r import RScraper
 from olivia_finder.scraping.scraper import Scraper, ScraperError
-from olivia_finder.requests.request_handler import RequestHandler
+from olivia_finder.myrequests.request_handler import RequestHandler
 from olivia_finder.util.logger import UtilLogger
 from olivia_finder.util.util import Util
 

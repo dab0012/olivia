@@ -1,0 +1,69 @@
+.document {
+  width: unset !important;
+}
+
+body {
+  line-height: 3em;
+}
+
+div.body {
+  max-width: 1250px !important;
+  line-height: 2em;
+}
+
+div.sphinxsidebar {
+  min-width: 400px;
+  font-size: 12px;
+  line-height: 2em;
+}
+
+div.sphinxsidebarwrapper {
+  padding: 18px 30px;
+}
+
+div.bodywrapper {
+  margin: 0 0 0 360px;
+}
+
+.method,
+.exception {
+  margin-top: 50px;
+}
+
+.method > dt {
+  font-size: 18px;
+  font-weight: bold;
+  background: aquamarine;
+}
+
+.class > dt,
+.exception > dt {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  color: crimson;
+  background: gainsboro;
+  font-size: large;
+  padding: 10px;
+}
+
+.attribute {
+  font-size: smaller;
+  color: crimson;
+}
+
+.field-list > dt.field-odd,
+.field-list > dt.field-even {
+  color: crimson;
+}
+
+.rubric {
+  color: crimson;
+}
+
+.sig-param {
+  color: #004b6b;
+}
+
+.property {
+  font-weight: bold;
+}

@@ -1,21 +1,21 @@
+""""""
 '''
-File:              bioconductor.py
-Project:           Olivia-Finder
-Created Date:      Friday February 24th 2023
-Author:            Daniel Alonso Báscones
-Last Modified:     Friday February 24th 2023 7:01:57 pm
-Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
------
+·········································································
+File: bioconductor.py
+Project: Olivia-Finder
+Created Date: Friday February 24th 2023
+Author: Daniel Alonso Báscones
 Copyright (c) 2023 Daniel Alonso Báscones
------
+·········································································
 '''
+
 
 import requests
 from bs4 import BeautifulSoup
 from typing import Dict, Optional, List
 from typing_extensions import override
 from olivia_finder.scraping.scraper import ScraperError
-from olivia_finder.requests.request_handler import RequestHandler
+from olivia_finder.myrequests.request_handler import RequestHandler
 from olivia_finder.util.util import Util
 from olivia_finder.scraping.r import RScraper 
 
