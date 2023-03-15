@@ -168,8 +168,8 @@ class Scraper(DataSource):
 
         if parsed_response is None:
             raise ScraperError(f'Package {package_name} not found')
-        else:
-            UtilLogger.log(f'Package {package_name} scraped successfully')
+        
+        UtilLogger.log(f'Package {package_name} scraped successfully')
             
         return parsed_response 
 
@@ -239,6 +239,9 @@ class Scraper(DataSource):
         # Build the urls
         UtilLogger.log('Building urls')
         urls = self._build_urls(package_names)
+        
+        # Map the urls to the package names
+        url_package_names = {urls[i]: package_names[i] for i in range(len(urls))}
 
         # Do the requests with the RequestHandler parallelism
         responses = self.request_handler.do_parallel_requests(urls, progress_bar=progress_bar)
@@ -251,8 +254,9 @@ class Scraper(DataSource):
 
             # Check if the package exists
             if response.status_code == 404:
-                not_found.append(key_url)
-                UtilLogger.log(f'Package {key_url} not found, status code: {response.status_code}, url: {response.url}, skipping...')
+                not_found_name = url_package_names[key_url]
+                not_found.append(not_found_name)
+                UtilLogger.log(f'Package {not_found_name} not found, status code: {response.status_code}, url: {key_url}, skipping...')
                 continue
 
             # Parse the source data and add it to the list

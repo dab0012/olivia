@@ -54,6 +54,7 @@ class CSVNetwork(DataSource):
             dependent_field:str,
             dependency_field:str,
             dependent_version_field:str = None,
+            dependency_version_field:str = None,
             dependent_url_field:str = None
         ):
         """
@@ -120,6 +121,14 @@ class CSVNetwork(DataSource):
         cls.dependency_field = dependency_field
         cls.dependent_url_field = dependent_url_field
         cls.dependent_version_field = dependent_version_field
+        cls.dependency_version_field = dependency_version_field
+        
+        # Init the dictionary of packages with the pakages in the data
+        package_names = cls.obtain_package_names()
+        for package_name in package_names:
+            cls.packages[package_name] = None
+        
+        return cls()
 
     # ---------------------
     #region Overridden methods

@@ -62,7 +62,7 @@ class RScraper(Scraper, ABC):
         pattern = r'\S+\s*(?:\(([^\)]*)\))?'
 
         # Get names and versions of dependencies
-        versions = [re.findall(pattern, dep)[0] if re.findall(pattern, dep) else '' for dep in dependencies_str.split(",")]
+        versions = [re.findall(pattern, dep)[0] if re.findall(pattern, dep) else None for dep in dependencies_str.split(",")]
         names = [re.sub(r'\s*\(.*\)', '', name.strip()) for name in dependencies_str.split(",")]
 
         # Check if the lists have the same length and are not empty

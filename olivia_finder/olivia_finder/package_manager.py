@@ -12,7 +12,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 
 import tqdm, pandas as pd
 from typing import Dict, List, Optional, Union
-from olivia_finder.olivia_finder.csv_network import CSVNetwork
+from olivia_finder.csv_network import CSVNetwork
 from olivia_finder.package import Package
 from olivia_finder.data_source import DataSource
 import pickle
@@ -98,7 +98,7 @@ class PackageManager():
         return pm
     
     # --------------------------------
-    #region Builders
+    # region Builders
     def obtain_package(self, package_name: str) -> Union[Package, None]:
         '''
         Builds a Package object from the package manager's data source
@@ -176,7 +176,7 @@ class PackageManager():
 
     #endregion Builders
     # --------------------------------
-    #region Loaders
+    # region Loaders
     
     @classmethod
     def load_from_dict(cls, data):
@@ -217,11 +217,11 @@ class PackageManager():
     def load_csv_adjlist(
         cls,
         csv_path: str,
-        dependent_field: Optional[str],
-        dependency_field: Optional[str],
-        version_field: Optional[str] ,
-        dependency_version_field: Optional[str],
-        url_field: Optional[str],
+        dependent_field: Optional[str] = None,
+        dependency_field: Optional[str] = None,
+        version_field: Optional[str] = None,
+        dependency_version_field: Optional[str] = None,
+        url_field: Optional[str] = None,
         default_format: Optional[bool] = False
     ):
         '''
@@ -230,32 +230,40 @@ class PackageManager():
         Parameters
         ----------
         csv_path : str
-            Path to the csv file
+            Path of the csv file to load
+        dependent_field : Optional[str], optional
+            Name of the dependent field, by default None
+        dependency_field : Optional[str], optional
+            Name of the dependency field, by default None
+        version_field : Optional[str], optional
+            Name of the version field, by default None
+        dependency_version_field : Optional[str], optional
+            Name of the dependency version field, by default None
+        url_field : Optional[str], optional
+            Name of the url field, by default None
+        default_format : Optional[bool], optional
+            If True, the csv has the structure of full_adjlist.csv, by default False
         
-        Returns
-        -------
-        PackageManager
-            PackageManager object loaded from the csv file
-            
-        Raises
-        ------
-        PackageManagerLoadError
-            If the csv file does not have the structure of : [name, version, url, dependency, dependency_version]
-            
         Examples
         --------
-        >>> pm = PackageManager.load_csv_adjlist('path/to/csv')
-        >>> print(pm.name)
-        >>> print(pm.url)
-            
+        >>> pm = PackageManager.load_csv_adjlist(
+            "full_adjlist.csv", 
+            dependent_field="dependent", 
+            dependency_field="dependency", 
+            version_field="version", 
+            dependency_version_field="dependency_version", 
+            url_field="url"
+        )
+        >>> pm = PackageManager.load_csv_adjlist("full_adjlist.csv", default_format=True)
+        
         '''
         try:
             data = pd.read_csv(csv_path)
         except Exception as e:
             raise PackageManagerLoadError(f"Error loading csv file: {e}") from e
-        
+
         csv_fields = []
-        
+
         if default_format:
             # If the csv has the structure of full_adjlist.csv, we use the default fields
             dependent_field = 'name'
@@ -263,23 +271,22 @@ class PackageManager():
             version_field = 'version'
             dependency_version_field = 'dependency_version'
             url_field = 'url'
-            csv_fields = ["dependent", "dependency", "version", "dependency_version", "url"]
+            csv_fields = [dependent_field, dependency_field, version_field, dependency_version_field, url_field]
         else:
-            # If the csv does not have the structure of full_adjlist.csv, we check if the mandatory fields are specified
             if dependent_field is None or dependency_field is None:
                 raise PackageManagerLoadError("Dependent and dependency fields must be specified")
-            else:
-                csv_fields = [dependent_field, dependency_field]
-                # If the optional fields are specified, we add them to the list
-                if version_field is not None:
-                    csv_fields.append(version_field)
-                if dependency_version_field is not None:
-                    csv_fields.append(dependency_version_field)
-                if url_field is not None:
-                    csv_fields.append(url_field)
-            
+
+            csv_fields = [dependent_field, dependency_field]
+            # If the optional fields are specified, we add them to the list
+            if version_field is not None:
+                csv_fields.append(version_field)
+            if dependency_version_field is not None:
+                csv_fields.append(dependency_version_field)
+            if url_field is not None:
+                csv_fields.append(url_field)
+
         # If the csv does not have the specified fields, we raise an error
-        if not all([col in data.columns for col in csv_fields]):
+        if any(col not in data.columns for col in csv_fields):
             raise PackageManagerLoadError("Invalid csv format")
 
         # We create the data source
@@ -291,11 +298,13 @@ class PackageManager():
 
         # We create the package manager
         cls = cls(data_source)
+        
+        return cls
 
 
     #endregion
     # --------------------------------
-    #region Getters
+    # region Getters
     
     def get_package(self, package_name: str) -> Union[Package, None]:
         '''
@@ -332,10 +341,25 @@ class PackageManager():
         >>> package_list = package_manager.get_package_list()
         '''
         return list(self.packages.values())
+    
+    def get_package_names(self) -> List[str]:
+        '''
+        Obtain the list of package names of the package manager
+        
+        Returns
+        -------
+        List[str]
+            List of package names of the package manager
+            
+        Examples
+        --------
+        >>> package_names = package_manager.get_package_names()
+        '''
+        return list(self.packages.keys())
         
     #endregion
     # --------------------------------
-    #region Export
+    # region Export
     
     def export_adjlist(self) -> pd.DataFrame:
         '''
