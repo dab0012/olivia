@@ -11,6 +11,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 '''
 
 import configparser
+import os
 
 class Configuration:
     """
@@ -28,9 +29,11 @@ class Configuration:
         Configurations read from the config file
     """
 
+
+
     # Class variables
     # ---------------
-    _ini_file = "./config.ini"        # Path to the config file
+    _ini_file = "config.ini"                      # Path to the config file
     _instance = None                              # Singleton instance
     _config = {}                                  # Configurations read from the config file
 
@@ -44,8 +47,17 @@ class Configuration:
 
             # Load data from ini file
             config_parser = configparser.ConfigParser()
-            with open(cls._ini_file) as f:
+
+            # Get the path of the folder of this file
+            parent_folder = os.path.dirname(os.path.dirname(__file__))
+            # parent_folder = os.path.dirname(parent_folder)
+            
+            # file_path = os.path.abspath(__file__)
+            # parent_folder = os.path.dirname(os.path.dirname(file_path))
+
+            with open(f'{parent_folder}/{cls._ini_file}') as f:
                 config_parser.read_file(f)
+
             cls._config = dict(config_parser)
         
         return cls._instance
