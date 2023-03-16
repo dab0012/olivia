@@ -1,0 +1,546 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>olivia_finder.package_manager &#8212; Olivia Finder  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for olivia_finder.package_manager</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">·········································································</span>
+<span class="sd">File: package_manager.py</span>
+<span class="sd">Project: Olivia-Finder</span>
+<span class="sd">Created Date: Monday March 6th 2023</span>
+<span class="sd">Author: Daniel Alonso Báscones</span>
+<span class="sd">Copyright (c) 2023 Daniel Alonso Báscones</span>
+<span class="sd">·········································································</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+
+<span class="kn">import</span> <span class="nn">tqdm</span><span class="o">,</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">olivia_finder.csv_network</span> <span class="kn">import</span> <span class="n">CSVNetwork</span>
+<span class="kn">from</span> <span class="nn">olivia_finder.package</span> <span class="kn">import</span> <span class="n">Package</span>
+<span class="kn">from</span> <span class="nn">olivia_finder.data_source</span> <span class="kn">import</span> <span class="n">DataSource</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+<div class="viewcode-block" id="PackageManager"><a class="viewcode-back" href="../../olivia_finder/olivia_finder.package_manager.html#olivia_finder.package_manager.PackageManager">[docs]</a><span class="k">class</span> <span class="nc">PackageManager</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Class that represents a package manager, which is a collection of packages</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_source : DataSource</span>
+<span class="sd">        Data source of the package manager</span>
+<span class="sd">        </span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the data source is invalid</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_source : DataSource</span>
+<span class="sd">        Data source of the package manager</span>
+<span class="sd">    packages : set[Package]</span>
+<span class="sd">        Set of packages of the package manager</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from olivia_finder.package_manager import PackageManager</span>
+<span class="sd">    &gt;&gt;&gt; from olivia_finder.data_source import DataSource</span>
+<span class="sd">    &gt;&gt;&gt; package_manager = PackageManager(DataSource())</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># Attributes</span>
+    <span class="n">data_source</span><span class="p">:</span> <span class="n">DataSource</span>
+    <span class="n">packages</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Package</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_source</span><span class="p">:</span> <span class="n">DataSource</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Constructor</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">data_source</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Data source cannot be None&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_source</span> <span class="o">=</span> <span class="n">data_source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">packages</span> <span class="o">=</span> <span class="p">{}</span>
+    
+<div class="viewcode-block" id="PackageManager.save"><a class="viewcode-back" href="../../olivia_finder/olivia_finder.package_manager.html#olivia_finder.package_manager.PackageManager.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Save the package manager to a file</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str</span>
+<span class="sd">            Path of the file to save the package manager</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Use pickle to save the package manager</span>
+        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PackageManager.load"><a class="viewcode-back" href="../../olivia_finder/olivia_finder.package_manager.html#olivia_finder.package_manager.PackageManager.load">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">path</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Load the package manager from a file</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str</span>
+<span class="sd">            Path of the file to load the package manager</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">pm</span><span class="p">:</span> <span class="n">PackageManager</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Try to load the package manager from the file</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Use pickle to load the package manager</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">pm</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error loading the package manager from file:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        
+        <span class="k">return</span> <span class="n">pm</span></div>
+    
+    <span class="c1"># --------------------------------</span>
+    <span class="c1"># region Builders</span>
+<div class="viewcode-block" id="PackageManager.obtain_package"><a class="viewcode-back" href="../../olivia_finder/olivia_finder.package_manager.html#olivia_finder.package_manager.PackageManager.obtain_package">[docs]</a>    <span class="k">def</span> <span class="nf">obtain_package</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Package</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Builds a Package object from the package manager&#39;s data source</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        package_name : str</span>
+<span class="sd">            Name of the package</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Union[Package, None]</span>
+<span class="sd">            Package object if the package exists, None otherwise</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; package = package_manager.obtain_package(&quot;package_name&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(package.name)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">package_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_source</span><span class="o">.</span><span class="n">obtain_package_data</span><span class="p">(</span><span class="n">package_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">package_data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">Package</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">package_data</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="PackageManager.obtain_packages"><a class="viewcode-back" href="../../olivia_finder/olivia_finder.package_manager.html#olivia_finder.package_manager.PackageManager.obtain_packages">[docs]</a>    <span class="k">def</span> <span class="nf">obtain_packages</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">package_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">extend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
+        <span class="n">show_progress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Package</span><span class="p">]:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Obtain a list of packages from the package manager&#39;s data source</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        package_names : Optional[List[str]], optional</span>
+<span class="sd">            List of package names to obtain, by default None</span>
+<span class="sd">            </span>
+<span class="sd">        extend : Optional[bool], optional</span>
+<span class="sd">            If True, the packages will be added to the existing ones, by default False</span>
+<span class="sd">        </span>
+<span class="sd">        show_progress : Optional[bool], optional</span>
+<span class="sd">            If True, a progress bar will be shown, by default False</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[Package]</span>
+<span class="sd">            List of packages obtained from the data source</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; packages = package_manager.obtain_packages()</span>
+<span class="sd">        &gt;&gt;&gt; print(packages[0].name)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># Obtain the packages if the list is empty</span>
+        <span class="k">if</span> <span class="n">package_names</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">package_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">package_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_source</span><span class="o">.</span><span class="n">obtain_package_names</span><span class="p">()</span>
+
+        <span class="n">progress_bar</span> <span class="o">=</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">package_names</span><span class="p">))</span> <span class="k">if</span> <span class="n">show_progress</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">packages_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_source</span><span class="o">.</span><span class="n">obtain_packages_data</span><span class="p">(</span><span class="n">package_names</span><span class="p">,</span> <span class="n">progress_bar</span><span class="o">=</span><span class="n">progress_bar</span><span class="p">)</span>
+        <span class="n">package_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Package</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pkg_data</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">pkg_data</span> <span class="ow">in</span> <span class="n">packages_data</span>
+            <span class="k">if</span> <span class="n">pkg_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="n">progress_bar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">progress_bar</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="c1"># Add packages to the repo</span>
+        <span class="k">if</span> <span class="n">extend</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">package_list</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">packages</span><span class="p">[</span><span class="n">package</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">package</span>
+
+        <span class="k">return</span> <span class="n">package_list</span></div>
+
+    <span class="c1">#endregion Builders</span>
+    <span class="c1"># --------------------------------</span>
+    <span class="c1"># region Loaders</span>
+    
+<div class="viewcode-block" id="PackageManager.load_from_dict"><a class="viewcode-back" href="../../olivia_finder/olivia_finder.package_manager.html#olivia_finder.package_manager.PackageManager.load_from_dict">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load_from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Load a dictionary into a PackageManager object</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : dict</span>
+<span class="sd">            Dictionary to load</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PackageManager</span>
+<span class="sd">            PackageManager object loaded from the dictionary</span>
+<span class="sd">            </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        PackageManagerLoadError</span>
+<span class="sd">            If the dictionary does not have the structure of : {&#39;name&#39;: str, &#39;url&#39;: str, &#39;packages&#39;: List[dict]}</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; pm_dict = pm.to_dict()</span>
+<span class="sd">        &gt;&gt;&gt; pm = PackageManager.load_dict(pm_dict)</span>
+<span class="sd">        &gt;&gt;&gt; print(pm.name)</span>
+<span class="sd">        &gt;&gt;&gt; print(pm.url)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pm_dict</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;packages&#39;</span><span class="p">]:</span>
+                <span class="n">pm_dict</span><span class="o">.</span><span class="n">packages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Package</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">pm_dict</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PackageManagerLoadError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid dictionary format: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
+    
+<div class="viewcode-block" id="PackageManager.load_csv_adjlist"><a class="viewcode-back" href="../../olivia_finder/olivia_finder.package_manager.html#olivia_finder.package_manager.PackageManager.load_csv_adjlist">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load_csv_adjlist</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">csv_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">dependent_field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dependency_field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">version_field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dependency_version_field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">url_field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">default_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Load a csv file into a PackageManager object</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        csv_path : str</span>
+<span class="sd">            Path of the csv file to load</span>
+<span class="sd">        dependent_field : Optional[str], optional</span>
+<span class="sd">            Name of the dependent field, by default None</span>
+<span class="sd">        dependency_field : Optional[str], optional</span>
+<span class="sd">            Name of the dependency field, by default None</span>
+<span class="sd">        version_field : Optional[str], optional</span>
+<span class="sd">            Name of the version field, by default None</span>
+<span class="sd">        dependency_version_field : Optional[str], optional</span>
+<span class="sd">            Name of the dependency version field, by default None</span>
+<span class="sd">        url_field : Optional[str], optional</span>
+<span class="sd">            Name of the url field, by default None</span>
+<span class="sd">        default_format : Optional[bool], optional</span>
+<span class="sd">            If True, the csv has the structure of full_adjlist.csv, by default False</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; pm = PackageManager.load_csv_adjlist(</span>
+<span class="sd">            &quot;full_adjlist.csv&quot;, </span>
+<span class="sd">            dependent_field=&quot;dependent&quot;, </span>
+<span class="sd">            dependency_field=&quot;dependency&quot;, </span>
+<span class="sd">            version_field=&quot;version&quot;, </span>
+<span class="sd">            dependency_version_field=&quot;dependency_version&quot;, </span>
+<span class="sd">            url_field=&quot;url&quot;</span>
+<span class="sd">        )</span>
+<span class="sd">        &gt;&gt;&gt; pm = PackageManager.load_csv_adjlist(&quot;full_adjlist.csv&quot;, default_format=True)</span>
+<span class="sd">        </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_path</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PackageManagerLoadError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error loading csv file: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
+        <span class="n">csv_fields</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">default_format</span><span class="p">:</span>
+            <span class="c1"># If the csv has the structure of full_adjlist.csv, we use the default fields</span>
+            <span class="n">dependent_field</span> <span class="o">=</span> <span class="s1">&#39;name&#39;</span>
+            <span class="n">dependency_field</span> <span class="o">=</span> <span class="s1">&#39;dependency&#39;</span>
+            <span class="n">version_field</span> <span class="o">=</span> <span class="s1">&#39;version&#39;</span>
+            <span class="n">dependency_version_field</span> <span class="o">=</span> <span class="s1">&#39;dependency_version&#39;</span>
+            <span class="n">url_field</span> <span class="o">=</span> <span class="s1">&#39;url&#39;</span>
+            <span class="n">csv_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">dependent_field</span><span class="p">,</span> <span class="n">dependency_field</span><span class="p">,</span> <span class="n">version_field</span><span class="p">,</span> <span class="n">dependency_version_field</span><span class="p">,</span> <span class="n">url_field</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dependent_field</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">dependency_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">PackageManagerLoadError</span><span class="p">(</span><span class="s2">&quot;Dependent and dependency fields must be specified&quot;</span><span class="p">)</span>
+
+            <span class="n">csv_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">dependent_field</span><span class="p">,</span> <span class="n">dependency_field</span><span class="p">]</span>
+            <span class="c1"># If the optional fields are specified, we add them to the list</span>
+            <span class="k">if</span> <span class="n">version_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">csv_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">version_field</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dependency_version_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">csv_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dependency_version_field</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">url_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">csv_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url_field</span><span class="p">)</span>
+
+        <span class="c1"># If the csv does not have the specified fields, we raise an error</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">csv_fields</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PackageManagerLoadError</span><span class="p">(</span><span class="s2">&quot;Invalid csv format&quot;</span><span class="p">)</span>
+
+        <span class="c1"># We create the data source</span>
+        <span class="n">data_source</span> <span class="o">=</span> <span class="n">CSVNetwork</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span>
+            <span class="n">csv_path</span><span class="p">,</span> <span class="n">dependent_field</span><span class="p">,</span> <span class="n">dependency_field</span><span class="p">,</span> <span class="n">version_field</span><span class="p">,</span> <span class="n">dependency_version_field</span><span class="p">,</span> <span class="n">url_field</span>
+        <span class="p">)</span>
+        <span class="n">data_source</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;CSV File&quot;</span>
+        <span class="n">data_source</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">csv_path</span>
+
+        <span class="c1"># We create the package manager</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data_source</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">cls</span></div>
+
+
+    <span class="c1">#endregion</span>
+    <span class="c1"># --------------------------------</span>
+    <span class="c1"># region Getters</span>
+    
+<div class="viewcode-block" id="PackageManager.get_package"><a class="viewcode-back" href="../../olivia_finder/olivia_finder.package_manager.html#olivia_finder.package_manager.PackageManager.get_package">[docs]</a>    <span class="k">def</span> <span class="nf">get_package</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Package</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Obtain a package from the package manager</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        package_name : str</span>
+<span class="sd">            Name of the package</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Union[Package, None]</span>
+<span class="sd">            Package object if the package exists, None otherwise</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; package = package_manager.get_package(&quot;package_name&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(package.name)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">packages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">package_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="PackageManager.get_package_list"><a class="viewcode-back" href="../../olivia_finder/olivia_finder.package_manager.html#olivia_finder.package_manager.PackageManager.get_package_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_package_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Package</span><span class="p">]:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Obtain the list of packages of the package manager</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[Package]</span>
+<span class="sd">            List of packages of the package manager</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; package_list = package_manager.get_package_list()</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">packages</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+    
+<div class="viewcode-block" id="PackageManager.get_package_names"><a class="viewcode-back" href="../../olivia_finder/olivia_finder.package_manager.html#olivia_finder.package_manager.PackageManager.get_package_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_package_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Obtain the list of package names of the package manager</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[str]</span>
+<span class="sd">            List of package names of the package manager</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; package_names = package_manager.get_package_names()</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">packages</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+        
+    <span class="c1">#endregion</span>
+    <span class="c1"># --------------------------------</span>
+    <span class="c1"># region Export</span>
+    
+<div class="viewcode-block" id="PackageManager.export_adjlist"><a class="viewcode-back" href="../../olivia_finder/olivia_finder.package_manager.html#olivia_finder.package_manager.PackageManager.export_adjlist">[docs]</a>    <span class="k">def</span> <span class="nf">export_adjlist</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Convert the object to a adjacency list, where each row represents a dependency</span>
+<span class="sd">        If a package has&#39;nt dependencies, it will appear in the list with dependency field empty</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            Dependency network as an adjacency list</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; adj_list = package_manager.export_adjlist()</span>
+<span class="sd">        &gt;&gt;&gt; print(adj_list)</span>
+<span class="sd">            [name, dependency]</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">packages</span><span class="p">:</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">package</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">dependency</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">dependency</span> <span class="ow">in</span> <span class="n">package</span><span class="o">.</span><span class="n">dependencies</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;dependency&#39;</span><span class="p">])</span></div>
+    
+<div class="viewcode-block" id="PackageManager.export_full_adjlist"><a class="viewcode-back" href="../../olivia_finder/olivia_finder.package_manager.html#olivia_finder.package_manager.PackageManager.export_full_adjlist">[docs]</a>    <span class="k">def</span> <span class="nf">export_full_adjlist</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Convert the object to a adjacency list, where each row represents a dependency</span>
+<span class="sd">        If a package has&#39;nt dependencies, it will appear in the list with dependency field empty</span>
+<span class="sd">        The version of the package and the dependency will be included</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            Dependency network as an adjacency list</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; adj_list = package_manager.export_full_adjlist()</span>
+<span class="sd">        &gt;&gt;&gt; print(adj_list)</span>
+<span class="sd">            [name, version, dependency, dependency_version]</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">package_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">packages</span><span class="p">:</span>
+
+            <span class="n">package</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_package</span><span class="p">(</span><span class="n">package_name</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">package</span><span class="o">.</span><span class="n">dependencies</span><span class="p">:</span>
+                <span class="n">rows</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">package</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">package</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+                        <span class="n">package</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+                        <span class="n">dependency</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">dependency</span><span class="o">.</span><span class="n">version</span>
+                    <span class="p">]</span>
+                    <span class="k">for</span> <span class="n">dependency</span> <span class="ow">in</span> <span class="n">package</span><span class="o">.</span><span class="n">dependencies</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">package</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">package</span><span class="o">.</span><span class="n">version</span><span class="p">,</span> <span class="n">package</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">,</span> <span class="s1">&#39;dependency&#39;</span><span class="p">,</span> <span class="s1">&#39;dependency_version&#39;</span><span class="p">])</span></div></div>
+    
+    <span class="c1">#endregion Export</span>
+
+<div class="viewcode-block" id="PackageManagerLoadError"><a class="viewcode-back" href="../../olivia_finder/olivia_finder.package_manager.html#olivia_finder.package_manager.PackageManagerLoadError">[docs]</a><span class="k">class</span> <span class="nc">PackageManagerLoadError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised when there is an error loading the package manager</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    message : str</span>
+<span class="sd">        Error message</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Olivia Finder</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../olivia_finder/olivia_finder.html">olivia_finder package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Daniel Alonso Báscones.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>olivia_finder.util.config_ini module &#8212; Olivia Finder  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="olivia_finder.util.logger module" href="olivia_finder.util.logger.html" />
+    <link rel="prev" title="olivia_finder.util package" href="olivia_finder.util.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-olivia_finder.util.config_ini">
+<span id="olivia-finder-util-config-ini-module"></span><h1>olivia_finder.util.config_ini module<a class="headerlink" href="#module-olivia_finder.util.config_ini" title="Permalink to this heading">¶</a></h1>
+<p>File:              config_ini.py
+Project:           Olivia-Finder
+Created Date:      Thursday March 9th 2023
+Author:            Daniel Alonso Báscones
+Last Modified:     Thursday March 9th 2023 5:01:30 pm
+Modified By:       The developer formerly known as dab0012 &lt;at&gt; alu.ubu.es
+—–
+Copyright (c) 2023 Daniel Alonso Báscones
+—–</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="olivia_finder.util.config_ini.Configuration">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.util.config_ini.</span></span><span class="sig-name descname"><span class="pre">Configuration</span></span><a class="reference internal" href="../../_modules/olivia_finder/util/config_ini.html#Configuration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.util.config_ini.Configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Utility class for config.ini file
+This class is a singleton, so it can be used as a global variable.
+The config.ini file must be in the same folder as this file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>_ini_file</strong><span class="classifier">str</span></dt><dd><p>Path to the config file</p>
+</dd>
+<dt><strong>_instance</strong><span class="classifier">Configuration</span></dt><dd><p>Singleton instance</p>
+</dd>
+<dt><strong>_config</strong><span class="classifier">dict</span></dt><dd><p>Configurations read from the config file</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#olivia_finder.util.config_ini.Configuration.get_key" title="olivia_finder.util.config_ini.Configuration.get_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_key</span></code></a>(section, key)</p></td>
+<td><p>Get a value from the config file by section and key</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.util.config_ini.Configuration.get_key">
+<span class="sig-name descname"><span class="pre">get_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/olivia_finder/util/config_ini.html#Configuration.get_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.util.config_ini.Configuration.get_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a value from the config file by section and key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>section</strong><span class="classifier">str</span></dt><dd><p>Section of the config file</p>
+</dd>
+<dt><strong>key</strong><span class="classifier">str</span></dt><dd><p>Key of the config file</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>Value of the key in the section</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>keyError</dt><dd><p>If the key is not found in the section</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Olivia Finder</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../olivia_finder.html">olivia_finder package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../olivia_finder.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../olivia_finder.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../olivia_finder.html#module-olivia_finder">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../olivia_finder.html">olivia_finder package</a><ul>
+  <li><a href="olivia_finder.util.html">olivia_finder.util package</a><ul>
+      <li>Previous: <a href="olivia_finder.util.html" title="previous chapter">olivia_finder.util package</a></li>
+      <li>Next: <a href="olivia_finder.util.logger.html" title="next chapter">olivia_finder.util.logger module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Daniel Alonso Báscones.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/olivia_finder/util/olivia_finder.util.config_ini.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,13 +1,12 @@
+""""""
 '''
-File:              repo.py
-Project:           Olivia-Finder
-Created Date:      Friday February 24th 2023
-Author:            Daniel Alonso Báscones
-Last Modified:     Friday February 24th 2023 6:37:07 pm
-Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
------
+·········································································
+File: package_manager.py
+Project: Olivia-Finder
+Created Date: Monday March 6th 2023
+Author: Daniel Alonso Báscones
 Copyright (c) 2023 Daniel Alonso Báscones
------
+·········································································
 '''
 
 from __future__ import annotations

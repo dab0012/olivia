@@ -1,16 +1,15 @@
+""""""
+from __future__ import annotations
 '''
-File:              package.py
-Project:           Olivia-Finder
-Created Date:      Friday February 24th 2023
-Author:            Daniel Alonso Báscones
-Last Modified:     Friday February 24th 2023 6:23:06 pm
-Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
------
+·········································································
+File: package.py
+Project: Olivia-Finder
+Created Date: Friday February 24th 2023
+Author: Daniel Alonso Báscones
 Copyright (c) 2023 Daniel Alonso Báscones
------
+·········································································
 '''
 
-from __future__ import annotations
 from typing import Optional
 
 class Package:
@@ -34,14 +33,7 @@ class Package:
     >>> package = Package("numpy", "1.0.0", "https://numpy.org")
     >>> package.print()
     '''
-    
-    # Class Attributes
-    # ---------------------
-    name: str
-    version: Optional[str]
-    url: Optional[str]
-    dependencies: Optional[list[Package]]
-    
+        
     def __init__(
         self, 
         name: str, 
@@ -51,10 +43,11 @@ class Package:
     ):
         '''Constructor'''
 
-        self.dependencies = [] if dependencies is None else dependencies
-        self.name = name
-        self.version = version
-        self.url = url
+        self.name: str = name
+        self.version: Optional[str] = version
+        self.url: Optional[str] = url
+        self.dependencies: Optional[list[Package]] = [] if dependencies is None else dependencies
+
 
     def print(self):
         '''
@@ -159,8 +152,8 @@ class Package:
     @classmethod
     def load(cls, data: dict):
         '''
-        Loads a package from a dictionary
-        It is assumed that the dictionary has the following structure:
+        Loads a package from a dictionary. IIt is assumed that the dictionary has the following structure:
+
         {   
             'name': str,
             'version': str,
@@ -227,5 +220,3 @@ class Package:
             data['dependencies'].append(dependency.to_dict())
 
         return data
-    
-

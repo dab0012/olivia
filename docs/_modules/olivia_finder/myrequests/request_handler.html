@@ -1,0 +1,334 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>olivia_finder.myrequests.request_handler &#8212; Olivia Finder  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for olivia_finder.myrequests.request_handler</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">·········································································</span>
+<span class="sd">File: request_handler.py</span>
+<span class="sd">Project: Olivia-Finder</span>
+<span class="sd">Created Date: Monday February 27th 2023</span>
+<span class="sd">Author: Daniel Alonso Báscones</span>
+<span class="sd">Copyright (c) 2023 Daniel Alonso Báscones</span>
+<span class="sd">·········································································</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="kn">import</span> <span class="nn">tqdm</span><span class="o">,</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span>
+<span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span><span class="p">,</span> <span class="n">as_completed</span>
+<span class="kn">from</span> <span class="nn">olivia_finder.myrequests.proxy_handler</span> <span class="kn">import</span> <span class="n">ProxyHandler</span>
+<span class="kn">from</span> <span class="nn">olivia_finder.myrequests.useragent_handler</span> <span class="kn">import</span> <span class="n">UserAgentHandler</span>
+<span class="kn">from</span> <span class="nn">olivia_finder.util.logger</span> <span class="kn">import</span> <span class="n">UtilLogger</span>
+<span class="kn">from</span> <span class="nn">olivia_finder.util.util</span> <span class="kn">import</span> <span class="n">Util</span>
+
+<div class="viewcode-block" id="RequestHandler"><a class="viewcode-back" href="../../../olivia_finder/myrequests/olivia_finder.myrequests.request_handler.html#olivia_finder.myrequests.request_handler.RequestHandler">[docs]</a><span class="k">class</span> <span class="nc">RequestHandler</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Class that handles HTTP requests in a more transparent way in scraping and denial of service environments</span>
+<span class="sd">    by the servers from which the data is requested </span>
+<span class="sd">    Basically, it manages the proxies and user agents so that scraping is not detected</span>
+<span class="sd">    </span>
+<span class="sd">    :param proxy_handler: Proxy handler to use, defaults to None</span>
+<span class="sd">    :type proxy_handler: ProxyHandler, optional</span>
+<span class="sd">    :param useragents_handler: User agent handler to use, defaults to None</span>
+<span class="sd">    :type useragents_handler: UserAgentHandler, optional</span>
+<span class="sd">    :param max_retry: Maximum number of retries for each request, defaults to REQUEST_MAX_RETRIES</span>
+<span class="sd">    :type max_retry: int, optional</span>
+<span class="sd">    :param request_timeout: Timeout for each request, defaults to REQUEST_TIMEOUT</span>
+<span class="sd">    :type request_timeout: int, optional</span>
+<span class="sd">    :param num_processes: Number of processes to use for parallel requests, defaults to NUM_PROCESSES</span>
+<span class="sd">    :type num_processes: int, optional</span>
+<span class="sd">    :return: RequestHandler</span>
+<span class="sd">    :rtype: RequestHandler</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Attributes</span>
+    <span class="c1"># ----------</span>
+    <span class="n">proxy_handler</span><span class="p">:</span> <span class="n">ProxyHandler</span>                            <span class="c1"># Proxy handler to use</span>
+    <span class="n">useragents_handler</span><span class="p">:</span> <span class="n">UserAgentHandler</span>                   <span class="c1"># User agent handler to use</span>
+    <span class="n">current_proxy_index</span><span class="p">:</span> <span class="nb">int</span>                               <span class="c1"># Current proxy index</span>
+    <span class="n">current_useragent_index</span><span class="p">:</span> <span class="nb">int</span>                           <span class="c1"># Current user agent index</span>
+    <span class="n">LOCK</span><span class="p">:</span> <span class="n">Lock</span>                                             <span class="c1"># Lock to use</span>
+    <span class="n">REQUEST_MAX_RETRIES</span><span class="p">:</span> <span class="nb">int</span>                    <span class="o">=</span> <span class="mi">5</span>        <span class="c1"># Maximum number of retries for each request</span>
+    <span class="n">REQUEST_TIMEOUT</span><span class="p">:</span> <span class="nb">int</span>                        <span class="o">=</span> <span class="mi">60</span>       <span class="c1"># Timeout for each request</span>
+    <span class="n">NUM_PROCESSES</span><span class="p">:</span> <span class="nb">int</span>                          <span class="o">=</span> <span class="mi">4</span>        <span class="c1"># Number of processes to use for parallel requests</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">proxy_handler</span><span class="p">:</span>          <span class="n">Optional</span><span class="p">[</span><span class="n">ProxyHandler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">useragents_handler</span><span class="p">:</span>     <span class="n">Optional</span><span class="p">[</span><span class="n">UserAgentHandler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">max_retry</span><span class="p">:</span>              <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">REQUEST_MAX_RETRIES</span><span class="p">,</span> 
+        <span class="n">request_timeout</span><span class="p">:</span>        <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">REQUEST_TIMEOUT</span><span class="p">,</span> 
+        <span class="n">num_processes</span><span class="p">:</span>          <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">NUM_PROCESSES</span><span class="p">,</span> 
+    <span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Constructor&#39;&#39;&#39;</span>
+
+
+        <span class="c1"># Check proxy handler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxy_handler</span> <span class="o">=</span> <span class="n">ProxyHandler</span><span class="p">()</span> <span class="k">if</span> <span class="n">proxy_handler</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">proxy_handler</span>
+    
+        <span class="c1"># Check user agent handler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">useragents_handler</span> <span class="o">=</span> <span class="n">UserAgentHandler</span><span class="p">()</span> <span class="k">if</span> <span class="n">useragents_handler</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">useragents_handler</span>
+
+        <span class="c1"># Initialize attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LOCK</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_proxy_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_useragent_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">REQUEST_MAX_RETRIES</span> <span class="o">=</span> <span class="n">max_retry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">REQUEST_TIMEOUT</span> <span class="o">=</span> <span class="n">request_timeout</span>
+
+        <span class="c1"># Check number of processes</span>
+        <span class="n">recommended_num_processes</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">recommended_threads</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">num_processes</span> <span class="o">&gt;</span> <span class="n">recommended_num_processes</span><span class="p">:</span>
+            <span class="n">UtilLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of processes (</span><span class="si">{</span><span class="n">num_processes</span><span class="si">}</span><span class="s2">) is greater than the recommended number (</span><span class="si">{</span><span class="n">recommended_num_processes</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">NUM_PROCESSES</span> <span class="o">=</span> <span class="n">recommended_num_processes</span>
+        <span class="k">elif</span> <span class="n">num_processes</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;num_processes must be greater than 0&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">NUM_PROCESSES</span> <span class="o">=</span> <span class="n">num_processes</span>
+
+<div class="viewcode-block" id="RequestHandler.do_request"><a class="viewcode-back" href="../../../olivia_finder/myrequests/olivia_finder.myrequests.request_handler.html#olivia_finder.myrequests.request_handler.RequestHandler.do_request">[docs]</a>    <span class="k">def</span> <span class="nf">do_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span><span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Do a request to the given url</span>
+<span class="sd">        </span>
+<span class="sd">        :param url: Url to do the request</span>
+<span class="sd">        :type url: str</span>
+<span class="sd">        :param params: Parameters to pass to the request, defaults to None</span>
+<span class="sd">        :type params: dict, optional</span>
+<span class="sd">        :return: Tuple with the url and the response if the request was successful, None otherwise</span>
+<span class="sd">        :rtype: Union[Tuple[str, requests.Response], None]</span>
+<span class="sd">        :raises RequestError: If there is an error doing the request</span>
+<span class="sd">        :return: Tuple with the url and the response if the request was successful, None otherwise</span>
+<span class="sd">        :rtype: Union[Tuple[str, requests.Response], None]</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># Try to get proxy and user agent with lock for thread safety</span>
+        <span class="n">proxy</span> <span class="o">=</span> <span class="n">headers</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOCK</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">proxy_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_handler</span><span class="o">.</span><span class="n">get_next_proxy</span><span class="p">()</span>
+                    <span class="n">proxy</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="n">proxy_url</span><span class="p">}</span>
+                    <span class="n">UtilLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using proxy: </span><span class="si">{</span><span class="n">proxy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">useragents_handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">useragents_handler</span><span class="o">.</span><span class="n">get_next_useragent</span><span class="p">()}</span>
+                    <span class="n">UtilLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using user agent: </span><span class="si">{</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RequestError</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Exception getting proxy and user agent: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
+        <span class="c1"># Do the request</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="n">url</span><span class="p">,</span> 
+                    <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
+                    <span class="n">proxies</span><span class="o">=</span><span class="n">proxy</span><span class="p">,</span> 
+                    <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">REQUEST_TIMEOUT</span><span class="p">,</span> 
+                    <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Response is ok</span>
+            <span class="n">UtilLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Response status code: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+        
+        <span class="c1"># Handle exceptions</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RequestError</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Exception doing request: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
+        
+<div class="viewcode-block" id="RequestHandler.do_parallel_requests"><a class="viewcode-back" href="../../../olivia_finder/myrequests/olivia_finder.myrequests.request_handler.html#olivia_finder.myrequests.request_handler.RequestHandler.do_parallel_requests">[docs]</a>    <span class="k">def</span> <span class="nf">do_parallel_requests</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">url_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> 
+        <span class="n">param_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">progress_bar</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Do parallel requests to the given urls, with the given parameters if any</span>
+<span class="sd">        </span>
+<span class="sd">        :param url_list: List of urls to do the requests</span>
+<span class="sd">        :type url_list: List[str]</span>
+<span class="sd">        :param param_list: List of parameters to pass to the requests, defaults to None</span>
+<span class="sd">        :type param_list: List[dict], optional</span>
+<span class="sd">        :param progress_bar: Progress bar to use, defaults to None</span>
+<span class="sd">        :type progress_bar: tqdm.tqdm, optional</span>
+<span class="sd">        :return: List of tuples with the url and the response if the request was successful, None otherwise</span>
+<span class="sd">        :rtype: List[Union[Tuple[str, requests.Response], None]]</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># Check if num_processes is greater than the number of urls and adjust accordingly</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">NUM_PROCESSES</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NUM_PROCESSES</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">url_list</span><span class="p">))</span>
+        
+        <span class="c1"># Do requests in parallel</span>
+        <span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">NUM_PROCESSES</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+
+            <span class="c1"># init desired results to None, so that we can check if they are not None later</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="n">url</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">url_list</span><span class="p">}</span>
+
+            <span class="c1"># Do requests with retries</span>
+            <span class="k">if</span> <span class="n">param_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_request_with_retry</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">url_list</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_request_with_retry</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span> <span class="k">for</span> <span class="n">url</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">url_list</span><span class="p">,</span> <span class="n">param_list</span><span class="p">)]</span>
+
+            <span class="c1"># Get results</span>
+            <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">as_completed</span><span class="p">(</span><span class="n">futures</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">(),</span> <span class="ne">Exception</span><span class="p">):</span>
+                    <span class="n">UtilLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in thread: </span><span class="si">{</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOCK</span><span class="p">:</span>
+                        <span class="n">response</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+                        <span class="c1"># Update progress bar</span>
+                        <span class="k">if</span> <span class="n">progress_bar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">progress_bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+                        <span class="c1"># Check if response is not None</span>
+                        <span class="k">if</span> <span class="n">response</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">response_url</span><span class="p">,</span> <span class="n">response_object</span> <span class="o">=</span> <span class="n">response</span>
+                            <span class="n">results</span><span class="p">[</span><span class="n">response_url</span><span class="p">]</span> <span class="o">=</span> <span class="n">response_object</span>
+
+        <span class="k">return</span> <span class="n">results</span></div>
+    
+    <span class="k">def</span> <span class="nf">_do_request_with_retry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Do a request to the given url with retries, if the request fails for any reason</span>
+<span class="sd">        </span>
+<span class="sd">        :param url: Url to do the request</span>
+<span class="sd">        :type url: str</span>
+<span class="sd">        :param params: Parameters to pass to the request, defaults to None</span>
+<span class="sd">        :type params: dict, optional</span>
+<span class="sd">        :return: Tuple with the url and the response if the request was successful, None otherwise</span>
+<span class="sd">        :rtype: Union[Tuple[str, requests.Response], None]        </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">retry_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">retry_count</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">REQUEST_MAX_RETRIES</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_request</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">response</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">response</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">retry_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RequestError"><a class="viewcode-back" href="../../../olivia_finder/myrequests/olivia_finder.myrequests.request_handler.html#olivia_finder.myrequests.request_handler.RequestError">[docs]</a><span class="k">class</span> <span class="nc">RequestError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when there is an error making a request.</span>
+<span class="sd">    </span>
+<span class="sd">    :param response: Response object</span>
+<span class="sd">    :type response: </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span><span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">response</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">proxy_used</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">proxy</span>
+            <span class="n">useragent_used</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">]</span>
+            <span class="n">base_message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Request to </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> failed with status code </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">base_message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Proxy used: </span><span class="si">{</span><span class="n">proxy_used</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">base_message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;User-Agent used: </span><span class="si">{</span><span class="n">useragent_used</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">base_message</span> <span class="o">=</span> <span class="s2">&quot;Request failed: response is None&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">base_message</span> <span class="o">+</span> <span class="n">message</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+        <span class="c1"># Log error</span>
+        <span class="n">UtilLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Olivia Finder</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../olivia_finder/olivia_finder.html">olivia_finder package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Daniel Alonso Báscones.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
