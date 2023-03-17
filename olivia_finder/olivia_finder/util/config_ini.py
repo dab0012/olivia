@@ -33,7 +33,7 @@ class Configuration:
 
     # Class variables
     # ---------------
-    _ini_file = "config.ini"                      # Path to the config file
+    _ini_file = "../config.ini"                      # Path to the config file
     _instance = None                              # Singleton instance
     _config = {}                                  # Configurations read from the config file
 

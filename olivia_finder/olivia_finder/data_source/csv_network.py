@@ -1,4 +1,4 @@
-""""""
+from __future__ import annotations
 '''
 ·········································································
 File: csv_network.py
@@ -8,14 +8,15 @@ Author: Daniel Alonso Báscones
 Copyright (c) 2023 Daniel Alonso Báscones
 ·········································································
 '''
-from __future__ import annotations
-import tqdm, os, pandas as pd
+import tqdm
+import os
+import pandas as pd
 from typing import Dict, List, Optional
 from typing_extensions import override
-from olivia_finder.data_source import DataSource
 from olivia_finder.util.logger import UtilLogger
+from olivia_finder.data_source.data_source_abc import DataSourceABC
 
-class CSVNetwork(DataSource):
+class CSVNetwork(DataSourceABC):
     """
     Class that implements the methods for loading a network from a CSV file.
     Implements the DataSource interface.
@@ -28,7 +29,30 @@ class CSVNetwork(DataSource):
         The name of the field that contains the dependent packages
     dependency_field : str
         The name of the field that contains the dependency packages
+    dependent_version_field : str
+        The name of the field that contains the dependent packages versions
+    dependency_version_field : str
+        The name of the field that contains the dependency packages versions
+    dependent_url_field : str
+        The name of the field that contains the dependent packages urls
         
+    Parameters
+    ----------
+    name : Optional[str]
+        Name of the data source
+    description : Optional[str]
+        Description of the data source
+    dependent_field : Optional[str]
+        The name of the field that contains the dependent packages
+    dependency_field : Optional[str]
+        The name of the field that contains the dependency packages
+    dependent_version_field : Optional[str]
+        The name of the field that contains the dependent packages versions
+    dependency_version_field : Optional[str]
+        The name of the field that contains the dependency packages versions
+    dependent_url_field : Optional[str]
+        The name of the field that contains the dependent packages urls
+
     Examples
     --------
     >>> from olivia_finder.csv_network import CSVNetwork
@@ -37,25 +61,31 @@ class CSVNetwork(DataSource):
     >>> package_names = csv_network.obtain_package_names()
     """
     
-    # Attributes
-    # ---------------------
-    data: pd.DataFrame
-    dependent_field: str
-    dependency_field: str
-    dependent_version_field: str
-    dependent_url_field: str
+    def __init__(
+        self, 
+        name: Optional[str] = None, 
+        description: Optional[str] = None,
+        dependent_field: Optional[str] = None,
+        dependency_field: Optional[str] = None,
+        dependent_version_field: Optional[str] = None,
+        dependency_version_field: Optional[str] = None,
+        dependent_url_field: Optional[str] = None,
+    ):
+        """
+        Constructor of the class
+        """
+        super().__init__(name, description)
+        self.data: pd.DataFrame = None
+        self.dependent_field: str = dependent_field
+        self.dependency_field: str = dependency_field
+        self.dependent_version_field: str = dependent_version_field
+        self.dependency_version_field: str = dependency_version_field
+        self.dependent_url_field: str = dependent_url_field
+
+    def get_info(self):
+        return super().get_info()
     
-    # Class Methods
-    # ---------------------
-    @staticmethod
-    def load_data(
-            file_path:str, 
-            dependent_field:str,
-            dependency_field:str,
-            dependent_version_field:str     = None,
-            dependency_version_field:str    = None,
-            dependent_url_field:str         = None
-        ) -> CSVNetwork:
+    def load_data(self, file_path: str):
         """
         Loads the data from a CSV file like [name,version,url,dependency,dependency_version]
         The dependent_version_field and dependent_url_field parameters are optional
@@ -64,29 +94,17 @@ class CSVNetwork(DataSource):
         ----------
         file_path : str
             The path to the CSV file
-        dependent_field : str
-            The name of the field that contains the dependent package names
-        dependency_field : str
-            The name of the field that contains the dependency packages names
-        dependent_version_field : str, optional
-            The name of the field that contains the dependent packages versions, by default None
-        dependent_url_field : str, optional
-            The name of the field that contains the dependent packages urls, by default None
             
         Raises
         ------
         FileNotFoundError: Exception
             If the file does not exist
         ValueError: Exception
-            If the file path is None
-            If the file is not a CSV file
-            If the dependent field is None
-            If the dependency field is None
-            If the dependent field and dependency field are the same
+            If the file path is None, If the file is not a CSV file, If the dependent field is None, 
+            If the dependency field is None, If the dependent field and dependency field are the same
         """
 
-        # Check the parameters are valid
-        # ------------------------------
+        # Check the file is valid
         if file_path is None:
             raise ValueError("File path cannot be None.")
         
@@ -96,41 +114,35 @@ class CSVNetwork(DataSource):
         if not file_path.endswith(".csv"):
             raise ValueError(f"File {file_path} is not a CSV file.")
         
-        if dependent_field is None:
+        # Check if the mandatory fields are setted and are valid
+        if self.ependent_field is None:
             raise ValueError("Dependent field cannot be None.")
         
-        if dependency_field is None:
+        if self.dependency_field is None:
             raise ValueError("Dependency field cannot be None.")
         
-        if dependent_field == dependency_field:
+        if self.dependent_field == self.dependency_field:
             raise ValueError("Dependent field and dependency field cannot be the same.")
         
         # Load the data
-        # -------------
-        data = pd.read_csv(file_path)
+        self.data = pd.read_csv(file_path)
         
-        # Check if the fields are in the data
-        if dependent_field not in data.columns:
-            raise ValueError(f"Field {dependent_field} not found on data.")
+        # Check if the other fields are in the data
+        if self.dependent_field not in self.data.columns:
+            raise ValueError(f"Field {self.dependent_field} not found on data.")
         
-        if dependency_field not in data.columns:
-            raise ValueError(f"Field {dependency_field} not found on data.")
+        if self.dependency_field not in self.data.columns:
+            raise ValueError(f"Field {self.dependency_field} not found on data.")
         
-        # Create a instance of the class
-        csv_datasource = CSVNetwork()
-        # Set the attributes
-        csv_datasource.data = data
-        csv_datasource.dependent_field = dependent_field
-        csv_datasource.dependency_field = dependency_field
-        csv_datasource.dependent_version_field = dependent_version_field
-        csv_datasource.dependency_version_field = dependency_version_field
-        csv_datasource.dependent_url_field = dependent_url_field
-
-        # Return the instance
-        return csv_datasource
-
-    # ---------------------
-    #region Overridden methods
+        if self.dependent_version_field is not None and self.dependent_version_field not in self.data.columns:
+            raise ValueError(f"Field {self.dependent_version_field} not found on data.")
+        
+        if self.dependency_version_field is not None and self.dependency_version_field not in self.data.columns:
+            raise ValueError(f"Field {self.dependency_version_field} not found on data.")
+        
+        if self.dependent_url_field is not None and self.dependent_url_field not in self.data.columns:
+            raise ValueError(f"Field {self.dependent_url_field} not found on data.")
+        
     @override
     def obtain_package_names(self) -> List[str]:
         # sourcery skip: inline-immediately-returned-variable, skip-sorted-list-construction
@@ -243,5 +255,3 @@ class CSVNetwork(DataSource):
             progress_bar.update() if progress_bar is not None else None
             
         return packages
-
-    #endregion

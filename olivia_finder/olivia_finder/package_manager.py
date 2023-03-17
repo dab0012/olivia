@@ -14,7 +14,7 @@ import tqdm, pandas as pd
 from typing import Dict, List, Optional, Union
 from olivia_finder.csv_network import CSVNetwork
 from olivia_finder.package import Package
-from olivia_finder.data_source import DataSource
+from olivia_finder.data_source import DataSourceInterface
 import pickle
 
 class PackageManager():
@@ -46,10 +46,10 @@ class PackageManager():
     '''
 
     # Attributes
-    data_source: DataSource
+    data_source: DataSourceInterface
     packages: Dict[str, Package]
 
-    def __init__(self, data_source: DataSource):
+    def __init__(self, data_source: DataSourceInterface):
         '''
         Constructor
         '''

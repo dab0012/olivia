@@ -9,23 +9,25 @@ Copyright (c) 2023 Daniel Alonso Báscones
 ·········································································
 '''
 
-import requests, tqdm
+import requests
+import tqdm
 from typing_extensions import override
 from typing import Dict, List, Optional, Tuple
-from abc import abstractmethod
-from olivia_finder.data_source import DataSource
+from olivia_finder.data_source.scraper_abc import ScraperABC
 from olivia_finder.myrequests.request_handler import RequestHandler
 from olivia_finder.util.logger import UtilLogger
 
-
-class Scraper(DataSource):
+class Scraper(ScraperABC):
     """
-    Abstract class that implements the methods for scraping a package manager
+    Base class for scraping a package manager
+    Implements the methods of the ScraperABC interface class
     
     Attributes
     ----------
     request_handler : RequestHandler
         Request handler for the scraper
+    not_found : list[str]
+        List of packages that are not found in the package manager            
         
     Parameters
     ----------
@@ -37,10 +39,6 @@ class Scraper(DataSource):
         Request handler for the scraper, if None, it will be initialized with a generic RequestHandler
     """
     
-    # Attributes
-    # ----------
-    request_handler: RequestHandler
-
     def __init__(
         self, 
         name: Optional[str] = None, 
@@ -63,57 +61,19 @@ class Scraper(DataSource):
         # Initialize the not_found list for storing the packages that are not found
         self.not_found = []
 
-    #region Private methods
-
-    def _build_urls(self, package_names: List[str]) -> List[str]:
-        '''
-        Build the urls for scraping the packages of the package_names list
-        
-        Attributes
-        ----------
-        package_names : list[str]
-            List of package names to scrape
+    def obtain_package_names(self) -> List[str]:
+        """
+        Obtain the package names from the web page of the package manager
+        it must handle exceptions and return an empty list if the package names cannot be obtained
+        To be implemented by the child class
         
         Returns
         -------
-        list[str]
-            List of urls to scrape
-        '''
-        
-        return [self._build_url(package_name) for package_name in package_names]
-    
-    @abstractmethod
-    def _build_url(self, package_name: str) -> str:
-        '''
-        Build the url for scraping the package
-        To be implemented by the child class
-        '''
+        List[str]
+            List of package names
+        """
         pass
-        
-    @abstractmethod 
-    def _parser(self, response: requests.Response) -> Dict[str, str]:
-        '''
-        Parse the response from the request, it should return a dictionary with the package data
-        as string values.
-        This method is called by the scrape_package_data of the child class.
-        It has to handle th data source specific format (e.g. html, json, etc.)
-        The format of the dictionary should be:
-        {
-            'name': str,
-            'description': str,
-            'version': str,
-            'url': str,
-            'dependencies': list[str]
-        }
-        or None if the package is not found or an error occurs
-        To be implemented by the child class
-        '''
-        pass
-    
-    #endregion
 
-    #region Public methods
-    
     @override
     def obtain_package_data(self, package_name: str, override_previous: Optional[bool] = False ) -> Dict:
         """
@@ -155,9 +115,9 @@ class Scraper(DataSource):
     @override
     def obtain_packages_data(
         self, 
-        package_names:  Optional[List[str]] = None,
-        progress_bar:   Optional[tqdm.tqdm] = None,
-        full_scrape:    Optional[bool] = False
+        package_names: Optional[List[str]] = None,
+        progress_bar: Optional[tqdm.tqdm] = None,
+        from_data_source: Optional[bool] = False
     ) -> Tuple[List[Dict], List[str]]:
         '''
         Scrape a list of packages from a package manager, if the package is not found, it is added to the not_found list
@@ -186,10 +146,12 @@ class Scraper(DataSource):
 
         # If package_names is None, obtain the package names from the data source
         if package_names is None or len(package_names) == 0:
-            if not full_scrape:
+            if not from_data_source:
                 raise ScraperError('package_names is None or empty and full_scrape is disabled')
+            
             UtilLogger.log(f'Obtaining package names from Scraper: {self.name}, {self.description}')
             package_names = self.obtain_package_names()
+            
         else:
             UtilLogger.log('Using package names from param list')
 
@@ -221,17 +183,58 @@ class Scraper(DataSource):
 
         return packages, not_found
 
-    @abstractmethod
-    def obtain_package_names(self) -> List[str]:
+    def _build_url(self, package_name: str) -> str:
         '''
-        Obtain the package names from the web page of the package manager
-        it must handle exceptions and return an empty list if the package names cannot be obtained
-        To be implemented by the child class
+        Build the url for scraping a package
+        This method must be implemented by the child class
+        
+        Parameters
+        ----------
+        package_name : str
+            Name of the package to scrape
+
+        Returns
+        -------
+        str
+            Url to request the package data
+        '''
+        pass
+
+    @override
+    def _build_urls(self, package_names: List[str]) -> List[str]:
+        '''
+        Build the urls for scraping the packages of the package_names list
+        
+        Attributes
+        ----------
+        package_names : list[str]
+            List of package names to scrape
+        
+        Returns
+        -------
+        list[str]
+            List of urls to scrape
+        '''
+        
+        return [self._build_url(package_name) for package_name in package_names]
+    
+    def _parser(self, response: requests.Response) -> Dict:
+        '''
+        Parse the response of the package page
+        This method must be implemented by the child class
+        
+        Parameters
+        ----------
+        response : requests.Response
+            Response of the package page
+
+        Returns
+        -------
+        dict
+            Package data as a dictionary
         '''
         pass
     
-    #endregion
-
 class ScraperError(Exception):
     """
     Exception for the Scraper class
@@ -240,12 +243,16 @@ class ScraperError(Exception):
     ----------
     message : str
         Message of the exception
+        
+    Parameters
+    ----------
+    message : str, optional
+        Message of the exception, by default ''
     """
     
     def __init__(self, message: str = ''):
         '''Constructor'''
-        
-        
+        super().__init__()
         self.message = message
         UtilLogger.log(str(self))
 
