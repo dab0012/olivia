@@ -1,0 +1,365 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>olivia_finder.scraping.scraper &#8212; Olivia Finder  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for olivia_finder.scraping.scraper</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">·········································································</span>
+<span class="sd">File: scraper.py</span>
+<span class="sd">Project: Olivia-Finder</span>
+<span class="sd">Created Date: Friday February 24th 2023</span>
+<span class="sd">Author: Daniel Alonso Báscones</span>
+<span class="sd">Copyright (c) 2023 Daniel Alonso Báscones</span>
+<span class="sd">·········································································</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">requests</span><span class="o">,</span> <span class="nn">tqdm</span>
+<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">override</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">olivia_finder.data_source</span> <span class="kn">import</span> <span class="n">DataSource</span>
+<span class="kn">from</span> <span class="nn">olivia_finder.myrequests.request_handler</span> <span class="kn">import</span> <span class="n">RequestHandler</span>
+<span class="kn">from</span> <span class="nn">olivia_finder.util.logger</span> <span class="kn">import</span> <span class="n">UtilLogger</span>
+
+
+<div class="viewcode-block" id="Scraper"><a class="viewcode-back" href="../../../olivia_finder/scraping/olivia_finder.scraping.scraper.html#olivia_finder.scraping.scraper.Scraper">[docs]</a><span class="k">class</span> <span class="nc">Scraper</span><span class="p">(</span><span class="n">DataSource</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstract class that implements the methods for scraping a package manager</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    request_handler : RequestHandler</span>
+<span class="sd">        Request handler for the scraper</span>
+<span class="sd">        </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : Optional[str]</span>
+<span class="sd">        Name of the data source</span>
+<span class="sd">    description : Optional[str]</span>
+<span class="sd">        Description of the data source</span>
+<span class="sd">    request_handler : Optional[RequestHandler]</span>
+<span class="sd">        Request handler for the scraper, if None, it will be initialized with a generic RequestHandler</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Attributes</span>
+    <span class="c1"># ----------</span>
+    <span class="n">request_handler</span><span class="p">:</span> <span class="n">RequestHandler</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">request_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RequestHandler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor of the class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Call the super constructor</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">)</span>
+
+        <span class="c1"># if request_handler is None build a generic RequestHandler</span>
+        <span class="k">if</span> <span class="n">request_handler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">request_handler</span> <span class="o">=</span> <span class="n">RequestHandler</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">request_handler</span><span class="p">:</span> <span class="n">request_handler</span>
+
+        <span class="c1"># Initialize the not_found list for storing the packages that are not found</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">not_found</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1">#region Private methods</span>
+
+    <span class="k">def</span> <span class="nf">_build_urls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Build the urls for scraping the packages of the package_names list</span>
+<span class="sd">        </span>
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+<span class="sd">        package_names : list[str]</span>
+<span class="sd">            List of package names to scrape</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[str]</span>
+<span class="sd">            List of urls to scrape</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_url</span><span class="p">(</span><span class="n">package_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">package_name</span> <span class="ow">in</span> <span class="n">package_names</span><span class="p">]</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_build_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Build the url for scraping the package</span>
+<span class="sd">        To be implemented by the child class</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">pass</span>
+        
+    <span class="nd">@abstractmethod</span> 
+    <span class="k">def</span> <span class="nf">_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Parse the response from the request, it should return a dictionary with the package data</span>
+<span class="sd">        as string values.</span>
+<span class="sd">        This method is called by the scrape_package_data of the child class.</span>
+<span class="sd">        It has to handle th data source specific format (e.g. html, json, etc.)</span>
+<span class="sd">        The format of the dictionary should be:</span>
+<span class="sd">        {</span>
+<span class="sd">            &#39;name&#39;: str,</span>
+<span class="sd">            &#39;description&#39;: str,</span>
+<span class="sd">            &#39;version&#39;: str,</span>
+<span class="sd">            &#39;url&#39;: str,</span>
+<span class="sd">            &#39;dependencies&#39;: list[str]</span>
+<span class="sd">        }</span>
+<span class="sd">        or None if the package is not found or an error occurs</span>
+<span class="sd">        To be implemented by the child class</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">pass</span>
+    
+    <span class="c1">#endregion</span>
+
+    <span class="c1">#region Public methods</span>
+    
+<div class="viewcode-block" id="Scraper.obtain_package_data"><a class="viewcode-back" href="../../../olivia_finder/scraping/olivia_finder.scraping.scraper.html#olivia_finder.scraping.scraper.Scraper.obtain_package_data">[docs]</a>    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">obtain_package_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Scrape a package from a package manager, if the package is not found, it is added to the not_found list</span>
+<span class="sd">        Implements the abstract method of the DataSource class</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pkg_name : str</span>
+<span class="sd">            Name of the package to scrape</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Dict</span>
+<span class="sd">            Package data as a dictionary, if the package is not found, it returns None</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; scraper = Scraper()</span>
+<span class="sd">        &gt;&gt;&gt; scraper.obtain_package_data(&#39;numpy&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Get the package page</span>
+        <span class="n">UtilLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Scraping package </span><span class="si">{</span><span class="n">package_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_handler</span><span class="o">.</span><span class="n">do_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_build_url</span><span class="p">(</span><span class="n">package_name</span><span class="p">)</span>
+        <span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Return None if the package is not found, otherwise return the package data</span>
+        <span class="n">parsed_response</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">parsed_response</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ScraperError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Package </span><span class="si">{</span><span class="n">package_name</span><span class="si">}</span><span class="s1"> not found&#39;</span><span class="p">)</span>
+        
+        <span class="n">UtilLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Package </span><span class="si">{</span><span class="n">package_name</span><span class="si">}</span><span class="s1"> scraped successfully&#39;</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">parsed_response</span> </div>
+
+<div class="viewcode-block" id="Scraper.obtain_packages_data"><a class="viewcode-back" href="../../../olivia_finder/scraping/olivia_finder.scraping.scraper.html#olivia_finder.scraping.scraper.Scraper.obtain_packages_data">[docs]</a>    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">obtain_packages_data</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">package_names</span><span class="p">:</span>  <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">progress_bar</span><span class="p">:</span>   <span class="n">Optional</span><span class="p">[</span><span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">full_scrape</span><span class="p">:</span>    <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Scrape a list of packages from a package manager, if the package is not found, it is added to the not_found list</span>
+<span class="sd">        Implements the abstract method of the DataSource class</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        package_names : list[str], optional</span>
+<span class="sd">            List of package names to scrape, by default None</span>
+<span class="sd">        progress_bar : tqdm.tqdm, optional</span>
+<span class="sd">            Progress bar for visualizing the progress, by default None</span>
+<span class="sd">        full_scrape : bool, optional</span>
+<span class="sd">            If True, it tries to scrape all the packages obtainig the package names from the data source, by default False</span>
+<span class="sd">            Only works if package_names is None</span>
+<span class="sd">    </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tuple[list[dict], list[str]]</span>
+<span class="sd">            Tuple with the list of packages data and the list of packages not found</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; scraper = Scraper()</span>
+<span class="sd">        &gt;&gt;&gt; scraper.obtain_packages_data([&#39;numpy&#39;, &#39;pandas&#39;])</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># If package_names is None, obtain the package names from the data source</span>
+        <span class="k">if</span> <span class="n">package_names</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">package_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">full_scrape</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ScraperError</span><span class="p">(</span><span class="s1">&#39;package_names is None or empty and full_scrape is disabled&#39;</span><span class="p">)</span>
+            <span class="n">UtilLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Obtaining package names from Scraper: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">package_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obtain_package_names</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">UtilLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Using package names from param list&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Build the urls</span>
+        <span class="n">UtilLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Building urls&#39;</span><span class="p">)</span>
+        <span class="n">urls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_urls</span><span class="p">(</span><span class="n">package_names</span><span class="p">)</span>
+        
+        <span class="c1"># Map the urls to the package names</span>
+        <span class="n">url_package_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">urls</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">package_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">urls</span><span class="p">))}</span>
+
+        <span class="c1"># Do the requests with the RequestHandler parallelism</span>
+        <span class="n">responses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_handler</span><span class="o">.</span><span class="n">do_parallel_requests</span><span class="p">(</span><span class="n">urls</span><span class="p">,</span> <span class="n">progress_bar</span><span class="o">=</span><span class="n">progress_bar</span><span class="p">)</span>
+
+        <span class="c1"># Parse the responses</span>
+        <span class="n">packages</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">not_found</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key_url</span> <span class="ow">in</span> <span class="n">responses</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">responses</span><span class="p">[</span><span class="n">key_url</span><span class="p">]</span>
+
+            <span class="c1"># Check if the package exists</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
+                <span class="n">not_found_name</span> <span class="o">=</span> <span class="n">url_package_names</span><span class="p">[</span><span class="n">key_url</span><span class="p">]</span>
+                <span class="n">not_found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">not_found_name</span><span class="p">)</span>
+                <span class="n">UtilLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Package </span><span class="si">{</span><span class="n">not_found_name</span><span class="si">}</span><span class="s1"> not found, status code: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">, url: </span><span class="si">{</span><span class="n">key_url</span><span class="si">}</span><span class="s1">, skipping...&#39;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Parse the source data and add it to the list</span>
+            <span class="n">packages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="p">(</span><span class="n">response</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">packages</span><span class="p">,</span> <span class="n">not_found</span></div>
+
+<div class="viewcode-block" id="Scraper.obtain_package_names"><a class="viewcode-back" href="../../../olivia_finder/scraping/olivia_finder.scraping.scraper.html#olivia_finder.scraping.scraper.Scraper.obtain_package_names">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">obtain_package_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Obtain the package names from the web page of the package manager</span>
+<span class="sd">        it must handle exceptions and return an empty list if the package names cannot be obtained</span>
+<span class="sd">        To be implemented by the child class</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">pass</span></div></div>
+    
+    <span class="c1">#endregion</span>
+
+<div class="viewcode-block" id="ScraperError"><a class="viewcode-back" href="../../../olivia_finder/scraping/olivia_finder.scraping.scraper.html#olivia_finder.scraping.scraper.ScraperError">[docs]</a><span class="k">class</span> <span class="nc">ScraperError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception for the Scraper class</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    message : str</span>
+<span class="sd">        Message of the exception</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Constructor&#39;&#39;&#39;</span>
+        
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="n">UtilLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        String representation of the exception</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            String representation of the exception</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ScraperError: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="nb">super</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+    
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Olivia Finder</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../olivia_finder/olivia_finder.html">olivia_finder package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Daniel Alonso Báscones.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

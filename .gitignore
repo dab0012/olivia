@@ -3,5 +3,4 @@ __pycache__/
 *.py[cod]
 *.log
 .vscode/
-gen_doc/
 .venv/

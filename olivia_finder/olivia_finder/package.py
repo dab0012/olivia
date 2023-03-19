@@ -160,7 +160,6 @@ class Package:
         '''
         Loads a package from a dictionary. 
         It is assumed that the dictionary has the following structure:
-
         {   
             'name': str,
             'version': str,

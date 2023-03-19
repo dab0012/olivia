@@ -1,0 +1,60 @@
+html {
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+}
+
+header.md-header {
+  background-color: #590886 !important;
+  color: white !important;
+}
+
+nav.md-tabs {
+  background-color: #590886 !important;
+  color: white !important;
+  font-weight: bold !important;
+} 
+
+dl.py.class>dt {
+  font-size: 1.2em;
+  font-weight: bold;
+  background-color: #d098f0;
+  padding: 13px;
+  border-radius: 9px;
+}
+
+dl.py.class>dt>em.sig-param {
+  font-weight: normal;
+  font-size: medium;
+  color: black;
+}
+
+dl.py.class a {
+  color: mediumvioletred;
+}
+
+dl.py.class dl.field-list.simple {
+  border: 2px solid;
+  padding: 14px;
+  background: #d098f054;
+  font-family: arial;
+  line-height: initial;
+}
+
+div > nav.md-sidebar.md-sidebar--primary, div > nav.md-sidebar.md-sidebar--secondary {
+  background-color: #54fdc4 !important;
+  color: black !important;
+}
+
+dl.py.method {
+  margin-top: 30px;
+}
+
+dl.py.method > dt {
+  background-color: #54fdc4;
+  border-radius: 9px;
+  padding: 17px;
+  font-weight: bolder;
+}
+
+table {
+  margin-bottom: 100px;
+}
