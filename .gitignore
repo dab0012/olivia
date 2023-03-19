@@ -3,4 +3,5 @@ __pycache__/
 *.py[cod]
 *.log
 .vscode/
-olivia_finder/gen_doc
+gen_doc/
+.venv/

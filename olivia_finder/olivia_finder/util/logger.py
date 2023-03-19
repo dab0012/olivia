@@ -1,16 +1,23 @@
 '''
-File:              logger.py
-Project:           Olivia-Finder
-Created Date:      Thursday March 9th 2023
-Author:            Daniel Alonso Báscones
-Last Modified:     Thursday March 9th 2023 4:43:24 pm
-Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
------
-Copyright (c) 2023 Daniel Alonso Báscones
------
+logger.py
+==================
+
+Description
+-----------
+
+Module that contains the functions to handle the logger.
+
+File information:
+    - File: logger.py
+    - Project: util
+    - Created Date: 2023-03-18 14:40:56
+    - Author: Daniel Alonso Báscones
+    - Copyright (c) 2023 Daniel Alonso Báscones
+
 '''
 
-import logging, os
+import logging
+import os
 from olivia_finder.util.util import Util
 from olivia_finder.util.config_ini import Configuration
 
@@ -18,8 +25,6 @@ class UtilLogger:
     '''
     Utility class for logging
     '''
-
-    STATUS = False
 
     @staticmethod
     def init_logger(console: bool = True, file: bool = True):
@@ -31,14 +36,8 @@ class UtilLogger:
         ----------
         console : bool, optional
             If True, the logger will log to console, by default True
-            
         file : bool, optional
             If True, the logger will log to file, by default True
-            
-        Handles
-        -------
-        Exception
-            If the configuration data is not found, the default values are used.
         '''
 
         # Get the logging configuration from config.ini
@@ -48,8 +47,9 @@ class UtilLogger:
             level           = Configuration().get_key("logger", "level")
             filename        = Configuration().get_key("logger", "filename")
             log_path        = Configuration().get_key("folders", "log_dir")
-        except Exception:
+        except FileNotFoundError:
             # Fix not found in config.ini
+            # Use hardcoded values
             logging_format  = '%(asctime)s - %(levelname)s - %(message)s'
             date_format     = '%Y-%m-%d %H:%M:%S'
             level           = logging.DEBUG

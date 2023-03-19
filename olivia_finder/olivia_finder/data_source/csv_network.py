@@ -1,20 +1,29 @@
+'''
+csv_network.py
+==================
+
+Description
+-----------
+
+Module that contains the CSVNetwork class that implements the DataSource interface 
+for loading a network from a CSV file
+
+File information:
+    - File: csv_network.py
+    - Project: data_source
+    - Created Date: 2023-03-18 14:40:56
+    - Author: Daniel Alonso Báscones
+    - Copyright (c) 2023 Daniel Alonso Báscones
+
+'''
+
 from __future__ import annotations
-'''
-·········································································
-File: csv_network.py
-Project: Olivia-Finder
-Created Date: Wednesday March 8th 2023
-Author: Daniel Alonso Báscones
-Copyright (c) 2023 Daniel Alonso Báscones
-·········································································
-'''
-import tqdm
 import os
-import pandas as pd
 from typing import Dict, List, Optional
-from typing_extensions import override
-from olivia_finder.util.logger import UtilLogger
-from olivia_finder.data_source.data_source_abc import DataSourceABC
+import pandas as pd
+import tqdm
+from ..util.logger import UtilLogger
+from .data_source_abc import DataSourceABC
 
 class CSVNetwork(DataSourceABC):
     """
@@ -74,7 +83,12 @@ class CSVNetwork(DataSourceABC):
         """
         Constructor of the class
         """
-        super().__init__(name, description)
+
+        # Set the name and description
+        self.name: str = name if name is not None else "CSV Network"
+        self.description: str = description if description is not None else "Loads a network from a CSV file"
+        
+        # Set the dataframe as None and the fields
         self.data: pd.DataFrame = None
         self.dependent_field: str = dependent_field
         self.dependency_field: str = dependency_field
@@ -83,7 +97,13 @@ class CSVNetwork(DataSourceABC):
         self.dependent_url_field: str = dependent_url_field
 
     def get_info(self):
-        return super().get_info()
+        """
+        Returns the information of the data source.
+        """
+        return {
+            "name": self.name,
+            "description": self.description,
+        }
     
     def load_data(self, file_path: str):
         """
@@ -115,7 +135,7 @@ class CSVNetwork(DataSourceABC):
             raise ValueError(f"File {file_path} is not a CSV file.")
         
         # Check if the mandatory fields are setted and are valid
-        if self.ependent_field is None:
+        if self.dependent_field is None:
             raise ValueError("Dependent field cannot be None.")
         
         if self.dependency_field is None:
@@ -143,9 +163,7 @@ class CSVNetwork(DataSourceABC):
         if self.dependent_url_field is not None and self.dependent_url_field not in self.data.columns:
             raise ValueError(f"Field {self.dependent_url_field} not found on data.")
         
-    @override
     def obtain_package_names(self) -> List[str]:
-        # sourcery skip: inline-immediately-returned-variable, skip-sorted-list-construction
         """
         Obtains the list of packages from the data source, sorted alphabetically.
 
@@ -154,12 +172,8 @@ class CSVNetwork(DataSourceABC):
         List[str]
             The list of package names in the data source        
         """
-        package_names = list(self.data[self.dependent_field].unique())
-        package_names.sort()
-        
-        return package_names
+        return sorted(self.data[self.dependent_field].unique())
     
-    @override
     def obtain_package_data(self, package_name: str, override_previous: Optional[bool] = True) -> Dict:
         """
         Obtains the package from the dataframe
@@ -167,9 +181,9 @@ class CSVNetwork(DataSourceABC):
         Parameters
         ----------
         package_name : str
-            The name of the package to obtain the data from
-        filter : Optional[str], optional
-            The filter to apply to the data, by default None
+            The name of the package
+        override_previous : Optional[bool]
+            If True, it will override the previous data with the same name but different version
         
         Returns
         -------
@@ -218,10 +232,13 @@ class CSVNetwork(DataSourceABC):
             "dependencies": dependencies
         }
     
-    @override
-    def obtain_packages_data(self, package_name_list: Optional[List[str]] = None, progress_bar: Optional[tqdm.tqdm] = None) -> List[Dict]:
+    def obtain_packages_data(
+        self, 
+        package_name_list: Optional[List[str]] = None, 
+        progress_bar: Optional[tqdm.tqdm] = None
+    ) -> List[Dict]:
         '''
-        Obtains the data of a list of package names from the data source.
+        Obtains the data of a list of package names from the CSV file
 
         Parameters
         ----------
@@ -236,22 +253,26 @@ class CSVNetwork(DataSourceABC):
             The list of dictionaries containing the data of the packages
         '''
         
-        # for each package name, obtain the data
-        
+        # If the package name list is None, obtain the package names from the csv data
         if package_name_list is None:
             package_name_list = self.obtain_package_names()
-            
-        progress_bar = tqdm.tqdm(package_name_list) if progress_bar is None else progress_bar
-            
+        
+        # Define the list of packages and the list of not found packages
         packages = []
+        not_found = []
+
+        # Iterate over the package names and obtain the data
         for package_name in package_name_list:
             try:
                 packages.append(self.obtain_package_data(package_name))
+
+            # If the package is not found, add it to the not found list, and continue
             except ValueError:
                 UtilLogger.log(f"Package {package_name} not found in data.")
-                self.not_found.append(package_name)
+                not_found.append(package_name)
                 continue
             
-            progress_bar.update() if progress_bar is not None else None
-            
+            if progress_bar is not None:
+                progress_bar.update(1)
+                        
         return packages

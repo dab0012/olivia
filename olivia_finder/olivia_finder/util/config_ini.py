@@ -1,13 +1,19 @@
 '''
-File:              config_ini.py
-Project:           Olivia-Finder
-Created Date:      Thursday March 9th 2023
-Author:            Daniel Alonso Báscones
-Last Modified:     Thursday March 9th 2023 5:01:30 pm
-Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
------
-Copyright (c) 2023 Daniel Alonso Báscones
------
+config_ini.py
+=============
+
+Description
+-----------
+
+Module that contains ...
+
+File information:
+    - File: config_ini.py
+    - Project: util
+    - Created Date: 2023-03-18 14:40:56
+    - Author: Daniel Alonso Báscones
+    - Copyright (c) 2023 Daniel Alonso Báscones
+
 '''
 
 import configparser
@@ -39,7 +45,7 @@ class Configuration:
 
     def __new__(cls):
         '''
-        Singleton pattern
+        Singleton pattern implementation to create a single instance of the class
         '''
 
         if not cls._instance:
@@ -50,13 +56,15 @@ class Configuration:
 
             # Get the path of the folder of this file
             parent_folder = os.path.dirname(os.path.dirname(__file__))
-            # parent_folder = os.path.dirname(parent_folder)
-            
-            # file_path = os.path.abspath(__file__)
-            # parent_folder = os.path.dirname(os.path.dirname(file_path))
 
-            with open(f'{parent_folder}/{cls._ini_file}') as f:
-                config_parser.read_file(f)
+            try:
+                # Read the config file
+                with open(f'{parent_folder}/{cls._ini_file}', encoding='utf-8') as f:
+                    config_parser.read_file(f)
+
+            # If the file is not found, raise an exception
+            except FileNotFoundError as e:
+                raise FileNotFoundError(f'Config file not found in {parent_folder}') from e
 
             cls._config = dict(config_parser)
         
@@ -87,6 +95,6 @@ class Configuration:
         try:
             value = self._config[section][key]
         except KeyError as e:
-            raise Exception(f"Key {key} not found in section {section} of config.ini") from e
+            raise KeyError(f'Key {key} not found in section {section}') from e
         
         return value

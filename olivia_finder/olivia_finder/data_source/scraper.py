@@ -13,9 +13,9 @@ import requests
 import tqdm
 from typing_extensions import override
 from typing import Dict, List, Optional, Tuple
-from olivia_finder.data_source.scraper_abc import ScraperABC
-from olivia_finder.myrequests.request_handler import RequestHandler
-from olivia_finder.util.logger import UtilLogger
+from .scraper_abc import ScraperABC
+from ..myrequests.request_handler import RequestHandler
+from ..util.logger import UtilLogger
 
 class Scraper(ScraperABC):
     """
@@ -27,7 +27,7 @@ class Scraper(ScraperABC):
     request_handler : RequestHandler
         Request handler for the scraper
     not_found : list[str]
-        List of packages that are not found in the package manager            
+        List of package names that are not found in the package manager           
         
     Parameters
     ----------

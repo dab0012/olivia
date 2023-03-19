@@ -1,21 +1,27 @@
-""""""
-from __future__ import annotations
 '''
-·········································································
-File: package.py
-Project: Olivia-Finder
-Created Date: Friday February 24th 2023
-Author: Daniel Alonso Báscones
-Copyright (c) 2023 Daniel Alonso Báscones
-·········································································
+package.py
+==================
+
+Description
+-----------
+
+Module that contains the class Package that represents a package in the network
+
+File information:
+    - File: package.py
+    - Project: olivia_finder
+    - Created Date: 2023-03-18 14:40:56
+    - Author: Daniel Alonso Báscones
+    - Copyright (c) 2023 Daniel Alonso Báscones
 '''
 
+from __future__ import annotations
 from typing import Optional
 
 class Package:
     '''
     Class that represents a package in the network
-    
+
     Attributes
     ----------
     name : str
@@ -26,19 +32,19 @@ class Package:
         URL of the package
     dependencies : Optional[list[Package]]
         List of dependencies of the package
-        
+
     Examples
     --------
     >>> from olivia_finder.package import Package
     >>> package = Package("numpy", "1.0.0", "https://numpy.org")
     >>> package.print()
     '''
-        
+
     def __init__(
-        self, 
-        name: str, 
-        version: Optional[str] = None, 
-        url: Optional[str] = None, 
+        self,
+        name: str,
+        version: Optional[str] = None,
+        url: Optional[str] = None,
         dependencies: Optional[list[Package]] = None
     ):
         '''Constructor'''
@@ -46,13 +52,13 @@ class Package:
         self.name: str = name
         self.version: Optional[str] = version
         self.url: Optional[str] = url
-        self.dependencies: Optional[list[Package]] = [] if dependencies is None else dependencies
-
+        self.dependencies: Optional[list[Package]] = [
+        ] if dependencies is None else dependencies
 
     def print(self):
         '''
         Print the package data in the console
-        
+
         Examples
         --------
         >>> from olivia_finder.package import Package
@@ -70,17 +76,17 @@ class Package:
     def __eq__(self, other) -> bool:
         '''
         Compare two packages for equality
-        
+
         Parameters
         ----------
         other : Package
             Package to compare with
-        
+
         Returns
         -------
         bool
             True if the packages are equal, False otherwise
-            
+
         Examples
         --------
         >>> from olivia_finder.package import Package
@@ -90,16 +96,16 @@ class Package:
             True    
         '''
         return self.name == other.name and self.version == other.version
-    
+
     def __hash__(self) -> int:
         '''
         Hash code of the package
-        
+
         Returns
         -------
         int
             Hash code of the package
-        
+
         Examples
         --------
         >>> from olivia_finder.package import Package
@@ -107,7 +113,7 @@ class Package:
         >>> hash(package)
         '''
         return hash(self.name + self.version)
-    
+
     def __str__(self) -> str:
         '''
         String representation of the package
@@ -116,7 +122,7 @@ class Package:
         -------
         str
             String representation of the package
-            
+
         Examples
         --------
         >>> from olivia_finder.package import Package
@@ -134,7 +140,7 @@ class Package:
         ----------
         data : dict
             Dictionary with the data to update
-            
+
         Examples
         --------
         >>> from olivia_finder.package import Package
@@ -148,11 +154,12 @@ class Package:
             self.url = data['url']
         if 'dependencies' in data:
             self.dependencies = set(data['dependencies'])
-            
+
     @classmethod
     def load(cls, data: dict):
         '''
-        Loads a package from a dictionary. IIt is assumed that the dictionary has the following structure:
+        Loads a package from a dictionary. 
+        It is assumed that the dictionary has the following structure:
 
         {   
             'name': str,
@@ -170,18 +177,19 @@ class Package:
         -------
         Package
             Package loaded from the dictionary
-            
+
         Examples
         --------
         >>> from olivia_finder.package import Package
-        >>> package = Package.load({"name": "numpy", "version": "1.0.0", "url": "https://numpy.org"})
+        >>> package = Package.load(
+                {"name": "numpy", "version": "1.0.0", "url": "https://numpy.org"}
+            )
         '''
 
         # Create the packages of the dependencies
         dependencies = []
         for dependency in data['dependencies']:
-            p = Package(dependency['name'], dependency['version'])
-            dependencies.append(p)
+            dependencies.append(Package(dependency['name'], dependency['version']))
 
         return cls(data['name'], data['version'], data['url'], dependencies)
 
@@ -194,12 +202,12 @@ class Package:
             'url': str,
             'dependencies': list[dict]
         }
-        
+
         Returns
         -------
         dict
             Dictionary with the data of the package
-            
+
         Examples
         --------
         >>> from olivia_finder.package import Package

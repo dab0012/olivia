@@ -11,8 +11,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 
 from abc import ABC, abstractmethod
 from typing import Dict, List
-from typing_extensions import override
-from olivia_finder.data_source.data_source_abc import DataSourceABC
+from .data_source_abc import DataSourceABC
 
 class ScraperABC(DataSourceABC, ABC):
     """
@@ -43,19 +42,22 @@ class ScraperABC(DataSourceABC, ABC):
         '''
         pass
 
-    @abstractmethod
     def obtain_package_names(self) -> List[str]:
         '''
         Obtain the package names from the web page of the package manager
-        it must handle exceptions and return an empty list if the package names cannot be obtained
-        To be implemented by the child class
+        It must be overriden by the child class, if it is not, it will raise a NotImplementedError
         
         Returns
         -------
         List[str]
             List of package names
+
+        Raises
+        ------
+        NotImplementedError
+            If the method is not overriden by the child class
         '''
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def _build_url(self) -> str:

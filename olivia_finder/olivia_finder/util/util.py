@@ -1,44 +1,83 @@
 '''
-File:              util.py
-Project:           Olivia-Finder
-Created Date:      Thursday March 9th 2023
-Author:            Daniel Alonso Báscones
-Last Modified:     Thursday March 9th 2023 4:47:21 pm
-Modified By:       The developer formerly known as dab0012 <at> alu.ubu.es
------
-Copyright (c) 2023 Daniel Alonso Báscones
------
+util.py
+==================
+
+Description
+-----------
+
+Module that contains some useful functions
+
+File information:
+    - File: util.py
+    - Project: util
+    - Created Date: 2023-03-18 14:40:56
+    - Author: Daniel Alonso Báscones
+    - Copyright (c) 2023 Daniel Alonso Báscones
+
 '''
+
+import datetime
+import multiprocessing
 
 class Util:
     '''
-    Utility class with some useful methods
+    Utility class with some useful methods uaed in the project
     '''
 
     # region Strings
 
     @staticmethod
-    def clean_string(s: str):
+    def clean_string(string: str):
         '''
         Clean a string from whitespaces and newlines
 
         Parameters
         ----------
-        s : str
+        string : str
             String to be cleaned
 
         Returns
         -------
         str
             Cleaned string
-        '''
-        s = s.strip()
-        s = s.replace("\r", "")
-        s = s.replace("\t", "")
-        s = s.replace("\n", "")
-        return s.replace("  ", " ")
 
-    # A dictionary with some ANSI color codes
+        Examples
+        --------
+        >>> Util.clean_string("Hello world")
+        'Hello world'
+        >>> Util.clean_string("Hello world\\n")
+        'Hello world'
+        >>> Util.clean_string("Hello   world\\n\\n")
+        'Hello world'
+        '''
+        string = string.strip()
+        string = string.replace("\r", "")
+        string = string.replace("\t", "")
+        string = string.replace("\n", "")
+        return string.replace("  ", " ")
+
+    '''
+    Dictionary with color codes to print styled text to console
+
+    Keys
+    ----
+    bold : str
+        Bold text style
+    underline : str
+        Underlined text style
+    italic : str
+        Italic text style
+    error : str
+        Red color for error messages
+    success : str
+        Green color for success messages
+    warning : str
+        Yellow color for warning messages
+    info : str
+        Blue color for information messages
+    end : str
+        Reset style
+    '''
     STYLES = {
         "bold": "\033[1m",
         "underline": "\033[4m",
@@ -127,8 +166,8 @@ class Util:
         Examples
         --------
         >>> Util.timestamp()
+        '2023-03-18_14:40:56'
         '''
-        import datetime
         return datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
     
     @staticmethod
@@ -144,9 +183,9 @@ class Util:
         Examples
         --------
         >>> Util.recommended_threads()
+        4
         """
         # We get the number of cores available in the system
-        import multiprocessing
         available_cores = multiprocessing.cpu_count()
 
         # We calculate the recommended number of threads based on the number of cores
@@ -155,4 +194,4 @@ class Util:
             return min(available_cores - 1, 2 * int(available_cores ** 0.5))
         else:
             return 1
-
+        

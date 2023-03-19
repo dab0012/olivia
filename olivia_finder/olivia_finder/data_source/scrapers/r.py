@@ -1,24 +1,30 @@
-""""""
 '''
-·········································································
-File: r.py
-Project: Olivia-Finder
-Created Date: Friday February 24th 2023
-Author: Daniel Alonso Báscones
-Copyright (c) 2023 Daniel Alonso Báscones
-·········································································
-'''
+r.py
+====
 
+Description
+-----------
+
+Module that contains the abstract class that implements the common methods of the scraper implementations 
+for Bioconductor and CRAN
+
+File information:
+    - File: r.py
+    - Project: scrapers
+    - Created Date: 2023-03-18 14:40:56
+    - Author: Daniel Alonso Báscones
+    - Copyright (c) 2023 Daniel Alonso Báscones
+
+'''
 
 import re
-from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
-from olivia_finder.myrequests.request_handler import RequestHandler
-from olivia_finder.scraping.scraper import Scraper
+from ..scraper import Scraper
+from ...myrequests.request_handler import RequestHandler
 
-class RScraper(Scraper, ABC):
+class RScraper(Scraper):
     '''
-    Abstract class that implements the common methods for scraping R repositories
+    Class that implements the common methods of the scraper implementations for Bioconductor and CRAN
     
     Parameters 
     ----------
@@ -43,9 +49,7 @@ class RScraper(Scraper, ABC):
 
     def _parse_dependencies(self, dependencies_str: str) -> List[Dict[str, str]]:
         '''
-        Parse the dependencies string and return a list of tuples with the name and version of each dependency
-        This method is used common of all the scrapers that implement this class so it is private and it is called from the
-        child implementation of the method _Scraper__parser
+        Parses the dependencies string and returns a list of dictionaries with the name and version of each dependency
 
         Parameters
         ----------
@@ -54,8 +58,8 @@ class RScraper(Scraper, ABC):
 
         Returns
         -------
-        List[Tuple[str, str]]
-            A list of tuples with the name and version of each dependency        
+        List[Dict[str, str]]
+            A list of dictionaries with the name and version of each dependency    
         '''
 
         # Remove unnecessary line breaks, tabs, and spaces
@@ -72,7 +76,3 @@ class RScraper(Scraper, ABC):
         return [
             {'name': names[i], 'version': versions[i]} for i in range(len(names))
         ]
-
-    @abstractmethod
-    def obtain_package_names(self) -> List[Dict[str, str]]:
-        pass
