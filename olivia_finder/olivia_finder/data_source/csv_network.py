@@ -22,7 +22,7 @@ import os
 from typing import Dict, List, Optional
 import pandas as pd
 import tqdm
-from ..util.logger import UtilLogger
+from ..util.logger import MyLogger
 from .data_source_abc import DataSourceABC
 
 class CSVNetwork(DataSourceABC):
@@ -201,7 +201,7 @@ class CSVNetwork(DataSourceABC):
             package_rows = package_rows[package_rows[self.dependent_version_field] == last_version]
 
         if package_rows.empty:
-            UtilLogger.log(f"Package {package_name} not found in data.")
+            MyLogger.log(f"Package {package_name} not found in data.")
             raise ValueError(f"Package {package_name} not found in data.")
 
         # Get the dependencies
@@ -268,7 +268,7 @@ class CSVNetwork(DataSourceABC):
 
             # If the package is not found, add it to the not found list, and continue
             except ValueError:
-                UtilLogger.log(f"Package {package_name} not found in data.")
+                MyLogger.log(f"Package {package_name} not found in data.")
                 not_found.append(package_name)
                 continue
             

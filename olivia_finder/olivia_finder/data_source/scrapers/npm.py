@@ -13,10 +13,10 @@ import os, requests
 from typing_extensions import override
 from typing import List, Optional
 from tqdm import tqdm
-from olivia_finder.scraping.scraper import Scraper
-from olivia_finder.util.config_ini import Configuration
-from olivia_finder.util.logger import UtilLogger
-from olivia_finder.myrequests.request_handler import RequestHandler
+from ...data_source.scraper import Scraper
+from ...util.config_ini import Configuration
+from ...util.logger import MyLogger
+from ...myrequests.request_handler import RequestHandler
 
 class NpmScraper(Scraper):
     '''
@@ -114,19 +114,19 @@ class NpmScraper(Scraper):
 
             # check if the page is empty
             if len(page) == 0:
-                UtilLogger.log(f'Empty page {i} of {num_pages}')
-                UtilLogger.log(f'Last key: {last_key}')
+                MyLogger.log(f'Empty page {i} of {num_pages}')
+                MyLogger.log(f'Last key: {last_key}')
                 continue
 
             pages.append(page)
-            UtilLogger.log(f'Downloaded page {i} of {num_pages}')
+            MyLogger.log(f'Downloaded page {i} of {num_pages}')
 
             # get the last key of the page for the next iter
             last_key = page[-1]['id']
 
             # Save chunk if is set
             if save_chunks:
-                UtilLogger.log(f'Saving chunk {i} of {num_pages}')
+                MyLogger.log(f'Saving chunk {i} of {num_pages}')
                 with open(f'{self.chunks_folder}/chunk_{i}.json', 'w') as f:
                     f.write(str(page))            
 
@@ -180,18 +180,18 @@ class NpmScraper(Scraper):
         
         # If the response is None, return an empty list
         if response is None:
-            UtilLogger.log(f'None response at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
+            MyLogger.log(f'None response at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
             return []
                         
         # If the response returns an error, return an empty list
         try:
             data = response.json()
         except Exception as e:
-            UtilLogger.log(f'EXCEPTION at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
-            UtilLogger.log(f'Error parsing JSON: {e}')
-            UtilLogger.log(f'Response: {response.text}')
-            UtilLogger.log(f'Params: {params}')
-            UtilLogger.log(f'Retrying, times left: {retries}')
+            MyLogger.log(f'EXCEPTION at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
+            MyLogger.log(f'Error parsing JSON: {e}')
+            MyLogger.log(f'Response: {response.text}')
+            MyLogger.log(f'Params: {params}')
+            MyLogger.log(f'Retrying, times left: {retries}')
             return self.__download_page(start_key, size, retries-1)
             
         if data.keys() == {'error', 'reason'}:

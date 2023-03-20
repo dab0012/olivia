@@ -9,21 +9,19 @@ Copyright (c) 2023 Daniel Alonso Báscones
 ·········································································
 '''
 
-
 import requests
 from bs4 import BeautifulSoup
 from typing import Dict, Optional, List
 from typing_extensions import override
-from olivia_finder.scraping.scraper import ScraperError
-from olivia_finder.myrequests.request_handler import RequestHandler
-from olivia_finder.util.util import Util
-from olivia_finder.scraping.r import RScraper 
+from ...data_source.scraper import Scraper, ScraperError
+from ...myrequests.request_handler import RequestHandler
+from ...util.util import Util
 
 # Selenium imports (for scraping JavaScript pages)
 from selenium import webdriver                                    
 from selenium.webdriver.common.by import By
 
-class BiocScraper(RScraper):
+class BiocScraper(Scraper):
     '''
     Class to scrape data from Bioconductor packages
     

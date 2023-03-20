@@ -59,6 +59,17 @@ class ScraperABC(DataSourceABC, ABC):
         '''
         raise NotImplementedError
 
+    def get_info(self) -> dict:
+        '''
+        Get the information of the data source
+        Implements the abstract method of the DataSource class
+        
+        Returns
+        -------
+        dict
+            Dictionary with the information of the data source
+        '''
+
     @abstractmethod
     def _build_url(self) -> str:
         '''

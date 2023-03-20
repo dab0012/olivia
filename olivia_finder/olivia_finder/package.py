@@ -93,7 +93,6 @@ class Package:
         >>> package1 = Package("numpy", "1.0.0", "https://numpy.org")
         >>> package2 = Package("numpy", "1.0.0", "https://numpy.org")
         >>> package1 == package2
-            True    
         '''
         return self.name == other.name and self.version == other.version
 
@@ -159,13 +158,14 @@ class Package:
     def load(cls, data: dict):
         '''
         Loads a package from a dictionary. 
-        It is assumed that the dictionary has the following structure:
-        {   
-            'name': str,
-            'version': str,
-            'url': str,
-            'dependencies': list[dict]
-        }
+        It is assumed that the dictionary has the following structure::
+        
+            {   
+                'name': str,
+                'version': str,
+                'url': str,
+                'dependencies': list[dict]
+            }
 
         Parameters
         ----------
@@ -195,12 +195,12 @@ class Package:
     def to_dict(self):
         '''
         Convert the package to a dictionary with the following structure:
-        {
-            'name': str,
-            'version': str,
-            'url': str,
-            'dependencies': list[dict]
-        }
+            {
+                'name': str,
+                'version': str,
+                'url': str,
+                'dependencies': list[dict]
+            }
 
         Returns
         -------

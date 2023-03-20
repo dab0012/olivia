@@ -13,7 +13,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 from typing import List
 import logging, random, requests
 from bs4 import BeautifulSoup
-from ..util.logger import UtilLogger
+from ..util.logger import MyLogger
 from ..util.config_ini import Configuration
 from ..util.util import Util
 
@@ -41,16 +41,16 @@ class UserAgentHandler():
         self.DATA_FILE = Configuration().get_key("folders", "data_dir") + "useragents.txt"
 
         if self._load_from_file(self.DATA_FILE):
-            UtilLogger.log(f"Useragents loaded from file: {self.DATA_FILE}")
+            MyLogger.log(f"Useragents loaded from file: {self.DATA_FILE}")
             return
 
         if self._load_from_api():
-            UtilLogger.log(f"Useragents loaded from API: {self.USERAGENTSTRING_URL}")
+            MyLogger.log(f"Useragents loaded from API: {self.USERAGENTSTRING_URL}")
             return
 
         # If the list is empty, return default useragent
         self.useragents_list = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36']
-        UtilLogger.log("Useragents list is empty. Using default useragent")
+        MyLogger.log("Useragents list is empty. Using default useragent")
 
     def _load_from_file(self, file_path:str) -> bool:
         '''
@@ -74,7 +74,7 @@ class UserAgentHandler():
                 return True
             
         except FileNotFoundError:
-            UtilLogger.log(f"Useragents file not found: {file_path}")
+            MyLogger.log(f"Useragents file not found: {file_path}")
             return False
     
     def _load_from_api(self) -> bool:
@@ -95,8 +95,8 @@ class UserAgentHandler():
         try:
             user_agents_request = requests.get(self.USERAGENTSTRING_URL).text
         except Exception as e:
-            UtilLogger.log(f"Error getting user agents from API: {self.USERAGENTSTRING_URL}")
-            UtilLogger.log(f"Error: {e}")
+            MyLogger.log(f"Error getting user agents from API: {self.USERAGENTSTRING_URL}")
+            MyLogger.log(f"Error: {e}")
             return False
         
         # Parse the HTML
@@ -113,8 +113,8 @@ class UserAgentHandler():
             return True
         
         except Exception as e:
-            UtilLogger.log(f"Error parsing user agents from API: {self.USERAGENTSTRING_URL}")
-            UtilLogger.log(f"Error: {e}")
+            MyLogger.log(f"Error parsing user agents from API: {self.USERAGENTSTRING_URL}")
+            MyLogger.log(f"Error: {e}")
             return False
 
     def get_next_useragent(self) -> str:
@@ -126,7 +126,7 @@ class UserAgentHandler():
         str
             A random useragent
         '''
-        UtilLogger.log("Getting next useragent")
+        MyLogger.log("Getting next useragent")
         # Get a random useragent
         index = random.randint(0, len(self.useragents_list) - 1)
         return self.useragents_list[index]

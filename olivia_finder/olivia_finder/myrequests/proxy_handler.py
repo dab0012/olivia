@@ -19,8 +19,8 @@ File information:
 '''
 
 from typing import List, Optional, Union 
-from olivia_finder.myrequests.proxy_builder import ProxyBuilderABC
-from olivia_finder.util.logger import UtilLogger
+from .proxy_builder import ProxyBuilder, ProxyBuilderABC
+from ..util.logger import MyLogger
 
 class ProxyHandler():
     '''
@@ -63,15 +63,15 @@ class ProxyHandler():
             for builder in builders:
                 # if any of the builders is not valid, ignore and continue with the next one
                 if not isinstance(builder, ProxyBuilderABC):
-                    UtilLogger.log(f"Builder {builder} is not a valid ProxyBuilderABC, ignoring")
+                    MyLogger.log(f"Builder {builder} is not a valid ProxyBuilderABC, ignoring")
                     continue
                 else:
-                    UtilLogger.log(f"Builder {builder} is valid, adding to list")
+                    MyLogger.log(f"Builder {builder} is valid, adding to list")
                     self.proxy_builders.append(builder)
             
             # Check if any builder is valid
             if len(self.proxy_builders) == 0:
-                UtilLogger.log("No valid proxy builders were provided")
+                MyLogger.log("No valid proxy builders were provided")
                 raise ValueError("No valid proxy builders were provided")
 
             # Set builders
@@ -79,7 +79,7 @@ class ProxyHandler():
 
         # Get proxies from builder
         self.proxy_list = self.__request_proxies()
-        UtilLogger.log(f"Proxy Handler initialized with {len(self.proxy_list)} proxies")
+        MyLogger.log(f"Proxy Handler initialized with {len(self.proxy_list)} proxies")
 
     def get_next_proxy(self) -> Union[str, None]:
         '''
@@ -88,22 +88,22 @@ class ProxyHandler():
         :return: Next proxy as str f'http://{ip}:{port}' or None if there are no proxies available
         :rtype: Union[str, None]
         '''
-        UtilLogger.log("Getting next proxy")
+        MyLogger.log("Getting next proxy")
 
         # Check if proxies are empty and get new ones
         if len(self.proxy_list) == 0:
-            UtilLogger.log("No proxies available, trying to get new ones")
+            MyLogger.log("No proxies available, trying to get new ones")
             self.proxy_list = self.__request_proxies()
 
         # Check if proxies are still empty
         if len(self.proxy_list) == 0:
-            UtilLogger.log("No proxies available after trying to get new ones")
+            MyLogger.log("No proxies available after trying to get new ones")
             return None
 
         # proxy rotation
         proxy = self.proxy_list.pop(0)
         self.proxy_list.append(proxy)
-        UtilLogger.log(f"Proxy list rotated, using {proxy}, next will be {self.proxy_list[0]}")
+        MyLogger.log(f"Proxy list rotated, using {proxy}, next will be {self.proxy_list[0]}")
 
         # Handle proxy usage lifetime
         self.__handle_lifetime(proxy)
@@ -134,7 +134,7 @@ class ProxyHandler():
         if self.proxy_uses[proxy] > self.proxy_max_uses:
             del self.proxy_uses[proxy]
             self.proxy_list.remove(proxy)
-            UtilLogger.log(f"Proxy {proxy} removed from list")
+            MyLogger.log(f"Proxy {proxy} removed from list")
 
     def __request_proxies(self) -> List[str]:
         '''
@@ -152,7 +152,7 @@ class ProxyHandler():
 
         # remove duplicates
         proxies = list(set(proxies))
-        UtilLogger.log(f"Proxies len: {len(proxies)}")
+        MyLogger.log(f"Proxies len: {len(proxies)}")
 
         return proxies
     
@@ -166,11 +166,11 @@ class ProxyHandler():
             List of ProxyBuilder objects or None if there are no builders
         '''
         builders = []
-        for builder in ProxyBuilderABC.__subclasses__():
+        for builder in ProxyBuilder.__subclasses__():
 
             # append builder object
             builders.append(builder())
-            UtilLogger.log(f"Added {builder.__name__} to proxy builders")
+            MyLogger.log(f"Added {builder.__name__} to proxy builders")
 
         return builders
     

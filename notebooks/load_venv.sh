@@ -1,0 +1,1 @@
+/home/daniel_alonso/tfg/olivia-finder/olivia_finder/load_venv.sh

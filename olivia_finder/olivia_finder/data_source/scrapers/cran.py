@@ -15,11 +15,11 @@ import contextlib, requests
 from typing_extensions import override
 from bs4 import BeautifulSoup
 from typing import Dict, List, Optional
-from olivia_finder.scraping.r import RScraper
-from olivia_finder.scraping.scraper import Scraper, ScraperError
-from olivia_finder.myrequests.request_handler import RequestHandler
-from olivia_finder.util.logger import UtilLogger
-from olivia_finder.util.util import Util
+from ..scraper import Scraper, ScraperError
+from ...data_source.scrapers.r import RScraper
+from ...myrequests.request_handler import RequestHandler
+from ...util.logger import MyLogger
+from ...util.util import Util
 
 class CranScraper(RScraper, Scraper):
     '''
@@ -100,7 +100,7 @@ class CranScraper(RScraper, Scraper):
 
                 # We add the package name to the list of packages
                 packages.append(package_name)
-                UtilLogger.log(f'Package {package_name} added to the list of packages')
+                MyLogger.log(f'Package {package_name} added to the list of packages')
 
             # If an error occurs, we show the error message
             except ScraperError("Error while obtaining the name of a package"):

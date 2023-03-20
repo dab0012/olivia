@@ -22,7 +22,7 @@ from abc import ABC, abstractmethod
 from typing_extensions import override
 import requests
 from bs4 import BeautifulSoup
-from olivia_finder.util.logger import UtilLogger
+from ..util.logger import MyLogger
 
 class ProxyBuilderABC(ABC):
     '''
@@ -100,18 +100,18 @@ class ProxyBuilder(ProxyBuilderABC):
         try:
             response = requests.get(self.URL, timeout=self.proxy_list_timeout)
         except requests.exceptions.RequestException as e:
-            UtilLogger.log(f"Error getting proxies from {self.__class__.__name__}")
-            UtilLogger.log(f"Error: {e}")
+            MyLogger.log(f"Error getting proxies from {self.__class__.__name__}")
+            MyLogger.log(f"Error: {e}")
             return []
         
         # Parse the response
         proxies = []
         if response.status_code == 200:
             proxies = self._parse_request(response)
-            UtilLogger.log(f"Found {len(proxies)} proxies from {self.__class__.__name__}")
+            MyLogger.log(f"Found {len(proxies)} proxies from {self.__class__.__name__}")
         else:
-            UtilLogger.log(f"Error getting proxies from {self.__class__.__name__}")
-            UtilLogger.log(f"Request returned status code: {response.status_code}")
+            MyLogger.log(f"Error getting proxies from {self.__class__.__name__}")
+            MyLogger.log(f"Request returned status code: {response.status_code}")
 
         return proxies
     

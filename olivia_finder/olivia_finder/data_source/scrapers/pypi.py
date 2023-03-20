@@ -14,8 +14,8 @@ import requests
 from typing_extensions import override
 from typing import Dict, List
 from bs4 import BeautifulSoup
-from olivia_finder.scraping.scraper import Scraper, ScraperError
-from olivia_finder.myrequests.request_handler import RequestHandler
+from ..scraper import Scraper, ScraperError
+from ...myrequests.request_handler import RequestHandler
 
 class PypiScraper(Scraper):
     ''' 

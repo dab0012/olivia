@@ -21,9 +21,9 @@ from typing import Dict, List, Optional, Union
 import pickle
 import tqdm
 import pandas as pd
+from .data_source.data_source_abc import DataSourceABC
 from .data_source.csv_network import CSVNetwork
 from .package import Package
-from .data_source.data_source_abc import DataSourceABC
 
 class PackageManager():
     '''

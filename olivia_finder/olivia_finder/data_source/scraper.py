@@ -15,7 +15,7 @@ from typing_extensions import override
 from typing import Dict, List, Optional, Tuple
 from .scraper_abc import ScraperABC
 from ..myrequests.request_handler import RequestHandler
-from ..util.logger import UtilLogger
+from ..util.logger import MyLogger
 
 class Scraper(ScraperABC):
     """
@@ -49,8 +49,9 @@ class Scraper(ScraperABC):
         Constructor of the class
         """
 
-        # Call the super constructor
-        super().__init__(name, description)
+        # Set the parameters of the Scraper
+        self.name = name
+        self.description = description
 
         # if request_handler is None build a generic RequestHandler
         if request_handler is None:
@@ -97,7 +98,7 @@ class Scraper(ScraperABC):
         """
         
         # Get the package page
-        UtilLogger.log(f'Scraping package {package_name}')
+        MyLogger.log(f'Scraping package {package_name}')
         response = self.request_handler.do_request(
             self._build_url(package_name)
         )[1]
@@ -108,7 +109,7 @@ class Scraper(ScraperABC):
         if parsed_response is None:
             raise ScraperError(f'Package {package_name} not found')
         
-        UtilLogger.log(f'Package {package_name} scraped successfully')
+        MyLogger.log(f'Package {package_name} scraped successfully')
             
         return parsed_response 
 
@@ -149,14 +150,14 @@ class Scraper(ScraperABC):
             if not from_data_source:
                 raise ScraperError('package_names is None or empty and full_scrape is disabled')
             
-            UtilLogger.log(f'Obtaining package names from Scraper: {self.name}, {self.description}')
+            MyLogger.log(f'Obtaining package names from Scraper: {self.name}, {self.description}')
             package_names = self.obtain_package_names()
             
         else:
-            UtilLogger.log('Using package names from param list')
+            MyLogger.log('Using package names from param list')
 
         # Build the urls
-        UtilLogger.log('Building urls')
+        MyLogger.log('Building urls')
         urls = self._build_urls(package_names)
         
         # Map the urls to the package names
@@ -175,7 +176,7 @@ class Scraper(ScraperABC):
             if response.status_code == 404:
                 not_found_name = url_package_names[key_url]
                 not_found.append(not_found_name)
-                UtilLogger.log(f'Package {not_found_name} not found, status code: {response.status_code}, url: {key_url}, skipping...')
+                MyLogger.log(f'Package {not_found_name} not found, status code: {response.status_code}, url: {key_url}, skipping...')
                 continue
 
             # Parse the source data and add it to the list
@@ -235,6 +236,22 @@ class Scraper(ScraperABC):
         '''
         pass
     
+    @override
+    def get_info(self) -> dict:
+        """
+        Get the info of the Scraper
+        
+        Returns
+        -------
+        dict
+            Dictionary with the info of the Scraper
+        """
+        return {
+            'name': self.name,
+            'description': self.description,
+            'url': self.url
+        }
+
 class ScraperError(Exception):
     """
     Exception for the Scraper class
@@ -254,7 +271,7 @@ class ScraperError(Exception):
         '''Constructor'''
         super().__init__()
         self.message = message
-        UtilLogger.log(str(self))
+        MyLogger.log(str(self))
 
     def __str__(self):
         """

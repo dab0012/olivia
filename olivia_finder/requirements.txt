@@ -8,3 +8,4 @@ webdriver-manager
 sphinx 
 sphinx-autodoc-typehints 
 numpydoc
+typing_extensions

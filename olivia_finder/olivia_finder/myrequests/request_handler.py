@@ -14,10 +14,10 @@ import tqdm, requests
 from typing import List, Optional, Tuple, Union
 from threading import Lock
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from olivia_finder.myrequests.proxy_handler import ProxyHandler
-from olivia_finder.myrequests.useragent_handler import UserAgentHandler
-from olivia_finder.util.logger import UtilLogger
-from olivia_finder.util.util import Util
+from .proxy_handler import ProxyHandler
+from .useragent_handler import UserAgentHandler
+from ..util.logger import MyLogger
+from ..util.util import Util
 
 class RequestHandler:
     '''
@@ -76,7 +76,7 @@ class RequestHandler:
         # Check number of processes
         recommended_num_processes = Util.recommended_threads()
         if num_processes > recommended_num_processes:
-            UtilLogger.log(f"Number of processes ({num_processes}) is greater than the recommended number ({recommended_num_processes}).")
+            MyLogger.log(f"Number of processes ({num_processes}) is greater than the recommended number ({recommended_num_processes}).")
             self.NUM_PROCESSES = recommended_num_processes
         elif num_processes < 1:
             raise ValueError("num_processes must be greater than 0")
@@ -105,10 +105,10 @@ class RequestHandler:
                 if self.proxy_handler is not None:
                     proxy_url = self.proxy_handler.get_next_proxy()
                     proxy = {"http": proxy_url}
-                    UtilLogger.log(f"Using proxy: {proxy}")
+                    MyLogger.log(f"Using proxy: {proxy}")
                 if self.useragents_handler is not None:
                     headers = {'User-Agent': self.useragents_handler.get_next_useragent()}
-                    UtilLogger.log(f"Using user agent: {headers['User-Agent']}")
+                    MyLogger.log(f"Using user agent: {headers['User-Agent']}")
         except Exception as e:
             raise RequestError(url, f"Exception getting proxy and user agent: {e}") from e
 
@@ -125,7 +125,7 @@ class RequestHandler:
                 )
 
             # Response is ok
-            UtilLogger.log(f"Response status code: {response.status_code}")
+            MyLogger.log(f"Response status code: {response.status_code}")
             return (url, response)
         
         # Handle exceptions
@@ -168,7 +168,7 @@ class RequestHandler:
             # Get results
             for future in as_completed(futures):
                 if isinstance(future.result(), Exception):
-                    UtilLogger.log(f"Exception in thread: {future.result()}")
+                    MyLogger.log(f"Exception in thread: {future.result()}")
                 else:
                     with self.LOCK:
                         response = future.result()
@@ -225,7 +225,7 @@ class RequestError(Exception):
         super().__init__(self.message)
 
         # Log error
-        UtilLogger.log(self.message)
+        MyLogger.log(self.message)
         
     def __str__(self):
         return self.message
