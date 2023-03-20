@@ -10,6 +10,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 '''
 
 
+import os
 from typing import List
 import logging, random, requests
 from bs4 import BeautifulSoup
@@ -18,27 +19,40 @@ from ..util.config_ini import Configuration
 from ..util.util import Util
 
 class UserAgentHandler():
-    '''Handles useragents'''
+    '''
+    Handles useragents for the requests
+
+    Attributes
+    ----------
+    USERAGENTSTRING_URL : str
+        URL to get user agents from the useragentstring.com API
+    DATA_FILE : str
+        file containing the user agents
+    useragents_list : List[str]
+        List of user agents
+
+    '''
 
     # Attributes
     # ----------------
     USERAGENTSTRING_URL = 'https://www.useragentstring.com/pages/useragentstring.php?name=All'
+    '''URL to get user agents from the useragentstring.com API'''
     DATA_FILE: str
+    '''Path to the file containing the user agents'''
 
     useragents_list: List[str]
-    my_logger: logging.Logger
 
     def __init__(self) -> None:
         '''
         Constructor
-
-        Parameters
-        ----------
-        useragents_file_path : str, optional
-            Path to the file containing the useragents, by default None
         '''
 
-        self.DATA_FILE = Configuration().get_key("folders", "data_dir") + "useragents.txt"
+        # Initialize the list before loading the user agents
+        self.useragents_list = []
+
+        # get the data file path
+        current_file_path =  os.path.abspath(__file__)
+        self.DATA_FILE = os.path.join(os.path.dirname(current_file_path), 'data', 'useragents.txt')
 
         if self._load_from_file(self.DATA_FILE):
             MyLogger.log(f"Useragents loaded from file: {self.DATA_FILE}")

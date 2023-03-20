@@ -248,8 +248,7 @@ class Scraper(ScraperABC):
         """
         return {
             'name': self.name,
-            'description': self.description,
-            'url': self.url
+            'description': self.description
         }
 
 class ScraperError(Exception):

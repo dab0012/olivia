@@ -71,9 +71,6 @@ class ProxyBuilder(ProxyBuilderABC):
         # Timeout for the proxy list requests
         self.proxy_list_timeout = proxy_list_timeout
 
-        # URL of the proxy list website to get the proxies
-        # It must be overridden in the subclasses constructors
-        self.URL = None
 
     def get_proxies(self) -> List[str]:
         '''
@@ -98,7 +95,7 @@ class ProxyBuilder(ProxyBuilderABC):
 
         # Do the request
         try:
-            response = requests.get(self.URL, timeout=self.proxy_list_timeout)
+            response = requests.get(self.url, timeout=self.proxy_list_timeout)
         except requests.exceptions.RequestException as e:
             MyLogger.log(f"Error getting proxies from {self.__class__.__name__}")
             MyLogger.log(f"Error: {e}")

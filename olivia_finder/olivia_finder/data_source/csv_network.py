@@ -71,7 +71,8 @@ class CSVNetwork(DataSourceABC):
     """
     
     def __init__(
-        self, 
+        self,
+        file_path: str, 
         name: Optional[str] = None, 
         description: Optional[str] = None,
         dependent_field: Optional[str] = None,
@@ -95,6 +96,14 @@ class CSVNetwork(DataSourceABC):
         self.dependent_version_field: str = dependent_version_field
         self.dependency_version_field: str = dependency_version_field
         self.dependent_url_field: str = dependent_url_field
+        self.file_path: str = file_path
+
+        # Load the data if the file path is setted
+        if self.file_path is not None:
+            self._load_data()
+        else:
+            MyLogger().warning("File path is None. Data not loaded.")
+            raise ValueError("File path cannot be None.")
 
     def get_info(self):
         """
@@ -105,7 +114,7 @@ class CSVNetwork(DataSourceABC):
             "description": self.description,
         }
     
-    def load_data(self, file_path: str):
+    def _load_data(self):
         """
         Loads the data from a CSV file like [name,version,url,dependency,dependency_version]
         The dependent_version_field and dependent_url_field parameters are optional
@@ -125,14 +134,14 @@ class CSVNetwork(DataSourceABC):
         """
 
         # Check the file is valid
-        if file_path is None:
+        if self.file_path is None:
             raise ValueError("File path cannot be None.")
         
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"File {file_path} not found.")
+        if not os.path.exists(self.file_path):
+            raise FileNotFoundError(f"File {self.file_path} not found.")
         
-        if not file_path.endswith(".csv"):
-            raise ValueError(f"File {file_path} is not a CSV file.")
+        if not self.file_path.endswith(".csv"):
+            raise ValueError(f"File {self.file_path} is not a CSV file.")
         
         # Check if the mandatory fields are setted and are valid
         if self.dependent_field is None:
@@ -145,7 +154,7 @@ class CSVNetwork(DataSourceABC):
             raise ValueError("Dependent field and dependency field cannot be the same.")
         
         # Load the data
-        self.data = pd.read_csv(file_path)
+        self.data = pd.read_csv(self.file_path)
         
         # Check if the other fields are in the data
         if self.dependent_field not in self.data.columns:
@@ -275,4 +284,4 @@ class CSVNetwork(DataSourceABC):
             if progress_bar is not None:
                 progress_bar.update(1)
                         
-        return packages
+        return packages, not_found

@@ -13,7 +13,9 @@ import requests
 from bs4 import BeautifulSoup
 from typing import Dict, Optional, List
 from typing_extensions import override
+
 from ...data_source.scraper import Scraper, ScraperError
+from ...data_source.scrapers.r import RScraper
 from ...myrequests.request_handler import RequestHandler
 from ...util.util import Util
 
@@ -21,7 +23,7 @@ from ...util.util import Util
 from selenium import webdriver                                    
 from selenium.webdriver.common.by import By
 
-class BiocScraper(Scraper):
+class BiocScraper(RScraper, Scraper):
     '''
     Class to scrape data from Bioconductor packages
     
@@ -48,9 +50,14 @@ class BiocScraper(Scraper):
 
     # Class variables
     BIOCONDUCTOR_LIST_URL = 'https://www.bioconductor.org/packages/release/BiocViews.html#___Software'
+    '''The URL of the page with the list of Bioconductor packages'''
     BIOCONDUCTOR_PACKAGE_DATA_URL = 'https://www.bioconductor.org/packages/release/bioc/html/'
+    '''The URL of the page with the data of each Bioconductor package'''
     NAME: str = 'Bioconductor'
+    '''The name of the data source'''
     DESCRIPTION: str = "Scraper class implementation for the Bioconductor package network"
+    '''The description of the data source'''
+
     
     def __init__(
         self, 

@@ -275,7 +275,7 @@ class PackageManager():
             raise PackageManagerLoadError("Invalid csv format")
 
         # We create the data source
-        data_source = CSVNetwork.load_data(
+        data_source = CSVNetwork._load_data(
             csv_path, dependent_field, dependency_field, version_field, dependency_version_field, url_field
         )
         data_source.name = "CSV File"
