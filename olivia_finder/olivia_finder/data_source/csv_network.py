@@ -20,12 +20,13 @@ File information:
 from __future__ import annotations
 import os
 from typing import Dict, List, Optional
+from typing_extensions import override
 import pandas as pd
 import tqdm
 from ..util.logger import MyLogger
-from .data_source_abc import DataSourceABC
+from .data_source import DataSource
 
-class CSVNetwork(DataSourceABC):
+class CSVNetwork(DataSource):
     """
     Class that implements the methods for loading a network from a CSV file.
     Implements the DataSource interface.
@@ -44,9 +45,12 @@ class CSVNetwork(DataSourceABC):
         The name of the field that contains the dependency packages versions
     dependent_url_field : str
         The name of the field that contains the dependent packages urls
+    
         
     Parameters
     ----------
+    file_path : str
+        Path to the CSV file with the data
     name : Optional[str]
         Name of the data source
     description : Optional[str]
@@ -86,9 +90,12 @@ class CSVNetwork(DataSourceABC):
         """
 
         # Set the name and description
-        self.name: str = name if name is not None else "CSV Network"
-        self.description: str = description if description is not None else "Loads a network from a CSV file"
-        
+        if name is None:
+            name = "CSV Network"
+        if description is None:
+            description = "Network loaded from a CSV file"
+        super().__init__(name, description)
+
         # Set the dataframe as None and the fields
         self.data: pd.DataFrame = None
         self.dependent_field: str = dependent_field
@@ -105,15 +112,6 @@ class CSVNetwork(DataSourceABC):
             MyLogger().warning("File path is None. Data not loaded.")
             raise ValueError("File path cannot be None.")
 
-    def get_info(self):
-        """
-        Returns the information of the data source.
-        """
-        return {
-            "name": self.name,
-            "description": self.description,
-        }
-    
     def _load_data(self):
         """
         Loads the data from a CSV file like [name,version,url,dependency,dependency_version]
@@ -171,7 +169,50 @@ class CSVNetwork(DataSourceABC):
         
         if self.dependent_url_field is not None and self.dependent_url_field not in self.data.columns:
             raise ValueError(f"Field {self.dependent_url_field} not found on data.")
+
+        # Load the packages data
+        self._load_packages_data()
+
+    def _load_packages_data(self):
+        """
+        Loads the packages from the data
+        """
+        for index, row in self.data.iterrows():
+            # Get the package name and version
+            package_name = row[self.dependent_field]
+            package_version = row[self.dependent_version_field] if self.dependent_version_field is not None else None
+            package_url = row[self.dependent_url_field] if self.dependent_url_field is not None else None
+            
+            # Get the dependencies
+            dependency_name = row[self.dependency_field]
+            dependency_version = row[self.dependency_version_field] if self.dependency_version_field is not None else None
+            
+            # Check if the package data is on the dictionary
+            if package_name not in self.packages_data:
+                self.packages_data[package_name] = {
+                    "name": package_name,
+                    "version": package_version,
+                    "url": package_url,
+                    "dependencies": [],
+                }
+
+            # Add the dependency of the current row
+            self.packages_data[package_name]["dependencies"].append({
+                "name": dependency_name,
+                "version": dependency_version,
+            })
+
+    @override
+    def get_info(self):
+        """
+        Returns the information of the data source.
+        """
+        return {
+            "name": self.name,
+            "description": self.description,
+        }
         
+    @override
     def obtain_package_names(self) -> List[str]:
         """
         Obtains the list of packages from the data source, sorted alphabetically.
@@ -183,6 +224,7 @@ class CSVNetwork(DataSourceABC):
         """
         return sorted(self.data[self.dependent_field].unique())
     
+    @override
     def obtain_package_data(self, package_name: str, override_previous: Optional[bool] = True) -> Dict:
         """
         Obtains the package from the dataframe
@@ -241,6 +283,7 @@ class CSVNetwork(DataSourceABC):
             "dependencies": dependencies
         }
     
+    @override
     def obtain_packages_data(
         self, 
         package_name_list: Optional[List[str]] = None, 
@@ -248,6 +291,7 @@ class CSVNetwork(DataSourceABC):
     ) -> List[Dict]:
         '''
         Obtains the data of a list of package names from the CSV file
+        If the package name list is None, it will obtain the package names from the CSV file and load their data
 
         Parameters
         ----------

@@ -24,30 +24,31 @@ class RequestHandler:
     Class that handles HTTP requests in a more transparent way in scraping and denial of service environments
     by the servers from which the data is requested 
     Basically, it manages the proxies and user agents so that scraping is not detected
-    
-    :param proxy_handler: Proxy handler to use, defaults to None
-    :type proxy_handler: ProxyHandler, optional
-    :param useragents_handler: User agent handler to use, defaults to None
-    :type useragents_handler: UserAgentHandler, optional
-    :param max_retry: Maximum number of retries for each request, defaults to REQUEST_MAX_RETRIES
-    :type max_retry: int, optional
-    :param request_timeout: Timeout for each request, defaults to REQUEST_TIMEOUT
-    :type request_timeout: int, optional
-    :param num_processes: Number of processes to use for parallel requests, defaults to NUM_PROCESSES
-    :type num_processes: int, optional
-    :return: RequestHandler
-    :rtype: RequestHandler
     '''
-    # Attributes
-    # ----------
-    proxy_handler: ProxyHandler                            # Proxy handler to use
-    useragents_handler: UserAgentHandler                   # User agent handler to use
-    current_proxy_index: int                               # Current proxy index
-    current_useragent_index: int                           # Current user agent index
-    LOCK: Lock                                             # Lock to use
-    REQUEST_MAX_RETRIES: int                    = 5        # Maximum number of retries for each request
-    REQUEST_TIMEOUT: int                        = 60       # Timeout for each request
-    NUM_PROCESSES: int                          = 4        # Number of processes to use for parallel requests
+
+    # Class attributes
+    # ----------------
+
+    proxy_handler: ProxyHandler                            
+    '''Proxy handler to use'''
+
+    useragents_handler: UserAgentHandler                   
+    '''User agent handler to use'''
+
+    current_proxy_index: int
+    '''Current proxy index'''
+
+    current_useragent_index: int
+    '''Current user agent index'''
+
+    REQUEST_MAX_RETRIES: int = 5
+    '''Maximum number of retries for each request'''
+
+    REQUEST_TIMEOUT: int = 60
+    '''Timeout for each request'''
+
+    NUM_PROCESSES: int = 4
+    '''Number of processes to use for parallel requests'''
 
     def __init__(
         self, 
@@ -59,7 +60,6 @@ class RequestHandler:
     ):
         '''Constructor'''
 
-
         # Check proxy handler
         self.proxy_handler = ProxyHandler() if proxy_handler is None else proxy_handler
     
@@ -67,7 +67,6 @@ class RequestHandler:
         self.useragents_handler = UserAgentHandler() if useragents_handler is None else useragents_handler
 
         # Initialize attributes
-        self.LOCK = Lock()
         self.current_proxy_index = 0
         self.current_useragent_index = 0
         self.REQUEST_MAX_RETRIES = max_retry
@@ -83,19 +82,33 @@ class RequestHandler:
         else:
             self.NUM_PROCESSES = num_processes
 
-    def do_request(self, url:str, params:dict = None) -> Union[Tuple[str, requests.Response], None]:
+    def do_request(self, url: str, params: dict = None) -> Union[Tuple[str, requests.Response], None]:
         '''
-        Do a request to the given url
-        
-        :param url: Url to do the request
-        :type url: str
-        :param params: Parameters to pass to the request, defaults to None
-        :type params: dict, optional
-        :return: Tuple with the url and the response if the request was successful, None otherwise
-        :rtype: Union[Tuple[str, requests.Response], None]
-        :raises RequestError: If there is an error doing the request
-        :return: Tuple with the url and the response if the request was successful, None otherwise
-        :rtype: Union[Tuple[str, requests.Response], None]
+        Do a request to the given url and return the response.
+        It uses a proxy and a user agent if they are available.
+
+        Parameters
+        ----------
+        url : str
+            Url to do the request
+        params : dict, optional
+            Parameters to pass to the request, by default None
+
+        Raises
+        ------
+        RequestError
+            If there is an error doing the request
+
+        Returns
+        -------
+        Union[Tuple[str, requests.Response], None]
+            Tuple with the url and the response if the request was successful, None otherwise
+
+        Examples
+        --------
+        >>> request_handler = RequestHandler()
+        >>> request_handler.do_request("https://www.google.com")
+        ('https://www.google.com', <Response [200]>)
         '''
 
         # Try to get proxy and user agent with lock for thread safety
@@ -133,21 +146,37 @@ class RequestHandler:
             raise RequestError(response, f"Exception doing request: {e}") from e
         
     def do_parallel_requests(
+            
         self, url_list: List[str], 
         param_list: Optional[List[dict]] = None, 
         progress_bar: Optional[tqdm.tqdm] = None
-        ) -> List[Union[Tuple[str, requests.Response], None]]:
+
+    ) -> List[Union[Tuple[str, requests.Response], None]]:
         '''
-        Do parallel requests to the given urls, with the given parameters if any
+        Do requests to the given urls.
+        It uses multiprocessing to do the requests in parallel.
         
-        :param url_list: List of urls to do the requests
-        :type url_list: List[str]
-        :param param_list: List of parameters to pass to the requests, defaults to None
-        :type param_list: List[dict], optional
-        :param progress_bar: Progress bar to use, defaults to None
-        :type progress_bar: tqdm.tqdm, optional
-        :return: List of tuples with the url and the response if the request was successful, None otherwise
-        :rtype: List[Union[Tuple[str, requests.Response], None]]
+        Parameters
+        ----------
+        url_list : List[str]
+            List of urls to do the requests
+        param_list : Optional[List[dict]], optional
+            List of parameters to pass to the requests, by default None
+        progress_bar : Optional[tqdm.tqdm], optional
+            Progress bar to use, by default None
+
+        Returns
+        -------
+        List[Union[Tuple[str, requests.Response], None]]
+            List of tuples with the url and the response if the request was successful, None otherwise
+
+        Examples
+        --------
+        >>> url_list = ["https://www.google.com", "https://www.yahoo.com"]
+        >>> param_list = [{"q": "test"}, {"q": "test2"}]
+        >>> request_handler = RequestHandler()
+        >>> request_handler.do_parallel_requests(url_list, param_list)
+        [('https://www.google.com', <Response [200]>), ('https://www.yahoo.com', <Response [200]>)]
         '''
 
         # Check if num_processes is greater than the number of urls and adjust accordingly
@@ -165,12 +194,16 @@ class RequestHandler:
             else:
                 futures = [executor.submit(self._do_request_with_retry, url, params) for url, params in zip(url_list, param_list)]
 
+            lock = Lock()
+
             # Get results
             for future in as_completed(futures):
+
+                # If there was an exception, log it and continue
                 if isinstance(future.result(), Exception):
                     MyLogger.log(f"Exception in thread: {future.result()}")
                 else:
-                    with self.LOCK:
+                    with lock:
                         response = future.result()
 
                         # Update progress bar
@@ -188,12 +221,17 @@ class RequestHandler:
         '''
         Do a request to the given url with retries, if the request fails for any reason
         
-        :param url: Url to do the request
-        :type url: str
-        :param params: Parameters to pass to the request, defaults to None
-        :type params: dict, optional
-        :return: Tuple with the url and the response if the request was successful, None otherwise
-        :rtype: Union[Tuple[str, requests.Response], None]        
+        Parameters
+        ----------
+        url : str
+            Url to do the request
+        params : dict
+            Parameters to pass to the request
+
+        Returns
+        -------
+        Union[Tuple[str, requests.Response], None]
+            Tuple with the url and the response if the request was successful, None otherwise     
         '''
         retry_count = 0
         while retry_count < self.REQUEST_MAX_RETRIES:
@@ -204,13 +242,21 @@ class RequestHandler:
         return (url, None)
 
 class RequestError(Exception):
-    """Raised when there is an error making a request.
-    
-    :param response: Response object
-    :type response: 
+    """
+    Exception raised when there is an error doing a request
+
+    Attributes
+    ----------
+    response : requests.Response
+        Response object, used to get the url and the status code
+    message : str
+        Error message
     """
 
     def __init__(self, response:requests.Response, message:str):
+        '''
+        Constructor
+        '''
 
         if response is not None:
             proxy_used = response.request.proxy
@@ -228,4 +274,12 @@ class RequestError(Exception):
         MyLogger.log(self.message)
         
     def __str__(self):
+        '''
+        String representation of the exception
+
+        Returns
+        -------
+        str
+            String representation of the exception
+        '''
         return self.message

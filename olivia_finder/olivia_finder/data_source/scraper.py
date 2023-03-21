@@ -49,15 +49,14 @@ class Scraper(ScraperABC):
         Constructor of the class
         """
 
-        # Set the parameters of the Scraper
-        self.name = name
-        self.description = description
+        # Call the constructor of the parent class (DataSource)
+        super().__init__(name, description)
 
         # if request_handler is None build a generic RequestHandler
         if request_handler is None:
-            self.request_handler = RequestHandler()
+            self.request_handler: RequestHandler = RequestHandler()
         else:
-            self.request_handler: request_handler
+            self.request_handler: RequestHandler = request_handler
 
         # Initialize the not_found list for storing the packages that are not found
         self.not_found = []
@@ -68,15 +67,15 @@ class Scraper(ScraperABC):
         it must handle exceptions and return an empty list if the package names cannot be obtained
         To be implemented by the child class
         
-        Returns
-        -------
-        List[str]
-            List of package names
+        Raises
+        ------
+        NotImplementedError
+            Bcause the method is not implemented in the base class
         """
-        pass
+        raise NotImplementedError
 
     @override
-    def obtain_package_data(self, package_name: str, override_previous: Optional[bool] = False ) -> Dict:
+    def obtain_package_data(self, package_name: str) -> Dict:
         """
         Scrape a package from a package manager, if the package is not found, it is added to the not_found list
         Implements the abstract method of the DataSource class
@@ -86,32 +85,38 @@ class Scraper(ScraperABC):
         pkg_name : str
             Name of the package to scrape
 
+        Raises
+        ------
+        ScraperError
+            If the package is not found
+
         Returns
         -------
         Dict
-            Package data as a dictionary, if the package is not found, it returns None
+            Package data as a dictionary
             
         Examples
         --------
         >>> scraper = Scraper()
         >>> scraper.obtain_package_data('numpy')
         """
-        
-        # Get the package page
         MyLogger.log(f'Scraping package {package_name}')
+
+        # Make the request, the response is the second element of the tuple returned by do_request
         response = self.request_handler.do_request(
             self._build_url(package_name)
         )[1]
 
-        # Return None if the package is not found, otherwise return the package data
+        # None if the package is not found, otherwise the package data
         parsed_response = None if response.status_code == 404 else self._parser(response)
 
         if parsed_response is None:
+            # If the package is not found raise an exception
             raise ScraperError(f'Package {package_name} not found')
-        
-        MyLogger.log(f'Package {package_name} scraped successfully')
-            
-        return parsed_response 
+        else:
+            # If the package is found, log it and return the package data
+            MyLogger.log(f'Package {package_name} scraped successfully')
+            return parsed_response 
 
     @override
     def obtain_packages_data(
@@ -122,7 +127,7 @@ class Scraper(ScraperABC):
     ) -> Tuple[List[Dict], List[str]]:
         '''
         Scrape a list of packages from a package manager, if the package is not found, it is added to the not_found list
-        Implements the abstract method of the DataSource class
+        Overrides the method of the DataSource class
 
         Parameters
         ----------
@@ -133,6 +138,11 @@ class Scraper(ScraperABC):
         full_scrape : bool, optional
             If True, it tries to scrape all the packages obtainig the package names from the data source, by default False
             Only works if package_names is None
+
+        Raises
+        ------
+        ScraperError
+            If the list of package names is None or empty and full_scrape is disabled
     
         Returns
         -------
