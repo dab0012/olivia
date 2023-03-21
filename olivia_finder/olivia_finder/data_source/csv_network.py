@@ -240,6 +240,22 @@ class CSVNetwork(DataSource):
         -------
         Dict
             The data of the package in the form of a dictionary
+
+        Examples
+        --------
+        >>> data_source = CSVDataSource("test.csv", "name", "dependency")
+        >>> data_source.obtain_package_data("package1")
+            {
+                "name": "package1",
+                "version": "1.0.0",
+                "url": "
+                "dependencies": [
+                    {
+                        "name": "package2",
+                        "version": "1.0.0"
+                    },
+                ]
+            }
         """
 
         # Get the rows of the package

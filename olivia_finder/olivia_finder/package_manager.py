@@ -67,6 +67,8 @@ class PackageManager():
         self.data_source = data_source
         self.packages = {}
 
+
+
     def save(self, path: str):
         '''
         Save the package manager to a file
@@ -351,6 +353,10 @@ class PackageManager():
         >>> print(adj_list)
             [name, dependency]
         '''
+
+        if not self.packages:
+            self.packages = self.obtain_packages()
+
         rows = []
         for package in self.packages:
             rows.extend(
