@@ -1,21 +1,3 @@
-'''
-package_manager.py
-==================
-
-Description
------------
-
-Module that contains the class PackageManager that represents a package manager, which is a collection of packages
-
-File information:
-    - File: package_manager.py
-    - Project: olivia_finder
-    - Created Date: 2023-03-18 14:40:56
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
-
-'''
-
 from __future__ import annotations
 from typing import Dict, List, Optional, Union
 import pickle
@@ -53,10 +35,6 @@ class PackageManager():
     >>> package_manager = PackageManager(DataSource())
     '''
 
-    # Attributes
-    data_source: DataSourceABC
-    packages: Dict[str, Package]
-
     def __init__(self, data_source: DataSourceABC):
         '''
         Constructor
@@ -64,8 +42,8 @@ class PackageManager():
         if data_source is None:
             raise ValueError("Data source cannot be None")
 
-        self.data_source = data_source
-        self.packages = {}
+        self.data_source: DataSourceABC = data_source
+        self.packages: Dict[str, Package] = {}
 
 
 

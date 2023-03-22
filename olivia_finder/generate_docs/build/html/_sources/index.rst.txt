@@ -19,6 +19,7 @@ Olivia Finder
 
    olivia_finder/package
    olivia_finder/package_manager
+   olivia_finder/data_source/data_source_module
 
 
 Indices and tables

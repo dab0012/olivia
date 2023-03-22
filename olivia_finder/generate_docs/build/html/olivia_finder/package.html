@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -52,8 +52,9 @@
     <link rel="stylesheet" type="text/css" href="../_static/material.css" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Package Manager" href="package_manager.html" />
@@ -213,30 +214,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#olivia-finder-package--page-root" class="md-nav__link">Package</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#package-py" class="md-nav__link">package.py</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#description" class="md-nav__link">Description</a>
-        </li></ul>
-            </nav>
-        </li>
-        <li class="md-nav__item"><a href="#package.Package" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Package</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#package.Package.load" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Package.load()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#package.Package.print" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Package.print()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#package.Package.to_dict" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Package.to_dict()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#package.Package.update" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Package.update()</span></code></a>
-        </li></ul>
-            </nav>
-        </li></ul>
-            </nav>
-        </li>
     
 <li class="md-nav__item"><a class="md-nav__extra_link" href="../_sources/olivia_finder/package.rst.txt">Show Source</a> </li>
 
@@ -251,30 +229,12 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="module-package">
-<span id="package"></span><h1 id="olivia-finder-package--page-root">Package<a class="headerlink" href="#olivia-finder-package--page-root" title="Permalink to this heading">¶</a></h1>
-<section id="package-py">
-<h2 id="package-py">package.py<a class="headerlink" href="#package-py" title="Permalink to this heading">¶</a></h2>
-<section id="description">
-<h3 id="description">Description<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h3>
-<p>Module that contains the class Package that represents a package in the network</p>
-<dl class="simple">
-<dt>File information:</dt><dd><ul class="simple">
-<li><p>File: package.py</p></li>
-<li><p>Project: olivia_finder</p></li>
-<li><p>Created Date: 2023-03-18 14:40:56</p></li>
-<li><p>Author: Daniel Alonso Báscones</p></li>
-<li><p>Copyright (c) 2023 Daniel Alonso Báscones</p></li>
-</ul>
-</dd>
-</dl>
-</section>
-</section>
+  <section id="module-olivia_finder.package">
+<span id="package"></span><h1 id="olivia-finder-package--page-root">Package<a class="headerlink" href="#olivia-finder-package--page-root" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="package.Package">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">package.</span></span><span class="sig-name descname"><span class="pre">Package</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#package.Package" title="package.Package"><span class="pre">package.Package</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/package.html#Package"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#package.Package" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class that represents a package in the network</p>
+<dt class="sig sig-object py" id="olivia_finder.package.Package">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.package.</span></span><span class="sig-name descname"><span class="pre">Package</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#olivia_finder.package.Package" title="olivia_finder.package.Package"><span class="pre">olivia_finder.package.Package</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/olivia_finder/package.html#Package"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package.Package" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that represents a package in the network</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">olivia_finder.package</span> <span class="kn">import</span> <span class="n">Package</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">package</span> <span class="o">=</span> <span class="n">Package</span><span class="p">(</span><span class="s2">"numpy"</span><span class="p">,</span> <span class="s2">"1.0.0"</span><span class="p">,</span> <span class="s2">"https://numpy.org"</span><span class="p">)</span>
@@ -282,7 +242,7 @@
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dt class="field-odd">Attributes</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>Name of the package</p>
 </dd>
@@ -296,25 +256,29 @@
 </dd>
 </dl>
 <p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#package.Package.load" title="package.Package.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(data)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#olivia_finder.package.Package.load" title="olivia_finder.package.Package.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(data)</p></td>
 <td><p>Loads a package from a dictionary. It is assumed that the dictionary has the following structure::.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#package.Package.print" title="package.Package.print"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#olivia_finder.package.Package.print" title="olivia_finder.package.Package.print"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print</span></code></a>()</p></td>
 <td><p>Print the package data in the console</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#package.Package.to_dict" title="package.Package.to_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dict</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#olivia_finder.package.Package.to_dict" title="olivia_finder.package.Package.to_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dict</span></code></a>()</p></td>
 <td><p>Convert the package to a dictionary with the following structure:</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#package.Package.update" title="package.Package.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(data)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#olivia_finder.package.Package.update" title="olivia_finder.package.Package.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(data)</p></td>
 <td><p>Update the package with the data of a dictionary.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
-<dt class="sig sig-object py" id="package.Package.load">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/package.html#Package.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#package.Package.load" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="olivia_finder.package.Package.load">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/olivia_finder/package.html#Package.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package.Package.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads a package from a dictionary. 
 It is assumed that the dictionary has the following structure:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>   
@@ -326,13 +290,13 @@ It is assumed that the dictionary has the following structure:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>data</strong><span class="classifier">dict</span></dt><dd><p>Dictionary with the data</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
 <dt>Package</dt><dd><p>Package loaded from the dictionary</p>
 </dd>
@@ -348,8 +312,8 @@ It is assumed that the dictionary has the following structure:</p>
 </div>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="package.Package.print">
-<span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/package.html#Package.print"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#package.Package.print" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="olivia_finder.package.Package.print">
+<span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/olivia_finder/package.html#Package.print"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package.Package.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print the package data in the console</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">olivia_finder.package</span> <span class="kn">import</span> <span class="n">Package</span>
@@ -359,8 +323,8 @@ It is assumed that the dictionary has the following structure:</p>
 </div>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="package.Package.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/package.html#Package.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#package.Package.to_dict" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="olivia_finder.package.Package.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/olivia_finder/package.html#Package.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package.Package.to_dict" title="Permalink to this definition">¶</a></dt>
 <dd><dl>
 <dt>Convert the package to a dictionary with the following structure:</dt><dd><dl class="simple">
 <dt>{</dt><dd><p>‘name’: str,
@@ -373,7 +337,7 @@ It is assumed that the dictionary has the following structure:</p>
 </dd>
 </dl>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><dl class="simple">
 <dt>dict</dt><dd><p>Dictionary with the data of the package</p>
 </dd>
@@ -388,12 +352,12 @@ It is assumed that the dictionary has the following structure:</p>
 </div>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="package.Package.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/package.html#Package.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#package.Package.update" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="olivia_finder.package.Package.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/olivia_finder/package.html#Package.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package.Package.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the package with the data of a dictionary.
 Only the attributes version, url and dependencies are supported.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>data</strong><span class="classifier">dict</span></dt><dd><p>Dictionary with the data to update</p>
 </dd>
@@ -457,7 +421,7 @@ Only the attributes version, url and dependencies are supported.</p>
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

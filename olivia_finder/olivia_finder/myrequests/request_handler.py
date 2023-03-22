@@ -1,15 +1,3 @@
-""""""
-'''
-·········································································
-File: request_handler.py
-Project: Olivia-Finder
-Created Date: Monday February 27th 2023
-Author: Daniel Alonso Báscones
-Copyright (c) 2023 Daniel Alonso Báscones
-·········································································
-'''
-
-
 import tqdm, requests
 from typing import List, Optional, Tuple, Union
 from threading import Lock
@@ -24,39 +12,45 @@ class RequestHandler:
     Class that handles HTTP requests in a more transparent way in scraping and denial of service environments
     by the servers from which the data is requested 
     Basically, it manages the proxies and user agents so that scraping is not detected
+
+    Attributes
+    ----------
+    proxy_handler : ProxyHandler
+        Proxy handler
+    useragents_handler : UserAgentHandler
+        User agent handler
+    current_proxy_index : int
+        Current proxy index
+    current_useragent_index : int
+        Current user agent index
+    REQUEST_MAX_RETRIES : int
+        Maximum number of retries for each request
+    REQUEST_TIMEOUT : int
+        Timeout for each request
+    NUM_PROCESSES : int
+        Number of processes to use for parallel requests
+
+    Parameters
+    ----------
+    proxy_handler : Optional[ProxyHandler]
+        Proxy handler, if None, it will be initialized with a generic ProxyHandler
+    useragents_handler : Optional[UserAgentHandler]
+        User agent handler, if None, it will be initialized with a generic UserAgentHandler
+    max_retry : Optional[int]
+        Maximum number of retries for each request, if None, it will be initialized with the default value
+    request_timeout : Optional[int]
+        Timeout for each request, if None, it will be initialized with the default value
+    num_processes : Optional[int]
+        Number of processes to use for parallel requests, if None, it will be initialized with the default value
     '''
-
-    # Class attributes
-    # ----------------
-
-    proxy_handler: ProxyHandler                            
-    '''Proxy handler to use'''
-
-    useragents_handler: UserAgentHandler                   
-    '''User agent handler to use'''
-
-    current_proxy_index: int
-    '''Current proxy index'''
-
-    current_useragent_index: int
-    '''Current user agent index'''
-
-    REQUEST_MAX_RETRIES: int = 5
-    '''Maximum number of retries for each request'''
-
-    REQUEST_TIMEOUT: int = 60
-    '''Timeout for each request'''
-
-    NUM_PROCESSES: int = 4
-    '''Number of processes to use for parallel requests'''
 
     def __init__(
         self, 
         proxy_handler:          Optional[ProxyHandler] = None, 
         useragents_handler:     Optional[UserAgentHandler] = None, 
-        max_retry:              Optional[int] = REQUEST_MAX_RETRIES, 
-        request_timeout:        Optional[int] = REQUEST_TIMEOUT, 
-        num_processes:          Optional[int] = NUM_PROCESSES, 
+        max_retry:              Optional[int] = 5, 
+        request_timeout:        Optional[int] = 60, 
+        num_processes:          Optional[int] = 4, 
     ):
         '''Constructor'''
 

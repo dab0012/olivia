@@ -1,21 +1,3 @@
-'''
-config_ini.py
-=============
-
-Description
------------
-
-Module that contains ...
-
-File information:
-    - File: config_ini.py
-    - Project: util
-    - Created Date: 2023-03-18 14:40:56
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
-
-'''
-
 import configparser
 import os
 

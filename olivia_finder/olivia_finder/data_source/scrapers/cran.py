@@ -15,13 +15,13 @@ import contextlib, requests
 from typing_extensions import override
 from bs4 import BeautifulSoup
 from typing import Dict, List, Optional
-from ..scraper import Scraper, ScraperError
+from ..scraper import ScraperError
 from ...data_source.scrapers.r import RScraper
 from ...myrequests.request_handler import RequestHandler
 from ...util.logger import MyLogger
 from ...util.util import Util
 
-class CranScraper(RScraper, Scraper):
+class CranScraper(RScraper):
     '''
     Class that scrapes the CRAN website to obtain information about R packages
     

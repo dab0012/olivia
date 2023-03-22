@@ -1,14 +1,3 @@
-""""""
-'''
-·········································································
-File: scraper.py
-Project: Olivia-Finder
-Created Date: Friday February 24th 2023
-Author: Daniel Alonso Báscones
-Copyright (c) 2023 Daniel Alonso Báscones
-·········································································
-'''
-
 from abc import ABC, abstractmethod
 from typing import Dict, List
 from .data_source import DataSource

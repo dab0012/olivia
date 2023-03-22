@@ -1,21 +1,3 @@
-'''
-logger.py
-==================
-
-Description
------------
-
-Module that contains the functions to handle the logger.
-
-File information:
-    - File: logger.py
-    - Project: util
-    - Created Date: 2023-03-18 14:40:56
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
-
-'''
-
 import logging
 import os
 from .util import Util

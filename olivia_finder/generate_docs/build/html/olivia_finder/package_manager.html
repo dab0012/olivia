@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -52,10 +52,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/material.css" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="DataSource Module" href="data_source/data_source_module.html" />
     <link rel="prev" title="Package" href="package.html" />
   
    
@@ -227,8 +229,308 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="package-manager">
-<h1 id="olivia-finder-package-manager--page-root">Package Manager<a class="headerlink" href="#olivia-finder-package-manager--page-root" title="Permalink to this heading">¶</a></h1>
+  <section id="module-olivia_finder.package_manager">
+<span id="package-manager"></span><h1 id="olivia-finder-package-manager--page-root">Package Manager<a class="headerlink" href="#olivia-finder-package-manager--page-root" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="olivia_finder.package_manager.PackageManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.package_manager.</span></span><span class="sig-name descname"><span class="pre">PackageManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data_source/data_source_abc.html#olivia_finder.data_source.data_source_abc.DataSourceABC" title="olivia_finder.data_source.data_source_abc.DataSourceABC"><span class="pre">olivia_finder.data_source.data_source_abc.DataSourceABC</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/olivia_finder/package_manager.html#PackageManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package_manager.PackageManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that represents a package manager, which is a collection of packages</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_source</strong><span class="classifier">DataSource</span></dt><dd><p>Data source of the package manager</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><dl class="simple">
+<dt>ValueError</dt><dd><p>If the data source is invalid</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">olivia_finder.package_manager</span> <span class="kn">import</span> <span class="n">PackageManager</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">olivia_finder.data_source</span> <span class="kn">import</span> <span class="n">DataSource</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">package_manager</span> <span class="o">=</span> <span class="n">PackageManager</span><span class="p">(</span><span class="n">DataSource</span><span class="p">())</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_source</strong><span class="classifier">DataSource</span></dt><dd><p>Data source of the package manager</p>
+</dd>
+<dt><strong>packages</strong><span class="classifier">set[Package]</span></dt><dd><p>Set of packages of the package manager</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#olivia_finder.package_manager.PackageManager.export_adjlist" title="olivia_finder.package_manager.PackageManager.export_adjlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_adjlist</span></code></a>()</p></td>
+<td><p>Convert the object to a adjacency list, where each row represents a dependency If a package has'nt dependencies, it will appear in the list with dependency field empty</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#olivia_finder.package_manager.PackageManager.export_full_adjlist" title="olivia_finder.package_manager.PackageManager.export_full_adjlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_full_adjlist</span></code></a>()</p></td>
+<td><p>Convert the object to a adjacency list, where each row represents a dependency If a package has'nt dependencies, it will appear in the list with dependency field empty The version of the package and the dependency will be included</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#olivia_finder.package_manager.PackageManager.get_package" title="olivia_finder.package_manager.PackageManager.get_package"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_package</span></code></a>(package_name)</p></td>
+<td><p>Obtain a package from the package manager</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#olivia_finder.package_manager.PackageManager.get_package_list" title="olivia_finder.package_manager.PackageManager.get_package_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_package_list</span></code></a>()</p></td>
+<td><p>Obtain the list of packages of the package manager</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#olivia_finder.package_manager.PackageManager.get_package_names" title="olivia_finder.package_manager.PackageManager.get_package_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_package_names</span></code></a>()</p></td>
+<td><p>Obtain the list of package names of the package manager</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#olivia_finder.package_manager.PackageManager.load" title="olivia_finder.package_manager.PackageManager.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(path)</p></td>
+<td><p>Load the package manager from a file, the file must have been created with the save method Normally, it has the extension .olvpm</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#olivia_finder.package_manager.PackageManager.load_csv_adjlist" title="olivia_finder.package_manager.PackageManager.load_csv_adjlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_csv_adjlist</span></code></a>(csv_path[, ...])</p></td>
+<td><p>Load a csv file into a PackageManager object</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#olivia_finder.package_manager.PackageManager.obtain_package" title="olivia_finder.package_manager.PackageManager.obtain_package"><code class="xref py py-obj docutils literal notranslate"><span class="pre">obtain_package</span></code></a>(package_name)</p></td>
+<td><p>Builds a Package object from the package manager's data source</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#olivia_finder.package_manager.PackageManager.obtain_packages" title="olivia_finder.package_manager.PackageManager.obtain_packages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">obtain_packages</span></code></a>([package_names, extend, ...])</p></td>
+<td><p>Obtain a list of packages from the package manager's data source,  if the list of package names is empty its assumed that we want to obtain all the packages</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#olivia_finder.package_manager.PackageManager.save" title="olivia_finder.package_manager.PackageManager.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>(path)</p></td>
+<td><p>Save the package manager to a file</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.package_manager.PackageManager.export_adjlist">
+<span class="sig-name descname"><span class="pre">export_adjlist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="../_modules/olivia_finder/package_manager.html#PackageManager.export_adjlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package_manager.PackageManager.export_adjlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the object to a adjacency list, where each row represents a dependency
+If a package has’nt dependencies, it will appear in the list with dependency field empty</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>pd.DataFrame</dt><dd><p>Dependency network as an adjacency list</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">adj_list</span> <span class="o">=</span> <span class="n">package_manager</span><span class="o">.</span><span class="n">export_adjlist</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">adj_list</span><span class="p">)</span>
+<span class="go">    [name, dependency]</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.package_manager.PackageManager.export_full_adjlist">
+<span class="sig-name descname"><span class="pre">export_full_adjlist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="reference internal" href="../_modules/olivia_finder/package_manager.html#PackageManager.export_full_adjlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package_manager.PackageManager.export_full_adjlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the object to a adjacency list, where each row represents a dependency
+If a package has’nt dependencies, it will appear in the list with dependency field empty
+The version of the package and the dependency will be included</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>pd.DataFrame</dt><dd><p>Dependency network as an adjacency list</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">adj_list</span> <span class="o">=</span> <span class="n">package_manager</span><span class="o">.</span><span class="n">export_full_adjlist</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">adj_list</span><span class="p">)</span>
+<span class="go">    [name, version, dependency, dependency_version]</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.package_manager.PackageManager.get_package">
+<span class="sig-name descname"><span class="pre">get_package</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="package.html#olivia_finder.package.Package" title="olivia_finder.package.Package"><span class="pre">olivia_finder.package.Package</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/olivia_finder/package_manager.html#PackageManager.get_package"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package_manager.PackageManager.get_package" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtain a package from the package manager</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>package_name</strong><span class="classifier">str</span></dt><dd><p>Name of the package</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Union[Package, None]</dt><dd><p>Package object if the package exists, None otherwise</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">package</span> <span class="o">=</span> <span class="n">package_manager</span><span class="o">.</span><span class="n">get_package</span><span class="p">(</span><span class="s2">"package_name"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">package</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.package_manager.PackageManager.get_package_list">
+<span class="sig-name descname"><span class="pre">get_package_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="package.html#olivia_finder.package.Package" title="olivia_finder.package.Package"><span class="pre">olivia_finder.package.Package</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/olivia_finder/package_manager.html#PackageManager.get_package_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package_manager.PackageManager.get_package_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtain the list of packages of the package manager</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>List[Package]</dt><dd><p>List of packages of the package manager</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">package_list</span> <span class="o">=</span> <span class="n">package_manager</span><span class="o">.</span><span class="n">get_package_list</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.package_manager.PackageManager.get_package_names">
+<span class="sig-name descname"><span class="pre">get_package_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/olivia_finder/package_manager.html#PackageManager.get_package_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package_manager.PackageManager.get_package_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtain the list of package names of the package manager</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>List[str]</dt><dd><p>List of package names of the package manager</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">package_names</span> <span class="o">=</span> <span class="n">package_manager</span><span class="o">.</span><span class="n">get_package_names</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.package_manager.PackageManager.load">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/olivia_finder/package_manager.html#PackageManager.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package_manager.PackageManager.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the package manager from a file, the file must have been created with the save method
+Normally, it has the extension .olvpm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>path</strong><span class="classifier">str</span></dt><dd><p>Path of the file to load the package manager</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Union[PackageManager, None]</dt><dd><p>PackageManager object if the file exists and is valid, None otherwise</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.package_manager.PackageManager.load_csv_adjlist">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_csv_adjlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependent_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependency_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependency_version_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#olivia_finder.package_manager.PackageManager" title="olivia_finder.package_manager.PackageManager"><span class="pre">olivia_finder.package_manager.PackageManager</span></a></span></span><a class="reference internal" href="../_modules/olivia_finder/package_manager.html#PackageManager.load_csv_adjlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package_manager.PackageManager.load_csv_adjlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a csv file into a PackageManager object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>csv_path</strong><span class="classifier">str</span></dt><dd><p>Path of the csv file to load</p>
+</dd>
+<dt><strong>dependent_field</strong><span class="classifier">Optional[str], optional</span></dt><dd><p>Name of the dependent field, by default None</p>
+</dd>
+<dt><strong>dependency_field</strong><span class="classifier">Optional[str], optional</span></dt><dd><p>Name of the dependency field, by default None</p>
+</dd>
+<dt><strong>version_field</strong><span class="classifier">Optional[str], optional</span></dt><dd><p>Name of the version field, by default None</p>
+</dd>
+<dt><strong>dependency_version_field</strong><span class="classifier">Optional[str], optional</span></dt><dd><p>Name of the dependency version field, by default None</p>
+</dd>
+<dt><strong>url_field</strong><span class="classifier">Optional[str], optional</span></dt><dd><p>Name of the url field, by default None</p>
+</dd>
+<dt><strong>default_format</strong><span class="classifier">Optional[bool], optional</span></dt><dd><p>If True, the csv has the structure of full_adjlist.csv, by default False</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pm</span> <span class="o">=</span> <span class="n">PackageManager</span><span class="o">.</span><span class="n">load_csv_adjlist</span><span class="p">(</span>
+<span class="go">    "full_adjlist.csv", </span>
+<span class="go">    dependent_field="dependent", </span>
+<span class="go">    dependency_field="dependency", </span>
+<span class="go">    version_field="version", </span>
+<span class="go">    dependency_version_field="dependency_version", </span>
+<span class="go">    url_field="url"</span>
+<span class="go">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pm</span> <span class="o">=</span> <span class="n">PackageManager</span><span class="o">.</span><span class="n">load_csv_adjlist</span><span class="p">(</span><span class="s2">"full_adjlist.csv"</span><span class="p">,</span> <span class="n">default_format</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.package_manager.PackageManager.obtain_package">
+<span class="sig-name descname"><span class="pre">obtain_package</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="package.html#olivia_finder.package.Package" title="olivia_finder.package.Package"><span class="pre">olivia_finder.package.Package</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/olivia_finder/package_manager.html#PackageManager.obtain_package"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package_manager.PackageManager.obtain_package" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds a Package object from the package manager’s data source</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>package_name</strong><span class="classifier">str</span></dt><dd><p>Name of the package</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Union[Package, None]</dt><dd><p>Package object if the package exists, None otherwise</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">package</span> <span class="o">=</span> <span class="n">package_manager</span><span class="o">.</span><span class="n">obtain_package</span><span class="p">(</span><span class="s2">"package_name"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">package</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.package_manager.PackageManager.obtain_packages">
+<span class="sig-name descname"><span class="pre">obtain_packages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="package.html#olivia_finder.package.Package" title="olivia_finder.package.Package"><span class="pre">olivia_finder.package.Package</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/olivia_finder/package_manager.html#PackageManager.obtain_packages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package_manager.PackageManager.obtain_packages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtain a list of packages from the package manager’s data source, 
+if the list of package names is empty its assumed that we want to obtain all the packages</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>package_names</strong><span class="classifier">Optional[List[str]], optional</span></dt><dd><p>List of package names to obtain, by default None</p>
+</dd>
+<dt><strong>extend</strong><span class="classifier">Optional[bool], optional</span></dt><dd><p>If True, the packages will be added to the existing ones on the package manager, by default False</p>
+</dd>
+<dt><strong>show_progress</strong><span class="classifier">Optional[bool], optional</span></dt><dd><p>If True, a progress bar will be shown, by default False</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>List[Package]</dt><dd><p>List of packages obtained from the data source</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Obtain all the available packages from the data source</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">packages</span> <span class="o">=</span> <span class="n">package_manager</span><span class="o">.</span><span class="n">obtain_packages</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Obtain packages from a list of names</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">packages</span> <span class="o">=</span> <span class="n">package_manager</span><span class="o">.</span><span class="n">obtain_packages</span><span class="p">([</span><span class="s2">"package_name_1"</span><span class="p">,</span> <span class="s2">"package_name_2"</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Obtain packages from a list of names and add them to the existing ones showing a progress bar</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">packages</span> <span class="o">=</span> <span class="n">package_manager</span><span class="o">.</span><span class="n">obtain_packages</span><span class="p">([</span><span class="s2">"package_name_1"</span><span class="p">,</span> <span class="s2">"package_name_2"</span><span class="p">],</span> <span class="n">extend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.package_manager.PackageManager.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/olivia_finder/package_manager.html#PackageManager.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package_manager.PackageManager.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the package manager to a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>path</strong><span class="classifier">str</span></dt><dd><p>Path of the file to save the package manager</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
 </section>
 
 
@@ -255,6 +557,17 @@
             </a>
           
           
+            <a href="data_source/data_source_module.html" title="DataSource Module"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> DataSource Module </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
         </a>
         
       </nav>
@@ -267,7 +580,7 @@
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

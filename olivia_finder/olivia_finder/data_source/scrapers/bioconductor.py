@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 from typing import Dict, Optional, List
 from typing_extensions import override
 
-from ...data_source.scraper import Scraper, ScraperError
+from ...data_source.scraper import ScraperError
 from ...data_source.scrapers.r import RScraper
 from ...myrequests.request_handler import RequestHandler
 from ...util.util import Util
@@ -23,7 +23,7 @@ from ...util.util import Util
 from selenium import webdriver                                    
 from selenium.webdriver.common.by import By
 
-class BiocScraper(RScraper, Scraper):
+class BiocScraper(RScraper):
     '''
     Class to scrape data from Bioconductor packages
     

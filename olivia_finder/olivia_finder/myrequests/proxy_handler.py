@@ -1,23 +1,3 @@
-'''
-proxy_handler.py
-==================
-
-Description
------------
-
-Module proxy_handler that contains the functions to handle the proxy rotation.
-It uses a list of proxy builders to get the proxies.
-It is a utility class for the RequestHandler class.
-
-File information:
-    - File: proxy_handler.py
-    - Project: myrequests
-    - Created Date: 2023-03-18 14:40:56
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
-
-'''
-
 from typing import List, Optional, Union 
 from .proxy_builder import ProxyBuilder, ProxyBuilderABC
 from ..util.logger import MyLogger
@@ -39,12 +19,6 @@ class ProxyHandler():
         A dictionary with the number of uses for each proxy, uses the proxy as key
     '''
 
-    # Attributes
-    proxy_max_uses: int = 50                    # Maximum number of uses for each proxy
-    proxy_builders: List[ProxyBuilderABC] = []     # List of proxy builders
-    proxy_list: List[str] = []                  # proxy_list is a list str with the proxies
-    proxy_uses: dict = {}                       # A dictionary with the number of uses for each proxy, uses the proxy as key
-
     def __init__(
         self,
         builders: Optional[List[ProxyBuilderABC]] = None, 
@@ -53,7 +27,10 @@ class ProxyHandler():
         '''Constructor'''
 
         # Set attributes
-        self.proxy_max_uses = proxy_max_uses                # override default value
+        self.proxy_max_uses = proxy_max_uses             # override default value
+        self.proxy_list: List[str] = []                  # proxy_list is a list str with the proxies
+        self.proxy_uses: dict = {}                       # A dictionary with the number of uses for each proxy, uses the proxy as key
+        self.proxy_builders: List[ProxyBuilderABC] = []  # List of proxy builders
 
         # Set proxy builders, if none, get default builders
         if builders is None:                                

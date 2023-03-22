@@ -1,7 +1,7 @@
 Package
 =======
 
-.. automodule:: package 
+.. automodule:: olivia_finder.package 
+
+.. autoclass:: olivia_finder.package.Package
    :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,14 +1,3 @@
-""""""
-'''
-·········································································
-File: scraper.py
-Project: Olivia-Finder
-Created Date: Friday February 24th 2023
-Author: Daniel Alonso Báscones
-Copyright (c) 2023 Daniel Alonso Báscones
-·········································································
-'''
-
 import requests
 import tqdm
 from typing_extensions import override

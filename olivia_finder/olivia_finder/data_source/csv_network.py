@@ -1,22 +1,3 @@
-'''
-csv_network.py
-==================
-
-Description
------------
-
-Module that contains the CSVNetwork class that implements the DataSource interface 
-for loading a network from a CSV file
-
-File information:
-    - File: csv_network.py
-    - Project: data_source
-    - Created Date: 2023-03-18 14:40:56
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
-
-'''
-
 from __future__ import annotations
 import os
 from typing import Dict, List, Optional

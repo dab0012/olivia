@@ -1,15 +1,3 @@
-""""""
-'''
-·········································································
-File: useragent_handler.py
-Project: Olivia-Finder
-Created Date: Monday February 27th 2023
-Author: Daniel Alonso Báscones
-Copyright (c) 2023 Daniel Alonso Báscones
-·········································································
-'''
-
-
 import os
 from typing import List
 import logging, random, requests

@@ -1,21 +1,3 @@
-'''
-util.py
-==================
-
-Description
------------
-
-Module that contains some useful functions
-
-File information:
-    - File: util.py
-    - Project: util
-    - Created Date: 2023-03-18 14:40:56
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
-
-'''
-
 import datetime
 import multiprocessing
 
