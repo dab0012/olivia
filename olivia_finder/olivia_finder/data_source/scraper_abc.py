@@ -43,3 +43,10 @@ class ScraperABC(DataSource, ABC):
             Dictionary with the data of the package as key-value pairs
         '''
         pass
+
+    @abstractmethod
+    def obtain_package_dependency_network(self) -> Dict:
+        """
+        Obtains the dependency network of a package from the data source.
+        """
+        pass

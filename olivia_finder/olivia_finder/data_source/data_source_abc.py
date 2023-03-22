@@ -30,9 +30,14 @@ class DataSourceABC(ABC):
         """
 
     @abstractmethod
-    def obtain_package_data(self) -> dict:
+    def obtain_package_data(self, package_name: str) -> dict:
         """
         Obtains the data of a package from the data source as a dictionary.
+
+        Parameters
+        ----------
+        package_name : str
+            The name of the package to obtain the data
         
         Returns
         -------
