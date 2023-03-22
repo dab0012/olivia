@@ -1,3 +1,18 @@
+'''
+Description
+-----------
+
+Module that contains the PackageManager class, which represents a package manager, which provides a 
+way to obtain packages from a data source and store them
+
+File information:
+    - File: package_manager.py
+    - Project: olivia_finder
+    - Created Date: 2023-03-18 14:40:56
+    - Author: Daniel Alonso Báscones
+    - Copyright (c) 2023 Daniel Alonso Báscones
+'''
+
 from __future__ import annotations
 from typing import Dict, List, Optional, Union
 import pickle
@@ -45,11 +60,10 @@ class PackageManager():
         self.data_source: DataSourceABC = data_source
         self.packages: Dict[str, Package] = {}
 
-
-
     def save(self, path: str):
         '''
-        Save the package manager to a file
+        Saves the package manager to a file, normally it has the extension .olvpm for easy identification
+        as an Olivia package manager file
 
         Parameters
         ----------
@@ -74,7 +88,7 @@ class PackageManager():
 
         Returns
         -------
-        Union[PackageManager, None]
+        Union[PackageManager, None] 
             PackageManager object if the file exists and is valid, None otherwise
         '''
         # Try to load the package manager from the file
@@ -83,7 +97,6 @@ class PackageManager():
             with open(path, "rb") as f:
                 cls = pickle.load(f)
         except Exception as e:
-            print("Error loading the package manager from file:", e)
             return None
 
         return cls

@@ -6,23 +6,22 @@
 Olivia Finder's documentation!
 ==============================
 
-|   
 Olivia Finder is a Python library that allows users to obtain from package data to be used with the Olivia project, 
 an open-source library that indexes vulnerability identification and analysis. 
 Olivia is designed to help software developers and centralised package managers understand the risks of using dependencies in their projects. 
+ 
 
-
-|
 Olivia Finder
 -------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   olivia_finder/olivia_finder
+   olivia_finder/package
+   olivia_finder/package_manager
+   olivia_finder/data_source/data_source_module
 
 
-|
 Indices and tables
 ------------------
 

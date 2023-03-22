@@ -15,12 +15,6 @@ class Package:
         URL of the package
     dependencies : Optional[list[Package]]
         List of dependencies of the package
-
-    Examples
-    --------
-    >>> from olivia_finder.package import Package
-    >>> package = Package("numpy", "1.0.0", "https://numpy.org")
-    >>> package.print()
     '''
 
     def __init__(
@@ -47,6 +41,14 @@ class Package:
         >>> from olivia_finder.package import Package
         >>> package = Package("numpy", "1.0.0", "https://numpy.org")
         >>> package.print()
+        
+        Package:
+            name: package
+            version: 1.0.0
+            url: https://package.org
+            dependencies:
+                dependency1:1.0.0
+                dependency2:1.0.0
         '''
         print("Package:")
         print(f"  name: {self.name}")
@@ -110,6 +112,7 @@ class Package:
         >>> from olivia_finder.package import Package
         >>> package = Package("numpy", "1.0.0", "https://numpy.org")
         >>> str(package)
+        numpy:1.0.0
         '''
         return self.name if self.version is None else f"{self.name}:{self.version}"
 
@@ -136,44 +139,6 @@ class Package:
             self.url = data['url']
         if 'dependencies' in data:
             self.dependencies = set(data['dependencies'])
-
-    @classmethod
-    def load(cls, data: dict):
-        '''
-        Loads a package from a dictionary. 
-        It is assumed that the dictionary has the following structure::
-        
-            {   
-                'name': str,
-                'version': str,
-                'url': str,
-                'dependencies': list[dict]
-            }
-
-        Parameters
-        ----------
-        data : dict
-            Dictionary with the data
-
-        Returns
-        -------
-        Package
-            Package loaded from the dictionary
-
-        Examples
-        --------
-        >>> from olivia_finder.package import Package
-        >>> package = Package.load(
-                {"name": "numpy", "version": "1.0.0", "url": "https://numpy.org"}
-            )
-        '''
-
-        # Create the packages of the dependencies
-        dependencies = []
-        for dependency in data['dependencies']:
-            dependencies.append(Package(dependency['name'], dependency['version']))
-
-        return cls(data['name'], data['version'], data['url'], dependencies)
 
     def to_dict(self):
         '''
@@ -210,3 +175,39 @@ class Package:
             data['dependencies'].append(dependency.to_dict())
 
         return data
+
+    @classmethod
+    def load(cls, data: dict):
+        '''
+        Loads a package from a dictionary. 
+        It is assumed that the dictionary has the following structure::
+        
+            {   
+                'name': str,
+                'version': str,
+                'url': str,
+                'dependencies': list[dict]
+            }
+
+        Parameters
+        ----------
+        data : dict
+            Dictionary with the data
+
+        Returns
+        -------
+        Package
+            Package loaded from the dictionary
+
+        Examples
+        --------
+        >>> from olivia_finder.package import Package
+        >>> package = Package.load(
+                {"name": "numpy", "version": "1.0.0", "url": "https://numpy.org"}
+            )
+        '''
+        dependencies = [
+            Package(dependency['name'], dependency['version'])
+            for dependency in data['dependencies']
+        ]
+        return cls(data['name'], data['version'], data['url'], dependencies)

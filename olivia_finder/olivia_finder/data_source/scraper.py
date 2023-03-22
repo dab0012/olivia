@@ -102,10 +102,9 @@ class Scraper(ScraperABC):
         if parsed_response is None:
             # If the package is not found raise an exception
             raise ScraperError(f'Package {package_name} not found')
-        else:
-            # If the package is found, log it and return the package data
-            MyLogger.log(f'Package {package_name} scraped successfully')
-            return parsed_response 
+        # If the package is found, log it and return the package data
+        MyLogger.log(f'Package {package_name} scraped successfully')
+        return parsed_response 
 
     @override
     def obtain_packages_data(

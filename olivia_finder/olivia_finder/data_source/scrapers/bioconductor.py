@@ -47,28 +47,26 @@ class BiocScraper(RScraper):
     BIOCONDUCTOR_PACKAGE_DATA_URL : str
         The URL of the page with the data of each Bioconductor package
     '''
-
-    # Class variables
-    BIOCONDUCTOR_LIST_URL = 'https://www.bioconductor.org/packages/release/BiocViews.html#___Software'
-    '''The URL of the page with the list of Bioconductor packages'''
-    BIOCONDUCTOR_PACKAGE_DATA_URL = 'https://www.bioconductor.org/packages/release/bioc/html/'
-    '''The URL of the page with the data of each Bioconductor package'''
-    NAME: str = 'Bioconductor'
-    '''The name of the data source'''
-    DESCRIPTION: str = "Scraper class implementation for the Bioconductor package network"
-    '''The description of the data source'''
-
     
     def __init__(
         self, 
-        name: Optional[str] = NAME, 
-        description: Optional[str] = DESCRIPTION, 
+        name: Optional[str] = None, 
+        description: Optional[str] = None, 
         request_handler: Optional[RequestHandler] = None, 
     ):
         '''
         Constructor
         '''
+        self.BIOCONDUCTOR_LIST_URL = 'https://www.bioconductor.org/packages/release/BiocViews.html#___Software'
+        self.BIOCONDUCTOR_PACKAGE_DATA_URL = 'https://www.bioconductor.org/packages/release/bioc/html/'
+
+        if name is None:
+            self.NAME: str = 'Bioconductor'
+        if description is None:
+            self.DESCRIPTION: str = "Scraper class implementation for the Bioconductor package network"
+            
         super().__init__(name, description, request_handler)
+
 
     @override
     def obtain_package_names(self) -> List[str]:
