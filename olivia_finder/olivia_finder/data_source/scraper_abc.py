@@ -44,9 +44,3 @@ class ScraperABC(DataSource, ABC):
         '''
         pass
 
-    @abstractmethod
-    def obtain_package_dependency_network(self) -> Dict:
-        """
-        Obtains the dependency network of a package from the data source.
-        """
-        pass

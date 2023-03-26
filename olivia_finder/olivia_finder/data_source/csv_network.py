@@ -264,6 +264,10 @@ class CSVNetwork(DataSource):
             dependency_version = row[self.dependency_version_field] if self.dependency_version_field is not None else None
             
             # Build the dependency dictionary
+            # Iggnore {'name': nan, 'version': nan}
+            if pd.isna(dependency_name):
+                continue
+
             dependency = {
                 "name": dependency_name,
                 "version": dependency_version

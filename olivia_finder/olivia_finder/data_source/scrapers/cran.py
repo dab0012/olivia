@@ -175,7 +175,7 @@ class CranScraper(RScraper):
         # Build dictionary with package data
         # we consider that dependencies and imports are the same level of importance
         # so we add them to the same list
-        dependencies = list(set(dep_list + imp_list))
+        dependencies = list(dep_list + imp_list)
 
         return {
             'name': name,

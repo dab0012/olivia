@@ -29,6 +29,8 @@ class RequestHandler:
         Timeout for each request
     NUM_PROCESSES : int
         Number of processes to use for parallel requests
+    lock : Lock
+        Lock for the current proxy and user agent indexes for multi-threading
 
     Parameters
     ----------
@@ -65,6 +67,7 @@ class RequestHandler:
         self.current_useragent_index = 0
         self.REQUEST_MAX_RETRIES = max_retry
         self.REQUEST_TIMEOUT = request_timeout
+        self.lock = Lock()
 
         # Check number of processes
         recommended_num_processes = Util.recommended_threads()
@@ -107,8 +110,9 @@ class RequestHandler:
 
         # Try to get proxy and user agent with lock for thread safety
         proxy = headers = None
+
         try:
-            with self.LOCK:
+            with self.lock:
                 if self.proxy_handler is not None:
                     proxy_url = self.proxy_handler.get_next_proxy()
                     proxy = {"http": proxy_url}
@@ -188,8 +192,6 @@ class RequestHandler:
             else:
                 futures = [executor.submit(self._do_request_with_retry, url, params) for url, params in zip(url_list, param_list)]
 
-            lock = Lock()
-
             # Get results
             for future in as_completed(futures):
 
@@ -197,7 +199,7 @@ class RequestHandler:
                 if isinstance(future.result(), Exception):
                     MyLogger.log(f"Exception in thread: {future.result()}")
                 else:
-                    with lock:
+                    with self.lock:
                         response = future.result()
 
                         # Update progress bar

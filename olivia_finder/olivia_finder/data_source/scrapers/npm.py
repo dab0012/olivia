@@ -201,7 +201,7 @@ class NpmScraper(Scraper):
             return data['rows'][1:]
     
     @override
-    def _Scraper__build_url(self, package_name: str):
+    def _build_url(self, package_name: str):
         '''
         Function to build the URL of the package
 
@@ -218,7 +218,7 @@ class NpmScraper(Scraper):
         return f'{self.NPM_PACKAGE_REGISTRY_URL}/{package_name}'
 
     @override
-    def _Scraper__parser(self, response: requests.Response) -> dict:
+    def _parser(self, response: requests.Response) -> dict:
         '''
         Parse the response of the request
 

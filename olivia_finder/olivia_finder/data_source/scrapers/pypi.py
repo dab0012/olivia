@@ -10,6 +10,7 @@ Copyright (c) 2023 Daniel Alonso Báscones
 '''
 
 
+import re
 import requests
 from typing_extensions import override
 from typing import Dict, List
@@ -44,6 +45,8 @@ class PypiScraper(Scraper):
         '''
         Constructor
         '''
+
+
 
         super().__init__(self.NAME, self.DESCRIPTION, request_handler)
 
@@ -134,9 +137,20 @@ class PypiScraper(Scraper):
             
             for dependency in dependencies_raw:
                 
-                # Split the dependency in name and version
-                dependency_data = dependency.split(' ')
-                dependencies_dict[dependency_data[0]] = dependency_data[1]
+                # # Split the dependency in name and version
+                # dependency_data = dependency.split(' ')
+
+                # # check if the dependency has a version
+                # if len(dependency_data) == 1:
+                #     dependencies_dict[dependency_data[0]] = ""
+                # else:
+                #     # Add the dependency to the dictionary
+                #     # dependency_name: dependency_version
+                #     dependencies_dict[dependency_data[0]] = dependency_data[1]
+
+                # Get the name of the dependency
+                dependency_name = self._clean_name(dependency)
+                dependencies_dict[dependency_name] = None
                 
             # Build the list of dependencies as dictionaries
             dependencies = [{'name': name, 'version': version} for name, version in dependencies_dict.items()]
@@ -149,3 +163,29 @@ class PypiScraper(Scraper):
             'url': data['info']['project_url'],
             'dependencies': dependencies,
         }    
+
+    def _clean_name(self, name: str) -> str:
+        '''
+        Clean the package name from versions and other characters
+
+        Parameters
+        ----------
+        name : str
+            Name of the package
+        
+        Returns
+        -------
+        str
+            Cleaned name of the package
+            
+        '''
+        
+        regex = re.compile(r'[^\w\d]+')
+
+        # Reemplazar cualquier coincidencia de la expresión regular en la cadena de dependencia con un espacio en blanco
+        name = regex.sub(' ', name)
+
+        # Obtenga el primer elemento de la lista resultante después de dividir la cadena por espacios en blanco
+        name = name.split()[0]
+
+        return name

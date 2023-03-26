@@ -84,7 +84,7 @@ class DataSource(DataSourceABC):
         '''
         raise NotImplementedError
 
-    def generate_package_dependency_network(self, package_name: str, deep_level: int = 5) -> Dict[str, List[str]]:
+    def generate_package_dependency_network(self, package_name: str, dependency_network: Dict = None, deep_level: int = 5) -> Dict[str, List[str]]:
         """
         Generates the dependency network of a package from the data source.
 
@@ -92,6 +92,8 @@ class DataSource(DataSourceABC):
         ----------
         package_name : str
             The name of the package to generate the dependency network
+        dependency_network : dict, optional
+            The dependency network of the package            
         deep_level : int, optional
             The deep level of the dependency network, by default 5
 
@@ -101,39 +103,44 @@ class DataSource(DataSourceABC):
             The dependency network of a package from the data source as a dictionary of package name to a list of its dependencies
         """
 
-        if deep_level == 0:
-            return {}
-
-        try:
-            # self.obtain_package_data(package_name) returns a dictionary with the data of the package
-            # as {name: ..., version: ..., dependencies: [{name: ..., version: ...}, ...]
-            target_data = self.obtain_package_data(package_name)
+        if dependency_network is None:
             dependency_network = {}
 
-            # Add an entry to the dependency network dictionary for the current package with a list of its dependencies
-            dependency_network[package_name] = [dependency["name"] for dependency in target_data['dependencies']]
-
-            # Run the method recursively for each dependency while the deep level is not reached
-            for dependency in target_data['dependencies']:
-                # Obtain the dependency network of the dependency
-                dependency_name = dependency["name"]
-                dependency_data = self.generate_package_dependency_network(
-                    dependency_name,  # The name of the dependency
-                    deep_level - 1  # The deep level is reduced by 1
-                )
-
-                # Merge the dependency network data of the dependency with the current dependency network dictionary
-                for package, dependencies in dependency_data.items():
-                    if package not in dependency_network:
-                        dependency_network[package] = dependencies
-                    else:
-                        dependency_network[package] = list(set(dependency_network[package] + dependencies))
-
+        if deep_level == 0:
+            return dependency_network
+        
+        # Obtain the data of target package
+        try:
+            target_data = self.obtain_package_data(package_name)
         except ValueError:
             MyLogger.log(
                 f"The package {package_name} does not exist in the data source {self.name}"
             )
-            return {}
+            return dependency_network
+                #    
+        # Append the target package to the dependency network
+        dependency_network[package_name] = target_data['dependencies']
+        
+        # Run the method recursively for each dependency while the deep level is not reached
+        for dependency in target_data['dependencies']:
+
+            dependency_name = dependency["name"]
+
+            # Check if package is already in the dependency network
+            if dependency_name in dependency_network:
+                continue
+
+            try:     
+                self.generate_package_dependency_network(
+                    dependency_name,  # The name of the dependency
+                    dependency_network,  # The global dependency network
+                    deep_level - 1  # The deep level is reduced by 1
+                )
+            except Exception:
+                MyLogger.log(
+                    f"The package {dependency_name}, as dependency of {package_name} does not exist in the data source {self.name}"
+                )
+                continue
 
         return dependency_network
 
