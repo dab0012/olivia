@@ -109,14 +109,27 @@ class NpmScraper(Scraper):
 
         # Obtain the names of the packages requesting the pages
         pages = []
+        last_key = None
         for i in range(num_pages):
-            page = self.__download_page(last_key, page_size)
 
-            # check if the page is empty
-            if len(page) == 0:
-                MyLogger.log(f'Empty page {i} of {num_pages}')
-                MyLogger.log(f'Last key: {last_key}')
-                continue
+            # Download the page
+            # Handle disconnects
+            page = None
+            while page is None:
+                try:
+                    page = self.__download_page(last_key, page_size)
+                except requests.exceptions.ConnectionError:
+                    MyLogger.log(f'Connection error in page {i} of {num_pages}')
+                    MyLogger.log(f'Last key: {last_key}')
+                    MyLogger.log('Retrying...')
+                    # Consume a proxy and retry
+                    self.request_handler.proxy_handler.get_next_proxy()
+
+                # check if the page is empty
+                if len(page) == 0:
+                    MyLogger.log(f'Empty page {i} of {num_pages}')
+                    MyLogger.log(f'Last key: {last_key}')
+                    page = None
 
             pages.append(page)
             MyLogger.log(f'Downloaded page {i} of {num_pages}')
@@ -142,7 +155,7 @@ class NpmScraper(Scraper):
         Function to initialize the chunks folder, where the chunks will be saved
         Loads the path from the configuration file
         '''
-        self.chunks_folder = f'{Configuration.get_key("folders", "working_dir")}/npm'
+        self.chunks_folder = f'{Configuration().get_key("folders", "working_dir")}/npm'
         os.makedirs(self.chunks_folder, exist_ok=True)
 
     def __download_page(

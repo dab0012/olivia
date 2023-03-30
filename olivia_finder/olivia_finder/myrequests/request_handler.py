@@ -1,7 +1,9 @@
-import tqdm, requests
+''''''
 from typing import List, Optional, Tuple, Union
 from threading import Lock
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import tqdm
+import requests
 from .proxy_handler import ProxyHandler
 from .useragent_handler import UserAgentHandler
 from ..util.logger import MyLogger
@@ -19,10 +21,6 @@ class RequestHandler:
         Proxy handler
     useragents_handler : UserAgentHandler
         User agent handler
-    current_proxy_index : int
-        Current proxy index
-    current_useragent_index : int
-        Current user agent index
     REQUEST_MAX_RETRIES : int
         Maximum number of retries for each request
     REQUEST_TIMEOUT : int
@@ -63,8 +61,6 @@ class RequestHandler:
         self.useragents_handler = UserAgentHandler() if useragents_handler is None else useragents_handler
 
         # Initialize attributes
-        self.current_proxy_index = 0
-        self.current_useragent_index = 0
         self.REQUEST_MAX_RETRIES = max_retry
         self.REQUEST_TIMEOUT = request_timeout
         self.lock = Lock()
@@ -237,6 +233,13 @@ class RequestHandler:
             retry_count += 1
         return (url, None)
 
+    def force_change_proxy(self):
+        '''
+        Force change the proxy used by the request handler
+        '''
+        if self.proxy_handler is not None:
+            self.proxy_handler.force_change_proxy()
+
 class RequestError(Exception):
     """
     Exception raised when there is an error doing a request
@@ -261,7 +264,7 @@ class RequestError(Exception):
             base_message += f"Proxy used: {proxy_used}\n"
             base_message += f"User-Agent used: {useragent_used}\n"
         else:
-            base_message = "Request failed: response is None"
+            base_message = "Request failed: response is None\n"
 
         self.message = base_message + message
         super().__init__(self.message)

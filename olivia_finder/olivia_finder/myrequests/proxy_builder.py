@@ -41,13 +41,16 @@ class ProxyBuilder(ProxyBuilderABC):
 
     
     def __init__(
-        self, url: str, proxy_list_timeout: Optional[int] = 60
+        self, url: str = None, proxy_list_timeout: Optional[int] = None
     ):
+        
+        # Check if this clas is not instantiated directly
+        if self.__class__ == ProxyBuilder:
+            raise TypeError("ProxyBuilder can't be instantiated directly, use a subclass instead")
 
         # URL of the proxy list website to get the proxies
         if url is None:
-            raise ValueError("The ProxyBuilder class must be instantiated with a valid url from a proxylist-website like service")
-        
+            raise ValueError("url parameter can't be None")
         self.url = url
 
         # Timeout for the proxy list requests
@@ -133,8 +136,8 @@ class SSLProxies(ProxyBuilder):
     ]
     '''
     
-    def __init__(self):
-        super().__init__(url="https://www.sslproxies.org/")
+    def __init__(self, proxy_list_timeout: Optional[int] = 60):
+        super().__init__(url="https://www.sslproxies.org/", proxy_list_timeout=proxy_list_timeout)
     
     @override
     def _parse_request(self, response: requests.Response) -> List[str]:
@@ -205,9 +208,12 @@ class FreeProxyList(ProxyBuilder):
     ]
     '''
 
-    def __init__(self):
-        super().__init__(url='https://free-proxy-list.net/anonymous-proxy.html')
-
+    def __init__(self, proxy_list_timeout: Optional[int] = 60):
+        super().__init__(
+            url='https://free-proxy-list.net/anonymous-proxy.html', 
+            proxy_list_timeout=proxy_list_timeout
+        )
+        
     @override
     def _parse_request(self, response:requests.Response) -> List[str]:
         '''
@@ -277,8 +283,11 @@ class GeonodeProxy(ProxyBuilder):
     ]
     '''
 
-    def __init__(self):
-        super().__init__(url='https://proxylist.geonode.com/api/proxy-list?limit=500&page=1&sort_by=lastChecked&sort_type=desc')
+    def __init__(self, proxy_list_timeout: Optional[int] = 60):
+        super().__init__(
+            url='https://proxylist.geonode.com/api/proxy-list?limit=500&page=1&sort_by=lastChecked&sort_type=desc',
+            proxy_list_timeout=proxy_list_timeout
+        )
         
     @override
     def _parse_request(self, response:requests.Response) -> List[str]:

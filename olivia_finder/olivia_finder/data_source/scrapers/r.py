@@ -19,6 +19,7 @@ File information:
 
 import re
 from typing import Dict, List, Optional
+from typing_extensions import override
 from ..scraper import Scraper
 from ...myrequests.request_handler import RequestHandler
 

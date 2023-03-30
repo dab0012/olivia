@@ -60,10 +60,13 @@ class ProxyHandler():
 
     def get_next_proxy(self) -> Union[str, None]:
         '''
-        Get theb next proxy from the proxies list and rotate it to the end of the list
+        Get the next proxy from the proxies list and rotate it to the end of the list
 
-        :return: Next proxy as str f'http://{ip}:{port}' or None if there are no proxies available
-        :rtype: Union[str, None]
+        Returns
+        -------
+        str
+            The next proxy
+            
         '''
         MyLogger.log("Getting next proxy")
 
