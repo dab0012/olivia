@@ -7,7 +7,7 @@ from typing import List, Optional
 from tqdm import tqdm
 
 # Add the path to the olivia_finder package
-sys.path.append('/home/dnllns/Documentos/repositorios/olivia-finder/olivia_finder/')
+sys.path.append('/home/dnllns/Repositorios/olivia-finder/olivia_finder/')
 from olivia_finder.myrequests.request_handler import RequestHandler
 
 

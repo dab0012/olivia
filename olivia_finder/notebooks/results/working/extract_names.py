@@ -12,18 +12,20 @@ import os
 nombre_paquetes = []
 
 # Geth this file's parent folder
-working_folder = os.path.dirname(__file__)
+working_folder = os.path.dirname(os.path.abspath(__file__))
+print("wwwwwwwwwww", working_folder)
+
 
 # recorre cada archivo .json de este directorio y extrae los nombres de los paquetes
-data_path = os.listdir(f'{working_folder}/npm')
+data_path = os.listdir(f"{working_folder}/npm")
 continue_processing = True
 current_page = 0
 
 while continue_processing:
 
-    file_name = f'chunk_{current_page}.json'
+    file_name = f"chunk_{current_page}.json"
     if file_name in data_path:
-        curr_file = f'{working_folder}/npm/{file_name}'
+        curr_file = f"{working_folder}/npm/{file_name}"
         with open(curr_file, 'r', encoding='utf-8') as f:
             page = eval(f.read())
 
@@ -35,7 +37,7 @@ while continue_processing:
         continue_processing = False
 
 # guardar los nombres de los paquetes en un archivo de texto
-with open(f'{working_folder}/nombre_paquetes.txt', 'w', encoding='utf-8') as f:
+with open(f"{working_folder}/nombre_paquetes.txt", 'w', encoding='utf-8') as f:
     for nombre in nombre_paquetes:
         f.write(nombre + '\n')
 
