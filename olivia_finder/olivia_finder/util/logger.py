@@ -25,6 +25,10 @@ class MyLogger:
 
     @classmethod
     def get_instance(cls):
+        '''
+        Singleton pattern implementation to create a single instance of the class
+        '''
+        
         if not cls._instance:
             cls._instance = cls._create_instance()
         return cls._instance

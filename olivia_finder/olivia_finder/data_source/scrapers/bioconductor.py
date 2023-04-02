@@ -1,12 +1,19 @@
-""""""
 '''
-·········································································
-File: bioconductor.py
-Project: Olivia-Finder
-Created Date: Friday February 24th 2023
-Author: Daniel Alonso Báscones
-Copyright (c) 2023 Daniel Alonso Báscones
-·········································································
+bioconductor.py
+==================
+
+Description
+-----------
+
+Module that contains ...
+
+File information:
+    - File: bioconductor.py
+    - Project: scrapers
+    - Created Date: 2023-03-18 14:40:56
+    - Author: Daniel Alonso Báscones
+    - Copyright (c) 2023 Daniel Alonso Báscones
+
 '''
 
 import requests

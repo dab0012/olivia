@@ -1,6 +1,7 @@
 /* Tipo de letra */
 html {
-  font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+  font-family: monospace;
+  font-size: 1.6em;
 }
 
 /* Sobreescritura que arregla el  glitch
@@ -8,9 +9,13 @@ que el contenedor anterior tapaba en seleccionado al
 hacer click en un enlace de la documentacion */
 dt:target {
   margin-top: unset !important;
-  padding-top: unset !important;
+  /* padding-top: unset !important; */
 }
 
+
+.simple {
+  margin-top: 8px !important;
+}
 
 /* 
 Caberecera 
@@ -18,7 +23,7 @@ Caberecera
 */
 
 header.md-header {
-  background-color: #590886 !important;
+  background-color: #ff5200 !important;
   color: white !important;
 }
 
@@ -27,23 +32,23 @@ Menu nav
 -------------------------------------
 */
 nav.md-tabs {
-  background-color: #590886f0 !important;
+  background-color: #c30d0df0 !important;
   color: white !important;
   font-weight: bold !important;
 }
 
 @media only screen and (min-width: 76.25em){
   nav.md-tabs {
-    background-color: #590886f0 !important;
+    background-color: #c30d0df0 !important;
     color: white !important;
   }
 
   html[data-md-color-primary="blue"].md-nav--primary.md-nav__title--site {
-    background-color: #590886f0 !important;
+    background-color: #c30d0df0 !important;
   }
 
   html.md-nav--primary.md-nav__title--site {
-    background-color: #590886f0 !important;
+    background-color: #c30d0df0 !important;
   }
 }
 
@@ -53,7 +58,7 @@ Descripcion del modulo
 -------------------------------------
 */
 section#description {
-  background-color: #fff8932b; /* Amarillo claro */
+  background-color: #ffc9621f; /* Amarillo claro */
   border-radius: 9px;
   padding: 10px;
   padding-top: 0px;
@@ -72,16 +77,25 @@ Clases
 dl.py.class>dt {
   font-size: 1.2em;
   font-weight: bold;
-  background-color: #9ca2ff8a;
+  background-color: #ffd60073;
   padding: 10px;
   border-radius: 9px;
 }
 
+
 /* Parametros de las clases */
-dl.py.class>dt>em.sig-param {
+/* dl.py.class>dt>em.sig-param {
   font-weight: normal;
   font-size: 0.9em;
   color: #591010;
+} */
+
+dl.py.class>dt>em.sig-param {
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #215016;
+  display: block;
+  margin-left: 30px;
 }
 
 /* Etiqueta enlace [source] para visualizar el codigo fuente */
@@ -91,23 +105,28 @@ dl.py.class a {
 }
 
 /* Estilo del fieldlist */
-dl.py.class dl.field-list.simple {
+dl.py dl.field-list.simple {
   padding: 12px;
-  background: #93ffe154;
+  background: #ffc9621f;
   font-family: arial;
-  line-height: initial;
+  line-height: 20px;
   border-radius: 9px;
 }
 
-dl.py.class em.property {
+dl.py em.property {
   font-weight: bold;
-  font-size: 1.2em;
-  color: crimson;
+  font-size: 1em;
+  color: #083292;
+  background: #01f30038;
+  padding: 3px 3px 3px 6px;
+  margin-right: 6px;
+  border-radius: 5px;
+  border: 2px solid #3c589938;
 }
 
 dl.py.class em.sig-param > span.n:nth-child(1) {
   font-weight: bold;
-  color: crimson;
+  color: #083292;
 }
 
 /* 
@@ -122,7 +141,7 @@ dl.py.method {
 
 /* Envoltorio del nombre del metodo*/
 dl.py.method>dt {
-  background-color: #54fdc4;
+  background-color: #ffd60073;
   border-radius: 9px;
   padding: 10px;
   font-weight: bolder;
@@ -130,17 +149,71 @@ dl.py.method>dt {
 
 /* tipo de metodo */
 dl.py.method>dt>em.property {
-  color: crimson;
+  color: #083292;
   font-size: 17px;
   margin-right: 10px;
 }
 
+dl.py.method>dt>em.sig-param {
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #215016;
+  display: block;
+  margin-left: 30px;
+}
 
-/* dl.simple>dt>span.classifier {
-  color: blueviolet;
+
+/* 
+  Atributos 
+  -------------------------------------
+*/
+
+/* 
+  oculatamos los atributos 
+  Es mejor documentarlos en el docstring de la clase
+  */
+
+dl.py.attribute {
+  display: none !important;
+}
+
+
+.md-typeset dd {
+  margin: revert;
+}
+
+/* 
+  Excepciones 
+  -------------------------------------
+*/
+
+dl.py.exception {
+  margin-top: 30px;
+}
+
+dl.py.exception>dt {
+  background-color: #ffd600;
+  border-radius: 9px;
+  padding: 10px;
   font-weight: bolder;
+}
+
+/* dl.py.exception>dt>em.property {
+  color: #083292;
+  font-size: 17px;
+  margin-right: 10px;
 } */
 
-/* a.reference.internal > span > span {
-  font-size: 12px;
-} */
+dl.py.exception>dt>em.sig-param {
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #215016;
+  display: block;
+  margin-left: 30px;
+}
+
+dl.py.exception a {
+  color: mediumvioletred;
+  padding-left: 3px;
+}
+

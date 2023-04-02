@@ -1,15 +1,24 @@
-""""""
 '''
-·········································································
-File: npm.py
-Project: Olivia-Finder
-Created Date: Thursday March 2nd 2023
-Author: Daniel Alonso Báscones
-Copyright (c) 2023 Daniel Alonso Báscones
-·········································································
+npm.py
+==================
+
+Description
+-----------
+
+Module that contains ...
+
+File information:
+    - File: npm.py
+    - Project: scrapers
+    - Created Date: 2023-03-18 14:40:56
+    - Author: Daniel Alonso Báscones
+    - Copyright (c) 2023 Daniel Alonso Báscones
+
 '''
 
-import os, requests
+
+import os
+import requests
 from typing_extensions import override
 from typing import List, Optional
 from tqdm import tqdm
@@ -47,10 +56,30 @@ class NpmScraper(Scraper):
 
     # Constants
     NPM_PACKAGE_REGISTRY_URL: str   = 'https://skimdb.npmjs.com/registry'
+    '''
+        URL of the page that contains the number of packages in the NPM repository
+    '''
+
     NPM_PACKAGE_LIST_URL: str       = 'https://skimdb.npmjs.com/registry/_all_docs'
+    '''
+        URL of the page that contains the data of a package
+    '''
+
     NPM_REPO_URL: str               = 'https://www.npmjs.com/package'
+    '''
+        URL of the page that contains the data of a package
+    '''
+
     NAME: str                       = "NPM Scraper"
+    '''
+        Name of the data source
+    '''
+
     DESCRIPTION: str                = "Scraper class implementation for the NPM package manager."
+    '''
+        Description of the data source
+    '''
+
 
     def __init__(
         self, 
@@ -61,6 +90,13 @@ class NpmScraper(Scraper):
         '''
         Constructor of the class
         '''
+
+        self.chunks_folder = None
+        '''
+        Folder where the chunks will be saved, 
+        This is because the NPM registry is too big to be downloaded in one go
+        '''
+
         super().__init__(name, description, request_handler)
 
     @override
@@ -105,7 +141,8 @@ class NpmScraper(Scraper):
         progress_bar = tqdm(total=num_pages) if show_progress_bar else None
         
         # Initialize the chunks folder if is set
-        self.__init_chunks_folder() if save_chunks else None
+        if save_chunks:
+            self._init_chunks_folder()
 
         # Obtain the names of the packages requesting the pages
         pages = []
@@ -144,13 +181,14 @@ class NpmScraper(Scraper):
                     f.write(str(page))            
 
             # Update progress bar if is set
-            progress_bar.update(1) if show_progress_bar else None
+            if show_progress_bar:
+                progress_bar.update(1)
 
         return [row['id'] for page in pages for row in page]
 
     #region Private methods
 
-    def __init_chunks_folder(self):
+    def _init_chunks_folder(self):
         '''
         Function to initialize the chunks folder, where the chunks will be saved
         Loads the path from the configuration file

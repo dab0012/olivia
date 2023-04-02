@@ -18,10 +18,8 @@ File information:
 '''
 
 import re
-from typing import Dict, List, Optional
-from typing_extensions import override
+from typing import Dict, List
 from ..scraper import Scraper
-from ...myrequests.request_handler import RequestHandler
 
 class RScraper(Scraper):
     '''
@@ -37,16 +35,16 @@ class RScraper(Scraper):
         The request handler to perform the requests to the package manager website 
     '''
     
-    def __init__(
-        self, 
-        name: Optional[str] = None, 
-        description: Optional[str] = None, 
-        request_handler: Optional[RequestHandler] = None
-    ):
-        '''
-        Constructor of the class
-        '''
-        super().__init__(name, description, request_handler)
+    # def __init__(
+    #     self, 
+    #     name: Optional[str] = None, 
+    #     description: Optional[str] = None, 
+    #     request_handler: Optional[RequestHandler] = None
+    # ):
+    #     '''
+    #     Constructor of the class
+    #     '''
+    #     super().__init__(name, description, request_handler)
 
     def _parse_dependencies(self, dependencies_str: str) -> List[Dict[str, str]]:
         '''

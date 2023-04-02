@@ -1,7 +1,25 @@
+'''
+scraper.py
+==================
+
+Description
+-----------
+
+Module that contains ...
+
+File information:
+    - File: scraper.py
+    - Project: data_source
+    - Created Date: 2023-03-18 14:40:56
+    - Author: Daniel Alonso Báscones
+    - Copyright (c) 2023 Daniel Alonso Báscones
+
+'''
+
+from typing import Dict, List, Optional, Tuple
 import requests
 import tqdm
 from typing_extensions import override
-from typing import Dict, List, Optional, Tuple
 from .scraper_abc import ScraperABC
 from ..myrequests.request_handler import RequestHandler
 from ..util.logger import MyLogger
@@ -197,9 +215,9 @@ class Scraper(ScraperABC):
         str
             Url to request the package data
         '''
-        pass
-
-    @override
+        
+        raise NotImplementedError
+    
     def _build_urls(self, package_names: List[str]) -> List[str]:
         '''
         Build the urls for scraping the packages of the package_names list
@@ -232,7 +250,7 @@ class Scraper(ScraperABC):
         dict
             Package data as a dictionary
         '''
-        pass
+        raise NotImplementedError
     
     @override
     def get_info(self) -> dict:
@@ -279,5 +297,5 @@ class ScraperError(Exception):
         str
             String representation of the exception
         """
-        return (f'ScraperError: {self.message}')
+        return f'ScraperError: {self.message}'
     

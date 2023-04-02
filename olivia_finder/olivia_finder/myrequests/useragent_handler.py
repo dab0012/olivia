@@ -1,9 +1,9 @@
 import os
 from typing import List
-import logging, random, requests
+import random
+import requests
 from bs4 import BeautifulSoup
 from ..util.logger import MyLogger
-from ..util.config_ini import Configuration
 from ..util.util import Util
 
 class UserAgentHandler():
@@ -15,7 +15,7 @@ class UserAgentHandler():
     USERAGENTSTRING_URL : str
         URL to get user agents from the useragentstring.com API
     DATA_FILE : str
-        file containing the user agents
+        file containing the user agents in txt format
     useragents_list : List[str]
         List of user agents
 
@@ -46,7 +46,7 @@ class UserAgentHandler():
             MyLogger.log(f"Useragents loaded from file: {self.DATA_FILE}")
             return
 
-        if self._load_from_api():
+        if self._load_from_useragentstring():
             MyLogger.log(f"Useragents loaded from API: {self.USERAGENTSTRING_URL}")
             return
 
@@ -57,10 +57,12 @@ class UserAgentHandler():
     def _load_from_file(self, file_path:str) -> bool:
         '''
         Load user agents from a file
+
         Parameters
         ----------
         file_path : str
             Path to the file containing the user agents
+
         Returns
         -------
         bool
@@ -79,14 +81,16 @@ class UserAgentHandler():
             MyLogger.log(f"Useragents file not found: {file_path}")
             return False
     
-    def _load_from_api(self) -> bool:
+    def _load_from_useragentstring(self) -> bool:
         
         '''
         Get user agents from the useragentstring.com API and save them in the user agent list
+
         Parameters
         ----------
         max_count : int, optional
             Maximum number of user agents to be obtained, by default 30
+
         Returns
         -------
         bool
@@ -95,7 +99,7 @@ class UserAgentHandler():
 
         # Get user agents from the API
         try:
-            user_agents_request = requests.get(self.USERAGENTSTRING_URL).text
+            user_agents_request = requests.get(self.USERAGENTSTRING_URL, timeout=60).text
         except Exception as e:
             MyLogger.log(f"Error getting user agents from API: {self.USERAGENTSTRING_URL}")
             MyLogger.log(f"Error: {e}")

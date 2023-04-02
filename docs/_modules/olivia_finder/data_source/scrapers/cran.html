@@ -53,6 +53,7 @@
     <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
     <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/custom.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
   
@@ -226,23 +227,30 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <h1 id="modules-olivia-finder-data-source-scrapers-cran--page-root">Source code for olivia_finder.data_source.scrapers.cran</h1><div class="highlight"><pre>
-<span></span>
-<span class="sd">""""""</span>
-<span class="sd">'''</span>
-<span class="sd">·········································································</span>
-<span class="sd">File: cran.py</span>
-<span class="sd">Project: Olivia-Finder</span>
-<span class="sd">Created Date: Friday February 24th 2023</span>
-<span class="sd">Author: Daniel Alonso Báscones</span>
-<span class="sd">Copyright (c) 2023 Daniel Alonso Báscones</span>
-<span class="sd">·········································································</span>
+<span></span><span class="sd">'''</span>
+<span class="sd">cran.py</span>
+<span class="sd">==================</span>
+
+<span class="sd">Description</span>
+<span class="sd">-----------</span>
+
+<span class="sd">Module that contains ...</span>
+
+<span class="sd">File information:</span>
+<span class="sd">    - File: cran.py</span>
+<span class="sd">    - Project: scrapers</span>
+<span class="sd">    - Created Date: 2023-03-18 14:40:56</span>
+<span class="sd">    - Author: Daniel Alonso Báscones</span>
+<span class="sd">    - Copyright (c) 2023 Daniel Alonso Báscones</span>
+
 <span class="sd">'''</span>
 
-
-<span class="kn">import</span> <span class="nn">contextlib</span><span class="o">,</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">override</span>
 <span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">..data_source_abc</span> <span class="kn">import</span> <span class="n">DataSourceABC</span>
 <span class="kn">from</span> <span class="nn">..scraper</span> <span class="kn">import</span> <span class="n">ScraperError</span>
 <span class="kn">from</span> <span class="nn">...data_source.scrapers.r</span> <span class="kn">import</span> <span class="n">RScraper</span>
 <span class="kn">from</span> <span class="nn">...myrequests.request_handler</span> <span class="kn">import</span> <span class="n">RequestHandler</span>
@@ -251,23 +259,24 @@
 
 <div class="viewcode-block" id="CranScraper"><a class="viewcode-back" href="../../../../olivia_finder/data_source/scrapers/cran.html#olivia_finder.data_source.scrapers.cran.CranScraper">[docs]</a><span class="k">class</span> <span class="nc">CranScraper</span><span class="p">(</span><span class="n">RScraper</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">'''</span>
-<span class="sd">    Class that scrapes the CRAN website to obtain information about R packages</span>
-<span class="sd">    </span>
+<span class="sd">    Class that scrapes the CRAN website to obtain information about R packages.</span>
+<span class="sd">    Implements the abstract class Scraper and accordingly DataSource class</span>
+
+<span class="sd">    As the CRAN repository can contain packages who depend on Bioconductor packages, this class also can</span>
+<span class="sd">    obtain the list of Bioconductor packages from the Bioconductor website and merge it with the CRAN packages.</span>
+<span class="sd">    This functionality is implemented in the method obtain_package_data() and it is optional.</span>
+
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    CRAN_PACKAGE_LIST_URL : str</span>
-<span class="sd">        URL of the page that contains the list of packages</span>
+<span class="sd">        URL of the CRAN website where the list of packages is located</span>
 <span class="sd">    CRAN_PACKAGE_DATA_URL : str</span>
-<span class="sd">        URL of the page that contains the data of a package</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    name : Optional[str]</span>
-<span class="sd">        Name of the data source</span>
-<span class="sd">    description : Optional[str]</span>
-<span class="sd">        Description of the data source</span>
-<span class="sd">    request_handler : Optional[RequestHandler]</span>
-<span class="sd">        Request handler for the scraper, if None, it will be initialized with a generic RequestHandler    </span>
+<span class="sd">        URL of the CRAN website where the data of a package is located</span>
+<span class="sd">    NAME : str</span>
+<span class="sd">        Name of the scraper</span>
+<span class="sd">    DESCRIPTION : str</span>
+<span class="sd">        Description of the scraper</span>
+
 <span class="sd">    '''</span>
 
     <span class="c1"># Class variables</span>
@@ -280,12 +289,23 @@
         <span class="bp">self</span><span class="p">,</span> 
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">NAME</span><span class="p">,</span> 
         <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">DESCRIPTION</span><span class="p">,</span> 
-        <span class="n">request_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RequestHandler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">request_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RequestHandler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">bioconductor_ds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataSourceABC</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">'''</span>
 <span class="sd">        Constructor of the class</span>
 <span class="sd">        '''</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">request_handler</span><span class="p">)</span>
+
+        <span class="c1"># check if the bioconductor_ds is a valid data source instance</span>
+        <span class="k">if</span> <span class="n">bioconductor_ds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">bioconductor_ds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">bioconductor_ds</span><span class="p">,</span> <span class="n">DataSourceABC</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ScraperError</span><span class="p">(</span>
+                <span class="s1">'The bioconductor_ds parameter must be a valid data source instance'</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bioconductor_ds</span> <span class="o">=</span> <span class="n">bioconductor_ds</span>
 
 <div class="viewcode-block" id="CranScraper.obtain_package_names"><a class="viewcode-back" href="../../../../olivia_finder/data_source/scrapers/cran.html#olivia_finder.data_source.scrapers.cran.CranScraper.obtain_package_names">[docs]</a>    <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">obtain_package_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -325,14 +345,14 @@
                 <span class="c1"># We extract the name of the package</span>
                 <span class="c1"># The name is in the first cell of the row</span>
                 <span class="n">package_name</span> <span class="o">=</span> <span class="n">cells</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>   
-
-                <span class="c1"># We add the package name to the list of packages</span>
-                <span class="n">packages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">package_name</span><span class="p">)</span>
-                <span class="n">MyLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Package </span><span class="si">{</span><span class="n">package_name</span><span class="si">}</span><span class="s1"> added to the list of packages'</span><span class="p">)</span>
-
             <span class="c1"># If an error occurs, we show the error message</span>
-            <span class="k">except</span> <span class="n">ScraperError</span><span class="p">(</span><span class="s2">"Error while obtaining the name of a package"</span><span class="p">):</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">MyLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Error while obtaining the name of a package: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
                 <span class="k">continue</span>
+
+            <span class="c1"># We add the package name to the list of packages</span>
+            <span class="n">packages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">package_name</span><span class="p">)</span>
+            <span class="n">MyLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Package </span><span class="si">{</span><span class="n">package_name</span><span class="si">}</span><span class="s1"> added to the list of packages'</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">packages</span></div>
 
@@ -382,35 +402,100 @@
 
         <span class="c1"># Get package version</span>
         <span class="n">version</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="n">ScraperError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error while obtaining the version of the package </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'td'</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">'Version:'</span><span class="p">)</span><span class="o">.</span><span class="n">find_next_sibling</span><span class="p">(</span><span class="s1">'td'</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
             <span class="n">version</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">clean_string</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">MyLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Version not found for package </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
         <span class="c1"># Get depends</span>
         <span class="n">dep_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="n">ScraperError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error while obtaining the dependencies of the package </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'td'</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">'Depends:'</span><span class="p">)</span><span class="o">.</span><span class="n">find_next_sibling</span><span class="p">(</span><span class="s1">'td'</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
             <span class="n">depends</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">clean_string</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
             <span class="n">dep_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_dependencies</span><span class="p">(</span><span class="n">depends</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">MyLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Dependencies not found for package </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
         <span class="c1"># Get imports</span>
         <span class="n">imp_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="n">ScraperError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error while obtaining the imports of the package </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'td'</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">'Imports:'</span><span class="p">)</span><span class="o">.</span><span class="n">find_next_sibling</span><span class="p">(</span><span class="s1">'td'</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
             <span class="n">imports</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">clean_string</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
             <span class="n">imp_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_dependencies</span><span class="p">(</span><span class="n">imports</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">MyLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Imports not found for package </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
             
         <span class="c1"># Build dictionary with package data</span>
         <span class="c1"># we consider that dependencies and imports are the same level of importance</span>
         <span class="c1"># so we add them to the same list</span>
-        <span class="n">dependencies</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">dep_list</span> <span class="o">+</span> <span class="n">imp_list</span><span class="p">))</span>
+        <span class="n">dependencies</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dep_list</span> <span class="o">+</span> <span class="n">imp_list</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">'name'</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
             <span class="s1">'version'</span><span class="p">:</span> <span class="n">version</span><span class="p">,</span>
             <span class="s1">'dependencies'</span><span class="p">:</span> <span class="n">dependencies</span><span class="p">,</span>
             <span class="s1">'url'</span><span class="p">:</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">CRAN_PACKAGE_DATA_URL</span><span class="si">}{</span><span class="n">name</span><span class="si">}</span><span class="s1">'</span>
-        <span class="p">}</span></div>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="CranScraper.obtain_package_data"><a class="viewcode-back" href="../../../../olivia_finder/data_source/scrapers/cran.html#olivia_finder.data_source.scrapers.cran.CranScraper.obtain_package_data">[docs]</a>    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">obtain_package_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">'''</span>
+<span class="sd">        Get the data of a package in the CRAN website, the use_bioconductor parameter can be used </span>
+<span class="sd">        to check if the package is a Bioconductor package if it is not found in the CRAN website,</span>
+<span class="sd">        if the package is a Bioconductor package, it will be obtained from the Bioconductor </span>
+<span class="sd">        datasource class attribute.</span>
+<span class="sd">        If the use_bioconductor flag is enabled and a Bioconductor datasource is not provided,</span>
+<span class="sd">        an exception will be raised.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        package_name : str</span>
+<span class="sd">            Name of the package</span>
+<span class="sd">        use_bioconductor : bool</span>
+<span class="sd">            If True, it will check if the package is a Bioconductor package</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ScraperError</span>
+<span class="sd">            If the package does not exist in in the provided datasources</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Dict[str, str]</span>
+<span class="sd">            Dictionary with the data of the package</span>
+
+<span class="sd">        '''</span>
+        <span class="c1"># We build the URL of the package page</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_url</span><span class="p">(</span><span class="n">package_name</span><span class="p">)</span>
+
+        <span class="c1"># We make the HTTP request to the package page</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_handler</span><span class="o">.</span><span class="n">do_request</span><span class="p">(</span><span class="n">url</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Check if the package exists</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
+            <span class="n">MyLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Package </span><span class="si">{</span><span class="n">package_name</span><span class="si">}</span><span class="s1"> not found in the CRAN website'</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bioconductor_ds</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ScraperError</span><span class="p">(</span><span class="s2">"Bioconductor datasource not found, please provide a valid datasource usin the class constructor "</span><span class="p">)</span>
+
+            <span class="n">MyLogger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Checking if </span><span class="si">{</span><span class="n">package_name</span><span class="si">}</span><span class="s1"> is a Bioconductor package'</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bioconductor_ds</span><span class="o">.</span><span class="n">obtain_package_data</span><span class="p">(</span><span class="n">package_name</span><span class="p">)</span>
+
+        <span class="c1"># We parse the HTML of the package page and return the data</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>
+
+
+        <span class="c1"># # if there is no bioconductor datasource, we use the default method</span>
+        <span class="c1"># if not self.bioconductor_ds:</span>
+        <span class="c1">#     super().obtain_package_data(package_name)</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     try:</span>
+        <span class="c1">#         super().obtain_package_data(package_name)</span>
+        <span class="c1">#     except ScraperError(f"Package {package_name} not found in the CRAN website"):</span>
+        <span class="c1">#         MyLogger.log(f'Checking if {package_name} is a Bioconductor package')</span>
+        <span class="c1">#         return self.bioconductor_ds.obtain_package_data(package_name)</span>
+
 </pre></div>
 
           </article>

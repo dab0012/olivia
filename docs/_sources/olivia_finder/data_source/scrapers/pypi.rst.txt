@@ -1,7 +1,12 @@
-Pypi
-============
+Module olivia_finder.data_source.scrapers.pypi
+==============================================
 
 .. automodule:: olivia_finder.data_source.scrapers.pypi
+
+
+Class PypiScraper
+-----------------
+
+.. autoclass:: PypiScraper
    :members:
-   :undoc-members:
    :show-inheritance:

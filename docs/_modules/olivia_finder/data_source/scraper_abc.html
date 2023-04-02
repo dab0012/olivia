@@ -53,6 +53,7 @@
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/custom.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
   
@@ -226,8 +227,28 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <h1 id="modules-olivia-finder-data-source-scraper-abc--page-root">Source code for olivia_finder.data_source.scraper_abc</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span></span><span class="sd">'''</span>
+<span class="sd">scraper_abc.py</span>
+<span class="sd">==================</span>
+
+<span class="sd">Description</span>
+<span class="sd">-----------</span>
+
+<span class="sd">Module that contains ...</span>
+
+<span class="sd">File information:</span>
+<span class="sd">    - File: scraper_abc.py</span>
+<span class="sd">    - Project: data_source</span>
+<span class="sd">    - Created Date: 2023-03-18 14:40:56</span>
+<span class="sd">    - Author: Daniel Alonso Báscones</span>
+<span class="sd">    - Copyright (c) 2023 Daniel Alonso Báscones</span>
+
+<span class="sd">'''</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">.data_source</span> <span class="kn">import</span> <span class="n">DataSource</span>
 
 <div class="viewcode-block" id="ScraperABC"><a class="viewcode-back" href="../../../olivia_finder/data_source/scraper_abc.html#olivia_finder.data_source.scraper_abc.ScraperABC">[docs]</a><span class="k">class</span> <span class="nc">ScraperABC</span><span class="p">(</span><span class="n">DataSource</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
@@ -236,41 +257,53 @@
 <span class="sd">    """</span>
     
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_build_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_build_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">'''</span>
 <span class="sd">        Build the url for scraping the package</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        package_name : str</span>
+<span class="sd">            Name of the package to scrape</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
 <span class="sd">            Url for scraping the package</span>
 <span class="sd">        '''</span>
-        <span class="k">pass</span>
     
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_build_urls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_build_urls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">'''</span>
 <span class="sd">        Build the urls for scraping the packages</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        package_names : List[str]</span>
+<span class="sd">            List of package names to scrape</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        List[str]</span>
 <span class="sd">            List of urls for scraping the packages</span>
 <span class="sd">        '''</span>
-        <span class="k">pass</span>
     
     <span class="nd">@abstractmethod</span> 
-    <span class="k">def</span> <span class="nf">_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">'''</span>
 <span class="sd">        Parse the response from the request, it should return a dictionary with the package data</span>
 <span class="sd">        as string values.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        response : requests.Response</span>
+<span class="sd">            Response of the request to the package data URL</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        Dict[str, str]</span>
 <span class="sd">            Dictionary with the data of the package as key-value pairs</span>
-<span class="sd">        '''</span>
-        <span class="k">pass</span></div>
+<span class="sd">        '''</span></div>
 </pre></div>
 
           </article>

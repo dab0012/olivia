@@ -1,3 +1,21 @@
+'''
+csv_network.py
+==================
+
+Description
+-----------
+
+Module that contains ...
+
+File information:
+    - File: csv_network.py
+    - Project: data_source
+    - Created Date: 2023-03-18 14:40:56
+    - Author: Daniel Alonso Báscones
+    - Copyright (c) 2023 Daniel Alonso Báscones
+
+'''
+
 from __future__ import annotations
 import os
 from typing import Dict, List, Optional
@@ -90,7 +108,7 @@ class CSVNetwork(DataSource):
         if self.file_path is not None:
             self._load_data()
         else:
-            MyLogger().warning("File path is None. Data not loaded.")
+            MyLogger().log("File path is None. Data not loaded.")
             raise ValueError("File path cannot be None.")
 
     def _load_data(self):
@@ -158,7 +176,7 @@ class CSVNetwork(DataSource):
         """
         Loads the packages from the data
         """
-        for index, row in self.data.iterrows():
+        for _, row in self.data.iterrows():
             # Get the package name and version
             package_name = row[self.dependent_field]
             package_version = row[self.dependent_version_field] if self.dependent_version_field is not None else None

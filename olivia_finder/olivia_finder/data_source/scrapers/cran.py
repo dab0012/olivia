@@ -1,3 +1,21 @@
+'''
+cran.py
+==================
+
+Description
+-----------
+
+Module that contains ...
+
+File information:
+    - File: cran.py
+    - Project: scrapers
+    - Created Date: 2023-03-18 14:40:56
+    - Author: Daniel Alonso Báscones
+    - Copyright (c) 2023 Daniel Alonso Báscones
+
+'''
+
 import requests
 from typing_extensions import override
 from bs4 import BeautifulSoup
@@ -12,29 +30,24 @@ from ...util.util import Util
 
 class CranScraper(RScraper):
     '''
-    Class that scrapes the CRAN website to obtain information about R packages
-    
+    Class that scrapes the CRAN website to obtain information about R packages.
+    Implements the abstract class Scraper and accordingly DataSource class
+
+    As the CRAN repository can contain packages who depend on Bioconductor packages, this class also can
+    obtain the list of Bioconductor packages from the Bioconductor website and merge it with the CRAN packages.
+    This functionality is implemented in the method obtain_package_data() and it is optional.
+
     Attributes
     ----------
     CRAN_PACKAGE_LIST_URL : str
-        URL of the page that contains the list of packages
+        URL of the CRAN website where the list of packages is located
     CRAN_PACKAGE_DATA_URL : str
-        URL of the page that contains the data of a package
+        URL of the CRAN website where the data of a package is located
     NAME : str
-        Name of the data source
+        Name of the scraper
     DESCRIPTION : str
-        Description of the data source
-    bioconductor_ds : Data Source
-        Data source for Bioconductor packages
+        Description of the scraper
 
-    Parameters
-    ----------
-    name : Optional[str]
-        Name of the data source
-    description : Optional[str]
-        Description of the data source
-    request_handler : Optional[RequestHandler]
-        Request handler for the scraper, if None, it will be initialized with a generic RequestHandler    
     '''
 
     # Class variables

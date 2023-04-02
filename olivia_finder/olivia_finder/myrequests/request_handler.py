@@ -1,4 +1,21 @@
-''''''
+'''
+request_handler.py
+==================
+
+Description
+-----------
+
+Module that contains ...
+
+File information:
+    - File: request_handler.py
+    - Project: myrequests
+    - Created Date: 2023-03-18 14:40:56
+    - Author: Daniel Alonso Báscones
+    - Copyright (c) 2023 Daniel Alonso Báscones
+
+'''
+
 from typing import List, Optional, Tuple, Union
 from threading import Lock
 from concurrent.futures import ThreadPoolExecutor, as_completed

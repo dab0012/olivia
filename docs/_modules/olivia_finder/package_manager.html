@@ -53,6 +53,7 @@
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/custom.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   
@@ -239,7 +240,6 @@
 <span class="sd">    - Created Date: 2023-03-18 14:40:56</span>
 <span class="sd">    - Author: Daniel Alonso Báscones</span>
 <span class="sd">    - Copyright (c) 2023 Daniel Alonso Báscones</span>
-
 <span class="sd">'''</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
@@ -324,11 +324,11 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Use pickle to load the package manager</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="bp">cls</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">PackageManagerLoadError</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="k">return</span> <span class="bp">cls</span></div>
+        <span class="k">return</span> <span class="n">obj</span></div>
 
 <div class="viewcode-block" id="PackageManager.obtain_package"><a class="viewcode-back" href="../../olivia_finder/package_manager.html#olivia_finder.package_manager.PackageManager.obtain_package">[docs]</a>    <span class="k">def</span> <span class="nf">obtain_package</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Package</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">'''</span>
@@ -497,11 +497,16 @@
             <span class="k">raise</span> <span class="n">PackageManagerLoadError</span><span class="p">(</span><span class="s2">"Invalid csv format"</span><span class="p">)</span>
 
         <span class="c1"># We create the data source</span>
-        <span class="n">data_source</span> <span class="o">=</span> <span class="n">CSVNetwork</span><span class="o">.</span><span class="n">_load_data</span><span class="p">(</span>
-            <span class="n">csv_path</span><span class="p">,</span> <span class="n">dependent_field</span><span class="p">,</span> <span class="n">dependency_field</span><span class="p">,</span> <span class="n">version_field</span><span class="p">,</span> <span class="n">dependency_version_field</span><span class="p">,</span> <span class="n">url_field</span>
+        <span class="n">data_source</span> <span class="o">=</span> <span class="n">CSVNetwork</span><span class="p">(</span>
+            <span class="n">file_path</span><span class="o">=</span><span class="n">csv_path</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">"Package Manager CSV"</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">"Package Manager obtained from a csv file"</span><span class="p">,</span>
+            <span class="n">dependent_field</span><span class="o">=</span><span class="n">dependent_field</span><span class="p">,</span>
+            <span class="n">dependency_field</span><span class="o">=</span><span class="n">dependency_field</span><span class="p">,</span>
+            <span class="n">dependent_version_field</span><span class="o">=</span><span class="n">version_field</span><span class="p">,</span>
+            <span class="n">dependency_version_field</span><span class="o">=</span><span class="n">dependency_version_field</span><span class="p">,</span>
+            <span class="n">dependent_url_field</span><span class="o">=</span><span class="n">url_field</span>
         <span class="p">)</span>
-        <span class="n">data_source</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"CSV File"</span>
-        <span class="n">data_source</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">csv_path</span>
 
         <span class="c1"># We create the package manager</span>
         <span class="k">return</span> <span class="n">PackageManager</span><span class="p">(</span><span class="n">data_source</span><span class="p">)</span></div>

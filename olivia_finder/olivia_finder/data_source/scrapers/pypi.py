@@ -1,14 +1,20 @@
-""""""
 '''
-·········································································
-File: pypi.py
-Project: Olivia-Finder
-Created Date: Sunday February 26th 2023
-Author: Daniel Alonso Báscones
-Copyright (c) 2023 Daniel Alonso Báscones
-·········································································
-'''
+pypi.py
+==================
 
+Description
+-----------
+
+Module that contains ...
+
+File information:
+    - File: pypi.py
+    - Project: scrapers
+    - Created Date: 2023-03-18 14:40:56
+    - Author: Daniel Alonso Báscones
+    - Copyright (c) 2023 Daniel Alonso Báscones
+
+'''
 
 import re
 import requests
@@ -45,8 +51,6 @@ class PypiScraper(Scraper):
         '''
         Constructor
         '''
-
-
 
         super().__init__(self.NAME, self.DESCRIPTION, request_handler)
 
@@ -85,7 +89,7 @@ class PypiScraper(Scraper):
         return pakage_list
     
     @override
-    def _build_url(self, pkg_name: str) -> str:
+    def _build_url(self, package_name: str) -> str:
         '''
         Build the URL to scrape a package
         Implements the abstract method of Scraper class
@@ -99,7 +103,7 @@ class PypiScraper(Scraper):
         str
             URL to scrape
         '''
-        return f'{self.PYPI_PACKAGE_DATA_URL}{pkg_name}/json'
+        return f'{self.PYPI_PACKAGE_DATA_URL}{package_name}/json'
 
     @override
     def _parser(self, response: requests.Response) -> Dict:
@@ -126,7 +130,6 @@ class PypiScraper(Scraper):
         data = response.json()
 
         # Get the dependencies if they exist, build the list of dependencies as Package objects
-        # TODO: The parser should return a list of strings with the dependencies names, not Package objects
 
         dependencies = []
         if data['info']['requires_dist'] is not None:

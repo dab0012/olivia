@@ -47,16 +47,17 @@
   
   
   
-    <title>Package &#8212; Olivia Finder  documentation</title>
+    <title>Module olivia_finder.package &#8212; Olivia Finder  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/custom.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Package Manager" href="package_manager.html" />
+    <link rel="next" title="Module olivia_finder.package_manager" href="package_manager.html" />
     <link rel="prev" title="Olivia Finder’s documentation!" href="../index.html" />
   
    
@@ -94,7 +95,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">Olivia Finder</span>
-          <span class="md-header-nav__topic"> Package </span>
+          <span class="md-header-nav__topic"> Module olivia_finder.package </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -215,7 +216,15 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#olivia-finder-package--page-root" class="md-nav__link">Package</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#olivia-finder-package--page-root" class="md-nav__link">Module olivia_finder.package</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#package-py" class="md-nav__link">package.py</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#description" class="md-nav__link">Description</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#class-package" class="md-nav__link">Class Package</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#olivia_finder.package.Package" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Package</span></code></a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -226,6 +235,8 @@
         <li class="md-nav__item"><a href="#olivia_finder.package.Package.to_dict" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Package.to_dict()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#olivia_finder.package.Package.update" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Package.update()</span></code></a>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li></ul>
@@ -246,7 +257,27 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="module-olivia_finder.package">
-<span id="package"></span><h1 id="olivia-finder-package--page-root">Package<a class="headerlink" href="#olivia-finder-package--page-root" title="Permalink to this heading">¶</a></h1>
+<span id="module-olivia-finder-package"></span><h1 id="olivia-finder-package--page-root">Module olivia_finder.package<a class="headerlink" href="#olivia-finder-package--page-root" title="Permalink to this heading">¶</a></h1>
+<section id="package-py">
+<h2 id="package-py">package.py<a class="headerlink" href="#package-py" title="Permalink to this heading">¶</a></h2>
+<section id="description">
+<h3 id="description">Description<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h3>
+<p>Module that contains the class that represents a package in the network</p>
+<dl class="simple">
+<dt>File information:</dt><dd><ul class="simple">
+<li><p>File: package.py</p></li>
+<li><p>Project: olivia_finder</p></li>
+<li><p>Created Date: 2023-03-18 14:40:56</p></li>
+<li><p>Author: Daniel Alonso Báscones</p></li>
+<li><p>Copyright (c) 2023 Daniel Alonso Báscones</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="class-package">
+<h2 id="class-package">Class Package<a class="headerlink" href="#class-package" title="Permalink to this heading">¶</a></h2>
+<p>Class for representing a package.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="olivia_finder.package.Package">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.package.</span></span><span class="sig-name descname"><span class="pre">Package</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#olivia_finder.package.Package" title="olivia_finder.package.Package"><span class="pre">olivia_finder.package.Package</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/olivia_finder/package.html#Package"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.package.Package" title="Permalink to this definition">¶</a></dt>
@@ -390,6 +421,7 @@ Only the attributes version, url and dependencies are supported.</p>
 </dd></dl>
 </dd></dl>
 </section>
+</section>
 
 
           </article>
@@ -415,12 +447,12 @@ Only the attributes version, url and dependencies are supported.</p>
             </a>
           
           
-            <a href="package_manager.html" title="Package Manager"
+            <a href="package_manager.html" title="Module olivia_finder.package_manager"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Package Manager </span>
+                class="md-footer-nav__direction"> Next </span> Module olivia_finder.package_manager </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

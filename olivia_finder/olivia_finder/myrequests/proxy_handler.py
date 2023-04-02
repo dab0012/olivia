@@ -1,3 +1,22 @@
+'''
+proxy_handler.py
+==================
+
+Description
+-----------
+
+Module that contains ...
+
+File information:
+    - File: proxy_handler.py
+    - Project: myrequests
+    - Created Date: 2023-03-18 14:40:56
+    - Author: Daniel Alonso Báscones
+    - Copyright (c) 2023 Daniel Alonso Báscones
+
+'''
+
+
 from typing import List, Optional, Union 
 from .proxy_builder import ProxyBuilder, ProxyBuilderABC
 from ..util.logger import MyLogger

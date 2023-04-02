@@ -90,6 +90,7 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 html_css_files = ['custom.css']
+html_js_files = ['custom.js']
 
 # autodoc_member_order = 'bysource'
 # autodoc_mock_imports = ['numpy', 'pandas', 'requests', 'beautifulsoup4']

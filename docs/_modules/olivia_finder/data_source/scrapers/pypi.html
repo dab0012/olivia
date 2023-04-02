@@ -53,6 +53,7 @@
     <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
     <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/custom.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
   
@@ -226,18 +227,25 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <h1 id="modules-olivia-finder-data-source-scrapers-pypi--page-root">Source code for olivia_finder.data_source.scrapers.pypi</h1><div class="highlight"><pre>
-<span></span><span class="sd">""""""</span>
-<span class="sd">'''</span>
-<span class="sd">·········································································</span>
-<span class="sd">File: pypi.py</span>
-<span class="sd">Project: Olivia-Finder</span>
-<span class="sd">Created Date: Sunday February 26th 2023</span>
-<span class="sd">Author: Daniel Alonso Báscones</span>
-<span class="sd">Copyright (c) 2023 Daniel Alonso Báscones</span>
-<span class="sd">·········································································</span>
+<span></span><span class="sd">'''</span>
+<span class="sd">pypi.py</span>
+<span class="sd">==================</span>
+
+<span class="sd">Description</span>
+<span class="sd">-----------</span>
+
+<span class="sd">Module that contains ...</span>
+
+<span class="sd">File information:</span>
+<span class="sd">    - File: pypi.py</span>
+<span class="sd">    - Project: scrapers</span>
+<span class="sd">    - Created Date: 2023-03-18 14:40:56</span>
+<span class="sd">    - Author: Daniel Alonso Báscones</span>
+<span class="sd">    - Copyright (c) 2023 Daniel Alonso Báscones</span>
+
 <span class="sd">'''</span>
 
-
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">override</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
@@ -310,7 +318,7 @@
         <span class="k">return</span> <span class="n">pakage_list</span></div>
     
     <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">_build_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pkg_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_build_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">'''</span>
 <span class="sd">        Build the URL to scrape a package</span>
 <span class="sd">        Implements the abstract method of Scraper class</span>
@@ -324,7 +332,7 @@
 <span class="sd">        str</span>
 <span class="sd">            URL to scrape</span>
 <span class="sd">        '''</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_DATA_URL</span><span class="si">}{</span><span class="n">pkg_name</span><span class="si">}</span><span class="s1">/json'</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_DATA_URL</span><span class="si">}{</span><span class="n">package_name</span><span class="si">}</span><span class="s1">/json'</span>
 
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
@@ -351,7 +359,6 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
         <span class="c1"># Get the dependencies if they exist, build the list of dependencies as Package objects</span>
-        <span class="c1"># TODO: The parser should return a list of strings with the dependencies names, not Package objects</span>
 
         <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'requires_dist'</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -362,9 +369,20 @@
             
             <span class="k">for</span> <span class="n">dependency</span> <span class="ow">in</span> <span class="n">dependencies_raw</span><span class="p">:</span>
                 
-                <span class="c1"># Split the dependency in name and version</span>
-                <span class="n">dependency_data</span> <span class="o">=</span> <span class="n">dependency</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
-                <span class="n">dependencies_dict</span><span class="p">[</span><span class="n">dependency_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">dependency_data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="c1"># # Split the dependency in name and version</span>
+                <span class="c1"># dependency_data = dependency.split(' ')</span>
+
+                <span class="c1"># # check if the dependency has a version</span>
+                <span class="c1"># if len(dependency_data) == 1:</span>
+                <span class="c1">#     dependencies_dict[dependency_data[0]] = ""</span>
+                <span class="c1"># else:</span>
+                <span class="c1">#     # Add the dependency to the dictionary</span>
+                <span class="c1">#     # dependency_name: dependency_version</span>
+                <span class="c1">#     dependencies_dict[dependency_data[0]] = dependency_data[1]</span>
+
+                <span class="c1"># Get the name of the dependency</span>
+                <span class="n">dependency_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clean_name</span><span class="p">(</span><span class="n">dependency</span><span class="p">)</span>
+                <span class="n">dependencies_dict</span><span class="p">[</span><span class="n">dependency_name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                 
             <span class="c1"># Build the list of dependencies as dictionaries</span>
             <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">'name'</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">'version'</span><span class="p">:</span> <span class="n">version</span><span class="p">}</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">version</span> <span class="ow">in</span> <span class="n">dependencies_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
@@ -376,7 +394,33 @@
             <span class="s1">'version'</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'version'</span><span class="p">],</span>
             <span class="s1">'url'</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'project_url'</span><span class="p">],</span>
             <span class="s1">'dependencies'</span><span class="p">:</span> <span class="n">dependencies</span><span class="p">,</span>
-        <span class="p">}</span>    </div>
+        <span class="p">}</span>    
+
+    <span class="k">def</span> <span class="nf">_clean_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">'''</span>
+<span class="sd">        Clean the package name from versions and other characters</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Name of the package</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Cleaned name of the package</span>
+<span class="sd">            </span>
+<span class="sd">        '''</span>
+        
+        <span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">'[^\w\d]+'</span><span class="p">)</span>
+
+        <span class="c1"># Reemplazar cualquier coincidencia de la expresión regular en la cadena de dependencia con un espacio en blanco</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">' '</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># Obtenga el primer elemento de la lista resultante después de dividir la cadena por espacios en blanco</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">name</span></div>
 </pre></div>
 
           </article>
