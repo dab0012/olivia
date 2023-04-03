@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -52,9 +52,8 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/material.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/jquery.js"></script>
-    <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/custom.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -227,7 +226,25 @@
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#class-cranscraper" class="md-nav__link">Class CranScraper</a>
+        <li class="md-nav__item"><a href="#class-cranscraper" class="md-nav__link">Class CranScraper</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.scrapers.cran.CranScraper" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">CranScraper</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.scrapers.cran.CranScraper.CRAN_PACKAGE_DATA_URL" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">CranScraper.CRAN_PACKAGE_DATA_URL</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.scrapers.cran.CranScraper.CRAN_PACKAGE_LIST_URL" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">CranScraper.CRAN_PACKAGE_LIST_URL</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.scrapers.cran.CranScraper.DESCRIPTION" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">CranScraper.DESCRIPTION</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.scrapers.cran.CranScraper.NAME" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">CranScraper.NAME</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.scrapers.cran.CranScraper.obtain_package_data" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">CranScraper.obtain_package_data()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.scrapers.cran.CranScraper.obtain_package_names" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">CranScraper.obtain_package_names()</span></code></a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li>
@@ -246,11 +263,11 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="module-olivia_finder.data_source.scrapers.cran">
-<span id="module-olivia-finder-data-source-scrapers-cran"></span><h1 id="olivia-finder-data-source-scrapers-cran--page-root">Module olivia_finder.data_source.scrapers.cran<a class="headerlink" href="#olivia-finder-data-source-scrapers-cran--page-root" title="Permalink to this headline">¶</a></h1>
+<span id="module-olivia-finder-data-source-scrapers-cran"></span><h1 id="olivia-finder-data-source-scrapers-cran--page-root">Module olivia_finder.data_source.scrapers.cran<a class="headerlink" href="#olivia-finder-data-source-scrapers-cran--page-root" title="Permalink to this heading">¶</a></h1>
 <section id="cran-py">
-<h2 id="cran-py">cran.py<a class="headerlink" href="#cran-py" title="Permalink to this headline">¶</a></h2>
+<h2 id="cran-py">cran.py<a class="headerlink" href="#cran-py" title="Permalink to this heading">¶</a></h2>
 <section id="description">
-<h3 id="description">Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h3>
+<h3 id="description">Description<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h3>
 <p>Module that contains …</p>
 <dl class="simple">
 <dt>File information:</dt><dd><ul class="simple">
@@ -265,19 +282,19 @@
 </section>
 </section>
 <section id="class-cranscraper">
-<h2 id="class-cranscraper">Class CranScraper<a class="headerlink" href="#class-cranscraper" title="Permalink to this headline">¶</a></h2>
+<h2 id="class-cranscraper">Class CranScraper<a class="headerlink" href="#class-cranscraper" title="Permalink to this heading">¶</a></h2>
 <p>Class for scraping the CRAN website.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="olivia_finder.data_source.scrapers.cran.CranScraper">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.data_source.scrapers.cran.</span></span><span class="sig-name descname"><span class="pre">CranScraper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'CRAN</span> <span class="pre">Scraper'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Scraper</span> <span class="pre">class</span> <span class="pre">implementation</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">CRAN</span> <span class="pre">package</span> <span class="pre">manager.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">olivia_finder.myrequests.request_handler.RequestHandler</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bioconductor_ds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../data_source_abc.html#olivia_finder.data_source.data_source_abc.DataSourceABC" title="olivia_finder.data_source.data_source_abc.DataSourceABC"><span class="pre">olivia_finder.data_source.data_source_abc.DataSourceABC</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/olivia_finder/data_source/scrapers/cran.html#CranScraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.scrapers.cran.CranScraper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="r.html#olivia_finder.data_source.scrapers.r.RScraper" title="olivia_finder.data_source.scrapers.r.RScraper"><code class="xref py py-class docutils literal notranslate"><span class="pre">olivia_finder.data_source.scrapers.r.RScraper</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.data_source.scrapers.cran.</span></span><span class="sig-name descname"><span class="pre">CranScraper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'CRAN</span> <span class="pre">Scraper'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Scraper</span> <span class="pre">class</span> <span class="pre">implementation</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">CRAN</span> <span class="pre">package</span> <span class="pre">manager.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../myrequests/request_handler.html#olivia_finder.myrequests.request_handler.RequestHandler" title="olivia_finder.myrequests.request_handler.RequestHandler"><span class="pre">RequestHandler</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bioconductor_ds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../data_source_abc.html#olivia_finder.data_source.data_source_abc.DataSourceABC" title="olivia_finder.data_source.data_source_abc.DataSourceABC"><span class="pre">DataSourceABC</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/olivia_finder/data_source/scrapers/cran.html#CranScraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.scrapers.cran.CranScraper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="r.html#olivia_finder.data_source.scrapers.r.RScraper" title="olivia_finder.data_source.scrapers.r.RScraper"><code class="xref py py-class docutils literal notranslate"><span class="pre">RScraper</span></code></a></p>
 <p>Class that scrapes the CRAN website to obtain information about R packages.
 Implements the abstract class Scraper and accordingly DataSource class</p>
 <p>As the CRAN repository can contain packages who depend on Bioconductor packages, this class also can
 obtain the list of Bioconductor packages from the Bioconductor website and merge it with the CRAN packages.
 This functionality is implemented in the method obtain_package_data() and it is optional.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>CRAN_PACKAGE_LIST_URL</strong><span class="classifier">str</span></dt><dd><p>URL of the CRAN website where the list of packages is located</p>
 </dd>
@@ -291,11 +308,7 @@ This functionality is implemented in the method obtain_package_data() and it is 
 </dd>
 </dl>
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%"/>
-<col style="width: 90%"/>
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_package_dependency_network</span></code>(package_name)</p></td>
 <td><p>Generates the dependency network of a package from the data source.</p></td>
@@ -340,7 +353,7 @@ datasource class attribute.
 If the use_bioconductor flag is enabled and a Bioconductor datasource is not provided,
 an exception will be raised.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>package_name</strong><span class="classifier">str</span></dt><dd><p>Name of the package</p>
 </dd>
@@ -348,13 +361,13 @@ an exception will be raised.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>Dict[str, str]</dt><dd><p>Dictionary with the data of the package</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>ScraperError</dt><dd><p>If the package does not exist in in the provided datasources</p>
 </dd>
@@ -367,7 +380,7 @@ an exception will be raised.</p>
 <span class="sig-name descname"><span class="pre">obtain_package_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/olivia_finder/data_source/scrapers/cran.html#CranScraper.obtain_package_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.scrapers.cran.CranScraper.obtain_package_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the list of packages in the CRAN website, by scraping the HTML of the page</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>List[str]</dt><dd><p>List of packages</p>
 </dd>
@@ -432,7 +445,7 @@ an exception will be raised.</p>
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -52,12 +52,12 @@
     <link rel="stylesheet" type="text/css" href="../../_static/material.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/custom.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Module olivia_finder.myrequests" href="../myrequests/myrequests_module.html" />
     <link rel="prev" title="Module olivia_finder.data_source.scrapers.pypi" href="scrapers/pypi.html" />
   
    
@@ -225,7 +225,21 @@
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#class-csvnetwork" class="md-nav__link">Class CSVNetwork</a>
+        <li class="md-nav__item"><a href="#class-csvnetwork" class="md-nav__link">Class CSVNetwork</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.csv_network.CSVNetwork" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">CSVNetwork</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.csv_network.CSVNetwork.get_info" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">CSVNetwork.get_info()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.csv_network.CSVNetwork.obtain_package_data" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">CSVNetwork.obtain_package_data()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.csv_network.CSVNetwork.obtain_package_names" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">CSVNetwork.obtain_package_names()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.csv_network.CSVNetwork.obtain_packages_data" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">CSVNetwork.obtain_packages_data()</span></code></a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li>
@@ -244,11 +258,11 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="module-olivia_finder.data_source.csv_network">
-<span id="module-olivia-finder-data-source-csv-network"></span><h1 id="olivia-finder-data-source-csv-network--page-root">Module olivia_finder.data_source.csv_network<a class="headerlink" href="#olivia-finder-data-source-csv-network--page-root" title="Permalink to this headline">¶</a></h1>
+<span id="module-olivia-finder-data-source-csv-network"></span><h1 id="olivia-finder-data-source-csv-network--page-root">Module olivia_finder.data_source.csv_network<a class="headerlink" href="#olivia-finder-data-source-csv-network--page-root" title="Permalink to this heading">¶</a></h1>
 <section id="csv-network-py">
-<h2 id="csv-network-py">csv_network.py<a class="headerlink" href="#csv-network-py" title="Permalink to this headline">¶</a></h2>
+<h2 id="csv-network-py">csv_network.py<a class="headerlink" href="#csv-network-py" title="Permalink to this heading">¶</a></h2>
 <section id="description">
-<h3 id="description">Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h3>
+<h3 id="description">Description<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h3>
 <p>Module that contains …</p>
 <dl class="simple">
 <dt>File information:</dt><dd><ul class="simple">
@@ -263,16 +277,16 @@
 </section>
 </section>
 <section id="class-csvnetwork">
-<h2 id="class-csvnetwork">Class CSVNetwork<a class="headerlink" href="#class-csvnetwork" title="Permalink to this headline">¶</a></h2>
+<h2 id="class-csvnetwork">Class CSVNetwork<a class="headerlink" href="#class-csvnetwork" title="Permalink to this heading">¶</a></h2>
 <p>Class for reading CSV files and creating a network from them.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="olivia_finder.data_source.csv_network.CSVNetwork">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.data_source.csv_network.</span></span><span class="sig-name descname"><span class="pre">CSVNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependent_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependency_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependent_version_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependency_version_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependent_url_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/olivia_finder/data_source/csv_network.html#CSVNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.csv_network.CSVNetwork" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="data_source.html#olivia_finder.data_source.data_source.DataSource" title="olivia_finder.data_source.data_source.DataSource"><code class="xref py py-class docutils literal notranslate"><span class="pre">olivia_finder.data_source.data_source.DataSource</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.data_source.csv_network.</span></span><span class="sig-name descname"><span class="pre">CSVNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependent_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependency_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependent_version_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependency_version_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependent_url_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/olivia_finder/data_source/csv_network.html#CSVNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.csv_network.CSVNetwork" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="data_source.html#olivia_finder.data_source.data_source.DataSource" title="olivia_finder.data_source.data_source.DataSource"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataSource</span></code></a></p>
 <p>Class that implements the methods for loading a network from a CSV file.
 Implements the DataSource interface.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>file_path</strong><span class="classifier">str</span></dt><dd><p>Path to the CSV file with the data</p>
 </dd>
@@ -301,7 +315,7 @@ Implements the DataSource interface.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>data</strong><span class="classifier">pd.DataFrame</span></dt><dd><p>The data loaded from the CSV file</p>
 </dd>
@@ -319,11 +333,7 @@ Implements the DataSource interface.</p>
 </dd>
 </dl>
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%"/>
-<col style="width: 90%"/>
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_package_dependency_network</span></code>(package_name)</p></td>
 <td><p>Generates the dependency network of a package from the data source.</p></td>
@@ -349,10 +359,10 @@ Implements the DataSource interface.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="olivia_finder.data_source.csv_network.CSVNetwork.obtain_package_data">
-<span class="sig-name descname"><span class="pre">obtain_package_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">override_previous</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/olivia_finder/data_source/csv_network.html#CSVNetwork.obtain_package_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.csv_network.CSVNetwork.obtain_package_data" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">obtain_package_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">override_previous</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/olivia_finder/data_source/csv_network.html#CSVNetwork.obtain_package_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.csv_network.CSVNetwork.obtain_package_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Obtains the package from the dataframe</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>package_name</strong><span class="classifier">str</span></dt><dd><p>The name of the package</p>
 </dd>
@@ -360,7 +370,7 @@ Implements the DataSource interface.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>Dict</dt><dd><p>The data of the package in the form of a dictionary</p>
 </dd>
@@ -389,7 +399,7 @@ Implements the DataSource interface.</p>
 <span class="sig-name descname"><span class="pre">obtain_package_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/olivia_finder/data_source/csv_network.html#CSVNetwork.obtain_package_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.csv_network.CSVNetwork.obtain_package_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Obtains the list of packages from the data source, sorted alphabetically.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>List[str]</dt><dd><p>The list of package names in the data source</p>
 </dd>
@@ -399,11 +409,11 @@ Implements the DataSource interface.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="olivia_finder.data_source.csv_network.CSVNetwork.obtain_packages_data">
-<span class="sig-name descname"><span class="pre">obtain_packages_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_bar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">tqdm.std.tqdm</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/olivia_finder/data_source/csv_network.html#CSVNetwork.obtain_packages_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.csv_network.CSVNetwork.obtain_packages_data" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">obtain_packages_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_bar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tqdm</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/olivia_finder/data_source/csv_network.html#CSVNetwork.obtain_packages_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.csv_network.CSVNetwork.obtain_packages_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Obtains the data of a list of package names from the CSV file
 If the package name list is None, it will obtain the package names from the CSV file and load their data</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>package_name_list</strong><span class="classifier">Optional[List[str]], optional</span></dt><dd><p>The list of package names to obtain the data from, by default None</p>
 </dd>
@@ -411,7 +421,7 @@ If the package name list is None, it will obtain the package names from the CSV 
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>List[Dict]</dt><dd><p>The list of dictionaries containing the data of the packages</p>
 </dd>
@@ -447,6 +457,17 @@ If the package name list is None, it will obtain the package names from the CSV 
             </a>
           
           
+            <a href="../myrequests/myrequests_module.html" title="Module olivia_finder.myrequests"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> Module olivia_finder.myrequests </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
         </a>
         
       </nav>
@@ -459,7 +480,7 @@ If the package name list is None, it will obtain the package names from the CSV 
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

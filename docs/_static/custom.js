@@ -5,7 +5,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   // Eliminar las comas que acompañan a los parametros de las funciones y las clases
   eliminarComas();
-  //scrol_when_click();
+  scroll_when_click();
 });
 
 
@@ -36,15 +36,37 @@ function eliminarComas() {
   nodesToRemove.forEach(node => node.remove());
 }
 
-function scrol_when_click() {
-  document.querySelectorAll('nav.md-nav.md-nav--secondary a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
+// function scrol_when_click() {
+//   document.querySelectorAll('nav.md-nav.md-nav--secondary a[href^="#"]').forEach(anchor => {
+//     anchor.addEventListener('click', function (e) {
+//       e.preventDefault();
+//       let targetElement = e.target;
+//       // while (targetElement && targetElement.tagName !== 'A') {
+//       while (targetElement.tagName !== 'A') {
+//         targetElement = targetElement.parentElement;
+//       }
+//       const target = document.querySelector(targetElement.getAttribute('href'));
+//       const offset = 45; // Distancia en píxeles para hacer scroll hacia arriba
+//       const bodyRect = document.body.getBoundingClientRect().top;
+//       const elementRect = target.getBoundingClientRect().top;
+//       const elementPosition = elementRect - bodyRect;
+//       const offsetPosition = elementPosition - offset;
+//       window.scrollTo({
+//         top: offsetPosition,
+//         behavior: 'smooth'
+//       });
+//     });
+//   });
+// }
+
+
+function scroll_when_click() {
+  document.querySelector('nav.md-nav.md-nav--secondary').addEventListener('click', function (e) {
+    if (e.target.matches('.md-nav__link[href^="#"]')) {
       e.preventDefault();
-      let targetElement = e.target;
-      while (targetElement && targetElement.tagName !== 'A') {
-        targetElement = targetElement.parentElement;
-      }
-      const target = document.querySelector(targetElement.getAttribute('href'));
+      const targetId = e.target.getAttribute('href');
+      const target = document.querySelector(targetId);
+      if (!target) return; // Si no hay ningún elemento que tenga el ID especificado, salimos de la función
       const offset = 45; // Distancia en píxeles para hacer scroll hacia arriba
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = target.getBoundingClientRect().top;
@@ -54,6 +76,6 @@ function scrol_when_click() {
         top: offsetPosition,
         behavior: 'smooth'
       });
-    });
+    }
   });
 }

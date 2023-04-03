@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -52,9 +52,8 @@
     <link rel="stylesheet" type="text/css" href="../../_static/material.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/custom.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -222,7 +221,23 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#description" class="md-nav__link">Description</a>
         </li>
-        <li class="md-nav__item"><a href="#class-datasource" class="md-nav__link">Class DataSource</a>
+        <li class="md-nav__item"><a href="#class-datasource" class="md-nav__link">Class DataSource</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.data_source.DataSource" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DataSource</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.data_source.DataSource.generate_package_dependency_network" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DataSource.generate_package_dependency_network()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.data_source.DataSource.get_info" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DataSource.get_info()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.data_source.DataSource.obtain_package_data" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DataSource.obtain_package_data()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.data_source.DataSource.obtain_package_names" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DataSource.obtain_package_names()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.data_source.DataSource.obtain_packages_data" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DataSource.obtain_packages_data()</span></code></a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li>
@@ -241,9 +256,9 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="module-olivia_finder.data_source.data_source">
-<span id="module-olivia-finder-data-source-data-source"></span><h1 id="olivia-finder-data-source-data-source--page-root">Module olivia_finder.data_source.data_source<a class="headerlink" href="#olivia-finder-data-source-data-source--page-root" title="Permalink to this headline">¶</a></h1>
+<span id="module-olivia-finder-data-source-data-source"></span><h1 id="olivia-finder-data-source-data-source--page-root">Module olivia_finder.data_source.data_source<a class="headerlink" href="#olivia-finder-data-source-data-source--page-root" title="Permalink to this heading">¶</a></h1>
 <section id="description">
-<h2 id="description">Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<h2 id="description">Description<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
 <p>Module that contains the DataSource class, which is the base class for data sources.</p>
 <dl class="simple">
 <dt>File information:</dt><dd><ul class="simple">
@@ -257,21 +272,17 @@
 </dl>
 </section>
 <section id="class-datasource">
-<h2 id="class-datasource">Class DataSource<a class="headerlink" href="#class-datasource" title="Permalink to this headline">¶</a></h2>
+<h2 id="class-datasource">Class DataSource<a class="headerlink" href="#class-datasource" title="Permalink to this heading">¶</a></h2>
 <p>Class to handle data sources.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="olivia_finder.data_source.data_source.DataSource">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.data_source.data_source.</span></span><span class="sig-name descname"><span class="pre">DataSource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/olivia_finder/data_source/data_source.html#DataSource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.data_source.DataSource" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="data_source_abc.html#olivia_finder.data_source.data_source_abc.DataSourceABC" title="olivia_finder.data_source.data_source_abc.DataSourceABC"><code class="xref py py-class docutils literal notranslate"><span class="pre">olivia_finder.data_source.data_source_abc.DataSourceABC</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="data_source_abc.html#olivia_finder.data_source.data_source_abc.DataSourceABC" title="olivia_finder.data_source.data_source_abc.DataSourceABC"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataSourceABC</span></code></a></p>
 <p>Base class for data sources, it implements the DataSourceABC interface.
 This class is not intended to be used directly, but to be inherited by
 other classes that must override this class’s methods.</p>
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%"/>
-<col style="width: 90%"/>
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#olivia_finder.data_source.data_source.DataSource.generate_package_dependency_network" title="olivia_finder.data_source.data_source.DataSource.generate_package_dependency_network"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_package_dependency_network</span></code></a>(package_name)</p></td>
 <td><p>Generates the dependency network of a package from the data source.</p></td>
@@ -292,10 +303,10 @@ other classes that must override this class’s methods.</p>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="olivia_finder.data_source.data_source.DataSource.generate_package_dependency_network">
-<span class="sig-name descname"><span class="pre">generate_package_dependency_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependency_network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deep_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/olivia_finder/data_source/data_source.html#DataSource.generate_package_dependency_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.data_source.DataSource.generate_package_dependency_network" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">generate_package_dependency_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependency_network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deep_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/olivia_finder/data_source/data_source.html#DataSource.generate_package_dependency_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.data_source.DataSource.generate_package_dependency_network" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates the dependency network of a package from the data source.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>package_name</strong><span class="classifier">str</span></dt><dd><p>The name of the package to generate the dependency network</p>
 </dd>
@@ -305,7 +316,7 @@ other classes that must override this class’s methods.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>Dict[str, List[str]]</dt><dd><p>The dependency network of a package from the data source as a dictionary of package name to a list of its dependencies</p>
 </dd>
@@ -318,7 +329,7 @@ other classes that must override this class’s methods.</p>
 <span class="sig-name descname"><span class="pre">get_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/olivia_finder/data_source/data_source.html#DataSource.get_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.data_source.DataSource.get_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the datasource information data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>dict</dt><dd><p>The information of the data source</p>
 </dd>
@@ -331,7 +342,7 @@ other classes that must override this class’s methods.</p>
 <span class="sig-name descname"><span class="pre">obtain_package_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/olivia_finder/data_source/data_source.html#DataSource.obtain_package_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.data_source.DataSource.obtain_package_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Obtains the data of a package from the data source as a dictionary.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>NotImplementedError</dt><dd><p>Because this method is not implemented in the base class</p>
 </dd>
@@ -346,7 +357,7 @@ other classes that must override this class’s methods.</p>
 Is an optional method, if the data source does not implement it, it will
 be considered that it does not have a list of packages available.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>NotImplementedError</dt><dd><p>Because this method is not implemented in the base class</p>
 </dd>
@@ -359,7 +370,7 @@ be considered that it does not have a list of packages available.</p>
 <span class="sig-name descname"><span class="pre">obtain_packages_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/olivia_finder/data_source/data_source.html#DataSource.obtain_packages_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.data_source.DataSource.obtain_packages_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Obtains the data of a list of package names from the data source.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>NotImplementedError</dt><dd><p>Because this method is not implemented in the base class</p>
 </dd>
@@ -418,7 +429,7 @@ be considered that it does not have a list of packages available.</p>
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

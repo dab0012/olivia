@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -52,9 +52,8 @@
     <link rel="stylesheet" type="text/css" href="../../_static/material.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/custom.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -226,9 +225,27 @@
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#class-scraper" class="md-nav__link">Class Scraper</a>
+        <li class="md-nav__item"><a href="#class-scraper" class="md-nav__link">Class Scraper</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.scraper.Scraper" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Scraper</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.scraper.Scraper.get_info" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Scraper.get_info()</span></code></a>
         </li>
-        <li class="md-nav__item"><a href="#class-scrapererror" class="md-nav__link">Class ScraperError</a>
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.scraper.Scraper.obtain_package_data" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Scraper.obtain_package_data()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.scraper.Scraper.obtain_package_names" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Scraper.obtain_package_names()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.scraper.Scraper.obtain_packages_data" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Scraper.obtain_packages_data()</span></code></a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#class-scrapererror" class="md-nav__link">Class ScraperError</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#olivia_finder.data_source.scraper.ScraperError" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ScraperError</span></code></a>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li>
@@ -247,11 +264,11 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="module-olivia_finder.data_source.scraper">
-<span id="module-olivia-finder-data-source-scraper"></span><h1 id="olivia-finder-data-source-scraper--page-root">Module olivia_finder.data_source.scraper<a class="headerlink" href="#olivia-finder-data-source-scraper--page-root" title="Permalink to this headline">¶</a></h1>
+<span id="module-olivia-finder-data-source-scraper"></span><h1 id="olivia-finder-data-source-scraper--page-root">Module olivia_finder.data_source.scraper<a class="headerlink" href="#olivia-finder-data-source-scraper--page-root" title="Permalink to this heading">¶</a></h1>
 <section id="scraper-py">
-<h2 id="scraper-py">scraper.py<a class="headerlink" href="#scraper-py" title="Permalink to this headline">¶</a></h2>
+<h2 id="scraper-py">scraper.py<a class="headerlink" href="#scraper-py" title="Permalink to this heading">¶</a></h2>
 <section id="description">
-<h3 id="description">Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h3>
+<h3 id="description">Description<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h3>
 <p>Module that contains …</p>
 <dl class="simple">
 <dt>File information:</dt><dd><ul class="simple">
@@ -266,16 +283,16 @@
 </section>
 </section>
 <section id="class-scraper">
-<h2 id="class-scraper">Class Scraper<a class="headerlink" href="#class-scraper" title="Permalink to this headline">¶</a></h2>
+<h2 id="class-scraper">Class Scraper<a class="headerlink" href="#class-scraper" title="Permalink to this heading">¶</a></h2>
 <p>Class to scrape data from a website.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="olivia_finder.data_source.scraper.Scraper">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.data_source.scraper.</span></span><span class="sig-name descname"><span class="pre">Scraper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">olivia_finder.myrequests.request_handler.RequestHandler</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/olivia_finder/data_source/scraper.html#Scraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.scraper.Scraper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="scraper_abc.html#olivia_finder.data_source.scraper_abc.ScraperABC" title="olivia_finder.data_source.scraper_abc.ScraperABC"><code class="xref py py-class docutils literal notranslate"><span class="pre">olivia_finder.data_source.scraper_abc.ScraperABC</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.data_source.scraper.</span></span><span class="sig-name descname"><span class="pre">Scraper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../myrequests/request_handler.html#olivia_finder.myrequests.request_handler.RequestHandler" title="olivia_finder.myrequests.request_handler.RequestHandler"><span class="pre">RequestHandler</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/olivia_finder/data_source/scraper.html#Scraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.scraper.Scraper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="scraper_abc.html#olivia_finder.data_source.scraper_abc.ScraperABC" title="olivia_finder.data_source.scraper_abc.ScraperABC"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScraperABC</span></code></a></p>
 <p>Base class for scraping a package manager
 Implements the methods of the ScraperABC interface class</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>name</strong><span class="classifier">Optional[str]</span></dt><dd><p>Name of the data source</p>
 </dd>
@@ -285,7 +302,7 @@ Implements the methods of the ScraperABC interface class</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Attributes</dt>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>request_handler</strong><span class="classifier">RequestHandler</span></dt><dd><p>Request handler for the scraper</p>
 </dd>
@@ -295,11 +312,7 @@ Implements the methods of the ScraperABC interface class</p>
 </dd>
 </dl>
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%"/>
-<col style="width: 90%"/>
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_package_dependency_network</span></code>(package_name)</p></td>
 <td><p>Generates the dependency network of a package from the data source.</p></td>
@@ -323,7 +336,7 @@ Implements the methods of the ScraperABC interface class</p>
 <span class="sig-name descname"><span class="pre">get_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/olivia_finder/data_source/scraper.html#Scraper.get_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.scraper.Scraper.get_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the info of the Scraper</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>dict</dt><dd><p>Dictionary with the info of the Scraper</p>
 </dd>
@@ -337,19 +350,19 @@ Implements the methods of the ScraperABC interface class</p>
 <dd><p>Scrape a package from a package manager, if the package is not found, it is added to the not_found list
 Implements the abstract method of the DataSource class</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>pkg_name</strong><span class="classifier">str</span></dt><dd><p>Name of the package to scrape</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>Dict</dt><dd><p>Package data as a dictionary</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>ScraperError</dt><dd><p>If the package is not found</p>
 </dd>
@@ -369,7 +382,7 @@ Implements the abstract method of the DataSource class</p>
 it must handle exceptions and return an empty list if the package names cannot be obtained
 To be implemented by the child class</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>NotImplementedError</dt><dd><p>Bcause the method is not implemented in the base class</p>
 </dd>
@@ -379,11 +392,11 @@ To be implemented by the child class</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="olivia_finder.data_source.scraper.Scraper.obtain_packages_data">
-<span class="sig-name descname"><span class="pre">obtain_packages_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_bar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">tqdm.std.tqdm</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_data_source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/olivia_finder/data_source/scraper.html#Scraper.obtain_packages_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.scraper.Scraper.obtain_packages_data" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">obtain_packages_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_bar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tqdm</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_data_source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/olivia_finder/data_source/scraper.html#Scraper.obtain_packages_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.scraper.Scraper.obtain_packages_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scrape a list of packages from a package manager, if the package is not found, it is added to the not_found list
 Overrides the method of the DataSource class</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>package_names</strong><span class="classifier">list[str], optional</span></dt><dd><p>List of package names to scrape, by default None</p>
 </dd>
@@ -394,13 +407,13 @@ Only works if package_names is None</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>Tuple[list[dict], list[str]]</dt><dd><p>Tuple with the list of packages data and the list of packages not found</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>ScraperError</dt><dd><p>If the list of package names is None or empty and full_scrape is disabled</p>
 </dd>
@@ -416,7 +429,7 @@ Only works if package_names is None</p>
 </dd></dl>
 </section>
 <section id="class-scrapererror">
-<h2 id="class-scrapererror">Class ScraperError<a class="headerlink" href="#class-scrapererror" title="Permalink to this headline">¶</a></h2>
+<h2 id="class-scrapererror">Class ScraperError<a class="headerlink" href="#class-scrapererror" title="Permalink to this heading">¶</a></h2>
 <p>Error class for Scraper.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="olivia_finder.data_source.scraper.ScraperError">
@@ -424,13 +437,13 @@ Only works if package_names is None</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Exception for the Scraper class</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>message</strong><span class="classifier">str, optional</span></dt><dd><p>Message of the exception, by default ‘’</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Attributes</dt>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>message</strong><span class="classifier">str</span></dt><dd><p>Message of the exception</p>
 </dd>
@@ -438,11 +451,7 @@ Only works if package_names is None</p>
 </dd>
 </dl>
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%"/>
-<col style="width: 90%"/>
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_traceback</span></code></p></td>
 <td><p>Exception.with_traceback(tb) -- set self.__traceback__ to tb and return self.</p></td>
@@ -500,7 +509,7 @@ Only works if package_names is None</p>
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

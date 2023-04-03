@@ -47,7 +47,7 @@
   
   
   
-    <title>Module olivia_finder.data_source.scraper_abc &#8212; Olivia Finder  documentation</title>
+    <title>olivia_finder.myrequests.proxy_builder &#8212; Olivia Finder  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/material.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
@@ -57,8 +57,7 @@
     <script src="../../_static/custom.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Module olivia_finder.data_source.scraper" href="scraper.html" />
-    <link rel="prev" title="Module olivia_finder.data_source.data_source" href="data_source.html" />
+    <link rel="prev" title="olivia_finder.myrequests.proxy_handler" href="proxy_handler.html" />
   
    
 
@@ -77,7 +76,7 @@
   <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
   <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
   <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#olivia_finder/data_source/scraper_abc" tabindex="1" class="md-skip"> Skip to content </a>
+  <a href="#olivia_finder/myrequests/proxy_builder" tabindex="1" class="md-skip"> Skip to content </a>
   <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
@@ -95,7 +94,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">Olivia Finder</span>
-          <span class="md-header-nav__topic"> Module olivia_finder.data_source.scraper_abc </span>
+          <span class="md-header-nav__topic"> olivia_finder.myrequests.proxy_builder </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -169,7 +168,7 @@
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
           <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">Olivia Finder  documentation</a></li>
-          <li class="md-tabs__item"><a href="data_source_module.html" class="md-tabs__link">Module olivia_finder.data_source</a></li>
+          <li class="md-tabs__item"><a href="myrequests_module.html" class="md-tabs__link">Module olivia_finder.myrequests</a></li>
       </ul>
     </div>
   </nav>
@@ -217,24 +216,28 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#olivia-finder-data-source-scraper-abc--page-root" class="md-nav__link">Module olivia_finder.data_source.scraper_abc</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#olivia-finder-myrequests-proxy-builder--page-root" class="md-nav__link">olivia_finder.myrequests.proxy_builder</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#scraper-abc-py" class="md-nav__link">scraper_abc.py</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#proxy-builder-py" class="md-nav__link">proxy_builder.py</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#description" class="md-nav__link">Description</a>
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#abstract-class-scraperabc" class="md-nav__link">Abstract Class ScraperABC</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#class-proxybuilder" class="md-nav__link">Class ProxyBuilder</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#olivia_finder.data_source.scraper_abc.ScraperABC" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ScraperABC</span></code></a>
+        <li class="md-nav__item"><a href="#olivia_finder.myrequests.proxy_builder.ProxyBuilder" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ProxyBuilder</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#olivia_finder.myrequests.proxy_builder.ProxyBuilder.get_proxies" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ProxyBuilder.get_proxies()</span></code></a>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li></ul>
             </nav>
         </li>
     
-<li class="md-nav__item"><a class="md-nav__extra_link" href="../../_sources/olivia_finder/data_source/scraper_abc.rst.txt">Show Source</a> </li>
+<li class="md-nav__item"><a class="md-nav__extra_link" href="../../_sources/olivia_finder/myrequests/proxy_builder.rst.txt">Show Source</a> </li>
 
 <li id="searchbox" class="md-nav__item"></li>
 
@@ -247,17 +250,17 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="module-olivia_finder.data_source.scraper_abc">
-<span id="module-olivia-finder-data-source-scraper-abc"></span><h1 id="olivia-finder-data-source-scraper-abc--page-root">Module olivia_finder.data_source.scraper_abc<a class="headerlink" href="#olivia-finder-data-source-scraper-abc--page-root" title="Permalink to this heading">¶</a></h1>
-<section id="scraper-abc-py">
-<h2 id="scraper-abc-py">scraper_abc.py<a class="headerlink" href="#scraper-abc-py" title="Permalink to this heading">¶</a></h2>
+  <section id="module-olivia_finder.myrequests.proxy_builder">
+<span id="olivia-finder-myrequests-proxy-builder"></span><h1 id="olivia-finder-myrequests-proxy-builder--page-root">olivia_finder.myrequests.proxy_builder<a class="headerlink" href="#olivia-finder-myrequests-proxy-builder--page-root" title="Permalink to this heading">¶</a></h1>
+<section id="proxy-builder-py">
+<h2 id="proxy-builder-py">proxy_builder.py<a class="headerlink" href="#proxy-builder-py" title="Permalink to this heading">¶</a></h2>
 <section id="description">
 <h3 id="description">Description<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h3>
 <p>Module that contains …</p>
 <dl class="simple">
 <dt>File information:</dt><dd><ul class="simple">
-<li><p>File: scraper_abc.py</p></li>
-<li><p>Project: data_source</p></li>
+<li><p>File: proxy_builder.py</p></li>
+<li><p>Project: myrequests</p></li>
 <li><p>Created Date: 2023-03-18 14:40:56</p></li>
 <li><p>Author: Daniel Alonso Báscones</p></li>
 <li><p>Copyright (c) 2023 Daniel Alonso Báscones</p></li>
@@ -266,34 +269,58 @@
 </dl>
 </section>
 </section>
-<section id="abstract-class-scraperabc">
-<h2 id="abstract-class-scraperabc">Abstract Class ScraperABC<a class="headerlink" href="#abstract-class-scraperabc" title="Permalink to this heading">¶</a></h2>
-<p>Interface for all scrapers.</p>
+<section id="class-proxybuilder">
+<h2 id="class-proxybuilder">Class ProxyBuilder<a class="headerlink" href="#class-proxybuilder" title="Permalink to this heading">¶</a></h2>
+<p>Class for obtaining proxies from some websites.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="olivia_finder.data_source.scraper_abc.ScraperABC">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.data_source.scraper_abc.</span></span><span class="sig-name descname"><span class="pre">ScraperABC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/olivia_finder/data_source/scraper_abc.html#ScraperABC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.scraper_abc.ScraperABC" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="data_source.html#olivia_finder.data_source.data_source.DataSource" title="olivia_finder.data_source.data_source.DataSource"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataSource</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
-<p>Abstract class that implements the methods for scraping a package manager</p>
+<dt class="sig sig-object py" id="olivia_finder.myrequests.proxy_builder.ProxyBuilder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.myrequests.proxy_builder.</span></span><span class="sig-name descname"><span class="pre">ProxyBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy_list_timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/olivia_finder/myrequests/proxy_builder.html#ProxyBuilder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.myrequests.proxy_builder.ProxyBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ProxyBuilderABC</span></code></p>
+<p>Base class for proxy builders implementations. It musn’t be used directly.
+The correct way to use it is to instantiate a subclass of this class where the
+URL attribute is defined and the _parse_request method is implemented.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>url</strong><span class="classifier">str</span></dt><dd><p>URL of the proxy list website to get the proxies</p>
+</dd>
+<dt><strong>proxy_list_timeout</strong><span class="classifier">Optional[int], optional</span></dt><dd><p>Timeout for the proxy list requests, by default 60</p>
+</dd>
+</dl>
+</dd>
+</dl>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_package_dependency_network</span></code>(package_name)</p></td>
-<td><p>Generates the dependency network of a package from the data source.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_info</span></code>()</p></td>
-<td><p>Returns the datasource information data.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">obtain_package_data</span></code>(package_name)</p></td>
-<td><p>Obtains the data of a package from the data source as a dictionary.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">obtain_package_names</span></code>()</p></td>
-<td><p>Obtains the list of packages from the data source.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">obtain_packages_data</span></code>()</p></td>
-<td><p>Obtains the data of a list of package names from the data source.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#olivia_finder.myrequests.proxy_builder.ProxyBuilder.get_proxies" title="olivia_finder.myrequests.proxy_builder.ProxyBuilder.get_proxies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_proxies</span></code></a>()</p></td>
+<td><p>Do a request to the proxy list URL and returns a list of proxies if the request is successful, otherwise returns an empty list</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="py method">
+<dt class="sig sig-object py" id="olivia_finder.myrequests.proxy_builder.ProxyBuilder.get_proxies">
+<span class="sig-name descname"><span class="pre">get_proxies</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/olivia_finder/myrequests/proxy_builder.html#ProxyBuilder.get_proxies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.myrequests.proxy_builder.ProxyBuilder.get_proxies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do a request to the proxy list URL and returns a list of proxies if the request is successful,
+otherwise returns an empty list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>List[str]</dt><dd><p>List of proxies in string format {ip}:{port} or an empty list if the request fails for any reason</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">olivia_finder.requests.proxy_builder</span> <span class="kn">import</span> <span class="n">ProxyBuilder</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">proxy_builder</span> <span class="o">=</span> <span class="n">ProxyBuilder</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">"https://www.sslproxies.org/"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">proxy_builder</span><span class="o">.</span><span class="n">get_proxies</span><span class="p">()</span>
+<span class="go">[</span>
+<span class="go">    ip:port,</span>
+<span class="go">    ip:port</span>
+<span class="go">]</span>
+</pre></div>
+</div>
+</dd></dl>
 </dd></dl>
 </section>
 </section>
@@ -308,7 +335,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="data_source.html" title="Module olivia_finder.data_source.data_source"
+            <a href="proxy_handler.html" title="olivia_finder.myrequests.proxy_handler"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -317,21 +344,10 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Module olivia_finder.data_source.data_source </span>
+                      class="md-footer-nav__direction"> Previous </span> olivia_finder.myrequests.proxy_handler </span>
               </div>
             </a>
           
-          
-            <a href="scraper.html" title="Module olivia_finder.data_source.scraper"
-               class="md-flex md-footer-nav__link md-footer-nav__link--next"
-               rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
-                class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Module olivia_finder.data_source.scraper </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink"><i
-                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
           
         </a>
         

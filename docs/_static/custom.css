@@ -4,6 +4,17 @@ html {
   font-size: 1.6em;
 }
 
+h1 {
+  color: crimson !important;
+  font-size: 2.5em !important;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: bold !important;
+}
+
 /* Sobreescritura que arregla el  glitch
 que el contenedor anterior tapaba en seleccionado al
 hacer click en un enlace de la documentacion */
@@ -37,20 +48,23 @@ nav.md-tabs {
   font-weight: bold !important;
 }
 
-@media only screen and (min-width: 76.25em){
-  nav.md-tabs {
-    background-color: #c30d0df0 !important;
-    color: white !important;
-  }
+body > div > main > div > div.md-sidebar.md-sidebar--primary > div > div > nav > label {
+  background-color: #ffffff !important;
+}
 
-  html[data-md-color-primary="blue"].md-nav--primary.md-nav__title--site {
-    background-color: #c30d0df0 !important;
-  }
+body > div > main > div > div.md-sidebar.md-sidebar--primary > div > div > nav > div {
+  background-color: #ff5200 !important;
+}
 
-  html.md-nav--primary.md-nav__title--site {
-    background-color: #c30d0df0 !important;
+/*
+Media querie para el menu
+*/
+@media only screen and (max-width: 76.25em) {
+  body > div > main > div > div.md-sidebar.md-sidebar--primary > div > div > nav > label {
+    background-color: #ff5200  !important;
   }
 }
+
 
 
 /*
@@ -58,7 +72,8 @@ Descripcion del modulo
 -------------------------------------
 */
 section#description {
-  background-color: #ffc9621f; /* Amarillo claro */
+  background-color: #ffc9621f;
+  /* Amarillo claro */
   border-radius: 9px;
   padding: 10px;
   padding-top: 0px;
@@ -124,7 +139,7 @@ dl.py em.property {
   font-size: 13px !important;
 }
 
-dl.py.class em.sig-param > span.n:nth-child(1) {
+dl.py.class em.sig-param>span.n:nth-child(1) {
   font-weight: bold;
   color: #083292;
 }
@@ -216,4 +231,3 @@ dl.py.exception a {
   color: mediumvioletred;
   padding-left: 3px;
 }
-
