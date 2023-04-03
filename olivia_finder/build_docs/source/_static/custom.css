@@ -115,13 +115,13 @@ dl.py dl.field-list.simple {
 
 dl.py em.property {
   font-weight: bold;
-  font-size: 1em;
   color: #083292;
   background: #01f30038;
-  padding: 3px 3px 3px 6px;
-  margin-right: 6px;
+  padding: 0 3px;
   border-radius: 5px;
   border: 2px solid #3c589938;
+  float: right;
+  font-size: 13px !important;
 }
 
 dl.py.class em.sig-param > span.n:nth-child(1) {

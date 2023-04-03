@@ -9,3 +9,4 @@ Class for representing a package.
 
 .. autoclass:: olivia_finder.package.Package
    :members:
+   :show-inheritance:
