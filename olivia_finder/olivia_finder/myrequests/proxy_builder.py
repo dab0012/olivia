@@ -22,7 +22,7 @@ from abc import ABC, abstractmethod
 from typing_extensions import override
 import requests
 from bs4 import BeautifulSoup
-from ..util.logger import MyLogger
+from ..utilities.logger import MyLogger
 
 class ProxyBuilderABC(ABC):
     '''

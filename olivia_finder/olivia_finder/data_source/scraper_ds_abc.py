@@ -1,5 +1,5 @@
 '''
-scraper_abc.py
+scraper_ds_abc.py
 ==================
 
 Description
@@ -22,7 +22,7 @@ from typing import Dict, List
 import requests
 from .data_source import DataSource
 
-class ScraperABC(DataSource, ABC):
+class ScraperDataSourceABC(DataSource, ABC):
     """
     Abstract class that implements the methods for scraping a package manager
     """

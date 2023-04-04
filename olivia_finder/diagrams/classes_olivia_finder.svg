@@ -37,11 +37,11 @@
 <path fill="none" stroke="black" d="M208.14,-137.04C234.85,-173.88 269.27,-221.34 293.72,-255.06"/>
 <polygon fill="none" stroke="black" points="291.01,-257.28 299.72,-263.32 296.68,-253.17 291.01,-257.28"/>
 </g>
-<!-- olivia_finder.data_source.csv_network.CSVNetwork -->
+<!-- olivia_finder.data_source.csv_ds.CSVDataSource -->
 <g id="node2" class="node">
-<title>olivia_finder.data_source.csv_network.CSVNetwork</title>
+<title>olivia_finder.data_source.csv_ds.CSVDataSource</title>
 <polygon fill="antiquewhite" stroke="black" points="1201,-604.5 1201,-808.5 1994,-808.5 1994,-604.5 1201,-604.5"/>
-<text text-anchor="middle" x="1597.5" y="-793.3" font-family="Arial" font-size="14.00">CSVNetwork</text>
+<text text-anchor="middle" x="1597.5" y="-793.3" font-family="Arial" font-size="14.00">CSVDataSource</text>
 <polyline fill="none" stroke="black" points="1201,-785.5 1994,-785.5 "/>
 <text text-anchor="start" x="1209" y="-770.3" font-family="Arial" font-size="14.00">data : TextFileReader, NoneType, DataFrame</text>
 <text text-anchor="start" x="1209" y="-755.3" font-family="Arial" font-size="14.00">dependency_field : Optional[str]</text>
@@ -71,9 +71,9 @@
 <text text-anchor="start" x="1243" y="-869.3" font-family="Arial" font-size="14.00">obtain_package_names(): List[str]</text>
 <text text-anchor="start" x="1243" y="-854.3" font-family="Arial" font-size="14.00">obtain_packages_data(): List[Dict]</text>
 </g>
-<!-- olivia_finder.data_source.csv_network.CSVNetwork&#45;&gt;olivia_finder.data_source.data_source.DataSource -->
+<!-- olivia_finder.data_source.csv_ds.CSVDataSource&#45;&gt;olivia_finder.data_source.data_source.DataSource -->
 <g id="edge1" class="edge">
-<title>olivia_finder.data_source.csv_network.CSVNetwork&#45;&gt;olivia_finder.data_source.data_source.DataSource</title>
+<title>olivia_finder.data_source.csv_ds.CSVDataSource&#45;&gt;olivia_finder.data_source.data_source.DataSource</title>
 <path fill="none" stroke="black" d="M1485.44,-808.5C1473.88,-818.92 1462.27,-829.39 1451.05,-839.5"/>
 <polygon fill="none" stroke="black" points="1448.44,-837.14 1443.35,-846.43 1453.12,-842.34 1448.44,-837.14"/>
 </g>
@@ -376,24 +376,24 @@
 <path fill="none" stroke="black" d="M2968.38,-115.31C2947.46,-150.96 2914.51,-207.12 2890.73,-247.67"/>
 <polygon fill="none" stroke="black" points="2887.69,-245.93 2885.65,-256.33 2893.73,-249.48 2887.69,-245.93"/>
 </g>
-<!-- olivia_finder.data_source.scraper_abc.ScraperABC -->
+<!-- olivia_finder.data_source.scraper_abc.ScraperDatasourceABC -->
 <g id="node23" class="node">
-<title>olivia_finder.data_source.scraper_abc.ScraperABC</title>
+<title>olivia_finder.data_source.scraper_abc.ScraperDatasourceABC</title>
 <polygon fill="antiquewhite" stroke="black" points="1079.5,-671.5 1079.5,-741.5 1183.5,-741.5 1183.5,-671.5 1079.5,-671.5"/>
-<text text-anchor="middle" x="1131.5" y="-726.3" font-family="Arial" font-size="14.00">ScraperABC</text>
+<text text-anchor="middle" x="1131.5" y="-726.3" font-family="Arial" font-size="14.00">ScraperDatasourceABC</text>
 <polyline fill="none" stroke="black" points="1079.5,-718.5 1183.5,-718.5 "/>
 <polyline fill="none" stroke="black" points="1079.5,-694.5 1183.5,-694.5 "/>
 <text text-anchor="middle" x="1131.5" y="-679.3" font-family="Arial" font-size="14.00"> </text>
 </g>
-<!-- olivia_finder.data_source.scraper.Scraper&#45;&gt;olivia_finder.data_source.scraper_abc.ScraperABC -->
+<!-- olivia_finder.data_source.scraper.Scraper&#45;&gt;olivia_finder.data_source.scraper_abc.ScraperDatasourceABC -->
 <g id="edge3" class="edge">
-<title>olivia_finder.data_source.scraper.Scraper&#45;&gt;olivia_finder.data_source.scraper_abc.ScraperABC</title>
+<title>olivia_finder.data_source.scraper.Scraper&#45;&gt;olivia_finder.data_source.scraper_abc.ScraperDatasourceABC</title>
 <path fill="none" stroke="black" d="M1131.5,-566.52C1131.5,-597.27 1131.5,-633.44 1131.5,-661.17"/>
 <polygon fill="none" stroke="black" points="1128,-661.36 1131.5,-671.36 1135,-661.36 1128,-661.36"/>
 </g>
-<!-- olivia_finder.data_source.scraper_abc.ScraperABC&#45;&gt;olivia_finder.data_source.data_source.DataSource -->
+<!-- olivia_finder.data_source.scraper_abc.ScraperDatasourceABC&#45;&gt;olivia_finder.data_source.data_source.DataSource -->
 <g id="edge4" class="edge">
-<title>olivia_finder.data_source.scraper_abc.ScraperABC&#45;&gt;olivia_finder.data_source.data_source.DataSource</title>
+<title>olivia_finder.data_source.scraper_abc.ScraperDatasourceABC&#45;&gt;olivia_finder.data_source.data_source.DataSource</title>
 <path fill="none" stroke="black" d="M1146.59,-741.77C1157.05,-762.86 1172.5,-789.5 1191.5,-809 1202.36,-820.15 1214.58,-830.66 1227.37,-840.43"/>
 <polygon fill="none" stroke="black" points="1225.3,-843.25 1235.41,-846.42 1229.48,-837.64 1225.3,-843.25"/>
 </g>

@@ -1,13 +1,13 @@
-Module olivia_finder.data_source.scraper
-========================================
+Module olivia_finder.data_source.scraper_ds
+===========================================
 
-.. automodule:: olivia_finder.data_source.scraper
+.. automodule:: olivia_finder.data_source.scraper_ds
 
-Class Scraper
--------------
+Class ScraperDataSource
+-----------------------
 Class to scrape data from a website.
 
-.. autoclass:: Scraper
+.. autoclass:: ScraperDataSource
    :members:
    :undoc-members:
    :show-inheritance:

@@ -14,7 +14,7 @@ File information:
 
 from typing import Dict, List
 
-from ..util.logger import MyLogger
+from ..utilities.logger import MyLogger
 from .data_source_abc import DataSourceABC
 
 class DataSource(DataSourceABC):

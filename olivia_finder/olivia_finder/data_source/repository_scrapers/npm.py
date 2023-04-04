@@ -22,12 +22,12 @@ import requests
 from typing_extensions import override
 from typing import List, Optional
 from tqdm import tqdm
-from ...data_source.scraper import Scraper
-from ...util.config_ini import Configuration
-from ...util.logger import MyLogger
+from ..scraper_ds import ScraperDataSource
+from ...utilities.config_ini import Configuration
+from ...utilities.logger import MyLogger
 from ...myrequests.request_handler import RequestHandler
 
-class NpmScraper(Scraper):
+class NpmScraper(ScraperDataSource):
     '''
     Class that scrapes the NPM website to obtain information about JavaScript packages
     

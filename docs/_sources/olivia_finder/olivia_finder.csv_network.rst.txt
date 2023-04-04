@@ -1,7 +1,7 @@
 olivia\_finder.csv\_network module
 ==================================
 
-.. automodule:: olivia_finder.csv_network
+.. automodule:: olivia_finder.csv_ds
    :members:
    :undoc-members:
    :show-inheritance:

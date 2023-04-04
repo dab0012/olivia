@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,18 +47,19 @@
   
   
   
-    <title>Module olivia_finder.myrequests &#8212; Olivia Finder  documentation</title>
+    <title>olivia_finder.myrequests &#8212; Olivia Finder  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/material.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/custom.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="olivia_finder.myrequests.request_handler" href="request_handler.html" />
-    <link rel="prev" title="Module olivia_finder.data_source.csv_network" href="../data_source/csv_network.html" />
+    <link rel="next" title="olivia_finder.utilities" href="../utilities/utilities_module.html" />
+    <link rel="prev" title="Subpackages olivia_finder.data_source.repository_scrapers" href="../data_source/repository_scrapers/repository_scrapers_module.html" />
   
    
 
@@ -95,7 +96,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">Olivia Finder</span>
-          <span class="md-header-nav__topic"> Module olivia_finder.myrequests </span>
+          <span class="md-header-nav__topic"> olivia_finder.myrequests </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -216,15 +217,9 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#olivia-finder-myrequests-myrequests-module--page-root" class="md-nav__link">Module olivia_finder.myrequests</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#olivia-finder-myrequests-myrequests-module--page-root" class="md-nav__link">olivia_finder.myrequests</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#submodule-olivia-finder-myrequests-request-handler" class="md-nav__link">Submodule olivia_finder.myrequests.request_handler</a>
-        </li>
-        <li class="md-nav__item"><a href="#submodule-olivia-finder-myrequests-proxy-handler" class="md-nav__link">Submodule olivia_finder.myrequests.proxy_handler</a>
-        </li>
-        <li class="md-nav__item"><a href="#submodule-olivia-finder-myrequests-proxy-builder" class="md-nav__link">Submodule olivia_finder.myrequests.proxy_builder</a>
-        </li>
-        <li class="md-nav__item"><a href="#submodule-olivia-finder-myrequests-useragent-handler" class="md-nav__link">Submodule olivia_finder.myrequests.useragent_handler</a>
+        <li class="md-nav__item"><a href="#submodules" class="md-nav__link">Submodules</a>
         </li></ul>
             </nav>
         </li>
@@ -242,42 +237,37 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="module-olivia-finder-myrequests">
-<h1 id="olivia-finder-myrequests-myrequests-module--page-root">Module olivia_finder.myrequests<a class="headerlink" href="#olivia-finder-myrequests-myrequests-module--page-root" title="Permalink to this heading">¶</a></h1>
-<p>This module contains the RequestHandler class, which is used to handle the requests to the package managers.</p>
-<p>This module contains the following submodules:</p>
-<section id="submodule-olivia-finder-myrequests-request-handler">
-<h2 id="submodule-olivia-finder-myrequests-request-handler">Submodule olivia_finder.myrequests.request_handler<a class="headerlink" href="#submodule-olivia-finder-myrequests-request-handler" title="Permalink to this heading">¶</a></h2>
-<p>Implements the RequestHandler class, which is used to handle the requests to the package managers.</p>
-<div class="toctree-wrapper compound">
+  <section id="olivia-finder-myrequests">
+<h1 id="olivia-finder-myrequests-myrequests-module--page-root">olivia_finder.myrequests<a class="headerlink" href="#olivia-finder-myrequests-myrequests-module--page-root" title="Permalink to this headline">¶</a></h1>
+<p>This module contains a set of classes that are used to handle the requests to the Web scraping based data sources.</p>
+<section id="submodules">
+<h2 id="submodules">Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="request_handler.html">olivia_finder.myrequests.request_handler</a></li>
+<li><p><strong>olivia_finder.myrequests.request_handler</strong></p>
+<blockquote>
+<div><p>Implements the RequestHandler class, which is used to handle the requests to the package managers.</p>
+<p><a class="reference internal" href="request_handler.html#module-olivia_finder.myrequests.request_handler" title="olivia_finder.myrequests.request_handler"><code class="xref py py-mod docutils literal notranslate"><span class="pre">olivia_finder.myrequests.request_handler</span></code></a></p>
+</div></blockquote>
+</li>
+<li><p><strong>olivia_finder.myrequests.proxy_handler</strong></p>
+<blockquote>
+<div><p>Implements the ProxyHandler class, which is used to handle the proxies.</p>
+<p><a class="reference internal" href="proxy_handler.html#module-olivia_finder.myrequests.proxy_handler" title="olivia_finder.myrequests.proxy_handler"><code class="xref py py-mod docutils literal notranslate"><span class="pre">olivia_finder.myrequests.proxy_handler</span></code></a></p>
+</div></blockquote>
+</li>
+<li><p><strong>olivia_finder.myrequests.proxy_builder</strong></p>
+<blockquote>
+<div><p>Implements the ProxyBuilder class, which is used to obtain the proxies.</p>
+<p><a class="reference internal" href="proxy_builder.html#module-olivia_finder.myrequests.proxy_builder" title="olivia_finder.myrequests.proxy_builder"><code class="xref py py-mod docutils literal notranslate"><span class="pre">olivia_finder.myrequests.proxy_builder</span></code></a></p>
+</div></blockquote>
+</li>
+<li><p><strong>olivia_finder.myrequests.useragent_handler</strong></p>
+<blockquote>
+<div><p>Implements the UserAgentHandler class, which is used to handle the user agents.</p>
+<p><a class="reference internal" href="useragents_handler.html#module-olivia_finder.myrequests.useragent_handler" title="olivia_finder.myrequests.useragent_handler"><code class="xref py py-mod docutils literal notranslate"><span class="pre">olivia_finder.myrequests.useragent_handler</span></code></a></p>
+</div></blockquote>
+</li>
 </ul>
-</div>
-</section>
-<section id="submodule-olivia-finder-myrequests-proxy-handler">
-<h2 id="submodule-olivia-finder-myrequests-proxy-handler">Submodule olivia_finder.myrequests.proxy_handler<a class="headerlink" href="#submodule-olivia-finder-myrequests-proxy-handler" title="Permalink to this heading">¶</a></h2>
-<p>Implements the ProxyHandler class, which is used to handle the proxies.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="proxy_handler.html">olivia_finder.myrequests.proxy_handler</a></li>
-</ul>
-</div>
-</section>
-<section id="submodule-olivia-finder-myrequests-proxy-builder">
-<h2 id="submodule-olivia-finder-myrequests-proxy-builder">Submodule olivia_finder.myrequests.proxy_builder<a class="headerlink" href="#submodule-olivia-finder-myrequests-proxy-builder" title="Permalink to this heading">¶</a></h2>
-<p>Implements the ProxyBuilder class, which is used to obtain the proxies.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="proxy_builder.html">olivia_finder.myrequests.proxy_builder</a></li>
-</ul>
-</div>
-</section>
-<section id="submodule-olivia-finder-myrequests-useragent-handler">
-<h2 id="submodule-olivia-finder-myrequests-useragent-handler">Submodule olivia_finder.myrequests.useragent_handler<a class="headerlink" href="#submodule-olivia-finder-myrequests-useragent-handler" title="Permalink to this heading">¶</a></h2>
-<p>Implements the UserAgentHandler class, which is used to handle the user agents.</p>
-<div class="toctree-wrapper compound">
-</div>
 </section>
 </section>
 
@@ -291,7 +281,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="../data_source/csv_network.html" title="Module olivia_finder.data_source.csv_network"
+            <a href="../data_source/repository_scrapers/repository_scrapers_module.html" title="Subpackages olivia_finder.data_source.repository_scrapers"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -300,17 +290,17 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Module olivia_finder.data_source.csv_network </span>
+                      class="md-footer-nav__direction"> Previous </span> Subpackages olivia_finder.data_source.repository_scrapers </span>
               </div>
             </a>
           
           
-            <a href="request_handler.html" title="olivia_finder.myrequests.request_handler"
+            <a href="../utilities/utilities_module.html" title="olivia_finder.utilities"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> olivia_finder.myrequests.request_handler </span>
+                class="md-footer-nav__direction"> Next </span> olivia_finder.utilities </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -328,7 +318,7 @@
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

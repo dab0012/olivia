@@ -23,8 +23,8 @@ import tqdm
 import requests
 from .proxy_handler import ProxyHandler
 from .useragent_handler import UserAgentHandler
-from ..util.logger import MyLogger
-from ..util.util import Util
+from ..utilities.logger import MyLogger
+from ..utilities.util import Util
 
 class RequestHandler:
     '''

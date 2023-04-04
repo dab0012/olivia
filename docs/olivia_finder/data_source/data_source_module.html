@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,18 +47,19 @@
   
   
   
-    <title>Module olivia_finder.data_source &#8212; Olivia Finder  documentation</title>
+    <title>olivia_finder.data_source &#8212; Olivia Finder  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/material.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/custom.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Module olivia_finder.data_source.data_source_abc" href="data_source_abc.html" />
-    <link rel="prev" title="Module olivia_finder.package_manager" href="../package_manager.html" />
+    <link rel="next" title="Subpackages olivia_finder.data_source.repository_scrapers" href="repository_scrapers/repository_scrapers_module.html" />
+    <link rel="prev" title="Olivia Finder’s documentation!" href="../../index.html" />
   
    
 
@@ -95,7 +96,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">Olivia Finder</span>
-          <span class="md-header-nav__topic"> Module olivia_finder.data_source </span>
+          <span class="md-header-nav__topic"> olivia_finder.data_source </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -216,19 +217,11 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#olivia-finder-data-source-data-source-module--page-root" class="md-nav__link">Module olivia_finder.data_source</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#olivia-finder-data-source-data-source-module--page-root" class="md-nav__link">olivia_finder.data_source</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#submodule-olivia-finder-data-source-data-source-abc" class="md-nav__link">Submodule olivia_finder.data_source.data_source_abc</a>
+        <li class="md-nav__item"><a href="#submodules" class="md-nav__link">Submodules</a>
         </li>
-        <li class="md-nav__item"><a href="#submodule-olivia-finder-data-source-data-source" class="md-nav__link">Submodule olivia_finder.data_source.data_source</a>
-        </li>
-        <li class="md-nav__item"><a href="#submodule-olivia-finder-data-source-scraper-abc" class="md-nav__link">Submodule olivia_finder.data_source.scraper_abc</a>
-        </li>
-        <li class="md-nav__item"><a href="#submodule-olivia-finder-data-source-scraper" class="md-nav__link">Submodule olivia_finder.data_source.scraper</a>
-        </li>
-        <li class="md-nav__item"><a href="#submodule-olivia-finder-data-source-scrapers-scrapers-module" class="md-nav__link">Submodule olivia_finder.data_source.scrapers.scrapers_module</a>
-        </li>
-        <li class="md-nav__item"><a href="#submodule-olivia-finder-data-source-scrapers-scrapers-module-abc" class="md-nav__link">Submodule olivia_finder.data_source.scrapers.scrapers_module_abc</a>
+        <li class="md-nav__item"><a href="#subpackages" class="md-nav__link">Subpackages</a>
         </li></ul>
             </nav>
         </li>
@@ -246,86 +239,62 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="module-olivia-finder-data-source">
-<h1 id="olivia-finder-data-source-data-source-module--page-root">Module olivia_finder.data_source<a class="headerlink" href="#olivia-finder-data-source-data-source-module--page-root" title="Permalink to this heading">¶</a></h1>
-<p>This module contains the DataSource class, which is the base class for all data sources.
-It also contains the Scraper class, which is the base class for all scrapers.</p>
-<p>This module contains the following submodules:</p>
-<section id="submodule-olivia-finder-data-source-data-source-abc">
-<h2 id="submodule-olivia-finder-data-source-data-source-abc">Submodule olivia_finder.data_source.data_source_abc<a class="headerlink" href="#submodule-olivia-finder-data-source-data-source-abc" title="Permalink to this heading">¶</a></h2>
-<p>Implements the Abstract Base Class for all data sources.</p>
-<div class="toctree-wrapper compound">
+  <section id="olivia-finder-data-source">
+<h1 id="olivia-finder-data-source-data-source-module--page-root">olivia_finder.data_source<a class="headerlink" href="#olivia-finder-data-source-data-source-module--page-root" title="Permalink to this headline">¶</a></h1>
+<p>This package contains a set of classes and functions that are used to read data from different sources.</p>
+<section id="submodules">
+<h2 id="submodules">Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="data_source_abc.html">Module olivia_finder.data_source.data_source_abc</a></li>
-</ul>
-</div>
-</section>
-<section id="submodule-olivia-finder-data-source-data-source">
-<h2 id="submodule-olivia-finder-data-source-data-source">Submodule olivia_finder.data_source.data_source<a class="headerlink" href="#submodule-olivia-finder-data-source-data-source" title="Permalink to this heading">¶</a></h2>
-<p>Implements the DataSource class, which is the base class for all data sources.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="data_source.html">Module olivia_finder.data_source.data_source</a></li>
-</ul>
-</div>
-</section>
-<section id="submodule-olivia-finder-data-source-scraper-abc">
-<h2 id="submodule-olivia-finder-data-source-scraper-abc">Submodule olivia_finder.data_source.scraper_abc<a class="headerlink" href="#submodule-olivia-finder-data-source-scraper-abc" title="Permalink to this heading">¶</a></h2>
-<p>Implements the Abstract Base Class for all scrapers.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="scraper_abc.html">Module olivia_finder.data_source.scraper_abc</a></li>
-</ul>
-</div>
-</section>
-<section id="submodule-olivia-finder-data-source-scraper">
-<h2 id="submodule-olivia-finder-data-source-scraper">Submodule olivia_finder.data_source.scraper<a class="headerlink" href="#submodule-olivia-finder-data-source-scraper" title="Permalink to this heading">¶</a></h2>
-<p>Implements the Scraper class, which is the base class for all scrapers.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="scraper.html">Module olivia_finder.data_source.scraper</a></li>
-</ul>
-</div>
-</section>
-<section id="submodule-olivia-finder-data-source-scrapers-scrapers-module">
-<h2 id="submodule-olivia-finder-data-source-scrapers-scrapers-module">Submodule olivia_finder.data_source.scrapers.scrapers_module<a class="headerlink" href="#submodule-olivia-finder-data-source-scrapers-scrapers-module" title="Permalink to this heading">¶</a></h2>
-<p>Contains the custom scrapers modules, which are used to scrape data from an especific package_manager</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="scrapers/scrapers_module.html">Module olivia_finder.data_source.scrapers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="scrapers/scrapers_module.html#init-py">__init__.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scrapers/scrapers_module.html#submodule-olivia-finder-data-source-scrapers-cran">Submodule olivia_finder.data_source.scrapers.cran</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scrapers/scrapers_module.html#submodule-olivia-finder-data-source-scrapers-bioconductor">Submodule olivia_finder.data_source.scrapers.bioconductor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scrapers/scrapers_module.html#submodule-olivia-finder-data-source-scrapers-r">Submodule olivia_finder.data_source.scrapers.r</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scrapers/scrapers_module.html#submodule-olivia-finder-data-source-scrapers-npm">Submodule olivia_finder.data_source.scrapers.npm</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scrapers/scrapers_module.html#submodule-olivia-finder-data-source-scrapers-pypi">Submodule olivia_finder.data_source.scrapers.pypi</a></li>
-</ul>
+<li><p><strong>olivia_finder.data_source.data_source_abc</strong></p>
+<blockquote>
+<div><p>Implements the Abstract Base Class for all data sources.</p>
+<p><a class="reference internal" href="data_source_abc.html#module-olivia_finder.data_source.data_source_abc" title="olivia_finder.data_source.data_source_abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">olivia_finder.data_source.data_source_abc</span></code></a></p>
+</div></blockquote>
+</li>
+<li><p><strong>olivia_finder.data_source.data_source</strong></p>
+<blockquote>
+<div><p>Implements the DataSource class, which is the base class for all data sources.</p>
+<p><a class="reference internal" href="data_source.html#module-olivia_finder.data_source.data_source" title="olivia_finder.data_source.data_source"><code class="xref py py-mod docutils literal notranslate"><span class="pre">olivia_finder.data_source.data_source</span></code></a></p>
+</div></blockquote>
+</li>
+<li><p><strong>olivia_finder.data_source.scraper_ds_abc</strong></p>
+<blockquote>
+<div><p>Implements the Abstract Base Class for all scrapers.</p>
+<p><a class="reference internal" href="scraper_ds_abc.html#module-olivia_finder.data_source.scraper_ds_abc" title="olivia_finder.data_source.scraper_ds_abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">olivia_finder.data_source.scraper_ds_abc</span></code></a></p>
+</div></blockquote>
+</li>
+<li><p><strong>olivia_finder.data_source.scraper_ds</strong></p>
+<blockquote>
+<div><p>Implements the Scraper class, which is the base class for all scrapers.</p>
+<p><a class="reference internal" href="scraper_ds.html#module-olivia_finder.data_source.scraper_ds" title="olivia_finder.data_source.scraper_ds"><code class="xref py py-mod docutils literal notranslate"><span class="pre">olivia_finder.data_source.scraper_ds</span></code></a></p>
+</div></blockquote>
+</li>
+<li><p><strong>olivia_finder.data_source.csv_ds</strong></p>
+<blockquote>
+<div><p>Implements the CSVDataSource class, which is used to read data from a CSV file.</p>
+<p><a class="reference internal" href="csv_ds.html#module-olivia_finder.data_source.csv_ds" title="olivia_finder.data_source.csv_ds"><code class="xref py py-mod docutils literal notranslate"><span class="pre">olivia_finder.data_source.csv_ds</span></code></a></p>
+</div></blockquote>
+</li>
+<li><p><strong>olivia_finder.data_source.librariesio_ds</strong></p>
+<blockquote>
+<div><p>Implements the LibrariesIODataSource class, which is used to read data from the Libraries.io API.</p>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">olivia_finder.data_source.librariesio_ds</span></code></p>
+</div></blockquote>
 </li>
 </ul>
-</div>
 </section>
-<section id="submodule-olivia-finder-data-source-scrapers-scrapers-module-abc">
-<h2 id="submodule-olivia-finder-data-source-scrapers-scrapers-module-abc">Submodule olivia_finder.data_source.scrapers.scrapers_module_abc<a class="headerlink" href="#submodule-olivia-finder-data-source-scrapers-scrapers-module-abc" title="Permalink to this heading">¶</a></h2>
-<p>Implements the class CSVNetwork which is used to obtain data from the CSVNetwork package manager.</p>
+<section id="subpackages">
+<h2 id="subpackages">Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p><strong>olivia_finder.data_source.repository_scrapers</strong></p>
+<blockquote>
+<div><p>Contains the custom scrapers modules, which are used to scrape data from an especific package_manager</p>
+</div></blockquote>
+</li>
+</ul>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="csv_network.html">Module olivia_finder.data_source.csv_network</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="csv_network.html#csv-network-py">csv_network.py</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="csv_network.html#description">Description</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="csv_network.html#class-csvnetwork">Class CSVNetwork</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="csv_network.html#olivia_finder.data_source.csv_network.CSVNetwork"><code class="docutils literal notranslate"><span class="pre">CSVNetwork</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="csv_network.html#olivia_finder.data_source.csv_network.CSVNetwork.get_info"><code class="docutils literal notranslate"><span class="pre">CSVNetwork.get_info()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="csv_network.html#olivia_finder.data_source.csv_network.CSVNetwork.obtain_package_data"><code class="docutils literal notranslate"><span class="pre">CSVNetwork.obtain_package_data()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="csv_network.html#olivia_finder.data_source.csv_network.CSVNetwork.obtain_package_names"><code class="docutils literal notranslate"><span class="pre">CSVNetwork.obtain_package_names()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="csv_network.html#olivia_finder.data_source.csv_network.CSVNetwork.obtain_packages_data"><code class="docutils literal notranslate"><span class="pre">CSVNetwork.obtain_packages_data()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="repository_scrapers/repository_scrapers_module.html">Subpackages olivia_finder.data_source.repository_scrapers</a></li>
 </ul>
 </div>
 </section>
@@ -341,7 +310,7 @@ It also contains the Scraper class, which is the base class for all scrapers.</p
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="../package_manager.html" title="Module olivia_finder.package_manager"
+            <a href="../../index.html" title="Olivia Finder’s documentation!"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -350,17 +319,17 @@ It also contains the Scraper class, which is the base class for all scrapers.</p
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Module olivia_finder.package_manager </span>
+                      class="md-footer-nav__direction"> Previous </span> Olivia Finder’s documentation! </span>
               </div>
             </a>
           
           
-            <a href="data_source_abc.html" title="Module olivia_finder.data_source.data_source_abc"
+            <a href="repository_scrapers/repository_scrapers_module.html" title="Subpackages olivia_finder.data_source.repository_scrapers"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Module olivia_finder.data_source.data_source_abc </span>
+                class="md-footer-nav__direction"> Next </span> Subpackages olivia_finder.data_source.repository_scrapers </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -378,7 +347,7 @@ It also contains the Scraper class, which is the base class for all scrapers.</p
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

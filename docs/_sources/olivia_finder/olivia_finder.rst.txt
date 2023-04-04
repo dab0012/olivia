@@ -17,7 +17,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   olivia_finder.csv_network
+   olivia_finder.csv_ds
    olivia_finder.data_source
    olivia_finder.package
    olivia_finder.package_manager

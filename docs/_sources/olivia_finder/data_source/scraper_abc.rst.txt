@@ -3,11 +3,11 @@ Module olivia_finder.data_source.scraper_abc
 
 .. automodule:: olivia_finder.data_source.scraper_abc
 
-Abstract Class ScraperABC
+Abstract Class ScraperDatasourceABC
 -------------------------
 Interface for all scrapers.
 
-.. autoclass:: ScraperABC
+.. autoclass:: ScraperDatasourceABC
    :members:
    :undoc-members:
    :show-inheritance:

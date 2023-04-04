@@ -1,60 +1,61 @@
-Module olivia_finder.data_source
-================================
+olivia_finder.data_source
+=========================
 
-This module contains the DataSource class, which is the base class for all data sources. 
-It also contains the Scraper class, which is the base class for all scrapers.
+This package contains a set of classes and functions that are used to read data from different sources.
 
-This module contains the following submodules:
+Submodules
+----------
+
+* **olivia_finder.data_source.data_source_abc**
+
+   Implements the Abstract Base Class for all data sources.
+
+   :mod:`olivia_finder.data_source.data_source_abc`
+
+* **olivia_finder.data_source.data_source**
+
+   Implements the DataSource class, which is the base class for all data sources.
+
+   :mod:`olivia_finder.data_source.data_source`
+
+* **olivia_finder.data_source.scraper_ds_abc**
+
+   Implements the Abstract Base Class for all scrapers.
+
+   :mod:`olivia_finder.data_source.scraper_ds_abc`
+
+* **olivia_finder.data_source.scraper_ds**
+
+   Implements the Scraper class, which is the base class for all scrapers.
+
+   :mod:`olivia_finder.data_source.scraper_ds`
+
+* **olivia_finder.data_source.csv_ds**
+
+   Implements the CSVDataSource class, which is used to read data from a CSV file.
+
+   :mod:`olivia_finder.data_source.csv_ds`
 
 
-Submodule olivia_finder.data_source.data_source_abc
----------------------------------------------------
-Implements the Abstract Base Class for all data sources.
+* **olivia_finder.data_source.librariesio_ds**
+
+   Implements the LibrariesIODataSource class, which is used to read data from the Libraries.io API.
+
+   :mod:`olivia_finder.data_source.librariesio_ds`
+
+Subpackages
+-----------
+
+* **olivia_finder.data_source.repository_scrapers**
+
+   Contains the custom scrapers modules, which are used to scrape data from an especific package_manager
 
 .. toctree::
    :maxdepth: 1
 
-   data_source_abc
+   repository_scrapers/repository_scrapers_module
 
-Submodule olivia_finder.data_source.data_source
------------------------------------------------
-Implements the DataSource class, which is the base class for all data sources.
 
-.. toctree::
-   :maxdepth: 1
 
-   data_source
 
-Submodule olivia_finder.data_source.scraper_abc
------------------------------------------------
-Implements the Abstract Base Class for all scrapers.
 
-.. toctree::
-   :maxdepth: 1
-
-   scraper_abc
-
-Submodule olivia_finder.data_source.scraper
--------------------------------------------
-Implements the Scraper class, which is the base class for all scrapers.
-
-.. toctree::
-   :maxdepth: 1
-
-   scraper
-
-Submodule olivia_finder.data_source.scrapers.scrapers_module
-------------------------------------------------------------
-Contains the custom scrapers modules, which are used to scrape data from an especific package_manager
-
-.. toctree::
-   :maxdepth: 2
-
-   scrapers/scrapers_module
-
-Submodule olivia_finder.data_source.scrapers.scrapers_module_abc
-----------------------------------------------------------------
-Implements the class CSVNetwork which is used to obtain data from the CSVNetwork package manager.
-
-.. toctree::
-   csv_network

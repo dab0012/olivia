@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="../../_static/material.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/custom.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -248,7 +249,7 @@
 <span class="kn">import</span> <span class="nn">tqdm</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">.data_source.data_source_abc</span> <span class="kn">import</span> <span class="n">DataSourceABC</span>
-<span class="kn">from</span> <span class="nn">.data_source.csv_network</span> <span class="kn">import</span> <span class="n">CSVNetwork</span>
+<span class="kn">from</span> <span class="nn">.data_source.csv_ds</span> <span class="kn">import</span> <span class="n">CSVDataSource</span>
 <span class="kn">from</span> <span class="nn">.package</span> <span class="kn">import</span> <span class="n">Package</span>
 
 <div class="viewcode-block" id="PackageManager"><a class="viewcode-back" href="../../olivia_finder/package_manager.html#olivia_finder.package_manager.PackageManager">[docs]</a><span class="k">class</span> <span class="nc">PackageManager</span><span class="p">():</span>
@@ -497,7 +498,7 @@
             <span class="k">raise</span> <span class="n">PackageManagerLoadError</span><span class="p">(</span><span class="s2">"Invalid csv format"</span><span class="p">)</span>
 
         <span class="c1"># We create the data source</span>
-        <span class="n">data_source</span> <span class="o">=</span> <span class="n">CSVNetwork</span><span class="p">(</span>
+        <span class="n">data_source</span> <span class="o">=</span> <span class="n">CSVDataSource</span><span class="p">(</span>
             <span class="n">file_path</span><span class="o">=</span><span class="n">csv_path</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="s2">"Package Manager CSV"</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">"Package Manager obtained from a csv file"</span><span class="p">,</span>
@@ -669,7 +670,7 @@
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

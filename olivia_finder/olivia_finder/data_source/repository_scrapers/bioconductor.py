@@ -21,10 +21,10 @@ from bs4 import BeautifulSoup
 from typing import Dict, Optional, List
 from typing_extensions import override
 
-from ...data_source.scraper import ScraperError
-from ...data_source.scrapers.r import RScraper
+from ..scraper_ds import ScraperError
+from ...data_source.repository_scrapers.r import RScraper
 from ...myrequests.request_handler import RequestHandler
-from ...util.util import Util
+from ...utilities.util import Util
 
 # Selenium imports (for scraping JavaScript pages)
 from selenium import webdriver                                    

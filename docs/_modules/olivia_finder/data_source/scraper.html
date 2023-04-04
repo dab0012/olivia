@@ -249,14 +249,14 @@
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">tqdm</span>
 <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">override</span>
-<span class="kn">from</span> <span class="nn">.scraper_abc</span> <span class="kn">import</span> <span class="n">ScraperABC</span>
+<span class="kn">from</span> <span class="nn">.scraper_abc</span> <span class="kn">import</span> <span class="n">ScraperDatasourceABC</span>
 <span class="kn">from</span> <span class="nn">..myrequests.request_handler</span> <span class="kn">import</span> <span class="n">RequestHandler</span>
 <span class="kn">from</span> <span class="nn">..util.logger</span> <span class="kn">import</span> <span class="n">MyLogger</span>
 
-<div class="viewcode-block" id="Scraper"><a class="viewcode-back" href="../../../olivia_finder/data_source/scraper.html#olivia_finder.data_source.scraper.Scraper">[docs]</a><span class="k">class</span> <span class="nc">Scraper</span><span class="p">(</span><span class="n">ScraperABC</span><span class="p">):</span>
+<div class="viewcode-block" id="Scraper"><a class="viewcode-back" href="../../../olivia_finder/data_source/scraper.html#olivia_finder.data_source.scraper.Scraper">[docs]</a><span class="k">class</span> <span class="nc">Scraper</span><span class="p">(</span><span class="n">ScraperDatasourceABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Base class for scraping a package manager</span>
-<span class="sd">    Implements the methods of the ScraperABC interface class</span>
+<span class="sd">    Implements the methods of the ScraperDatasourceABC interface class</span>
 <span class="sd">    </span>
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>

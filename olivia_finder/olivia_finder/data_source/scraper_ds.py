@@ -1,6 +1,6 @@
 '''
-scraper.py
-==================
+scraper_ds.py
+=============
 
 Description
 -----------
@@ -20,14 +20,14 @@ from typing import Dict, List, Optional, Tuple
 import requests
 import tqdm
 from typing_extensions import override
-from .scraper_abc import ScraperABC
+from .scraper_ds_abc import ScraperDataSourceABC
 from ..myrequests.request_handler import RequestHandler
-from ..util.logger import MyLogger
+from ..utilities.logger import MyLogger
 
-class Scraper(ScraperABC):
+class ScraperDataSource(ScraperDataSourceABC):
     """
     Base class for scraping a package manager
-    Implements the methods of the ScraperABC interface class
+    Implements the methods of the ScraperDatasourceABC interface class
     
     Attributes
     ----------

@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -52,12 +52,13 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/custom.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Module olivia_finder.package" href="olivia_finder/package.html" />
+    <link rel="next" title="olivia_finder.data_source" href="olivia_finder/data_source/data_source_module.html" />
   
    
 
@@ -219,17 +220,9 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#introduction" class="md-nav__link">Introduction</a>
         </li>
-        <li class="md-nav__item"><a href="#modules" class="md-nav__link">Modules</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#module-olivia-finder-package" class="md-nav__link">Module olivia_finder.package</a>
+        <li class="md-nav__item"><a href="#modules" class="md-nav__link">Modules</a>
         </li>
-        <li class="md-nav__item"><a href="#module-olivia-finder-package-manager" class="md-nav__link">Module olivia_finder.package_manager</a>
-        </li>
-        <li class="md-nav__item"><a href="#module-olivia-finder-data-source" class="md-nav__link">Module olivia_finder.data_source</a>
-        </li>
-        <li class="md-nav__item"><a href="#module-olivia-finder-myrequests" class="md-nav__link">Module olivia_finder.myrequests</a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#subpackages" class="md-nav__link">Subpackages</a>
         </li>
         <li class="md-nav__item"><a href="#indices-and-tables" class="md-nav__link">Indices and tables</a>
         </li></ul>
@@ -250,51 +243,70 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="olivia-finder-s-documentation">
-<h1 id="index--page-root">Olivia Finder’s documentation!<a class="headerlink" href="#index--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="index--page-root">Olivia Finder’s documentation!<a class="headerlink" href="#index--page-root" title="Permalink to this headline">¶</a></h1>
 <section id="introduction">
-<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h2>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Olivia Finder is a Python library that allows users to obtain from package data to be used with the Olivia project,
 an open-source library that indexes vulnerability identification and analysis.
 Olivia is designed to help software developers and centralised package managers understand the risks of using dependencies in their projects.</p>
 </section>
 <section id="modules">
-<h2 id="modules">Modules<a class="headerlink" href="#modules" title="Permalink to this heading">¶</a></h2>
+<h2 id="modules">Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
 <p>Here are the modules provided by Olivia Finder:</p>
-<section id="module-olivia-finder-package">
-<h3 id="module-olivia-finder-package">Module olivia_finder.package<a class="headerlink" href="#module-olivia-finder-package" title="Permalink to this heading">¶</a></h3>
+<ul>
+<li><p><strong>olivia_finder.package</strong></p>
+<blockquote>
+<div><p>This module contains the Package class, which is used to represent a package and its metadata.</p>
+<p><a class="reference internal" href="olivia_finder/package.html#module-olivia_finder.package" title="olivia_finder.package"><code class="xref py py-mod docutils literal notranslate"><span class="pre">olivia_finder.package</span></code></a></p>
+</div></blockquote>
+</li>
+<li><p><strong>olivia_finder.package_manager</strong></p>
+<blockquote>
+<div><p>This module contains the PackageManager class, which is used to represent a package manager and itd packages
+The PackageManager class provides a set of methods to obtain package objects from a package manager.</p>
+<p><a class="reference internal" href="olivia_finder/package_manager.html#module-olivia_finder.package_manager" title="olivia_finder.package_manager"><code class="xref py py-mod docutils literal notranslate"><span class="pre">olivia_finder.package_manager</span></code></a></p>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="subpackages">
+<h2 id="subpackages">Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p><strong>olivia_finder.data_source</strong></p>
+<blockquote>
+<div><p>This subpackage contains the DataSource class, which is used to represent a data source and its data
+The DataSource class provides a set of methods to obtain package data from a data source.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="olivia_finder/package.html">Module olivia_finder.package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="olivia_finder/data_source/data_source_module.html">olivia_finder.data_source</a></li>
 </ul>
 </div>
-</section>
-<section id="module-olivia-finder-package-manager">
-<h3 id="module-olivia-finder-package-manager">Module olivia_finder.package_manager<a class="headerlink" href="#module-olivia-finder-package-manager" title="Permalink to this heading">¶</a></h3>
+</div></blockquote>
+</li>
+<li><p><strong>olivia_finder.myrequests</strong></p>
+<blockquote>
+<div><p>This subpackage contains a set os classes that can be used to make requests to a Web scraping based data_source</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="olivia_finder/package_manager.html">Module olivia_finder.package_manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="olivia_finder/myrequests/myrequests_module.html">olivia_finder.myrequests</a></li>
 </ul>
 </div>
-</section>
-<section id="module-olivia-finder-data-source">
-<h3 id="module-olivia-finder-data-source">Module olivia_finder.data_source<a class="headerlink" href="#module-olivia-finder-data-source" title="Permalink to this heading">¶</a></h3>
+</div></blockquote>
+</li>
+<li><p><strong>olivia_finder.utilities</strong></p>
+<blockquote>
+<div><p>This subpackage contains a set of utility Classes and functions to help with the use of Olivia Finder</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="olivia_finder/data_source/data_source_module.html">Module olivia_finder.data_source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="olivia_finder/utilities/utilities_module.html">olivia_finder.utilities</a></li>
 </ul>
 </div>
-</section>
-<section id="module-olivia-finder-myrequests">
-<h3 id="module-olivia-finder-myrequests">Module olivia_finder.myrequests<a class="headerlink" href="#module-olivia-finder-myrequests" title="Permalink to this heading">¶</a></h3>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="olivia_finder/myrequests/myrequests_module.html">Module olivia_finder.myrequests</a></li>
+</div></blockquote>
+</li>
 </ul>
-</div>
-</section>
 </section>
 <section id="indices-and-tables">
-<h2 id="indices-and-tables">Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h2>
+<h2 id="indices-and-tables">Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
@@ -314,12 +326,12 @@ Olivia is designed to help software developers and centralised package managers 
       <nav class="md-footer-nav__inner md-grid">
           
           
-            <a href="olivia_finder/package.html" title="Module olivia_finder.package"
+            <a href="olivia_finder/data_source/data_source_module.html" title="olivia_finder.data_source"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Module olivia_finder.package </span>
+                class="md-footer-nav__direction"> Next </span> olivia_finder.data_source </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -337,7 +349,7 @@ Olivia is designed to help software developers and centralised package managers 
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

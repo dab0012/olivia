@@ -1,14 +1,14 @@
 '''
-csv_network.py
-==================
+csv_ds.py
+=========
 
 Description
 -----------
 
-Module that contains ...
+Module that contains the CSVDataSource class, which implements the methods for loading a network from a CSV file.
 
 File information:
-    - File: csv_network.py
+    - File: csv_ds.py
     - Project: data_source
     - Created Date: 2023-03-18 14:40:56
     - Author: Daniel Alonso Báscones
@@ -22,10 +22,10 @@ from typing import Dict, List, Optional
 from typing_extensions import override
 import pandas as pd
 import tqdm
-from ..util.logger import MyLogger
+from ..utilities.logger import MyLogger
 from .data_source import DataSource
 
-class CSVNetwork(DataSource):
+class CSVDataSource(DataSource):
     """
     Class that implements the methods for loading a network from a CSV file.
     Implements the DataSource interface.
@@ -67,10 +67,10 @@ class CSVNetwork(DataSource):
 
     Examples
     --------
-    >>> from olivia_finder.csv_network import CSVNetwork
-    >>> csv_network = CSVNetwork()
-    >>> csv_network.load_data("data.csv", "dependent", "dependency")
-    >>> package_names = csv_network.obtain_package_names()
+    >>> from olivia_finder.csv_ds import CSVDataSource
+    >>> csv_ds = CSVDataSource()
+    >>> csv_ds.load_data("data.csv", "dependent", "dependency")
+    >>> package_names = csv_ds.obtain_package_names()
     """
     
     def __init__(

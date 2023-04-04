@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -52,13 +52,12 @@
     <link rel="stylesheet" type="text/css" href="../../_static/material.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/custom.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="olivia_finder.myrequests.proxy_handler" href="proxy_handler.html" />
-    <link rel="prev" title="Module olivia_finder.myrequests" href="myrequests_module.html" />
   
    
 
@@ -169,7 +168,6 @@
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
           <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">Olivia Finder  documentation</a></li>
-          <li class="md-tabs__item"><a href="myrequests_module.html" class="md-tabs__link">Module olivia_finder.myrequests</a></li>
       </ul>
     </div>
   </nav>
@@ -225,19 +223,7 @@
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#class-requesthandler" class="md-nav__link">Class RequestHandler</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#olivia_finder.myrequests.request_handler.RequestHandler" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">RequestHandler</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#olivia_finder.myrequests.request_handler.RequestHandler.do_parallel_requests" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">RequestHandler.do_parallel_requests()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#olivia_finder.myrequests.request_handler.RequestHandler.do_request" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">RequestHandler.do_request()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#olivia_finder.myrequests.request_handler.RequestHandler.force_change_proxy" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">RequestHandler.force_change_proxy()</span></code></a>
-        </li></ul>
-            </nav>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#class-requesthandler" class="md-nav__link">Class RequestHandler</a>
         </li></ul>
             </nav>
         </li>
@@ -256,11 +242,11 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="module-olivia_finder.myrequests.request_handler">
-<span id="olivia-finder-myrequests-request-handler"></span><h1 id="olivia-finder-myrequests-request-handler--page-root">olivia_finder.myrequests.request_handler<a class="headerlink" href="#olivia-finder-myrequests-request-handler--page-root" title="Permalink to this heading">¶</a></h1>
+<span id="olivia-finder-myrequests-request-handler"></span><h1 id="olivia-finder-myrequests-request-handler--page-root">olivia_finder.myrequests.request_handler<a class="headerlink" href="#olivia-finder-myrequests-request-handler--page-root" title="Permalink to this headline">¶</a></h1>
 <section id="request-handler-py">
-<h2 id="request-handler-py">request_handler.py<a class="headerlink" href="#request-handler-py" title="Permalink to this heading">¶</a></h2>
+<h2 id="request-handler-py">request_handler.py<a class="headerlink" href="#request-handler-py" title="Permalink to this headline">¶</a></h2>
 <section id="description">
-<h3 id="description">Description<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h3>
+<h3 id="description">Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h3>
 <p>Module that contains …</p>
 <dl class="simple">
 <dt>File information:</dt><dd><ul class="simple">
@@ -275,17 +261,17 @@
 </section>
 </section>
 <section id="class-requesthandler">
-<h2 id="class-requesthandler">Class RequestHandler<a class="headerlink" href="#class-requesthandler" title="Permalink to this heading">¶</a></h2>
+<h2 id="class-requesthandler">Class RequestHandler<a class="headerlink" href="#class-requesthandler" title="Permalink to this headline">¶</a></h2>
 <p>Class for handling requests.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="olivia_finder.myrequests.request_handler.RequestHandler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.myrequests.request_handler.</span></span><span class="sig-name descname"><span class="pre">RequestHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proxy_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="proxy_handler.html#olivia_finder.myrequests.proxy_handler.ProxyHandler" title="olivia_finder.myrequests.proxy_handler.ProxyHandler"><span class="pre">ProxyHandler</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useragents_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="useragents_handler.html#olivia_finder.myrequests.useragent_handler.UserAgentHandler" title="olivia_finder.myrequests.useragent_handler.UserAgentHandler"><span class="pre">UserAgentHandler</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_processes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/olivia_finder/myrequests/request_handler.html#RequestHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.myrequests.request_handler.RequestHandler" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.myrequests.request_handler.</span></span><span class="sig-name descname"><span class="pre">RequestHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proxy_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="proxy_handler.html#olivia_finder.myrequests.proxy_handler.ProxyHandler" title="olivia_finder.myrequests.proxy_handler.ProxyHandler"><span class="pre">olivia_finder.myrequests.proxy_handler.ProxyHandler</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useragents_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="useragents_handler.html#olivia_finder.myrequests.useragent_handler.UserAgentHandler" title="olivia_finder.myrequests.useragent_handler.UserAgentHandler"><span class="pre">olivia_finder.myrequests.useragent_handler.UserAgentHandler</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_processes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/olivia_finder/myrequests/request_handler.html#RequestHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.myrequests.request_handler.RequestHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class that handles HTTP requests in a more transparent way in scraping and denial of service environments
 by the servers from which the data is requested 
 Basically, it manages the proxies and user agents so that scraping is not detected</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>proxy_handler</strong><span class="classifier">Optional[ProxyHandler]</span></dt><dd><p>Proxy handler, if None, it will be initialized with a generic ProxyHandler</p>
 </dd>
@@ -299,7 +285,7 @@ Basically, it manages the proxies and user agents so that scraping is not detect
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dt class="field-even">Attributes</dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>proxy_handler</strong><span class="classifier">ProxyHandler</span></dt><dd><p>Proxy handler</p>
 </dd>
@@ -317,7 +303,11 @@ Basically, it manages the proxies and user agents so that scraping is not detect
 </dd>
 </dl>
 <p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#olivia_finder.myrequests.request_handler.RequestHandler.do_parallel_requests" title="olivia_finder.myrequests.request_handler.RequestHandler.do_parallel_requests"><code class="xref py py-obj docutils literal notranslate"><span class="pre">do_parallel_requests</span></code></a>(url_list[, param_list, ...])</p></td>
 <td><p>Do requests to the given urls.</p></td>
@@ -332,11 +322,11 @@ Basically, it manages the proxies and user agents so that scraping is not detect
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="olivia_finder.myrequests.request_handler.RequestHandler.do_parallel_requests">
-<span class="sig-name descname"><span class="pre">do_parallel_requests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_bar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tqdm</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Response</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/olivia_finder/myrequests/request_handler.html#RequestHandler.do_parallel_requests"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.myrequests.request_handler.RequestHandler.do_parallel_requests" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">do_parallel_requests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_bar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">tqdm.std.tqdm</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">requests.models.Response</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/olivia_finder/myrequests/request_handler.html#RequestHandler.do_parallel_requests"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.myrequests.request_handler.RequestHandler.do_parallel_requests" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do requests to the given urls.
 It uses multiprocessing to do the requests in parallel.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>url_list</strong><span class="classifier">List[str]</span></dt><dd><p>List of urls to do the requests</p>
 </dd>
@@ -346,7 +336,7 @@ It uses multiprocessing to do the requests in parallel.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
 <dt>List[Union[Tuple[str, requests.Response], None]]</dt><dd><p>List of tuples with the url and the response if the request was successful, None otherwise</p>
 </dd>
@@ -364,11 +354,11 @@ It uses multiprocessing to do the requests in parallel.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="olivia_finder.myrequests.request_handler.RequestHandler.do_request">
-<span class="sig-name descname"><span class="pre">do_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Response</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/olivia_finder/myrequests/request_handler.html#RequestHandler.do_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.myrequests.request_handler.RequestHandler.do_request" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">do_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">requests.models.Response</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/olivia_finder/myrequests/request_handler.html#RequestHandler.do_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.myrequests.request_handler.RequestHandler.do_request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do a request to the given url and return the response.
 It uses a proxy and a user agent if they are available.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>url</strong><span class="classifier">str</span></dt><dd><p>Url to do the request</p>
 </dd>
@@ -376,13 +366,13 @@ It uses a proxy and a user agent if they are available.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
 <dt>Union[Tuple[str, requests.Response], None]</dt><dd><p>Tuple with the url and the response if the request was successful, None otherwise</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dt class="field-odd">Raises</dt>
 <dd class="field-odd"><dl class="simple">
 <dt>RequestError</dt><dd><p>If there is an error doing the request</p>
 </dd>
@@ -415,30 +405,6 @@ It uses a proxy and a user agent if they are available.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="myrequests_module.html" title="Module olivia_finder.myrequests"
-               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
-               rel="prev">
-              <div class="md-flex__cell md-flex__cell--shrink">
-                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-              </div>
-              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-                <span class="md-flex__ellipsis">
-                  <span
-                      class="md-footer-nav__direction"> Previous </span> Module olivia_finder.myrequests </span>
-              </div>
-            </a>
-          
-          
-            <a href="proxy_handler.html" title="olivia_finder.myrequests.proxy_handler"
-               class="md-flex md-footer-nav__link md-footer-nav__link--next"
-               rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
-                class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> olivia_finder.myrequests.proxy_handler </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink"><i
-                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
           
         </a>
         
@@ -452,7 +418,7 @@ It uses a proxy and a user agent if they are available.</p>
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

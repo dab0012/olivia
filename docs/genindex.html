@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/custom.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
@@ -229,15 +230,13 @@
 <h1 id="index">Index</h1>
 
 <div class="genindex-jumpbox">
- <a href="#B"><strong>B</strong></a>
- | <a href="#C"><strong>C</strong></a>
+ <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
- | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
@@ -246,28 +245,16 @@
  | <a href="#U"><strong>U</strong></a>
  
 </div>
-<h2 id="B">B</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="olivia_finder/data_source/scrapers/bioconductor.html#olivia_finder.data_source.scrapers.bioconductor.BiocScraper">BiocScraper (class in olivia_finder.data_source.scrapers.bioconductor)</a>
-</li>
-  </ul></td>
-</tr></table>
-
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="olivia_finder/data_source/scrapers/npm.html#olivia_finder.data_source.scrapers.npm.NpmScraper.chunks_folder">chunks_folder (olivia_finder.data_source.scrapers.npm.NpmScraper attribute)</a>
-</li>
-      <li><a href="olivia_finder/data_source/scrapers/cran.html#olivia_finder.data_source.scrapers.cran.CranScraper.CRAN_PACKAGE_DATA_URL">CRAN_PACKAGE_DATA_URL (olivia_finder.data_source.scrapers.cran.CranScraper attribute)</a>
+      <li><a href="olivia_finder/utilities/util.html#olivia_finder.utilities.util.Util.clean_string">clean_string() (olivia_finder.utilities.util.Util static method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="olivia_finder/data_source/scrapers/cran.html#olivia_finder.data_source.scrapers.cran.CranScraper.CRAN_PACKAGE_LIST_URL">CRAN_PACKAGE_LIST_URL (olivia_finder.data_source.scrapers.cran.CranScraper attribute)</a>
+      <li><a href="olivia_finder/utilities/config_ini.html#olivia_finder.utilities.config_ini.Configuration">Configuration (class in olivia_finder.utilities.config_ini)</a>
 </li>
-      <li><a href="olivia_finder/data_source/scrapers/cran.html#olivia_finder.data_source.scrapers.cran.CranScraper">CranScraper (class in olivia_finder.data_source.scrapers.cran)</a>
-</li>
-      <li><a href="olivia_finder/data_source/csv_network.html#olivia_finder.data_source.csv_network.CSVNetwork">CSVNetwork (class in olivia_finder.data_source.csv_network)</a>
+      <li><a href="olivia_finder/data_source/csv_ds.html#olivia_finder.data_source.csv_ds.CSVDataSource">CSVDataSource (class in olivia_finder.data_source.csv_ds)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -283,12 +270,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="olivia_finder/data_source/scrapers/cran.html#olivia_finder.data_source.scrapers.cran.CranScraper.DESCRIPTION">DESCRIPTION (olivia_finder.data_source.scrapers.cran.CranScraper attribute)</a>
-
-      <ul>
-        <li><a href="olivia_finder/data_source/scrapers/npm.html#olivia_finder.data_source.scrapers.npm.NpmScraper.DESCRIPTION">(olivia_finder.data_source.scrapers.npm.NpmScraper attribute)</a>
+      <li><a href="olivia_finder/utilities/logger.html#olivia_finder.utilities.logger.MyLogger.disable_logger">disable_logger() (olivia_finder.utilities.logger.MyLogger static method)</a>
 </li>
-      </ul></li>
       <li><a href="olivia_finder/myrequests/request_handler.html#olivia_finder.myrequests.request_handler.RequestHandler.do_parallel_requests">do_parallel_requests() (olivia_finder.myrequests.request_handler.RequestHandler method)</a>
 </li>
       <li><a href="olivia_finder/myrequests/request_handler.html#olivia_finder.myrequests.request_handler.RequestHandler.do_request">do_request() (olivia_finder.myrequests.request_handler.RequestHandler method)</a>
@@ -299,10 +282,12 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="olivia_finder/package_manager.html#olivia_finder.package_manager.PackageManager.export_adjlist">export_adjlist() (olivia_finder.package_manager.PackageManager method)</a>
+      <li><a href="olivia_finder/utilities/logger.html#olivia_finder.utilities.logger.MyLogger.enable_logger">enable_logger() (olivia_finder.utilities.logger.MyLogger static method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="olivia_finder/package_manager.html#olivia_finder.package_manager.PackageManager.export_adjlist">export_adjlist() (olivia_finder.package_manager.PackageManager method)</a>
+</li>
       <li><a href="olivia_finder/package_manager.html#olivia_finder.package_manager.PackageManager.export_full_adjlist">export_full_adjlist() (olivia_finder.package_manager.PackageManager method)</a>
 </li>
   </ul></td>
@@ -321,18 +306,22 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="olivia_finder/data_source/data_source.html#olivia_finder.data_source.data_source.DataSource.generate_package_dependency_network">generate_package_dependency_network() (olivia_finder.data_source.data_source.DataSource method)</a>
 </li>
-      <li><a href="olivia_finder/data_source/csv_network.html#olivia_finder.data_source.csv_network.CSVNetwork.get_info">get_info() (olivia_finder.data_source.csv_network.CSVNetwork method)</a>
+      <li><a href="olivia_finder/data_source/csv_ds.html#olivia_finder.data_source.csv_ds.CSVDataSource.get_info">get_info() (olivia_finder.data_source.csv_ds.CSVDataSource method)</a>
 
       <ul>
         <li><a href="olivia_finder/data_source/data_source.html#olivia_finder.data_source.data_source.DataSource.get_info">(olivia_finder.data_source.data_source.DataSource method)</a>
 </li>
         <li><a href="olivia_finder/data_source/data_source_abc.html#olivia_finder.data_source.data_source_abc.DataSourceABC.get_info">(olivia_finder.data_source.data_source_abc.DataSourceABC method)</a>
 </li>
-        <li><a href="olivia_finder/data_source/scraper.html#olivia_finder.data_source.scraper.Scraper.get_info">(olivia_finder.data_source.scraper.Scraper method)</a>
+        <li><a href="olivia_finder/data_source/scraper_ds.html#olivia_finder.data_source.scraper_ds.ScraperDataSource.get_info">(olivia_finder.data_source.scraper_ds.ScraperDataSource method)</a>
 </li>
       </ul></li>
+      <li><a href="olivia_finder/utilities/logger.html#olivia_finder.utilities.logger.MyLogger.get_instance">get_instance() (olivia_finder.utilities.logger.MyLogger class method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="olivia_finder/utilities/config_ini.html#olivia_finder.utilities.config_ini.Configuration.get_key">get_key() (olivia_finder.utilities.config_ini.Configuration method)</a>
+</li>
       <li><a href="olivia_finder/myrequests/proxy_handler.html#olivia_finder.myrequests.proxy_handler.ProxyHandler.get_next_proxy">get_next_proxy() (olivia_finder.myrequests.proxy_handler.ProxyHandler method)</a>
 </li>
       <li><a href="olivia_finder/myrequests/useragents_handler.html#olivia_finder.myrequests.useragent_handler.UserAgentHandler.get_next_useragent">get_next_useragent() (olivia_finder.myrequests.useragent_handler.UserAgentHandler method)</a>
@@ -351,6 +340,8 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="olivia_finder/utilities/logger.html#olivia_finder.utilities.logger.MyLogger.level">level (olivia_finder.utilities.logger.MyLogger attribute)</a>
+</li>
       <li><a href="olivia_finder/package.html#olivia_finder.package.Package.load">load() (olivia_finder.package.Package class method)</a>
 
       <ul>
@@ -360,6 +351,10 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="olivia_finder/package_manager.html#olivia_finder.package_manager.PackageManager.load_csv_adjlist">load_csv_adjlist() (olivia_finder.package_manager.PackageManager static method)</a>
+</li>
+      <li><a href="olivia_finder/utilities/logger.html#olivia_finder.utilities.logger.MyLogger.log">log() (olivia_finder.utilities.logger.MyLogger static method)</a>
+</li>
+      <li><a href="olivia_finder/utilities/logger.html#olivia_finder.utilities.logger.MyLogger.logger">logger (olivia_finder.utilities.logger.MyLogger attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -371,27 +366,17 @@
     module
 
       <ul>
-        <li><a href="olivia_finder/data_source/csv_network.html#module-olivia_finder.data_source.csv_network">olivia_finder.data_source.csv_network</a>
+        <li><a href="olivia_finder/data_source/csv_ds.html#module-olivia_finder.data_source.csv_ds">olivia_finder.data_source.csv_ds</a>
 </li>
         <li><a href="olivia_finder/data_source/data_source.html#module-olivia_finder.data_source.data_source">olivia_finder.data_source.data_source</a>
 </li>
         <li><a href="olivia_finder/data_source/data_source_abc.html#module-olivia_finder.data_source.data_source_abc">olivia_finder.data_source.data_source_abc</a>
 </li>
-        <li><a href="olivia_finder/data_source/scraper.html#module-olivia_finder.data_source.scraper">olivia_finder.data_source.scraper</a>
+        <li><a href="olivia_finder/data_source/repository_scrapers/repository_scrapers_module.html#module-olivia_finder.data_source.repository_scrapers">olivia_finder.data_source.repository_scrapers</a>
 </li>
-        <li><a href="olivia_finder/data_source/scraper_abc.html#module-olivia_finder.data_source.scraper_abc">olivia_finder.data_source.scraper_abc</a>
+        <li><a href="olivia_finder/data_source/scraper_ds.html#module-olivia_finder.data_source.scraper_ds">olivia_finder.data_source.scraper_ds</a>
 </li>
-        <li><a href="olivia_finder/data_source/scrapers/scrapers_module.html#module-olivia_finder.data_source.scrapers">olivia_finder.data_source.scrapers</a>
-</li>
-        <li><a href="olivia_finder/data_source/scrapers/bioconductor.html#module-olivia_finder.data_source.scrapers.bioconductor">olivia_finder.data_source.scrapers.bioconductor</a>
-</li>
-        <li><a href="olivia_finder/data_source/scrapers/cran.html#module-olivia_finder.data_source.scrapers.cran">olivia_finder.data_source.scrapers.cran</a>
-</li>
-        <li><a href="olivia_finder/data_source/scrapers/npm.html#module-olivia_finder.data_source.scrapers.npm">olivia_finder.data_source.scrapers.npm</a>
-</li>
-        <li><a href="olivia_finder/data_source/scrapers/pypi.html#module-olivia_finder.data_source.scrapers.pypi">olivia_finder.data_source.scrapers.pypi</a>
-</li>
-        <li><a href="olivia_finder/data_source/scrapers/r.html#module-olivia_finder.data_source.scrapers.r">olivia_finder.data_source.scrapers.r</a>
+        <li><a href="olivia_finder/data_source/scraper_ds_abc.html#module-olivia_finder.data_source.scraper_ds_abc">olivia_finder.data_source.scraper_ds_abc</a>
 </li>
         <li><a href="olivia_finder/myrequests/proxy_builder.html#module-olivia_finder.myrequests.proxy_builder">olivia_finder.myrequests.proxy_builder</a>
 </li>
@@ -405,28 +390,16 @@
 </li>
         <li><a href="olivia_finder/package_manager.html#module-olivia_finder.package_manager">olivia_finder.package_manager</a>
 </li>
-      </ul></li>
-  </ul></td>
-</tr></table>
-
-<h2 id="N">N</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="olivia_finder/data_source/scrapers/cran.html#olivia_finder.data_source.scrapers.cran.CranScraper.NAME">NAME (olivia_finder.data_source.scrapers.cran.CranScraper attribute)</a>
-
-      <ul>
-        <li><a href="olivia_finder/data_source/scrapers/npm.html#olivia_finder.data_source.scrapers.npm.NpmScraper.NAME">(olivia_finder.data_source.scrapers.npm.NpmScraper attribute)</a>
+        <li><a href="olivia_finder/utilities/config_ini.html#module-olivia_finder.utilities.config_ini">olivia_finder.utilities.config_ini</a>
+</li>
+        <li><a href="olivia_finder/utilities/logger.html#module-olivia_finder.utilities.logger">olivia_finder.utilities.logger</a>
+</li>
+        <li><a href="olivia_finder/utilities/util.html#module-olivia_finder.utilities.util">olivia_finder.utilities.util</a>
 </li>
       </ul></li>
-      <li><a href="olivia_finder/data_source/scrapers/npm.html#olivia_finder.data_source.scrapers.npm.NpmScraper.NPM_PACKAGE_LIST_URL">NPM_PACKAGE_LIST_URL (olivia_finder.data_source.scrapers.npm.NpmScraper attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="olivia_finder/data_source/scrapers/npm.html#olivia_finder.data_source.scrapers.npm.NpmScraper.NPM_PACKAGE_REGISTRY_URL">NPM_PACKAGE_REGISTRY_URL (olivia_finder.data_source.scrapers.npm.NpmScraper attribute)</a>
-</li>
-      <li><a href="olivia_finder/data_source/scrapers/npm.html#olivia_finder.data_source.scrapers.npm.NpmScraper.NPM_REPO_URL">NPM_REPO_URL (olivia_finder.data_source.scrapers.npm.NpmScraper attribute)</a>
-</li>
-      <li><a href="olivia_finder/data_source/scrapers/npm.html#olivia_finder.data_source.scrapers.npm.NpmScraper">NpmScraper (class in olivia_finder.data_source.scrapers.npm)</a>
+      <li><a href="olivia_finder/utilities/logger.html#olivia_finder.utilities.logger.MyLogger">MyLogger (class in olivia_finder.utilities.logger)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -436,53 +409,43 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="olivia_finder/package_manager.html#olivia_finder.package_manager.PackageManager.obtain_package">obtain_package() (olivia_finder.package_manager.PackageManager method)</a>
 </li>
-      <li><a href="olivia_finder/data_source/csv_network.html#olivia_finder.data_source.csv_network.CSVNetwork.obtain_package_data">obtain_package_data() (olivia_finder.data_source.csv_network.CSVNetwork method)</a>
+      <li><a href="olivia_finder/data_source/csv_ds.html#olivia_finder.data_source.csv_ds.CSVDataSource.obtain_package_data">obtain_package_data() (olivia_finder.data_source.csv_ds.CSVDataSource method)</a>
 
       <ul>
         <li><a href="olivia_finder/data_source/data_source.html#olivia_finder.data_source.data_source.DataSource.obtain_package_data">(olivia_finder.data_source.data_source.DataSource method)</a>
 </li>
         <li><a href="olivia_finder/data_source/data_source_abc.html#olivia_finder.data_source.data_source_abc.DataSourceABC.obtain_package_data">(olivia_finder.data_source.data_source_abc.DataSourceABC method)</a>
 </li>
-        <li><a href="olivia_finder/data_source/scraper.html#olivia_finder.data_source.scraper.Scraper.obtain_package_data">(olivia_finder.data_source.scraper.Scraper method)</a>
-</li>
-        <li><a href="olivia_finder/data_source/scrapers/cran.html#olivia_finder.data_source.scrapers.cran.CranScraper.obtain_package_data">(olivia_finder.data_source.scrapers.cran.CranScraper method)</a>
+        <li><a href="olivia_finder/data_source/scraper_ds.html#olivia_finder.data_source.scraper_ds.ScraperDataSource.obtain_package_data">(olivia_finder.data_source.scraper_ds.ScraperDataSource method)</a>
 </li>
       </ul></li>
-      <li><a href="olivia_finder/data_source/csv_network.html#olivia_finder.data_source.csv_network.CSVNetwork.obtain_package_names">obtain_package_names() (olivia_finder.data_source.csv_network.CSVNetwork method)</a>
+      <li><a href="olivia_finder/data_source/csv_ds.html#olivia_finder.data_source.csv_ds.CSVDataSource.obtain_package_names">obtain_package_names() (olivia_finder.data_source.csv_ds.CSVDataSource method)</a>
 
       <ul>
         <li><a href="olivia_finder/data_source/data_source.html#olivia_finder.data_source.data_source.DataSource.obtain_package_names">(olivia_finder.data_source.data_source.DataSource method)</a>
 </li>
         <li><a href="olivia_finder/data_source/data_source_abc.html#olivia_finder.data_source.data_source_abc.DataSourceABC.obtain_package_names">(olivia_finder.data_source.data_source_abc.DataSourceABC method)</a>
 </li>
-        <li><a href="olivia_finder/data_source/scraper.html#olivia_finder.data_source.scraper.Scraper.obtain_package_names">(olivia_finder.data_source.scraper.Scraper method)</a>
-</li>
-        <li><a href="olivia_finder/data_source/scrapers/bioconductor.html#olivia_finder.data_source.scrapers.bioconductor.BiocScraper.obtain_package_names">(olivia_finder.data_source.scrapers.bioconductor.BiocScraper method)</a>
-</li>
-        <li><a href="olivia_finder/data_source/scrapers/cran.html#olivia_finder.data_source.scrapers.cran.CranScraper.obtain_package_names">(olivia_finder.data_source.scrapers.cran.CranScraper method)</a>
-</li>
-        <li><a href="olivia_finder/data_source/scrapers/npm.html#olivia_finder.data_source.scrapers.npm.NpmScraper.obtain_package_names">(olivia_finder.data_source.scrapers.npm.NpmScraper method)</a>
-</li>
-        <li><a href="olivia_finder/data_source/scrapers/pypi.html#olivia_finder.data_source.scrapers.pypi.PypiScraper.obtain_package_names">(olivia_finder.data_source.scrapers.pypi.PypiScraper method)</a>
+        <li><a href="olivia_finder/data_source/scraper_ds.html#olivia_finder.data_source.scraper_ds.ScraperDataSource.obtain_package_names">(olivia_finder.data_source.scraper_ds.ScraperDataSource method)</a>
 </li>
       </ul></li>
       <li><a href="olivia_finder/package_manager.html#olivia_finder.package_manager.PackageManager.obtain_packages">obtain_packages() (olivia_finder.package_manager.PackageManager method)</a>
 </li>
-      <li><a href="olivia_finder/data_source/csv_network.html#olivia_finder.data_source.csv_network.CSVNetwork.obtain_packages_data">obtain_packages_data() (olivia_finder.data_source.csv_network.CSVNetwork method)</a>
+      <li><a href="olivia_finder/data_source/csv_ds.html#olivia_finder.data_source.csv_ds.CSVDataSource.obtain_packages_data">obtain_packages_data() (olivia_finder.data_source.csv_ds.CSVDataSource method)</a>
 
       <ul>
         <li><a href="olivia_finder/data_source/data_source.html#olivia_finder.data_source.data_source.DataSource.obtain_packages_data">(olivia_finder.data_source.data_source.DataSource method)</a>
 </li>
         <li><a href="olivia_finder/data_source/data_source_abc.html#olivia_finder.data_source.data_source_abc.DataSourceABC.obtain_packages_data">(olivia_finder.data_source.data_source_abc.DataSourceABC method)</a>
 </li>
-        <li><a href="olivia_finder/data_source/scraper.html#olivia_finder.data_source.scraper.Scraper.obtain_packages_data">(olivia_finder.data_source.scraper.Scraper method)</a>
+        <li><a href="olivia_finder/data_source/scraper_ds.html#olivia_finder.data_source.scraper_ds.ScraperDataSource.obtain_packages_data">(olivia_finder.data_source.scraper_ds.ScraperDataSource method)</a>
 </li>
       </ul></li>
       <li>
-    olivia_finder.data_source.csv_network
+    olivia_finder.data_source.csv_ds
 
       <ul>
-        <li><a href="olivia_finder/data_source/csv_network.html#module-olivia_finder.data_source.csv_network">module</a>
+        <li><a href="olivia_finder/data_source/csv_ds.html#module-olivia_finder.data_source.csv_ds">module</a>
 </li>
       </ul></li>
       <li>
@@ -500,61 +463,26 @@
 </li>
       </ul></li>
       <li>
-    olivia_finder.data_source.scraper
+    olivia_finder.data_source.repository_scrapers
 
       <ul>
-        <li><a href="olivia_finder/data_source/scraper.html#module-olivia_finder.data_source.scraper">module</a>
+        <li><a href="olivia_finder/data_source/repository_scrapers/repository_scrapers_module.html#module-olivia_finder.data_source.repository_scrapers">module</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
-    olivia_finder.data_source.scraper_abc
+    olivia_finder.data_source.scraper_ds
 
       <ul>
-        <li><a href="olivia_finder/data_source/scraper_abc.html#module-olivia_finder.data_source.scraper_abc">module</a>
+        <li><a href="olivia_finder/data_source/scraper_ds.html#module-olivia_finder.data_source.scraper_ds">module</a>
 </li>
       </ul></li>
       <li>
-    olivia_finder.data_source.scrapers
+    olivia_finder.data_source.scraper_ds_abc
 
       <ul>
-        <li><a href="olivia_finder/data_source/scrapers/scrapers_module.html#module-olivia_finder.data_source.scrapers">module</a>
-</li>
-      </ul></li>
-      <li>
-    olivia_finder.data_source.scrapers.bioconductor
-
-      <ul>
-        <li><a href="olivia_finder/data_source/scrapers/bioconductor.html#module-olivia_finder.data_source.scrapers.bioconductor">module</a>
-</li>
-      </ul></li>
-      <li>
-    olivia_finder.data_source.scrapers.cran
-
-      <ul>
-        <li><a href="olivia_finder/data_source/scrapers/cran.html#module-olivia_finder.data_source.scrapers.cran">module</a>
-</li>
-      </ul></li>
-      <li>
-    olivia_finder.data_source.scrapers.npm
-
-      <ul>
-        <li><a href="olivia_finder/data_source/scrapers/npm.html#module-olivia_finder.data_source.scrapers.npm">module</a>
-</li>
-      </ul></li>
-      <li>
-    olivia_finder.data_source.scrapers.pypi
-
-      <ul>
-        <li><a href="olivia_finder/data_source/scrapers/pypi.html#module-olivia_finder.data_source.scrapers.pypi">module</a>
-</li>
-      </ul></li>
-      <li>
-    olivia_finder.data_source.scrapers.r
-
-      <ul>
-        <li><a href="olivia_finder/data_source/scrapers/r.html#module-olivia_finder.data_source.scrapers.r">module</a>
+        <li><a href="olivia_finder/data_source/scraper_ds_abc.html#module-olivia_finder.data_source.scraper_ds_abc">module</a>
 </li>
       </ul></li>
       <li>
@@ -599,6 +527,27 @@
         <li><a href="olivia_finder/package_manager.html#module-olivia_finder.package_manager">module</a>
 </li>
       </ul></li>
+      <li>
+    olivia_finder.utilities.config_ini
+
+      <ul>
+        <li><a href="olivia_finder/utilities/config_ini.html#module-olivia_finder.utilities.config_ini">module</a>
+</li>
+      </ul></li>
+      <li>
+    olivia_finder.utilities.logger
+
+      <ul>
+        <li><a href="olivia_finder/utilities/logger.html#module-olivia_finder.utilities.logger">module</a>
+</li>
+      </ul></li>
+      <li>
+    olivia_finder.utilities.util
+
+      <ul>
+        <li><a href="olivia_finder/utilities/util.html#module-olivia_finder.utilities.util">module</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -613,11 +562,13 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="olivia_finder/utilities/util.html#olivia_finder.utilities.util.Util.print_colored">print_colored() (olivia_finder.utilities.util.Util static method)</a>
+</li>
+      <li><a href="olivia_finder/utilities/util.html#olivia_finder.utilities.util.Util.print_styled">print_styled() (olivia_finder.utilities.util.Util static method)</a>
+</li>
       <li><a href="olivia_finder/myrequests/proxy_builder.html#olivia_finder.myrequests.proxy_builder.ProxyBuilder">ProxyBuilder (class in olivia_finder.myrequests.proxy_builder)</a>
 </li>
       <li><a href="olivia_finder/myrequests/proxy_handler.html#olivia_finder.myrequests.proxy_handler.ProxyHandler">ProxyHandler (class in olivia_finder.myrequests.proxy_handler)</a>
-</li>
-      <li><a href="olivia_finder/data_source/scrapers/pypi.html#olivia_finder.data_source.scrapers.pypi.PypiScraper">PypiScraper (class in olivia_finder.data_source.scrapers.pypi)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -625,11 +576,11 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="olivia_finder/myrequests/request_handler.html#olivia_finder.myrequests.request_handler.RequestHandler">RequestHandler (class in olivia_finder.myrequests.request_handler)</a>
+      <li><a href="olivia_finder/utilities/util.html#olivia_finder.utilities.util.Util.recommended_threads">recommended_threads() (olivia_finder.utilities.util.Util static method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="olivia_finder/data_source/scrapers/r.html#olivia_finder.data_source.scrapers.r.RScraper">RScraper (class in olivia_finder.data_source.scrapers.r)</a>
+      <li><a href="olivia_finder/myrequests/request_handler.html#olivia_finder.myrequests.request_handler.RequestHandler">RequestHandler (class in olivia_finder.myrequests.request_handler)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -639,19 +590,25 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="olivia_finder/package_manager.html#olivia_finder.package_manager.PackageManager.save">save() (olivia_finder.package_manager.PackageManager method)</a>
 </li>
-      <li><a href="olivia_finder/data_source/scraper.html#olivia_finder.data_source.scraper.Scraper">Scraper (class in olivia_finder.data_source.scraper)</a>
+      <li><a href="olivia_finder/data_source/scraper_ds.html#olivia_finder.data_source.scraper_ds.ScraperDataSource">ScraperDataSource (class in olivia_finder.data_source.scraper_ds)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="olivia_finder/data_source/scraper_abc.html#olivia_finder.data_source.scraper_abc.ScraperABC">ScraperABC (class in olivia_finder.data_source.scraper_abc)</a>
+      <li><a href="olivia_finder/data_source/scraper_ds_abc.html#olivia_finder.data_source.scraper_ds_abc.ScraperDataSourceABC">ScraperDataSourceABC (class in olivia_finder.data_source.scraper_ds_abc)</a>
 </li>
-      <li><a href="olivia_finder/data_source/scraper.html#olivia_finder.data_source.scraper.ScraperError">ScraperError (class in olivia_finder.data_source.scraper)</a>
+      <li><a href="olivia_finder/data_source/scraper_ds.html#olivia_finder.data_source.scraper_ds.ScraperError">ScraperError (class in olivia_finder.data_source.scraper_ds)</a>
+</li>
+      <li><a href="olivia_finder/utilities/logger.html#olivia_finder.utilities.logger.MyLogger.status">status (olivia_finder.utilities.logger.MyLogger attribute)</a>
 </li>
   </ul></td>
 </tr></table>
 
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="olivia_finder/utilities/util.html#olivia_finder.utilities.util.Util.timestamp">timestamp() (olivia_finder.utilities.util.Util static method)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="olivia_finder/package.html#olivia_finder.package.Package.to_dict">to_dict() (olivia_finder.package.Package method)</a>
 </li>
@@ -663,11 +620,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="olivia_finder/package.html#olivia_finder.package.Package.update">update() (olivia_finder.package.Package method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="olivia_finder/myrequests/useragents_handler.html#olivia_finder.myrequests.useragent_handler.UserAgentHandler">UserAgentHandler (class in olivia_finder.myrequests.useragent_handler)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="olivia_finder/myrequests/useragents_handler.html#olivia_finder.myrequests.useragent_handler.UserAgentHandler.USERAGENTSTRING_URL">USERAGENTSTRING_URL (olivia_finder.myrequests.useragent_handler.UserAgentHandler attribute)</a>
+</li>
+      <li><a href="olivia_finder/utilities/util.html#olivia_finder.utilities.util.Util">Util (class in olivia_finder.utilities.util)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -696,7 +655,7 @@
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

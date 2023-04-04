@@ -22,11 +22,11 @@ from bs4 import BeautifulSoup
 from typing import Dict, List, Optional
 
 from ..data_source_abc import DataSourceABC
-from ..scraper import ScraperError
-from ...data_source.scrapers.r import RScraper
+from ..scraper_ds import ScraperError
+from ...data_source.repository_scrapers.r import RScraper
 from ...myrequests.request_handler import RequestHandler
-from ...util.logger import MyLogger
-from ...util.util import Util
+from ...utilities.logger import MyLogger
+from ...utilities.util import Util
 
 class CranScraper(RScraper):
     '''

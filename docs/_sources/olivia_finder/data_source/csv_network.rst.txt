@@ -1,13 +1,13 @@
-Module olivia_finder.data_source.csv_network
+Module olivia_finder.data_source.csv_ds
 ============================================
 
-.. automodule:: olivia_finder.data_source.csv_network
+.. automodule:: olivia_finder.data_source.csv_ds
 
-Class CSVNetwork
+Class CSVDataSource
 ----------------
 Class for reading CSV files and creating a network from them.
 
-.. autoclass:: CSVNetwork
+.. autoclass:: CSVDataSource
    :members:
    :undoc-members:
    :show-inheritance:

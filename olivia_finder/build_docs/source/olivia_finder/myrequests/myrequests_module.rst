@@ -1,43 +1,31 @@
-Module olivia_finder.myrequests
-===============================
+olivia_finder.myrequests
+========================
 
-This module contains the RequestHandler class, which is used to handle the requests to the package managers.
+This module contains a set of classes that are used to handle the requests to the Web scraping based data sources.
 
-This module contains the following submodules:
+Submodules
+----------
 
+* **olivia_finder.myrequests.request_handler**
 
-Submodule olivia_finder.myrequests.request_handler
----------------------------------------------------
-Implements the RequestHandler class, which is used to handle the requests to the package managers.
+   Implements the RequestHandler class, which is used to handle the requests to the package managers.
 
-.. toctree::
-   :maxdepth: 1
+   :mod:`olivia_finder.myrequests.request_handler`
 
-   request_handler
+* **olivia_finder.myrequests.proxy_handler**
 
-Submodule olivia_finder.myrequests.proxy_handler
-------------------------------------------------
-Implements the ProxyHandler class, which is used to handle the proxies.
+   Implements the ProxyHandler class, which is used to handle the proxies.
 
-.. toctree::
-   :maxdepth: 1
+   :mod:`olivia_finder.myrequests.proxy_handler`
 
-   proxy_handler
+* **olivia_finder.myrequests.proxy_builder**
 
-Submodule olivia_finder.myrequests.proxy_builder
-------------------------------------------------
-Implements the ProxyBuilder class, which is used to obtain the proxies.
+   Implements the ProxyBuilder class, which is used to obtain the proxies.
 
-.. toctree::
-   :maxdepth: 1
+   :mod:`olivia_finder.myrequests.proxy_builder`
 
-   proxy_builder
+* **olivia_finder.myrequests.useragent_handler**
 
-Submodule olivia_finder.myrequests.useragent_handler
-----------------------------------------------------
-Implements the UserAgentHandler class, which is used to handle the user agents.
+   Implements the UserAgentHandler class, which is used to handle the user agents.
 
-.. toctree::
-   :maxdepth: 1
-
-    useragent_handler
+   :mod:`olivia_finder.myrequests.useragent_handler`

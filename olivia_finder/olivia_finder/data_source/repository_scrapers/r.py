@@ -19,9 +19,9 @@ File information:
 
 import re
 from typing import Dict, List
-from ..scraper import Scraper
+from ..scraper_ds import ScraperDataSource
 
-class RScraper(Scraper):
+class RScraper(ScraperDataSource):
     '''
     Class that implements the common methods of the scraper implementations for Bioconductor and CRAN
     

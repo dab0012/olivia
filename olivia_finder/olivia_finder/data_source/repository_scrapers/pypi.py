@@ -21,10 +21,10 @@ import requests
 from typing_extensions import override
 from typing import Dict, List
 from bs4 import BeautifulSoup
-from ..scraper import Scraper, ScraperError
+from ..scraper_ds import ScraperDataSource, ScraperError
 from ...myrequests.request_handler import RequestHandler
 
-class PypiScraper(Scraper):
+class PypiScraper(ScraperDataSource):
     ''' 
     Class that scrapes the PyPI website to obtain information about Python packages
     Implements the abstract class Scraper and accordingly DataSource class

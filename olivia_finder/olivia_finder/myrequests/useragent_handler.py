@@ -3,8 +3,8 @@ from typing import List
 import random
 import requests
 from bs4 import BeautifulSoup
-from ..util.logger import MyLogger
-from ..util.util import Util
+from ..utilities.logger import MyLogger
+from ..utilities.util import Util
 
 class UserAgentHandler():
     '''

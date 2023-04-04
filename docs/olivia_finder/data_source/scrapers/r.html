@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -52,13 +52,12 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/material.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/custom.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Module olivia_finder.data_source.scrapers.npm" href="npm.html" />
-    <link rel="prev" title="Module olivia_finder.data_source.scrapers.bioconductor" href="bioconductor.html" />
   
    
 
@@ -169,8 +168,6 @@
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Olivia Finder  documentation</a></li>
-          <li class="md-tabs__item"><a href="../data_source_module.html" class="md-tabs__link">Module olivia_finder.data_source</a></li>
-          <li class="md-tabs__item"><a href="scrapers_module.html" class="md-tabs__link">Module olivia_finder.data_source.scrapers</a></li>
       </ul>
     </div>
   </nav>
@@ -220,17 +217,7 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#olivia-finder-data-source-scrapers-r--page-root" class="md-nav__link">Module olivia_finder.data_source.scrapers.r</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#r-py" class="md-nav__link">r.py</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#description" class="md-nav__link">Description</a>
-        </li></ul>
-            </nav>
-        </li>
-        <li class="md-nav__item"><a href="#class-rscraper" class="md-nav__link">Class RScraper</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#olivia_finder.data_source.scrapers.r.RScraper" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">RScraper</span></code></a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#class-rscraper" class="md-nav__link">Class RScraper</a>
         </li></ul>
             </nav>
         </li>
@@ -248,66 +235,10 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="module-olivia_finder.data_source.scrapers.r">
-<span id="module-olivia-finder-data-source-scrapers-r"></span><h1 id="olivia-finder-data-source-scrapers-r--page-root">Module olivia_finder.data_source.scrapers.r<a class="headerlink" href="#olivia-finder-data-source-scrapers-r--page-root" title="Permalink to this heading">¶</a></h1>
-<section id="r-py">
-<h2 id="r-py">r.py<a class="headerlink" href="#r-py" title="Permalink to this heading">¶</a></h2>
-<section id="description">
-<h3 id="description">Description<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h3>
-<p>Module that contains the abstract class that implements the common methods of the scraper implementations 
-for Bioconductor and CRAN</p>
-<dl class="simple">
-<dt>File information:</dt><dd><ul class="simple">
-<li><p>File: r.py</p></li>
-<li><p>Project: scrapers</p></li>
-<li><p>Created Date: 2023-03-18 14:40:56</p></li>
-<li><p>Author: Daniel Alonso Báscones</p></li>
-<li><p>Copyright (c) 2023 Daniel Alonso Báscones</p></li>
-</ul>
-</dd>
-</dl>
-</section>
-</section>
+  <section id="module-olivia-finder-data-source-scrapers-r">
+<h1 id="olivia-finder-data-source-scrapers-r--page-root">Module olivia_finder.data_source.scrapers.r<a class="headerlink" href="#olivia-finder-data-source-scrapers-r--page-root" title="Permalink to this headline">¶</a></h1>
 <section id="class-rscraper">
-<h2 id="class-rscraper">Class RScraper<a class="headerlink" href="#class-rscraper" title="Permalink to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="olivia_finder.data_source.scrapers.r.RScraper">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">olivia_finder.data_source.scrapers.r.</span></span><span class="sig-name descname"><span class="pre">RScraper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../myrequests/request_handler.html#olivia_finder.myrequests.request_handler.RequestHandler" title="olivia_finder.myrequests.request_handler.RequestHandler"><span class="pre">RequestHandler</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/olivia_finder/data_source/scrapers/r.html#RScraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#olivia_finder.data_source.scrapers.r.RScraper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../scraper.html#olivia_finder.data_source.scraper.Scraper" title="olivia_finder.data_source.scraper.Scraper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Scraper</span></code></a></p>
-<p>Class that implements the common methods of the scraper implementations for Bioconductor and CRAN</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>The name of the data source</p>
-</dd>
-<dt><strong>description</strong><span class="classifier">str</span></dt><dd><p>The description of the data source</p>
-</dd>
-<dt><strong>request_handler</strong><span class="classifier">RequestHandler</span></dt><dd><p>The request handler to perform the requests to the package manager website</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_package_dependency_network</span></code>(package_name)</p></td>
-<td><p>Generates the dependency network of a package from the data source.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_info</span></code>()</p></td>
-<td><p>Get the info of the Scraper</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">obtain_package_data</span></code>(package_name)</p></td>
-<td><p>Scrape a package from a package manager, if the package is not found, it is added to the not_found list Implements the abstract method of the DataSource class</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">obtain_package_names</span></code>()</p></td>
-<td><p>Obtain the package names from the web page of the package manager it must handle exceptions and return an empty list if the package names cannot be obtained To be implemented by the child class</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">obtain_packages_data</span></code>([package_names, ...])</p></td>
-<td><p>Scrape a list of packages from a package manager, if the package is not found, it is added to the not_found list Overrides the method of the DataSource class</p></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<h2 id="class-rscraper">Class RScraper<a class="headerlink" href="#class-rscraper" title="Permalink to this headline">¶</a></h2>
 </section>
 </section>
 
@@ -321,30 +252,6 @@ for Bioconductor and CRAN</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="bioconductor.html" title="Module olivia_finder.data_source.scrapers.bioconductor"
-               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
-               rel="prev">
-              <div class="md-flex__cell md-flex__cell--shrink">
-                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-              </div>
-              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-                <span class="md-flex__ellipsis">
-                  <span
-                      class="md-footer-nav__direction"> Previous </span> Module olivia_finder.data_source.scrapers.bioconductor </span>
-              </div>
-            </a>
-          
-          
-            <a href="npm.html" title="Module olivia_finder.data_source.scrapers.npm"
-               class="md-flex md-footer-nav__link md-footer-nav__link--next"
-               rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
-                class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Module olivia_finder.data_source.scrapers.npm </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink"><i
-                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
           
         </a>
         
@@ -358,7 +265,7 @@ for Bioconductor and CRAN</p>
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

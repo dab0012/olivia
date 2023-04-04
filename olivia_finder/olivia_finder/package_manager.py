@@ -19,7 +19,7 @@ import pickle
 import tqdm
 import pandas as pd
 from .data_source.data_source_abc import DataSourceABC
-from .data_source.csv_network import CSVNetwork
+from .data_source.csv_ds import CSVDataSource
 from .package import Package
 
 class PackageManager():
@@ -268,7 +268,7 @@ class PackageManager():
             raise PackageManagerLoadError("Invalid csv format")
 
         # We create the data source
-        data_source = CSVNetwork(
+        data_source = CSVDataSource(
             file_path=csv_path,
             name="Package Manager CSV",
             description="Package Manager obtained from a csv file",

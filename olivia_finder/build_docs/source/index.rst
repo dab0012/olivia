@@ -19,40 +19,49 @@ Modules
 
 Here are the modules provided by Olivia Finder:
 
-Module olivia_finder.package
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* **olivia_finder.package**
 
-.. toctree::
-   :maxdepth: 1
+   This module contains the Package class, which is used to represent a package and its metadata.
 
-   olivia_finder/package
+   :mod:`olivia_finder.package`
 
+* **olivia_finder.package_manager**
 
-Module olivia_finder.package_manager
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   This module contains the PackageManager class, which is used to represent a package manager and itd packages
+   The PackageManager class provides a set of methods to obtain package objects from a package manager.
 
-.. toctree::
-   :maxdepth: 1
+   :mod:`olivia_finder.package_manager`
 
-   olivia_finder/package_manager
+Subpackages
+-----------
 
+* **olivia_finder.data_source**
 
-Module olivia_finder.data_source
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   This subpackage contains the DataSource class, which is used to represent a data source and its data
+   The DataSource class provides a set of methods to obtain package data from a data source.
 
-.. toctree::
-   :maxdepth: 1
+   .. toctree::
+      :maxdepth: 1
 
-   olivia_finder/data_source/data_source_module
+      olivia_finder/data_source/data_source_module
 
+* **olivia_finder.myrequests**
 
-Module olivia_finder.myrequests
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   This subpackage contains a set os classes that can be used to make requests to a Web scraping based data_source
 
-.. toctree::
-   :maxdepth: 1
+   .. toctree::
+      :maxdepth: 1
 
-   olivia_finder/myrequests/myrequests_module
+      olivia_finder/myrequests/myrequests_module
+
+* **olivia_finder.utilities**
+
+   This subpackage contains a set of utility Classes and functions to help with the use of Olivia Finder
+
+   .. toctree::
+      :maxdepth: 1
+
+      olivia_finder/utilities/utilities_module
 
 
 Indices and tables

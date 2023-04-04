@@ -19,7 +19,7 @@ File information:
 
 from typing import List, Optional, Union 
 from .proxy_builder import ProxyBuilder, ProxyBuilderABC
-from ..util.logger import MyLogger
+from ..utilities.logger import MyLogger
 
 class ProxyHandler():
     '''
