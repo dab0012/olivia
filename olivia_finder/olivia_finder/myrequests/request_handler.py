@@ -61,6 +61,52 @@ class RequestHandler:
         Number of processes to use for parallel requests, if None, it will be initialized with the default value
     '''
 
+    _instance = None
+
+    # Singleton pattern for the class
+    # --------------------------------
+    @staticmethod
+    def get_instance(
+        proxy_handler: Optional[ProxyHandler] = None, 
+        useragents_handler: Optional[UserAgentHandler] = None, 
+        max_retry: Optional[int] = 5, 
+        request_timeout: Optional[int] = 60, 
+        num_processes: Optional[int] = 4,
+        overwrite: Optional[bool] = False
+    ):
+        '''
+        Static access method for the singleton pattern
+
+        Parameters
+        ----------
+        proxy_handler : Optional[ProxyHandler]
+            Proxy handler, if None, it will be initialized with a generic ProxyHandler
+        useragents_handler : Optional[UserAgentHandler]
+            User agent handler, if None, it will be initialized with a generic UserAgentHandler
+        max_retry : Optional[int]
+            Maximum number of retries for each request, if None, it will be initialized with the default value
+        request_timeout : Optional[int]
+            Timeout for each request, if None, it will be initialized with the default value
+        num_processes : Optional[int]
+            Number of processes to use for parallel requests, if None, it will be initialized with the default value
+        overwrite : Optional[bool]
+            If True, it will overwrite the current instance
+
+        Returns
+        -------
+        RequestHandler
+            Request handler instance
+        '''
+        if RequestHandler._instance and overwrite or not RequestHandler._instance:
+            RequestHandler._instance = RequestHandler(
+                proxy_handler=proxy_handler,
+                useragents_handler=useragents_handler,
+                max_retry=max_retry,
+                request_timeout=request_timeout,
+                num_processes=num_processes
+            )
+        return RequestHandler._instance
+
     def __init__(
         self, 
         proxy_handler:          Optional[ProxyHandler] = None, 

@@ -20,9 +20,9 @@ import requests
 from bs4 import BeautifulSoup
 from typing import Dict, Optional, List
 from typing_extensions import override
-
-from ..scraper_ds import ScraperError
-from ...data_source.repository_scrapers.r import RScraper
+from . import r
+from ..data_source import DataSource
+from ..scraper_ds import ScraperDataSource, ScraperError
 from ...myrequests.request_handler import RequestHandler
 from ...utilities.util import Util
 
@@ -30,7 +30,7 @@ from ...utilities.util import Util
 from selenium import webdriver                                    
 from selenium.webdriver.common.by import By
 
-class BiocScraper(RScraper):
+class BioconductorScraper(ScraperDataSource):
     '''
     Class to scrape data from Bioconductor packages
     
@@ -40,9 +40,11 @@ class BiocScraper(RScraper):
         Name of the data source
     description : Optional[str]
         Description of the data source
+    auxiliary_datasources : Optional[List[DataSource]]
+        List of auxiliary data sources
     request_handler : Optional[RequestHandler]
         Request handler for the scraper, if None, it will be initialized with a generic RequestHandler
-    
+        
     Attributes
     ----------
     NAME : str
@@ -59,26 +61,31 @@ class BiocScraper(RScraper):
         self, 
         name: Optional[str] = None, 
         description: Optional[str] = None, 
-        request_handler: Optional[RequestHandler] = None, 
+        auxiliary_datasources: Optional[List[DataSource]] = None,
+        request_handler: Optional[RequestHandler] = None,
     ):
         '''
         Constructor
         '''
+
+        # Initialize the class variables
         self.BIOCONDUCTOR_LIST_URL = 'https://www.bioconductor.org/packages/release/BiocViews.html#___Software'
         self.BIOCONDUCTOR_PACKAGE_DATA_URL = 'https://www.bioconductor.org/packages/release/bioc/html/'
-
         if name is None:
             self.NAME: str = 'Bioconductor'
         if description is None:
             self.DESCRIPTION: str = "Scraper class implementation for the Bioconductor package network"
-            
-        super().__init__(name, description, request_handler)
+
+        # Call the constructor of the parent class
+        super().__init__(self.NAME, self.DESCRIPTION, auxiliary_datasources, request_handler)
+
 
 
     @override
     def obtain_package_names(self) -> List[str]:
         '''
         Get the list of packages from the Bioconductor website
+        TODO: FIX THIS METHOD, IT REQUIRES FIREFOX INSTALLED IN THE SYSTEM and it can be fixed 
 
         Returns
         -------
@@ -117,6 +124,7 @@ class BiocScraper(RScraper):
                 options = driver_options, 
                 # executable_path = driver_path
             )
+            
         except ScraperError("Exception occurred while creating the Selenium driver.") as e:
             raise e
 
@@ -202,11 +210,11 @@ class BiocScraper(RScraper):
                 elif cells[0].text == 'Depends':
                     depends = Util.clean_string(cells[1].text.strip())
                     if depends != '':
-                        dep_list = self._parse_dependencies(depends)
+                        dep_list = r.parse_dependencies(depends)
                 elif cells[0].text == 'Imports':
                     imports = Util.clean_string(cells[1].text.strip())
                     if imports != '':
-                        imp_list = self._parse_dependencies(imports)
+                        imp_list = r.parse_dependencies(imports)
                         
         # Remove duplicates from the dependencies
         for dep in dep_list:
@@ -220,4 +228,3 @@ class BiocScraper(RScraper):
             'dependencies': list(dep_list + imp_list),
             'url': url
         }
-

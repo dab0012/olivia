@@ -3,11 +3,14 @@ from pybraries import Search
 from .data_source import DataSource
 
 class LibrariesioDataSource(DataSource):
+    """
+    Data source for the Libraries.io API
+    """
     
-    def __init__(self, name: str, description: str, platform: str, api_key: str):
+    def __init__(self, name: str, description: str, platform: str):
         super().__init__(name, description)
         self.platform = platform
-        self.lib = Search(api_key)
+        self.lib = Search()
 
     def obtain_package_names(self) -> List[str]:
         """
@@ -23,10 +26,23 @@ class LibrariesioDataSource(DataSource):
         """
         Obtains the data of a package from the data source as a dictionary.
         """
-        # Obtener información sobre el paquete especificado en la plataforma especificada
-        package_info = self.lib.project(self.platform, package_name)
-        
-        return package_info
+        project_data = self.lib.project(self.platform, package_name)
+        project_dependents = self.lib.project_dependents(self.platform, package_name)
+
+        version = project_data['latest_release_number']
+        dependencies = [
+            dependency['name']
+            for dependency in project_dependents
+            if dependency['platform'] == self.platform
+        ]
+        url = project_data['repository_url']
+
+        return {
+            'name': package_name,
+            'version': version,
+            'dependencies': dependencies,
+            'url': url
+        }
 
     def obtain_packages_data(self) -> List[Dict]:
         '''

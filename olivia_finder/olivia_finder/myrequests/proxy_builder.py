@@ -24,26 +24,8 @@ import requests
 from bs4 import BeautifulSoup
 from ..utilities.logger import MyLogger
 
-class ProxyBuilderABC(ABC):
-    '''
-    Interface for proxy builders implementations.
-    The ProxyBuilder interface defines the methods that must be implemented by
-    proxy builders specific implementations.
-    '''
-    
-    @abstractmethod
-    def get_proxies(self) -> List[str]:
-        '''
-        Do a request to the proxy list URL and returns a list of proxies if the request is successful,
-        otherwise returns an empty list
-        
-        Returns
-        -------
-        List[str]
-            List of proxies in string format {ip}:{port} or an empty list if the request was not successful
-        '''
 
-class ProxyBuilder(ProxyBuilderABC):
+class ProxyBuilder(ABC):
     '''
     Base class for proxy builders implementations. It musn't be used directly.
     The correct way to use it is to instantiate a subclass of this class where the
@@ -115,6 +97,7 @@ class ProxyBuilder(ProxyBuilderABC):
 
         return proxies
     
+    @abstractmethod
     def _parse_request(self, response: requests.Response) -> List[str]:
         '''
         Parses the proxy list, it must be implemented by subclasses

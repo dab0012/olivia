@@ -18,7 +18,9 @@ from typing import Dict, List, Optional, Union
 import pickle
 import tqdm
 import pandas as pd
-from .data_source.data_source_abc import DataSourceABC
+
+from .utilities.logger import MyLogger
+from .data_source.data_source import DataSource
 from .data_source.csv_ds import CSVDataSource
 from .package import Package
 
@@ -50,14 +52,14 @@ class PackageManager():
     >>> package_manager = PackageManager(DataSource())
     '''
 
-    def __init__(self, data_source: DataSourceABC):
+    def __init__(self, data_source: DataSource):
         '''
         Constructor
         '''
         if data_source is None:
             raise ValueError("Data source cannot be None")
 
-        self.data_source: DataSourceABC = data_source
+        self.data_source: DataSource = data_source
         self.packages: Dict[str, Package] = {}
 
     def save(self, path: str):
@@ -129,6 +131,7 @@ class PackageManager():
     def obtain_packages(
         self,
         package_names: Optional[List[str]] = None,
+        obtain_package_names: Optional[bool] = False,
         extend: Optional[bool] = False,
         show_progress: Optional[bool] = False
     ) -> List[Package]:
@@ -165,19 +168,18 @@ class PackageManager():
 
         # Obtain the packages if the list is empty
         # This can raise an exception if the `data_source.obtain_package_names` method is not implemented
-        if package_names is None or len(package_names) == 0:
+        if obtain_package_names and package_names is None:
             package_names = self.data_source.obtain_package_names()
-
+            if package_names is None:
+                raise PackageManagerLoadError("The data source cannot obtain the package names")
+            
+        
         # Instantiate the progress bar if needed
         progress_bar = tqdm.tqdm(total=len(package_names)) if show_progress else None
 
-
+        # Obtain the packages data from the data source
         packages_data = self.data_source.obtain_packages_data(package_names, progress_bar=progress_bar)[0]
-        # package_list = [Package.load(package_data) for package_data in packages_data]
-        package_list = []
-        for package_data in packages_data:
-            package = Package.load(package_data)
-            package_list.append(package)
+        package_list = [Package.load(package_data) for package_data in packages_data]
 
         if progress_bar is not None:
             progress_bar.close()
@@ -189,8 +191,9 @@ class PackageManager():
 
         return package_list
 
-    @staticmethod
+    @classmethod
     def load_csv_adjlist(
+        cls,
         csv_path: str,
         dependent_field: Optional[str] = None,
         dependency_field: Optional[str] = None,
@@ -222,11 +225,11 @@ class PackageManager():
         Examples
         --------
         >>> pm = PackageManager.load_csv_adjlist(
-            "full_adjlist.csv", 
-            dependent_field="dependent", 
-            dependency_field="dependency", 
-            version_field="version", 
-            dependency_version_field="dependency_version", 
+            "full_adjlist.csv",
+            dependent_field="dependent",
+            dependency_field="dependency",
+            version_field="version",
+            dependency_version_field="dependency_version",
             url_field="url"
         )
         >>> pm = PackageManager.load_csv_adjlist("full_adjlist.csv", default_format=True)
@@ -248,7 +251,7 @@ class PackageManager():
             dependency_version_field = 'dependency_version'
             url_field = 'url'
             csv_fields = [dependent_field, dependency_field,
-                          version_field, dependency_version_field, url_field]
+                        version_field, dependency_version_field, url_field]
         else:
             if dependent_field is None or dependency_field is None:
                 raise PackageManagerLoadError(
@@ -280,7 +283,7 @@ class PackageManager():
         )
 
         # We create the package manager
-        return PackageManager(data_source)
+        return cls(data_source)
 
     def get_package(self, package_name: str) -> Union[Package, None]:
         '''
@@ -303,7 +306,7 @@ class PackageManager():
         '''
         return self.packages.get(package_name, None)
 
-    def get_package_list(self) -> List[Package]:
+    def list_packages(self) -> List[Package]:
         '''
         Obtain the list of packages of the package manager
 
@@ -318,7 +321,7 @@ class PackageManager():
         '''
         return list(self.packages.values())
 
-    def get_package_names(self) -> List[str]:
+    def list_package_names(self) -> List[str]:
         '''
         Obtain the list of package names of the package manager
 
@@ -333,10 +336,15 @@ class PackageManager():
         '''
         return list(self.packages.keys())
 
-    def export_adjlist(self) -> pd.DataFrame:
+    def export_adjlist(self, full_data = False) -> pd.DataFrame:
         '''
         Convert the object to a adjacency list, where each row represents a dependency
         If a package has'nt dependencies, it will appear in the list with dependency field empty
+
+        Parameters
+        ----------
+        full_data : bool, optional
+            If True, the adjacency list will contain the version and url of the packages, by default False
 
         Returns
         -------
@@ -351,57 +359,27 @@ class PackageManager():
         '''
 
         if not self.packages:
-            self.packages = self.obtain_packages()
+            MyLogger.log("The package manager is empty")
+            return pd.DataFrame()
+                    
 
         rows = []
-        for package in self.packages:
-            rows.extend(
-                [package.name, dependency.name]
-                for dependency in package.dependencies
-            )
-        return pd.DataFrame(rows, columns=['name', 'dependency'])
 
-    def export_full_adjlist(self) -> pd.DataFrame:
-        '''
-        Convert the object to a adjacency list, where each row represents a dependency
-        If a package has'nt dependencies, it will appear in the list with dependency field empty
-        The version of the package and the dependency will be included
-
-        Returns
-        -------
-        pd.DataFrame
-            Dependency network as an adjacency list
-
-        Examples
-        --------
-        >>> adj_list = package_manager.export_full_adjlist()
-        >>> print(adj_list)
-            [name, version, dependency, dependency_version]
-        '''
-
-        rows = []
-        for package_name in self.packages:
-
-            package = self.get_package(package_name)
-
-            if package.dependencies:
+        if full_data:
+            for package in self.packages:
                 rows.extend(
-                    [
-                        package.name,
-                        package.version,
-                        package.url,
-                        dependency.name,
-                        dependency.version
-                    ]
+                    [package.name, package.version, dependency.name, dependency.version]
                     for dependency in package.dependencies
                 )
-            else:
-                rows.append([package.name, package.version,
-                            package.url, None, None])
+            return pd.DataFrame(rows, columns=['name', 'version', 'dependency', 'dependency_version'])
+        else:
 
-        return pd.DataFrame(
-            rows, columns=['name', 'version', 'url', 'dependency', 'dependency_version']
-        )
+            for package in self.packages:
+                rows.extend(
+                    [package.name, dependency.name]
+                    for dependency in package.dependencies
+                )
+            return pd.DataFrame(rows, columns=['name', 'dependency'])
 
 class PackageManagerLoadError(Exception):
     """

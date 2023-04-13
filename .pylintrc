@@ -25,6 +25,7 @@ disable=C0103,  # invalid-name
         C0304,  # missing-final-newline
         W0718,  # duplicate-exception
         W1514,  # unespecified-encoding
+        E1128,  # assignment-from-no-return
 
 # Ignorar algunos archivos y carpetas
 ignore=.venv,

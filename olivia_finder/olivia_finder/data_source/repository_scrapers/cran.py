@@ -20,22 +20,32 @@ import requests
 from typing_extensions import override
 from bs4 import BeautifulSoup
 from typing import Dict, List, Optional
-
-from ..data_source_abc import DataSourceABC
-from ..scraper_ds import ScraperError
-from ...data_source.repository_scrapers.r import RScraper
+from . import r
+from ..data_source import DataSource
+from ..scraper_ds import ScraperDataSource
 from ...myrequests.request_handler import RequestHandler
 from ...utilities.logger import MyLogger
 from ...utilities.util import Util
 
-class CranScraper(RScraper):
+class CranScraper(ScraperDataSource):
     '''
     Class that scrapes the CRAN website to obtain information about R packages.
-    Implements the abstract class Scraper and accordingly DataSource class
+    Implements the abstract methods of the ScraperDataSource class.
 
     As the CRAN repository can contain packages who depend on Bioconductor packages, this class also can
     obtain the list of Bioconductor packages from the Bioconductor website and merge it with the CRAN packages.
     This functionality is implemented in the method obtain_package_data() and it is optional.
+
+    Parameters
+    ----------
+    name : Optional[str]
+        Name of the data source
+    description : Optional[str]
+        Description of the data source
+    auxiliary_datasources : Optional[List[DataSource]]
+        List of auxiliary data sources that can be used to obtain information about packages        
+    request_handler : Optional[RequestHandler]
+        Request handler for the scraper, if None, it will be initialized with a generic RequestHandler
 
     Attributes
     ----------
@@ -51,32 +61,29 @@ class CranScraper(RScraper):
     '''
 
     # Class variables
-    CRAN_PACKAGE_LIST_URL: str  = "https://cran.r-project.org/web/packages/available_packages_by_name.html"
-    CRAN_PACKAGE_DATA_URL: str  = "https://cran.r-project.org/package="
-    NAME: str                   = "CRAN Scraper"
-    DESCRIPTION: str            = "Scraper class implementation for the CRAN package manager."
-    
+
     def __init__(
         self, 
-        name: Optional[str] = NAME, 
-        description: Optional[str] = DESCRIPTION, 
-        request_handler: Optional[RequestHandler] = None,
-        bioconductor_ds: Optional[DataSourceABC] = None
+        name: Optional[str] = None, 
+        description: Optional[str] = None, 
+        auxiliary_datasources: Optional[List[DataSource]] = None,
+        request_handler: Optional[RequestHandler] = None
     ):
         '''
         Constructor of the class
         '''
-        super().__init__(name, description, request_handler)
 
-        # check if the bioconductor_ds is a valid data source instance
-        if bioconductor_ds is not None and bioconductor_ds is not isinstance(
-            bioconductor_ds, DataSourceABC
-        ):
-            raise ScraperError(
-                'The bioconductor_ds parameter must be a valid data source instance'
-            )
+        # We initialize the class variables
+        self.CRAN_PACKAGE_LIST_URL: str  = "https://cran.r-project.org/web/packages/available_packages_by_name.html"
+        self.CRAN_PACKAGE_DATA_URL: str  = "https://cran.r-project.org/package="
+        self.NAME: str = "CRAN Scraper" if name is None else name
+        if description is None:
+            self.DESCRIPTION: str = "Scraper class implementation for the CRAN package manager."
+        else:
+            self.DESCRIPTION: str = description
 
-        self.bioconductor_ds = bioconductor_ds
+        # We call the constructor of the parent class
+        super().__init__(self.NAME, self.DESCRIPTION, auxiliary_datasources, request_handler)
 
     @override
     def obtain_package_names(self) -> List[str]:
@@ -184,7 +191,7 @@ class CranScraper(RScraper):
         try:
             d = soup.find('td', text='Depends:').find_next_sibling('td').text
             depends = Util.clean_string(d)
-            dep_list = self._parse_dependencies(depends)
+            dep_list = r.parse_dependencies(depends)
         except Exception:
             MyLogger.log(f'Dependencies not found for package {name}')
 
@@ -193,7 +200,7 @@ class CranScraper(RScraper):
         try:
             d = soup.find('td', text='Imports:').find_next_sibling('td').text
             imports = Util.clean_string(d)
-            imp_list = self._parse_dependencies(imports)
+            imp_list = r.parse_dependencies(imports)
         except Exception:
             MyLogger.log(f'Imports not found for package {name}')
             
@@ -209,61 +216,4 @@ class CranScraper(RScraper):
             'url': f'{self.CRAN_PACKAGE_DATA_URL}{name}'
         }
 
-    @override
-    def obtain_package_data(self, package_name: str) -> Dict[str, str]:
-        '''
-        Get the data of a package in the CRAN website, the use_bioconductor parameter can be used 
-        to check if the package is a Bioconductor package if it is not found in the CRAN website,
-        if the package is a Bioconductor package, it will be obtained from the Bioconductor 
-        datasource class attribute.
-        If the use_bioconductor flag is enabled and a Bioconductor datasource is not provided,
-        an exception will be raised.
-
-        Parameters
-        ----------
-        package_name : str
-            Name of the package
-        use_bioconductor : bool
-            If True, it will check if the package is a Bioconductor package
-
-        Raises
-        ------
-        ScraperError
-            If the package does not exist in in the provided datasources
-        
-        Returns
-        -------
-        Dict[str, str]
-            Dictionary with the data of the package
-
-        '''
-        # We build the URL of the package page
-        url = self._build_url(package_name)
-
-        # We make the HTTP request to the package page
-        response = self.request_handler.do_request(url)[1]
-
-        # Check if the package exists
-        if response.status_code == 404:
-            MyLogger.log(f'Package {package_name} not found in the CRAN website')
-
-            if not self.bioconductor_ds:
-                raise ScraperError("Bioconductor datasource not found, please provide a valid datasource usin the class constructor ")
-
-            MyLogger.log(f'Checking if {package_name} is a Bioconductor package')
-            return self.bioconductor_ds.obtain_package_data(package_name)
-
-        # We parse the HTML of the package page and return the data
-        return self._parser(response)
-
-
-        # # if there is no bioconductor datasource, we use the default method
-        # if not self.bioconductor_ds:
-        #     super().obtain_package_data(package_name)
-        # else:
-        #     try:
-        #         super().obtain_package_data(package_name)
-        #     except ScraperError(f"Package {package_name} not found in the CRAN website"):
-        #         MyLogger.log(f'Checking if {package_name} is a Bioconductor package')
-        #         return self.bioconductor_ds.obtain_package_data(package_name)
-
+    

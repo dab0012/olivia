@@ -88,7 +88,6 @@ class MyLogger:
                 ch.setLevel(level)
                 ch.setFormatter(formatter)
                 cls.logger.addHandler(ch)
-
         else:
             # The logger is disabled
 
@@ -112,7 +111,7 @@ class MyLogger:
             # Log the text
 
             #parse the level string to the corresponding logging level
-            if _self.level == "DEBUG":
+            if _self.level in ["DEBUG", 10]:
                 _self.level = logging.DEBUG
             elif _self.level == "INFO":
                 _self.level = logging.INFO

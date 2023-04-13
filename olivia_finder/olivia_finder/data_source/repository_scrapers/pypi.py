@@ -47,12 +47,12 @@ class PypiScraper(ScraperDataSource):
     NAME: str                   = "PyPI Scraper"
     DESCRIPTION: str            = "Scraper class implementation for the PyPI package network."  
 
-    def __init__(self, request_handler: RequestHandler = None):
+    def __init__(self, name: str = NAME, description: str = DESCRIPTION, request_handler: RequestHandler = None):
         '''
         Constructor
         '''
 
-        super().__init__(self.NAME, self.DESCRIPTION, request_handler)
+        super().__init__(name, description, request_handler)
 
     @override
     def obtain_package_names(self) -> List[str]:

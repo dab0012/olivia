@@ -15,41 +15,58 @@ File information:
     - Copyright (c) 2023 Daniel Alonso Báscones
 
 '''
-
+from __future__ import annotations
+from abc import ABC, abstractmethod
 from typing import Dict, List, Optional, Tuple
 import requests
 import tqdm
-from typing_extensions import override
-from .scraper_ds_abc import ScraperDataSourceABC
+
+from .data_source import DataSource
 from ..myrequests.request_handler import RequestHandler
 from ..utilities.logger import MyLogger
 
-class ScraperDataSource(ScraperDataSourceABC):
+class ScraperDataSource(DataSource, ABC):
+
     """
-    Base class for scraping a package manager
-    Implements the methods of the ScraperDatasourceABC interface class
+    Base class for custom scraping implementations of software repositories as CRAN, PyPI, etc.
+    This class is an abstract class, so it cannot be instantiated.
+    The subclasses must implement the abstract methods.
+    This class is a subclass of the DataSource class.
+    This class implements the methods _build_urls, obtain_package_data and obtain_packages_data
     
     Attributes
     ----------
+    name : str
+        Name of the data source
+    description : str
+        Description of the data source
     request_handler : RequestHandler
-        Request handler for the scraper
+        Request handler for making the requests
     not_found : list[str]
-        List of package names that are not found in the package manager           
-        
+        List of packages that are not found
+    auxiliary_datasources : list[DataSource]
+        List of auxiliary data sources
+    packages_data : dict
+        Dictionary with the packages data
+
     Parameters
     ----------
-    name : Optional[str]
-        Name of the data source
-    description : Optional[str]
-        Description of the data source
-    request_handler : Optional[RequestHandler]
-        Request handler for the scraper, if None, it will be initialized with a generic RequestHandler
+    name : str, optional
+        Name of the data source, by default None
+    description : str, optional
+        Description of the data source, by default None
+    auxiliary_datasources : list[DataSource], optional
+        List of auxiliary data sources, by default None
+    request_handler : RequestHandler, optional
+        Request handler for making the requests, by default None
+
     """
     
     def __init__(
         self, 
         name: Optional[str] = None, 
-        description: Optional[str] = None, 
+        description: Optional[str] = None,
+        auxiliary_datasources: Optional[List[DataSource]] = None, 
         request_handler: Optional[RequestHandler] = None, 
     ):
         """
@@ -57,74 +74,34 @@ class ScraperDataSource(ScraperDataSourceABC):
         """
 
         # Call the constructor of the parent class (DataSource)
-        super().__init__(name, description)
+        super().__init__(name, description, auxiliary_datasources)
 
         # if request_handler is None build a generic RequestHandler
         if request_handler is None:
-            self.request_handler: RequestHandler = RequestHandler()
+            self.request_handler: RequestHandler = RequestHandler.get_instance()
         else:
             self.request_handler: RequestHandler = request_handler
 
         # Initialize the not_found list for storing the packages that are not found
         self.not_found = []
 
-    def obtain_package_names(self) -> List[str]:
-        """
-        Obtain the package names from the web page of the package manager
-        it must handle exceptions and return an empty list if the package names cannot be obtained
-        To be implemented by the child class
+    def _build_urls(self, package_names: List[str]) -> List[str]:
+        '''
+        Build the urls for scraping the packages of the package_names list
         
-        Raises
-        ------
-        NotImplementedError
-            Bcause the method is not implemented in the base class
-        """
-        raise NotImplementedError
-
-    @override
-    def obtain_package_data(self, package_name: str) -> Dict:
-        """
-        Scrape a package from a package manager, if the package is not found, it is added to the not_found list
-        Implements the abstract method of the DataSource class
-        
-        Parameters
+        Attributes
         ----------
-        pkg_name : str
-            Name of the package to scrape
-
-        Raises
-        ------
-        ScraperError
-            If the package is not found
-
+        package_names : list[str]
+            List of package names to scrape
+        
         Returns
         -------
-        Dict
-            Package data as a dictionary
-            
-        Examples
-        --------
-        >>> scraper = Scraper()
-        >>> scraper.obtain_package_data('numpy')
-        """
-        MyLogger.log(f'Scraping package {package_name}')
-
-        # Make the request, the response is the second element of the tuple returned by do_request
-        response = self.request_handler.do_request(
-            self._build_url(package_name)
-        )[1]
-
-        # None if the package is not found, otherwise the package data
-        parsed_response = None if response.status_code == 404 else self._parser(response)
-
-        if parsed_response is None:
-            # If the package is not found raise an exception
-            raise ScraperError(f'Package {package_name} not found')
-        # If the package is found, log it and return the package data
-        MyLogger.log(f'Package {package_name} scraped successfully')
-        return parsed_response 
-
-    @override
+        list[str]
+            List of urls to scrape
+        '''
+        
+        return [self._build_url(package_name) for package_name in package_names]
+    
     def obtain_packages_data(
         self, 
         package_names: Optional[List[str]] = None,
@@ -200,6 +177,79 @@ class ScraperDataSource(ScraperDataSourceABC):
 
         return packages, not_found
 
+    def obtain_package_data(self, package_name: str) -> Dict:
+        """
+        Obtain the data of a package from the web page of the package manager
+
+        Parameters
+        ----------
+        package_name : str
+            Name of the package to be scraped
+
+        Returns
+        -------
+        Dict
+            Dictionary with the data of the package
+
+        """
+
+
+        # Make the request, the response is the second element of the tuple returned by do_request
+        MyLogger.log(f'Scraping package {package_name}')
+        response = self.request_handler.do_request(
+            self._build_url(package_name)
+        )[1]
+
+        # Parse the response
+        parsed_response = None if response.status_code == 404 else self._parser(response)
+
+        if parsed_response is None:
+            # --
+            # The package is not found
+
+            # Try luck with the aux scraper if it is defined
+            # --
+
+            parsed_response = super()._auxyliary_search(package_name)
+
+        if parsed_response is None:
+            # --
+            # The package is not found in the aux scraper either
+
+            # Log the package as not found
+            # --
+
+            MyLogger.log(f'Package {package_name} not found')
+            MyLogger.log(f'Adding {package_name} to the not found list')
+            self.not_found.append(package_name)
+            return None
+
+
+        # If the package is found, log it and return the package data
+        MyLogger.log(f'Package {package_name} scraped successfully')
+        return parsed_response 
+
+
+    # Abstract methods
+    # ----------------
+
+    # This methods should be implemented in the child class
+
+    @abstractmethod
+    def obtain_package_names(self) -> List[str]:
+        """
+        Obtain the package names from the web page of the package manager
+        it must handle exceptions and return an empty list if the package names cannot be obtained
+        To be implemented by the child class
+        
+        Raises
+        ------
+        NotImplementedError
+            Bcause the method is not implemented in the base class
+        """
+        raise NotImplementedError
+
+    @abstractmethod
     def _build_url(self, package_name: str) -> str:
         '''
         Build the url for scraping a package
@@ -217,24 +267,8 @@ class ScraperDataSource(ScraperDataSourceABC):
         '''
         
         raise NotImplementedError
-    
-    def _build_urls(self, package_names: List[str]) -> List[str]:
-        '''
-        Build the urls for scraping the packages of the package_names list
-        
-        Attributes
-        ----------
-        package_names : list[str]
-            List of package names to scrape
-        
-        Returns
-        -------
-        list[str]
-            List of urls to scrape
-        '''
-        
-        return [self._build_url(package_name) for package_name in package_names]
-    
+
+    @abstractmethod
     def _parser(self, response: requests.Response) -> Dict:
         '''
         Parse the response of the package page
@@ -252,21 +286,6 @@ class ScraperDataSource(ScraperDataSourceABC):
         '''
         raise NotImplementedError
     
-    @override
-    def get_info(self) -> dict:
-        """
-        Get the info of the Scraper
-        
-        Returns
-        -------
-        dict
-            Dictionary with the info of the Scraper
-        """
-        return {
-            'name': self.name,
-            'description': self.description
-        }
-
 class ScraperError(Exception):
     """
     Exception for the Scraper class

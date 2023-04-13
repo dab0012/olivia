@@ -154,7 +154,7 @@ class NpmScraper(ScraperDataSource):
             page = None
             while page is None:
                 try:
-                    page = self.__download_page(last_key, page_size)
+                    page = self._download_page(last_key, page_size)
                 except requests.exceptions.ConnectionError:
                     MyLogger.log(f'Connection error in page {i} of {num_pages}')
                     MyLogger.log(f'Last key: {last_key}')
@@ -196,7 +196,7 @@ class NpmScraper(ScraperDataSource):
         self.chunks_folder = f'{Configuration().get_key("folders", "working_dir")}/npm'
         os.makedirs(self.chunks_folder, exist_ok=True)
 
-    def __download_page(
+    def _download_page(
         self, 
         start_key: Optional[str]=None, 
         size: Optional[int]=1000, 
@@ -243,10 +243,10 @@ class NpmScraper(ScraperDataSource):
             MyLogger.log(f'Response: {response.text}')
             MyLogger.log(f'Params: {params}')
             MyLogger.log(f'Retrying, times left: {retries}')
-            return self.__download_page(start_key, size, retries-1)
+            return self._download_page(start_key, size, retries-1)
             
         if data.keys() == {'error', 'reason'}:
-            return self.__download_page(start_key, size, retries-1)
+            return self._download_page(start_key, size, retries-1)
         else:
             # Fix of selecting by last key
             return data['rows'][1:]

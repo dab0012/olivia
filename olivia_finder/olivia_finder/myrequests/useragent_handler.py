@@ -10,6 +10,12 @@ class UserAgentHandler():
     '''
     Handles useragents for the requests
 
+
+    Parameters
+    ----------
+    use_file : bool, optional
+        If True, the user agents are loaded from the file, by default True
+
     Attributes
     ----------
     USERAGENTSTRING_URL : str
@@ -22,15 +28,16 @@ class UserAgentHandler():
     '''
 
     # Attributes
-    # ----------------
+    # ----------
+    
     USERAGENTSTRING_URL = 'https://www.useragentstring.com/pages/useragentstring.php?name=All'
     '''URL to get user agents from the useragentstring.com API'''
     DATA_FILE: str
     '''Path to the file containing the user agents'''
-
     useragents_list: List[str]
+    '''List of user agents'''
 
-    def __init__(self) -> None:
+    def __init__(self, use_file: bool = True) -> None:
         '''
         Constructor
         '''
@@ -38,20 +45,32 @@ class UserAgentHandler():
         # Initialize the list before loading the user agents
         self.useragents_list = []
 
-        # get the data file path
-        current_file_path =  os.path.abspath(__file__)
-        self.DATA_FILE = os.path.join(os.path.dirname(current_file_path), 'data', 'useragents.txt')
+        # Load user agents from file
+        if use_file:
+            # get the data file path
+            current_file_path =  os.path.abspath(__file__)
+            self.DATA_FILE = os.path.join(os.path.dirname(current_file_path), 'data', 'useragents.txt')
 
-        if self._load_from_file(self.DATA_FILE):
-            MyLogger.log(f"Useragents loaded from file: {self.DATA_FILE}")
-            return
+            if self._load_from_file(self.DATA_FILE):
+                MyLogger.log(f"Useragents loaded from file: {self.DATA_FILE}")
+                return
 
+        # Load user agents from the useragentstring.com API
         if self._load_from_useragentstring():
-            MyLogger.log(f"Useragents loaded from API: {self.USERAGENTSTRING_URL}")
+            MyLogger.log(f"Useragents loaded from USERAGENTSTRING_URL: {self.USERAGENTSTRING_URL}")
             return
 
-        # If the list is empty, return default useragent
-        self.useragents_list = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36']
+        # If at this time there are no uses available, the default useragents are loaded using the list
+        # hardcodeted below
+        self.useragents_list = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36',
+            'Mozilla/5.0 (iPhone12,1; U; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Mobile/15E148 Safari/602.1',
+            'Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.181 Mobile Safari/537.36',
+            'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/111.0',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15'
+        ]
+
         MyLogger.log("Useragents list is empty. Using default useragent")
 
     def _load_from_file(self, file_path:str) -> bool:

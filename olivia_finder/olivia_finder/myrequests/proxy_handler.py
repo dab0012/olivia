@@ -18,7 +18,7 @@ File information:
 
 
 from typing import List, Optional, Union 
-from .proxy_builder import ProxyBuilder, ProxyBuilderABC
+from .proxy_builder import ProxyBuilder
 from ..utilities.logger import MyLogger
 
 class ProxyHandler():
@@ -40,7 +40,7 @@ class ProxyHandler():
 
     def __init__(
         self,
-        builders: Optional[List[ProxyBuilderABC]] = None, 
+        builders: Optional[List[ProxyBuilder]] = None, 
         proxy_max_uses: Optional[int] = 50
     ):
         '''Constructor'''
@@ -49,7 +49,7 @@ class ProxyHandler():
         self.proxy_max_uses = proxy_max_uses             # override default value
         self.proxy_list: List[str] = []                  # proxy_list is a list str with the proxies
         self.proxy_uses: dict = {}                       # A dictionary with the number of uses for each proxy, uses the proxy as key
-        self.proxy_builders: List[ProxyBuilderABC] = []  # List of proxy builders
+        self.proxy_builders: List[ProxyBuilder] = []  # List of proxy builders
 
         # Set proxy builders, if none, get default builders
         if builders is None:                                
@@ -58,7 +58,7 @@ class ProxyHandler():
             # Check if builders are valid
             for builder in builders:
                 # if any of the builders is not valid, ignore and continue with the next one
-                if not isinstance(builder, ProxyBuilderABC):
+                if not isinstance(builder, ProxyBuilder):
                     MyLogger.log(f"Builder {builder} is not a valid ProxyBuilderABC, ignoring")
                     continue
                 else:
@@ -155,7 +155,7 @@ class ProxyHandler():
 
         return proxies
     
-    def __get_available_builders(self) -> Union[List[ProxyBuilderABC], None]:
+    def __get_available_builders(self) -> Union[List[ProxyBuilder], None]:
         '''
         Get available proxy builders as a list of ProxyBuilder objects
 

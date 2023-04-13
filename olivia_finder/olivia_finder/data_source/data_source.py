@@ -12,22 +12,31 @@ File information:
     - Copyright (c) 2023 Daniel Alonso Báscones
 '''
 
-from typing import Dict, List
-
+from __future__ import annotations
+from abc import ABC, abstractmethod
+from typing import Dict, List, Optional
 from ..utilities.logger import MyLogger
-from .data_source_abc import DataSourceABC
 
-class DataSource(DataSourceABC):
+class DataSource(ABC):
     """
-    Base class for data sources, it implements the DataSourceABC interface.
-    This class is not intended to be used directly, but to be inherited by
-    other classes that must override this class's methods.
+    Base class for data sources.
+    This class is an abstract class, so it cannot be instantiated.
+    The subclasses must implement the methods obtain_package_names, obtain_package_data and obtain_packages_data.
+
+
     """
 
-    def __init__(self, name: str, description: str):
+    def __init__(self, name: str, description: str, auxiliary_datasources: Optional[List[DataSource]] = None):
+        
         self.name: str = name
         self.description: str = description
         self.packages_data: dict = {}
+
+        # We initialize the auxiliary data sources if there are any
+        if auxiliary_datasources is not None:
+            self.auxiliary_datasources = auxiliary_datasources
+        else:
+            self.auxiliary_datasources = []
 
     def get_info(self) -> Dict:
         '''
@@ -49,40 +58,40 @@ class DataSource(DataSourceABC):
             'description': self.description
         }
 
-    def obtain_package_names(self) -> List[str]:
+    def _auxyliary_search(self, package_name: str) -> Optional[Dict]:
         """
-        Obtains the list of packages from the data source.
-        Is an optional method, if the data source does not implement it, it will
-        be considered that it does not have a list of packages available.
+        Auxiliary method for searching a package in the auxiliary data sources.
+
+        Parameters
+        ----------
+        package_name : str
+            The name of the package to search
+
+        Returns
+        -------
+        Optional[Dict]
+            The data of the package if it is found, None otherwise
 
         Raises
         ------
-        NotImplementedError
-            Because this method is not implemented in the base class
+        NotFoundInDataSourceException
+            If the package is not found in any of the auxiliary data sources
         """
-        raise NotImplementedError
 
-    def obtain_package_data(self, package_name:str) -> Dict:
-        """
-        Obtains the data of a package from the data source as a dictionary.
+        package_data = None
+        for aux_ds in self.auxiliary_datasources:
+            try:
+                package_data = aux_ds.obtain_package_data(package_name)
+                MyLogger.log(f'Package {package_name} found using the auxiliary datasource {aux_ds.name}')
+                break
 
-        Raises
-        ------
-        NotImplementedError
-            Because this method is not implemented in the base class
-        """
-        raise NotImplementedError
+            except NotFoundInDataSourceException:
+                MyLogger.log(f'Package {package_name} not found using the auxiliary datasource {aux_ds.name}')
+                continue
+        
+        return package_data
 
-    def obtain_packages_data(self) -> List[Dict]:
-        '''
-        Obtains the data of a list of package names from the data source.
 
-        Raises
-        ------
-        NotImplementedError
-            Because this method is not implemented in the base class
-        '''
-        raise NotImplementedError
 
     def generate_package_dependency_network(self, package_name: str, dependency_network: Dict = None, deep_level: int = 5) -> Dict[str, List[str]]:
         """
@@ -132,9 +141,9 @@ class DataSource(DataSourceABC):
 
             try:     
                 self.generate_package_dependency_network(
-                    dependency_name,  # The name of the dependency
-                    dependency_network,  # The global dependency network
-                    deep_level - 1  # The deep level is reduced by 1
+                    dependency_name,                # The name of the dependency
+                    dependency_network,             # The global dependency network
+                    deep_level - 1                  # The deep level is reduced by 1
                 )
             except Exception:
                 MyLogger.log(
@@ -145,3 +154,65 @@ class DataSource(DataSourceABC):
         return dependency_network
 
 
+    # Abstract methods
+    # ----------------
+
+    # Implement the methods obtain_package_names, obtain_package_data and obtain_packages_data in the subclasses
+
+    @abstractmethod
+    def obtain_package_names(self) -> List[str]:
+        """
+        Obtains the list of packages from the data source.
+        Is an optional method, if the data source does not implement it, it will
+        be considered that it does not have a list of packages available.
+
+        Raises
+        ------
+        NotImplementedError
+            Because this method is not implemented in the base class
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def obtain_package_data(self, package_name:str) -> Dict:
+        """
+        Obtains the data of a package from the data source as a dictionary.
+
+        Parameters
+        ----------
+        package_name : str
+            The name of the package to obtain the data
+
+        Raises
+        ------
+        NotImplementedError
+            Because this method is not implemented in the base class
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def obtain_packages_data(self) -> List[Dict]:
+        '''
+        Obtains the data of a list of package names from the data source.
+
+        Raises
+        ------
+        NotImplementedError
+            Because this method is not implemented in the base class
+        '''
+        raise NotImplementedError
+
+
+class NotFoundInDataSourceException(Exception):
+    """
+    Exception that is raised when a package is not found in a data source.
+    """
+    
+    def __init__(self, package_name: str, data_source_name: str):
+        self.package_name = package_name
+        self.data_source_name = data_source_name
+
+    def __str__(self):
+        return f'The package {self.package_name} was not found in the data source {self.data_source_name}'
+    
+    

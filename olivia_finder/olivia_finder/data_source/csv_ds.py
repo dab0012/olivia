@@ -64,6 +64,8 @@ class CSVDataSource(DataSource):
         The name of the field that contains the dependency packages versions
     dependent_url_field : Optional[str]
         The name of the field that contains the dependent packages urls
+    auxiliary_datasources : Optional[List[DataSource]]
+        List of auxiliary data sources
 
     Examples
     --------
@@ -83,6 +85,7 @@ class CSVDataSource(DataSource):
         dependent_version_field: Optional[str] = None,
         dependency_version_field: Optional[str] = None,
         dependent_url_field: Optional[str] = None,
+        auxiliary_datasources: Optional[List[DataSource]] = None
     ):
         """
         Constructor of the class
@@ -201,17 +204,6 @@ class CSVDataSource(DataSource):
                 "version": dependency_version,
             })
 
-    @override
-    def get_info(self):
-        """
-        Returns the information of the data source.
-        """
-        return {
-            "name": self.name,
-            "description": self.description,
-        }
-        
-    @override
     def obtain_package_names(self) -> List[str]:
         """
         Obtains the list of packages from the data source, sorted alphabetically.
@@ -223,7 +215,6 @@ class CSVDataSource(DataSource):
         """
         return sorted(self.data[self.dependent_field].unique())
     
-    @override
     def obtain_package_data(self, package_name: str, override_previous: Optional[bool] = True) -> Dict:
         """
         Obtains the package from the dataframe
@@ -302,7 +293,6 @@ class CSVDataSource(DataSource):
             "dependencies": dependencies
         }
     
-    @override
     def obtain_packages_data(
         self, 
         package_name_list: Optional[List[str]] = None, 
