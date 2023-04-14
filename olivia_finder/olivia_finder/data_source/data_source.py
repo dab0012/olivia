@@ -22,8 +22,6 @@ class DataSource(ABC):
     Base class for data sources.
     This class is an abstract class, so it cannot be instantiated.
     The subclasses must implement the methods obtain_package_names, obtain_package_data and obtain_packages_data.
-
-
     """
 
     def __init__(self, name: str, description: str, auxiliary_datasources: Optional[List[DataSource]] = None):
