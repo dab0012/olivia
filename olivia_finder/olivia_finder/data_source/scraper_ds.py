@@ -20,7 +20,6 @@ from abc import ABC, abstractmethod
 from typing import Dict, List, Optional, Tuple
 import requests
 import tqdm
-
 from .data_source import DataSource
 from ..myrequests.request_handler import RequestHandler
 from ..utilities.logger import MyLogger

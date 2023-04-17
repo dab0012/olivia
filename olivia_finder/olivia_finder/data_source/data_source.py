@@ -189,7 +189,7 @@ class DataSource(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def obtain_packages_data(self) -> List[Dict]:
+    def obtain_packages_data(self, package_names: list[str]) -> List[Dict]:
         '''
         Obtains the data of a list of package names from the data source.
 

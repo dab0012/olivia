@@ -1,7 +1,9 @@
-from typing import List, Dict
+from typing import List, Dict, Tuple
 import requests
+
+from olivia_finder.utilities.logger import MyLogger
 from ..utilities.config_ini import Configuration
-from .data_source import DataSource
+from .data_source import DataSource, NotFoundInDataSourceException
 
 class LibrariesioDataSource(DataSource):
     """
@@ -65,7 +67,64 @@ class LibrariesioDataSource(DataSource):
     def obtain_package_data(self, package_name:str) -> Dict:
         """
         Obtains the data of a package from the data source as a dictionary.
+
+        Parameters
+        ----------
+        package_name : str
+            Name of the package to obtain the data from
+
+        Returns
+        -------
+        Dict
+            The data of the package as a dictionary
+
+        Raises
+        ------
+        NotFoundInDataSourceException
+            If the package is not found in the data source
+
+        Example
+        -------
+        >>> data_source = LibrariesioDataSource('name', 'description', 'platform')
+        >>> data_source.obtain_package_data('package_name')
+        {'name': 'package_name', 'version': '1.0.0', 'dependencies': ['package1', 'package2'], 'url': 'www.example.com'}
         """
+
+        # Get the package version and url
+        MyLogger.log(f"Obtaining data of {package_name}")
+        version, url = self._request_package_data(package_name)
+
+        # Get the package dependencies
+        try:
+            dependencies = self._request_dependencies_data(package_name)
+        except LibrariesIoException:
+            MyLogger.log(f"Exception while obtaining dependencies of {package_name}")
+            MyLogger.log("libraries.io API call failed")
+            return {}
+            
+        return {
+            "name": package_name,
+            "version": version,
+            "dependencies": dependencies,
+            "url": url
+        }
+    
+
+    def _request_package_data(self, package_name: str) -> Tuple[str, str]:
+        # sourcery skip: class-extract-method
+        '''
+        Obtains the data of a package from the data source as a dictionary.
+
+        Parameters
+        ----------
+        package_name : str
+            Name of the package to obtain the data from
+
+        Returns
+        -------
+        Tuple[str, str]
+            The data of the package as a tuple with the version and url
+        '''
 
         # Do the API call for obtain package version and url
         response = requests.get(
@@ -74,33 +133,48 @@ class LibrariesioDataSource(DataSource):
             timeout=500
         )
 
-        if response.status_code != 200:
-            raise Exception(
-                f"Error obtaining package data for {package_name}: {response.status_code} - {response.text}"
-            )
+        # Check if response is empty
+        # Sometime the api returns a response with a message, so we need to check it
+        self._check_if_response_ok(response, package_name)
 
-        # Response was successful
-        # Parse the response
+        # Response was successful :) Parse the response
         data = response.json()
 
-        version = data["latest_release_number"]
-        url = data["package_manager_url"]
+        # Check if data is empty
+        self._check_if_data_ok(data, package_name)
 
+        # Extract the data
+        return data["latest_release_number"], data["package_manager_url"]
+
+    def _request_dependencies_data(self, package_name: str) -> List[Dict]:
+        '''
+        Obtains the data of a package from the data source as a dictionary.
+
+        Parameters
+        ----------
+        package_name : str
+            Name of the package to obtain the data from
+
+        Returns
+        -------
+        List[Dict]
+            The data of the package as a list of dictionaries
+        '''
+                
         # Do the API call
         response = requests.get(
             self._build_dependencies_url(package_name), 
             headers={'Accept': 'application/json'},
             timeout=500
         )
-
-        if response.status_code != 200:
-            raise Exception(
-                f"Error obtaining package data for {package_name}: {response.status_code} - {response.text}"
-            )
+        self._check_if_response_ok(response, package_name)
         
         # Response was successful
         # Parse the response
         data = response.json()
+
+        # Check if data is empty
+        self._check_if_data_ok(data, package_name)
 
         # targets the field dependencies in the response
         dependencies = []
@@ -120,25 +194,51 @@ class LibrariesioDataSource(DataSource):
 
             dependencies.append(dependency_data)
 
-        return {
-            "name": package_name,
-            "version": version,
-            "dependencies": dependencies,
-            "url": url
-        }
+        return dependencies
 
 
-    def obtain_packages_data(self) -> List[Dict]:
+    def obtain_packages_data(self, package_names: list[str]) -> List[Dict]:
         '''
         Obtains the data of a list of package names from the data source.
+
+        Returns
+        -------
+        List[Dict]
+            The data of the packages as a list of dictionaries
+
+        Example
+        -------
+        >>> data_source = LibrariesioDataSource('name', 'description', 'platform')
+        >>> data_source.obtain_packages_data(['package1', 'package2'])
+        [{'name': 'package1', 'version': '1.0.0', 'dependencies': ['package1', 'package2'], 'url': 'www.example.com'}, 
+        {'name': 'package2', 'version': '1.0.0', 'dependencies': ['package1', 'package2'], 'url': 'www.example.com'}]
         '''
-        # Obtener una lista de nombres de paquetes en la plataforma especificada
-        package_names = self.obtain_package_names()
-        
-        # Obtener información sobre cada paquete
+
         packages_data = []
-        for name in package_names:
-            package_info = self.obtain_package_data(name)
-            packages_data.append(package_info)
-        
+
+        for package_name in package_names:
+            if package_data := self.obtain_package_data(package_name):
+                packages_data.append(package_data)
+
         return packages_data
+    
+
+    def _check_if_data_ok(self, data, package_name):
+        # Check if data is empty
+        if data.get('message') is None:
+            return 
+        
+        raise LibrariesIoException(f"Error obtaining package data for {package_name}: {data['message']}")
+
+    def _check_if_response_ok(self, response, package_name):
+        # Check if response is empty
+        if response.status_code != 200:
+            raise NotFoundInDataSourceException(package_name, self.name)
+        
+
+
+class LibrariesIoException(Exception):
+    
+    def __init__(self, message):
+        MyLogger.log(message)
+

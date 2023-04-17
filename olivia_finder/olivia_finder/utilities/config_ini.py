@@ -17,8 +17,6 @@ class Configuration:
         Configurations read from the config file
     """
 
-
-
     # Class variables
     # ---------------
     _ini_file = "../config.ini"                      # Path to the config file
