@@ -2,11 +2,12 @@ pandas
 tqdm
 requests
 BeautifulSoup4
-colorama
 selenium
-webdriver-manager
 sphinx 
 sphinx-autodoc-typehints 
 numpydoc
 typing_extensions
 singleton_decorator
+ipykernel
+networkx
+matplotlib

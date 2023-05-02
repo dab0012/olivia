@@ -9,6 +9,7 @@ if [ -d "$venv_name" ]; then
     source "$venv_name/bin/activate"
     which python3
 else
+    pip install --upgrade pip
     echo "Creating virtual env $venv_name ..."
     python3 -m venv "$venv_name"
     source "$venv_name/bin/activate"

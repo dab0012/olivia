@@ -239,3 +239,20 @@ class Package:
             for dependency in data['dependencies']
         ]
         return cls(data['name'], data['version'], data['url'], dependencies)
+
+    def get_dependencies_names(self) -> list[str]:
+        '''
+        Get the names of the dependencies of the package or an empty list if there are no dependencies
+
+        Returns
+        -------
+        list[str]
+            List with the names of the dependencies
+
+        Examples
+        --------
+        >>> from olivia_finder.package import Package
+        >>> package = Package("numpy", "1.0.0", "https://numpy.org")
+        >>> package.get_dependencies_names()
+        '''
+        return [dependency.name for dependency in self.dependencies]

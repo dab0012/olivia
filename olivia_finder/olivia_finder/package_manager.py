@@ -445,6 +445,8 @@ class PackageManager():
             The dependency network of the package            
         deep_level : int, optional
             The deep level of the dependency network, by default 5
+        generate : bool, optional
+            If True, the dependency network will be generated from the data source, by default False
 
         Returns
         -------
@@ -452,9 +454,11 @@ class PackageManager():
             The dependency network of the package
         """
 
+        # If the deep level is 0, we return the dependency network (Stop condition)
         if deep_level == 0:
             return dependency_network
         
+        # If the dependency network is not specified, we create it (Initial case)
         if dependency_network is None:
             dependency_network = {}
 
@@ -463,26 +467,25 @@ class PackageManager():
             return self._generate_dependency_network(package_name, deep_level, dependency_network)
         
         # Use the data of the package manager
-        package = self.get_package(package_name)
+        current_package = self.get_package(package_name)
+        if (current_package is not None) and (package_name not in dependency_network):
 
-        if package is not None:
-
-            for dependency in package.dependencies:
-
-                if package.name not in dependency_network:
-                    dependency_network[package.name] = []
-
-                dependency_network[package.name].append(dependency)
-
-                # Rerun recursively
+            # Get the dependencies of the package and add it to the dependency network if it is not already in it
+            dependencies = current_package.get_dependencies_names()
+            if dependencies:
+                dependency_network[package_name] = dependencies
+            
+        # Append the dependencies of the package to the dependency network
+        for dependency_name in dependencies:
+            if (dependency_name not in dependency_network) and  (self.get_package(dependency_name) is not None):
+                    
                 dependency_network = self.dependency_network(
-                    package_name = dependency.name, 
+                    package_name = dependency_name, 
                     dependency_network = dependency_network, 
                     deep_level = deep_level - 1,
                     generate = False
                 )
-        
-
+    
         return dependency_network
 
     def _generate_dependency_network(self, package_name: str, deep_level: int = 5, dependency_network: dict = None) -> dict[str, list[Package]]:
@@ -513,28 +516,35 @@ class PackageManager():
             )
             return dependency_network
         
-        # Append the target package to the dependency network
-        dependency_network[package_name] = current_package.dependencies
-        
-        # Run the method recursively for each dependency while the deep level is not reached
-        for dependency in current_package.dependencies:
+        # Get the dependencies of the package and add it to the dependency network if it is not already in it
+        dependencies = current_package.get_dependencies_names()
 
-            # Check if package is already in the dependency network
-            if dependency.name in dependency_network:
-                continue
+        if (package_name not in dependency_network) and dependencies:
+            dependency_network[package_name] = []
 
-            try:     
-                self.dependency_network(
-                    dependency.name,                # The name of the dependency
-                    dependency_network,             # The global dependency network
-                    deep_level - 1,                 # The deep level is reduced by 1
-                    generate = True                 # The dependency network is generated
-                )
-            except Exception:
-                MyLogger().get_logger().debug(
-                    f"The package {dependency.name}, as dependency of {package_name} does not exist in the data source {self.name}"
-                )
-                continue
+            # Append the dependencies of the target package to the dependency network
+            for dependency_name in dependencies:
+                dependency_network[package_name].append(dependency_name)
+
+                # Check if the dependency of this package is already in the dependency network
+                # If not, we generate the dependency network of the dependency
+
+                if dependency_name in dependency_network:
+                    continue
+                else:
+                    try:     
+                        self.dependency_network(
+                            dependency_name,                # The name of the dependency
+                            dependency_network,             # The global dependency network
+                            deep_level - 1,                 # The deep level is reduced by 1
+                            generate = True                 # The dependency network is generated
+                        )
+
+                    except Exception:
+                        MyLogger().get_logger().debug(
+                            f"The package {dependency_name}, as dependency of {package_name} does not exist in the data source {self.name}"
+                        )
+                        continue
 
         return dependency_network
 
