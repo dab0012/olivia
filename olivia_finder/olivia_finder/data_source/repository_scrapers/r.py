@@ -18,9 +18,8 @@ File information:
 '''
 
 import re
-from typing import Dict, List
 
-def parse_dependencies(dependencies_str: str) -> List[Dict[str, str]]:
+def parse_dependencies(dependencies_str: str) -> list[dict[str, str]]:
     '''
     Parses the dependencies string and returns a list of dictionaries with the name and version of each dependency
     TODO: A fix is needed to target the version of the dependency, as it's not always well defined
@@ -32,7 +31,7 @@ def parse_dependencies(dependencies_str: str) -> List[Dict[str, str]]:
 
     Returns
     -------
-    List[Dict[str, str]]
+    list[dict[str, str]]
         A list of dictionaries with the name and version of each dependency    
     '''
 

@@ -26,6 +26,7 @@ disable=C0103,  # invalid-name
         W0718,  # duplicate-exception
         W1514,  # unespecified-encoding
         E1128,  # assignment-from-no-return
+        W1203,  # logging-fstring-interpolation
 
 # Ignorar algunos archivos y carpetas
 ignore=.venv,

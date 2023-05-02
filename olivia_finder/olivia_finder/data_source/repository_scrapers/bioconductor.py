@@ -18,13 +18,13 @@ File information:
 
 import requests
 from bs4 import BeautifulSoup
-from typing import Dict, Optional, List
+from typing import Optional
 from typing_extensions import override
 from . import r
-from ..data_source import DataSource
 from ..scraper_ds import ScraperDataSource, ScraperError
 from ...myrequests.request_handler import RequestHandler
-from ...utilities.util import Util
+from ...utilities.utilities import clean_string
+from ...utilities.logger import MyLogger
 
 # Selenium imports (for scraping JavaScript pages)
 from selenium import webdriver                                    
@@ -40,7 +40,7 @@ class BioconductorScraper(ScraperDataSource):
         Name of the data source
     description : Optional[str]
         Description of the data source
-    auxiliary_datasources : Optional[List[DataSource]]
+    auxiliary_datasources : Optional[list[DataSource]]
         List of auxiliary data sources
     request_handler : Optional[RequestHandler]
         Request handler for the scraper, if None, it will be initialized with a generic RequestHandler
@@ -61,7 +61,6 @@ class BioconductorScraper(ScraperDataSource):
         self, 
         name: Optional[str] = None, 
         description: Optional[str] = None, 
-        auxiliary_datasources: Optional[List[DataSource]] = None,
         request_handler: Optional[RequestHandler] = None,
     ):
         '''
@@ -77,19 +76,19 @@ class BioconductorScraper(ScraperDataSource):
             self.DESCRIPTION: str = "Scraper class implementation for the Bioconductor package network"
 
         # Call the constructor of the parent class
-        super().__init__(self.NAME, self.DESCRIPTION, auxiliary_datasources, request_handler)
+        super().__init__(self.NAME, self.DESCRIPTION, request_handler)
 
 
 
     @override
-    def obtain_package_names(self) -> List[str]:
+    def obtain_package_names(self) -> list[str]:
         '''
         Get the list of packages from the Bioconductor website
         TODO: FIX THIS METHOD, IT REQUIRES FIREFOX INSTALLED IN THE SYSTEM and it can be fixed 
 
         Returns
         -------
-        List[str]
+        list[str]
             List of package names
             
         Raises
@@ -108,21 +107,19 @@ class BioconductorScraper(ScraperDataSource):
         # # with JavaScript, we need to render the page to get the list of packages
 
         # # Load the Selenium driver
-        # driver_path = UtilConfig.get_value_config_file("selenium", "driver_path")
+        # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
-        # # Check if the driver exists
-        # if not os.path.exists(driver_path):
-        #     UtilLogger.logg(f'The Selenium driver does not exist: {driver_path}')
-        #     return None
 
         # Create the driver
 
         try:
+            MyLogger().get_logger().debug("Creating the Selenium driver...")
+
             driver_options = webdriver.FirefoxOptions()
             driver_options.headless = True
             driver = webdriver.Firefox(
                 options = driver_options, 
-                # executable_path = driver_path
+                # executable_path = '/home/dnllns/Descargas/geckodriver/geckodriver'
             )
             
         except ScraperError("Exception occurred while creating the Selenium driver.") as e:
@@ -130,6 +127,7 @@ class BioconductorScraper(ScraperDataSource):
 
         # Scraping webpage with package list
         try:
+            MyLogger().get_logger().debug("Scraping the Bioconductor website...")
             driver.get(self.BIOCONDUCTOR_LIST_URL)
             table = driver.find_element(By.ID, "biocViews_package_table")
             table_content = table.get_attribute("innerHTML")
@@ -141,6 +139,7 @@ class BioconductorScraper(ScraperDataSource):
 
         # Process the HTML to obtain packages
         try:
+            MyLogger().get_logger().debug("Processing the HTML...")
             soup = BeautifulSoup(table_content, 'html.parser')
             packages = []
             for row in soup.find_all("tr"):
@@ -154,6 +153,7 @@ class BioconductorScraper(ScraperDataSource):
         
         # Sort the list of packages
         packages.sort()
+        MyLogger().get_logger().info(f"Obtained {len(packages)} packages from {self.BIOCONDUCTOR_LIST_URL}")
         
         return packages
     
@@ -175,7 +175,7 @@ class BioconductorScraper(ScraperDataSource):
         return f'{self.BIOCONDUCTOR_PACKAGE_DATA_URL}{package_name}.html'
 
     @override
-    def _parser(self, response: requests.Response) -> Dict[str, str]:
+    def _parser(self, response: requests.Response) -> dict[str, str]:
         '''
         Parse the response from the Bioconductor website
         It's obtained from the list of packages in the Bioconductor website
@@ -187,7 +187,7 @@ class BioconductorScraper(ScraperDataSource):
         
         Returns
         -------
-        Dict[str, str]
+        dict[str, str]
             The data of the package
         '''        
         # Get the data from the table
@@ -206,13 +206,13 @@ class BioconductorScraper(ScraperDataSource):
             cells = row.find_all('td')
             if len(cells) > 0:
                 if cells[0].text == 'Version':
-                    version = Util.clean_string(cells[1].text.strip())
+                    version = clean_string(cells[1].text.strip())
                 elif cells[0].text == 'Depends':
-                    depends = Util.clean_string(cells[1].text.strip())
+                    depends = clean_string(cells[1].text.strip())
                     if depends != '':
                         dep_list = r.parse_dependencies(depends)
                 elif cells[0].text == 'Imports':
-                    imports = Util.clean_string(cells[1].text.strip())
+                    imports = clean_string(cells[1].text.strip())
                     if imports != '':
                         imp_list = r.parse_dependencies(imports)
                         

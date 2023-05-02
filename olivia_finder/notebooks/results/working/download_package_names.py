@@ -18,7 +18,7 @@ def download_page(
     size: Optional[int]=1000, 
     retries: Optional[int]=5,
     rh: RequestHandler = RequestHandler()
-)-> List[dict]:
+)-> list[dict]:
 
     NPM_PACKAGE_LIST_URL = 'https://skimdb.npmjs.com/registry/_all_docs'
 
@@ -57,7 +57,7 @@ def download_page(
         return data['rows'][1:]
 
 
-def donwload_package_names(last_key: Optional[str]=None, next_page_=0, total_pages_=0) -> List[str]:
+def donwload_package_names(last_key: Optional[str]=None, next_page_=0, total_pages_=0) -> list[str]:
 
     # # Cargar los paquetes ya obtenidos en una lista
     # package_names = []

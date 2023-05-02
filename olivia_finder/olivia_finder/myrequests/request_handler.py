@@ -1,347 +1,178 @@
-'''
-request_handler.py
-==================
+import queue
 
-Description
------------
-
-Module that contains ...
-
-File information:
-    - File: request_handler.py
-    - Project: myrequests
-    - Created Date: 2023-03-18 14:40:56
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
-
-'''
-
-from typing import List, Optional, Tuple, Union
-from threading import Lock
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import tqdm
-import requests
-from .proxy_handler import ProxyHandler
-from .useragent_handler import UserAgentHandler
-from ..utilities.logger import MyLogger
-from ..utilities.util import Util
+
+from .job import RequestJob
+from .request_worker import RequestWorker
+from  ..utilities.logger import MyLogger
 
 class RequestHandler:
-    '''
-    Class that handles HTTP requests in a more transparent way in scraping and denial of service environments
-    by the servers from which the data is requested 
-    Basically, it manages the proxies and user agents so that scraping is not detected
-
-    Attributes
-    ----------
-    proxy_handler : ProxyHandler
-        Proxy handler
-    useragents_handler : UserAgentHandler
-        User agent handler
-    REQUEST_MAX_RETRIES : int
-        Maximum number of retries for each request
-    REQUEST_TIMEOUT : int
-        Timeout for each request
-    NUM_PROCESSES : int
-        Number of processes to use for parallel requests
-    lock : Lock
-        Lock for the current proxy and user agent indexes for multi-threading
-
-    Parameters
-    ----------
-    proxy_handler : Optional[ProxyHandler]
-        Proxy handler, if None, it will be initialized with a generic ProxyHandler
-    useragents_handler : Optional[UserAgentHandler]
-        User agent handler, if None, it will be initialized with a generic UserAgentHandler
-    max_retry : Optional[int]
-        Maximum number of retries for each request, if None, it will be initialized with the default value
-    request_timeout : Optional[int]
-        Timeout for each request, if None, it will be initialized with the default value
-    num_processes : Optional[int]
-        Number of processes to use for parallel requests, if None, it will be initialized with the default value
-    '''
-
-    _instance = None
-
-    # Singleton pattern for the class
-    # --------------------------------
-    @staticmethod
-    def get_instance(
-        proxy_handler: Optional[ProxyHandler] = None, 
-        useragents_handler: Optional[UserAgentHandler] = None, 
-        max_retry: Optional[int] = 5, 
-        request_timeout: Optional[int] = 60, 
-        num_processes: Optional[int] = 4,
-        overwrite: Optional[bool] = False
-    ):
-        '''
-        Static access method for the singleton pattern
-
-        Parameters
-        ----------
-        proxy_handler : Optional[ProxyHandler]
-            Proxy handler, if None, it will be initialized with a generic ProxyHandler
-        useragents_handler : Optional[UserAgentHandler]
-            User agent handler, if None, it will be initialized with a generic UserAgentHandler
-        max_retry : Optional[int]
-            Maximum number of retries for each request, if None, it will be initialized with the default value
-        request_timeout : Optional[int]
-            Timeout for each request, if None, it will be initialized with the default value
-        num_processes : Optional[int]
-            Number of processes to use for parallel requests, if None, it will be initialized with the default value
-        overwrite : Optional[bool]
-            If True, it will overwrite the current instance
-
-        Returns
-        -------
-        RequestHandler
-            Request handler instance
-        '''
-        if RequestHandler._instance and overwrite or not RequestHandler._instance:
-            RequestHandler._instance = RequestHandler(
-                proxy_handler=proxy_handler,
-                useragents_handler=useragents_handler,
-                max_retry=max_retry,
-                request_timeout=request_timeout,
-                num_processes=num_processes
-            )
-        return RequestHandler._instance
-
-    def __init__(
-        self, 
-        proxy_handler:          Optional[ProxyHandler] = None, 
-        useragents_handler:     Optional[UserAgentHandler] = None, 
-        max_retry:              Optional[int] = 5, 
-        request_timeout:        Optional[int] = 60, 
-        num_processes:          Optional[int] = 4, 
-    ):
-        '''Constructor'''
-
-        # Check proxy handler
-        self.proxy_handler = ProxyHandler() if proxy_handler is None else proxy_handler
+    ''''''
     
-        # Check user agent handler
-        self.useragents_handler = UserAgentHandler() if useragents_handler is None else useragents_handler
-
-        # Initialize attributes
-        self.REQUEST_MAX_RETRIES = max_retry
-        self.REQUEST_TIMEOUT = request_timeout
-        self.lock = Lock()
-
-        # Check number of processes
-        recommended_num_processes = Util.recommended_threads()
-        if num_processes > recommended_num_processes:
-            MyLogger.log(f"Number of processes ({num_processes}) is greater than the recommended number ({recommended_num_processes}).")
-            self.NUM_PROCESSES = recommended_num_processes
-        elif num_processes < 1:
-            raise ValueError("num_processes must be greater than 0")
-        else:
-            self.NUM_PROCESSES = num_processes
-
-    def do_request(self, url: str, params: dict = None) -> Union[Tuple[str, requests.Response], None]:
-        '''
-        Do a request to the given url and return the response.
-        It uses a proxy and a user agent if they are available.
-
-        Parameters
-        ----------
-        url : str
-            Url to do the request
-        params : dict, optional
-            Parameters to pass to the request, by default None
-
-        Raises
-        ------
-        RequestError
-            If there is an error doing the request
-
-        Returns
-        -------
-        Union[Tuple[str, requests.Response], None]
-            Tuple with the url and the response if the request was successful, None otherwise
-
-        Examples
-        --------
-        >>> request_handler = RequestHandler()
-        >>> request_handler.do_request("https://www.google.com")
-        ('https://www.google.com', <Response [200]>)
-        '''
-
-        # Try to get proxy and user agent with lock for thread safety
-        proxy = headers = None
-
-        try:
-            with self.lock:
-                if self.proxy_handler is not None:
-                    proxy_url = self.proxy_handler.get_next_proxy()
-                    proxy = {"http": proxy_url}
-                    MyLogger.log(f"Using proxy: {proxy}")
-                if self.useragents_handler is not None:
-                    headers = {'User-Agent': self.useragents_handler.get_next_useragent()}
-                    MyLogger.log(f"Using user agent: {headers['User-Agent']}")
-        except Exception as e:
-            raise RequestError(url, f"Exception getting proxy and user agent: {e}") from e
-
-        # Do the request
-        response = None
-        try:
-            with requests.Session() as session:
-                response = session.get(
-                    url, 
-                    headers=headers,
-                    proxies=proxy, 
-                    timeout=self.REQUEST_TIMEOUT, 
-                    params=params
-                )
-
-            # Response is ok
-            MyLogger.log(f"Response status code: {response.status_code}")
-            return (url, response)
-        
-        # Handle exceptions
-        except Exception as e:
-            raise RequestError(response, f"Exception doing request: {e}") from e
-        
-    def do_parallel_requests(
-            
-        self, url_list: List[str], 
-        param_list: Optional[List[dict]] = None, 
-        progress_bar: Optional[tqdm.tqdm] = None
-
-    ) -> List[Union[Tuple[str, requests.Response], None]]:
-        '''
-        Do requests to the given urls.
-        It uses multiprocessing to do the requests in parallel.
-        
-        Parameters
-        ----------
-        url_list : List[str]
-            List of urls to do the requests
-        param_list : Optional[List[dict]], optional
-            List of parameters to pass to the requests, by default None
-        progress_bar : Optional[tqdm.tqdm], optional
-            Progress bar to use, by default None
-
-        Returns
-        -------
-        List[Union[Tuple[str, requests.Response], None]]
-            List of tuples with the url and the response if the request was successful, None otherwise
-
-        Examples
-        --------
-        >>> url_list = ["https://www.google.com", "https://www.yahoo.com"]
-        >>> param_list = [{"q": "test"}, {"q": "test2"}]
-        >>> request_handler = RequestHandler()
-        >>> request_handler.do_parallel_requests(url_list, param_list)
-        [('https://www.google.com', <Response [200]>), ('https://www.yahoo.com', <Response [200]>)]
-        '''
-
-        # Check if num_processes is greater than the number of urls and adjust accordingly
-        self.NUM_PROCESSES = min(self.NUM_PROCESSES, len(url_list))
-        
-        # Do requests in parallel
-        with ThreadPoolExecutor(max_workers=self.NUM_PROCESSES) as executor:
-
-            # init desired results to None, so that we can check if they are not None later
-            results = {url: None for url in url_list}
-
-            # Do requests with retries
-            if param_list is None:
-                futures = [executor.submit(self._do_request_with_retry, url, None) for url in url_list]
-            else:
-                futures = [executor.submit(self._do_request_with_retry, url, params) for url, params in zip(url_list, param_list)]
-
-            # Get results
-            for future in as_completed(futures):
-
-                # If there was an exception, log it and continue
-                if isinstance(future.result(), Exception):
-                    MyLogger.log(f"Exception in thread: {future.result()}")
-                else:
-                    with self.lock:
-                        response = future.result()
-
-                        # Update progress bar
-                        if progress_bar is not None:
-                            progress_bar.update(1)
-
-                        # Check if response is not None
-                        if response is not None:
-                            response_url, response_object = response
-                            results[response_url] = response_object
-
-        return results
-    
-    def _do_request_with_retry(self, url: str, params: dict) -> Union[Tuple[str, requests.Response], None]:
-        '''
-        Do a request to the given url with retries, if the request fails for any reason
-        
-        Parameters
-        ----------
-        url : str
-            Url to do the request
-        params : dict
-            Parameters to pass to the request
-
-        Returns
-        -------
-        Union[Tuple[str, requests.Response], None]
-            Tuple with the url and the response if the request was successful, None otherwise     
-        '''
-        retry_count = 0
-        while retry_count < self.REQUEST_MAX_RETRIES:
-            response = self.do_request(url, params)
-            if response[1] is not None:
-                return (url, response[1])
-            retry_count += 1
-        return (url, None)
-
-    def force_change_proxy(self):
-        '''
-        Force change the proxy used by the request handler
-        '''
-        if self.proxy_handler is not None:
-            self.proxy_handler.force_change_proxy()
-
-class RequestError(Exception):
-    """
-    Exception raised when there is an error doing a request
-
-    Attributes
-    ----------
-    response : requests.Response
-        Response object, used to get the url and the status code
-    message : str
-        Error message
-    """
-
-    def __init__(self, response:requests.Response, message:str):
+    def __init__(self):
         '''
         Constructor
         '''
 
-        if response is not None:
-            proxy_used = response.request.proxy
-            useragent_used = response.request.headers['User-Agent']
-            base_message = f"Request to {response.url} failed with status code {response.status_code}:\n"
-            base_message += f"Proxy used: {proxy_used}\n"
-            base_message += f"User-Agent used: {useragent_used}\n"
-        else:
-            base_message = "Request failed: response is None\n"
+        message = "Creating RequestHandler object"
+        MyLogger().get_logger().info(message)
 
-        self.message = base_message + message
-        super().__init__(self.message)
+        # Create jobs queue
+        self.jobs_queue = queue.Queue()
 
-        # Log error
-        MyLogger.log(self.message)
-        
-    def __str__(self):
+        # Number of workers
+        self.num_workers = 1
+        self.workers: list[RequestWorker] = []
+
+    
+    def _clear(self):
         '''
-        String representation of the exception
+        Reset the RequestHandler object
+        '''
+        
+        # Delete the objects
+        del self.jobs_queue
+        del self.workers
+        
+        # Create jobs queue
+        self.jobs_queue = queue.Queue()
+        
+        # Number of workers
+        self.num_workers = 1
+        self.workers: list[RequestWorker] = []
+
+
+    def _setup_jobs(self, request_jobs: list[RequestJob], num_workers: int, progress_bar: tqdm.tqdm = None):
+        
+        # Enqueue jobs
+        for job in request_jobs:
+            job.progress_bar = progress_bar
+            self.jobs_queue.put(job)
+
+        MyLogger().get_logger().debug(f"Jobs queue size: {self.jobs_queue.qsize()}")
+
+        # Workers keep working till they receive an exit string
+        # So we need to add the number of workers times the exit string to the queue
+        self.num_workers = num_workers
+        for _ in range(self.num_workers):
+            self.jobs_queue.put(RequestJob.end_job_signal())
+
+        # Create workers and add to the queue
+        MyLogger().get_logger().debug("Creating workers")
+
+        for i in range(self.num_workers):
+            worker = RequestWorker(i, self.jobs_queue, progress_bar)
+            self.workers.append(worker)
+
+        MyLogger().get_logger().debug("Workers created")
+        MyLogger().get_logger().debug(f"Number of workers: {len(self.workers)}")
+
+    
+    def _setup_job(self, request_job: RequestJob):
+        
+        # Enqueue jobs
+        self.jobs_queue.put(request_job)
+
+        # Workers keep working till they receive an exit string
+        # So we need to add the number of workers times the exit string to the queue
+        self.jobs_queue.put(RequestJob.end_job_signal())
+
+        # Create workers and add to the queue
+        self.workers.append(
+            RequestWorker(0, self.jobs_queue)
+        )
+        MyLogger().get_logger().debug("Job created")
+
+
+    def do_requests(self, request_jobs: list[RequestJob], num_workers: int = 8, progress_bar: tqdm.tqdm = None):
+        '''
+        Do the requests
+        
+        Returns
+        -------
+        list
+            List of RequestJob objects
+
+        Examples
+        --------
+        >>> rh = RequestHandler(jobs)
+        >>> results = rh.do_requests()
+        >>> for job in results:
+        >>>     print(f'key: {job.key}, url: {job.url}, response: {job.response}')
+        '''
+        self._clear()
+
+        MyLogger().get_logger().info("Starting requests")
+
+
+        MyLogger().get_logger().debug(f"Number of jobs: {len(request_jobs)}")
+        # Setup jobs
+        self._setup_jobs(request_jobs, num_workers, progress_bar)
+        
+        # Start workers
+        for worker in self.workers:
+            MyLogger().get_logger().debug(f"Starting worker {worker.worker_id}")
+            worker.start()
+            
+        # Join workers to wait till they finished
+        for worker in self.workers:
+
+            worker.join()
+            MyLogger().get_logger().debug(f"Joining worker {worker.worker_id}")
+
+        # Combine results from all workers
+        workers_finalized_jobs = []
+        for worker in self.workers:
+            MyLogger().get_logger().debug(f"Worker {worker.worker_id} finished")
+            workers_finalized_jobs.extend(worker.my_jobs.copy())
+
+
+        MyLogger().get_logger().info("All requests finished")
+        return workers_finalized_jobs
+
+    def do_request(self, job: RequestJob):
+        '''
+        Do a single request
+        
+        Parameters
+        ----------
+        job : RequestJob
+            The RequestJob object
 
         Returns
         -------
-        str
-            String representation of the exception
+        RequestJob
+            The RequestJob object with the response
+
+        Examples
+        --------
+        >>> rh = RequestHandler()
+        >>> job = RequestJob("single_job", "https://www.google.com")
+        >>> result = rh.do_request(job)
+        >>> print(f'key: {result.key}, url: {result.url}, response: {result.response}')
         '''
-        return self.message
+
+        # Clear the RequestHandler object
+        self._clear()
+
+        # Setup job
+        self._setup_job(job)
+
+        # Start worker
+        worker = RequestWorker(0, self.jobs_queue)
+        MyLogger().get_logger().debug(f"Starting worker {worker.worker_id}")
+
+        MyLogger().get_logger().info(f"Starting request for {job.key}: {job.url}")
+        worker.start()
+
+        # Join worker to wait till it finished
+        worker.join()
+        MyLogger().get_logger().debug(f"Joining worker {worker.worker_id}")
+        MyLogger().get_logger().info(f"Request for {job.key}: {job.url} finished")
+
+        if worker.my_jobs[0].response is None:
+            MyLogger().get_logger().error(f"Request for {job.key}: {job.url} failed: response is None")
+
+        # Return the job
+        return worker.my_jobs[0]
+    

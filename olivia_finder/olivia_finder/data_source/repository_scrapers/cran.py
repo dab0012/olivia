@@ -19,13 +19,14 @@ File information:
 import requests
 from typing_extensions import override
 from bs4 import BeautifulSoup
-from typing import Dict, List, Optional
+from typing import Optional
+
 from . import r
-from ..data_source import DataSource
 from ..scraper_ds import ScraperDataSource
 from ...myrequests.request_handler import RequestHandler
+from ...myrequests.job import RequestJob
 from ...utilities.logger import MyLogger
-from ...utilities.util import Util
+from ...utilities.utilities import clean_string
 
 class CranScraper(ScraperDataSource):
     '''
@@ -42,7 +43,7 @@ class CranScraper(ScraperDataSource):
         Name of the data source
     description : Optional[str]
         Description of the data source
-    auxiliary_datasources : Optional[List[DataSource]]
+    auxiliary_datasources : Optional[list[DataSource]]
         List of auxiliary data sources that can be used to obtain information about packages        
     request_handler : Optional[RequestHandler]
         Request handler for the scraper, if None, it will be initialized with a generic RequestHandler
@@ -66,7 +67,6 @@ class CranScraper(ScraperDataSource):
         self, 
         name: Optional[str] = None, 
         description: Optional[str] = None, 
-        auxiliary_datasources: Optional[List[DataSource]] = None,
         request_handler: Optional[RequestHandler] = None
     ):
         '''
@@ -83,16 +83,16 @@ class CranScraper(ScraperDataSource):
             self.DESCRIPTION: str = description
 
         # We call the constructor of the parent class
-        super().__init__(self.NAME, self.DESCRIPTION, auxiliary_datasources, request_handler)
+        super().__init__(self.NAME, self.DESCRIPTION, request_handler)
 
     @override
-    def obtain_package_names(self) -> List[str]:
+    def obtain_package_names(self) -> list[str]:
         '''
         Get the list of packages in the CRAN website, by scraping the HTML of the page
 
         Returns
         -------
-        List[str]
+        list[str]
             List of packages
             
         Examples
@@ -102,14 +102,24 @@ class CranScraper(ScraperDataSource):
         >>> package_names = cs.obtain_package_names()
         '''
 
-        response = self.request_handler.do_request(self.CRAN_PACKAGE_LIST_URL)[1]
+        job = self.request_handler.do_request(
+            RequestJob(
+                "CRAN Package List",
+                self.CRAN_PACKAGE_LIST_URL
+            )
+        )
+
+        if job.response is None:
+            MyLogger().get_logger().error('Error while obtaining the list of packages from CRAN')
+            return []
 
         # Parse HTML
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(job.response.text, 'html.parser')
 
         # Get table with packages
         table = soup.find("table")
         rows = table.find_all("tr")
+
         # Clean the first row of the table (it contains the headers)
         rows.pop(0)
 
@@ -125,13 +135,14 @@ class CranScraper(ScraperDataSource):
                 package_name = cells[0].find("a").text   
             # If an error occurs, we show the error message
             except AttributeError as e:
-                MyLogger.log(f'Error while obtaining the name of a package: {e}')
+                MyLogger().get_logger().debug(f'Error while obtaining the name of a package: {e}')
                 continue
 
             # We add the package name to the list of packages
             packages.append(package_name)
-            MyLogger.log(f'Package {package_name} added to the list of packages')
+            MyLogger().get_logger().debug(f'Package {package_name} added to the list of packages')
 
+        MyLogger().get_logger().info(f'Obtained {len(packages)} packages from {self.CRAN_PACKAGE_LIST_URL}')
         return packages
 
     @override
@@ -153,7 +164,7 @@ class CranScraper(ScraperDataSource):
         return f'{self.CRAN_PACKAGE_DATA_URL}{package_name}'
 
     @override
-    def _parser(self, response: requests.Response) -> Dict[str, str]:
+    def _parser(self, response: requests.Response) -> dict[str, str]:
         '''
         Parse the HTML of a package page in the CRAN website
 
@@ -164,8 +175,8 @@ class CranScraper(ScraperDataSource):
 
         Returns
         -------
-        Dict[str, str]
-            Dictionary with the data of the package
+        dict[str, str]
+            dictionary with the data of the package
 
         '''
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -174,7 +185,7 @@ class CranScraper(ScraperDataSource):
         name = None
         try:
             d = soup.find('h2').text
-            name = Util.clean_string(d).split(':')[0]
+            name = clean_string(d).split(':')[0]
         except Exception:
             return None
 
@@ -182,27 +193,27 @@ class CranScraper(ScraperDataSource):
         version = None
         try:
             d = soup.find('td', text='Version:').find_next_sibling('td').text
-            version = Util.clean_string(d)
+            version = clean_string(d)
         except Exception:
-            MyLogger.log(f'Version not found for package {name}')
+            MyLogger().get_logger().debug(f'Version not found for package {name}')
 
         # Get depends
         dep_list = []
         try:
             d = soup.find('td', text='Depends:').find_next_sibling('td').text
-            depends = Util.clean_string(d)
+            depends = clean_string(d)
             dep_list = r.parse_dependencies(depends)
         except Exception:
-            MyLogger.log(f'Dependencies not found for package {name}')
+            MyLogger().get_logger().debug(f'Dependencies not found for package {name}')
 
         # Get imports
         imp_list = []
         try:
             d = soup.find('td', text='Imports:').find_next_sibling('td').text
-            imports = Util.clean_string(d)
+            imports = clean_string(d)
             imp_list = r.parse_dependencies(imports)
         except Exception:
-            MyLogger.log(f'Imports not found for package {name}')
+            MyLogger().get_logger().debug(f'Imports not found for package {name}')
             
         # Build dictionary with package data
         # we consider that dependencies and imports are the same level of importance

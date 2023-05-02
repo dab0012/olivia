@@ -19,10 +19,13 @@ File information:
 import re
 import requests
 from typing_extensions import override
-from typing import Dict, List
 from bs4 import BeautifulSoup
 from ..scraper_ds import ScraperDataSource, ScraperError
 from ...myrequests.request_handler import RequestHandler
+from ...myrequests.job import RequestJob
+from ...utilities.logger import MyLogger
+
+
 
 class PypiScraper(ScraperDataSource):
     ''' 
@@ -55,14 +58,14 @@ class PypiScraper(ScraperDataSource):
         super().__init__(name, description, request_handler)
 
     @override
-    def obtain_package_names(self) -> List[str]:
+    def obtain_package_names(self) -> list[str]:
         '''
         Obtain the list of packages names from the PyPI website
         Implements the abstract method of DataSource class
 
         Returns
         -------
-        List[str]
+        list[str]
             List of packages names
             
         Handles
@@ -74,11 +77,19 @@ class PypiScraper(ScraperDataSource):
         -------
         >>> pypi_scraper = PypiScraper()
         >>> pypi_scraper.obtain_package_names()
-        ['package1', 'package2', ...]        
+        ['package1', 'package2', ...]
         '''
+
+        # Build the request job
+        job = RequestJob("PYPI package names", self.PYPI_PACKAGE_LIST_URL)
+
         # Get the HTML of the page
-        response = self.request_handler.do_request(self.PYPI_PACKAGE_LIST_URL)[1]
-        soup = BeautifulSoup(response.text, 'html.parser')
+        job = self.request_handler.do_request(job)
+
+        if job.response is None:
+            raise ScraperError(f'Error obtaining the list of packages from {self.PYPI_PACKAGE_LIST_URL}')
+        
+        soup = BeautifulSoup(job.response.text, 'html.parser')
         
         try:
             # Get the list of packages
@@ -86,6 +97,8 @@ class PypiScraper(ScraperDataSource):
         except Exception as e:
             raise ScraperError(f'Error obtaining the list of packages from {self.PYPI_PACKAGE_LIST_URL}') from e
         
+
+        MyLogger().get_logger().info(f'Obtained {len(pakage_list)} packages from {self.PYPI_PACKAGE_LIST_URL}')
         return pakage_list
     
     @override
@@ -106,7 +119,7 @@ class PypiScraper(ScraperDataSource):
         return f'{self.PYPI_PACKAGE_DATA_URL}{package_name}/json'
 
     @override
-    def _parser(self, response: requests.Response) -> Dict:
+    def _parser(self, response: requests.Response) -> dict:
         '''
         Parse the JSON data of a package and return the package data as a dictionary
         
@@ -117,13 +130,13 @@ class PypiScraper(ScraperDataSource):
         
         Returns
         -------
-        Dict
-            Dictionary with the package data in the following format:
+        dict
+            dictionary with the package data in the following format:
             {
                 'name': name: str,
                 'version': version: str,
                 'url': url: str,
-                'dependencies': dependencies: List[str]
+                'dependencies': dependencies: list[str]
             }
         '''
         # Parse the JSON

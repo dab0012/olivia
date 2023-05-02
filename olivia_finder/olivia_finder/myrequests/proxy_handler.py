@@ -1,81 +1,85 @@
-'''
-proxy_handler.py
-==================
-
-Description
------------
-
-Module that contains ...
-
-File information:
-    - File: proxy_handler.py
-    - Project: myrequests
-    - Created Date: 2023-03-18 14:40:56
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
-
-'''
-
-
-from typing import List, Optional, Union 
+from threading import Lock
+from typing import Union
+from singleton_decorator import singleton
 from .proxy_builder import ProxyBuilder
-from ..utilities.logger import MyLogger
+from .proxy_builders.ssl_proxies import SSLProxiesBuilder
+from .proxy_builders.list_builder import ListProxyBuilder 
+from  ..utilities.logger import MyLogger
 
+@singleton
 class ProxyHandler():
     '''
-    Handles proxy rotation and proxy usage, it uses a list of proxy builders to get the proxies
-    Its a utility class for the RequestHandler class
+    ProxyHandler class, handles the proxies, gets them from the builders and rotates them
+
+    Parameters
+    ----------
+    builders : list[ProxyBuilder]
+        List of proxy builders to get the proxies, if None, get the default builders
+    proxy_max_uses : int
+        Maximum number of uses for a proxy before it is removed from the list
+
         
     Attributes
     ----------
-    PROXY_MAX_USES : int
-        Maximum number of uses for each proxy
-    proxy_builders : List[ProxyBuilderABC]
-        List of proxy builders
-    proxy_list : List[str]
-        proxy_list is a list str with the proxies
+    proxy_list : list[str]
+        List of proxies, each proxy is a string in the format ip:port, has to be accessed with a lock
     proxy_uses : dict
-        A dictionary with the number of uses for each proxy, uses the proxy as key
+        A dictionary with the number of uses for each proxy, uses the proxy as key, has to be accessed with a lock
+    proxy_builders : list[ProxyBuilder]
+        List of proxy builders to get the proxies, has to be accessed with a lock
+    lock : threading.Lock
+        Lock to prevent concurrent access to the proxy list
+
+    Raises
+    ------
+    ValueError
+        If there is no valid proxy builder   
+
     '''
+
+    PROXY_MAX_USES = 50
 
     def __init__(
         self,
-        builders: Optional[List[ProxyBuilder]] = None, 
-        proxy_max_uses: Optional[int] = 50
+        builders: list[ProxyBuilder] = None,
+        proxy_max_uses: int = PROXY_MAX_USES
     ):
         '''Constructor'''
 
+        # Lock to prevent concurrent access to the proxy list
+        self.lock = Lock()
+
         # Set attributes
         self.proxy_max_uses = proxy_max_uses             # override default value
-        self.proxy_list: List[str] = []                  # proxy_list is a list str with the proxies
+        self.proxy_list: list[str] = []                  # proxy_list is a list str with the proxies
         self.proxy_uses: dict = {}                       # A dictionary with the number of uses for each proxy, uses the proxy as key
-        self.proxy_builders: List[ProxyBuilder] = []  # List of proxy builders
+        self.proxy_builders: list[ProxyBuilder] = []     # List of proxy builders
 
         # Set proxy builders, if none, get default builders
         if builders is None:                                
-            self.proxy_builders = self.__get_available_builders()
+            self.proxy_builders = self._get_available_builders()
         else:
             # Check if builders are valid
             for builder in builders:
                 # if any of the builders is not valid, ignore and continue with the next one
                 if not isinstance(builder, ProxyBuilder):
-                    MyLogger.log(f"Builder {builder} is not a valid ProxyBuilderABC, ignoring")
+                    MyLogger().get_logger().debug(f"Builder {builder} is not a valid ProxyBuilderABC, ignoring")
                     continue
                 else:
-                    MyLogger.log(f"Builder {builder} is valid, adding to list")
+                    MyLogger().get_logger().debug(f"Builder {builder} is valid, adding to list")
                     self.proxy_builders.append(builder)
             
             # Check if any builder is valid
             if len(self.proxy_builders) == 0:
-                MyLogger.log("No valid proxy builders were provided")
+                MyLogger().get_logger().debug("No valid proxy builders were provided")
                 raise ValueError("No valid proxy builders were provided")
 
             # Set builders
             self.proxy_builders = builders
 
         # Get proxies from builder
-        self.proxy_list = self.__request_proxies()
-        MyLogger.log(f"Proxy Handler initialized with {len(self.proxy_list)} proxies")
+        self.proxy_list = self._request_proxies()
+        MyLogger().get_logger().info(f"Proxy Handler initialized with {len(self.proxy_list)} proxies")
 
     def get_next_proxy(self) -> Union[str, None]:
         '''
@@ -86,34 +90,36 @@ class ProxyHandler():
         str
             The next proxy
             
+        Examples
+        --------
+        >>> from proxy_handler import ProxyHandler
+        >>> proxy_handler = ProxyHandler()
+        >>> proxy = proxy_handler.get_next_proxy()
+            'http://1.1.1.1:8080'
         '''
-        MyLogger.log("Getting next proxy")
+        MyLogger().get_logger().debug("Getting next proxy")
 
         # Check if proxies are empty and get new ones
         if len(self.proxy_list) == 0:
-            MyLogger.log("No proxies available, trying to get new ones")
-            self.proxy_list = self.__request_proxies()
+            MyLogger().get_logger().info("No proxies available, trying to get new ones")
+            self.proxy_list = self._request_proxies()
 
         # Check if proxies are still empty
         if len(self.proxy_list) == 0:
-            MyLogger.log("No proxies available after trying to get new ones")
+            MyLogger().get_logger().warning("No proxies available after trying to get new ones")
             return None
 
         # proxy rotation
         proxy = self.proxy_list.pop(0)
         self.proxy_list.append(proxy)
-        MyLogger.log(f"Proxy list rotated, using {proxy}, next will be {self.proxy_list[0]}")
 
         # Handle proxy usage lifetime
-        self.__handle_lifetime(proxy)
+        self._handle_lifetime(proxy)
 
         # return proxy as fstring
         return f"http://{proxy}"
     
-    # ----------------------------------------------------
-    #region Private methods
-    
-    def __handle_lifetime(self, proxy: str):
+    def _handle_lifetime(self, proxy: str):
         '''
         Handle proxy usage lifetime, if proxy has been used more than the limit it is removed from the list
         Removes the proxy from the dict and the list
@@ -133,15 +139,15 @@ class ProxyHandler():
         if self.proxy_uses[proxy] > self.proxy_max_uses:
             del self.proxy_uses[proxy]
             self.proxy_list.remove(proxy)
-            MyLogger.log(f"Proxy {proxy} removed from list")
+            MyLogger().get_logger().debug(f"Proxy {proxy} removed from list")
 
-    def __request_proxies(self) -> List[str]:
+    def _request_proxies(self) -> list[str]:
         '''
         Get proxies from builders defined in the constructor and return a list of unique proxies
         
         Returns
         -------
-        List[str]
+        list[str]
             List of proxies as str f'http://{ip}:{port}'
         '''
         # Load the proxie list from the builders
@@ -151,26 +157,28 @@ class ProxyHandler():
 
         # remove duplicates
         proxies = list(set(proxies))
-        MyLogger.log(f"Proxies len: {len(proxies)}")
+        MyLogger().get_logger().debug(f"Proxies len: {len(proxies)}")
 
         return proxies
     
-    def __get_available_builders(self) -> Union[List[ProxyBuilder], None]:
+    def _get_available_builders(self) -> list[ProxyBuilder]:
         '''
         Get available proxy builders as a list of ProxyBuilder objects
 
         Returns
         -------
-        Union[List[ProxyBuilder], None]
+        Union[list[ProxyBuilder], None]
             List of ProxyBuilder objects or None if there are no builders
+
         '''
-        builders = []
-        for builder in ProxyBuilder.__subclasses__():
 
-            # append builder object
-            builders.append(builder())
-            MyLogger.log(f"Added {builder.__name__} to proxy builders")
+        # Get available builders
+        return [
+            SSLProxiesBuilder(),
+            ListProxyBuilder(url="https://raw.githubusercontent.com/mertguvencli/http-proxy-list/main/proxy-list/data.txt"),
+            ListProxyBuilder(url="https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt")
+        ]
 
-        return builders
+        
     
-    #endregion Private methods
+

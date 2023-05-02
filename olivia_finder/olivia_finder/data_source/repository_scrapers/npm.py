@@ -20,12 +20,15 @@ File information:
 import os
 import requests
 from typing_extensions import override
-from typing import List, Optional
+from typing import Optional
 from tqdm import tqdm
+
 from ..scraper_ds import ScraperDataSource
-from ...utilities.config_ini import Configuration
+from ...utilities.config import Configuration
 from ...utilities.logger import MyLogger
 from ...myrequests.request_handler import RequestHandler
+from ...myrequests.job import RequestJob
+
 
 class NpmScraper(ScraperDataSource):
     '''
@@ -56,30 +59,10 @@ class NpmScraper(ScraperDataSource):
 
     # Constants
     NPM_PACKAGE_REGISTRY_URL: str   = 'https://skimdb.npmjs.com/registry'
-    '''
-        URL of the page that contains the number of packages in the NPM repository
-    '''
-
     NPM_PACKAGE_LIST_URL: str       = 'https://skimdb.npmjs.com/registry/_all_docs'
-    '''
-        URL of the page that contains the data of a package
-    '''
-
     NPM_REPO_URL: str               = 'https://www.npmjs.com/package'
-    '''
-        URL of the page that contains the data of a package
-    '''
-
     NAME: str                       = "NPM Scraper"
-    '''
-        Name of the data source
-    '''
-
     DESCRIPTION: str                = "Scraper class implementation for the NPM package manager."
-    '''
-        Description of the data source
-    '''
-
 
     def __init__(
         self, 
@@ -103,9 +86,9 @@ class NpmScraper(ScraperDataSource):
     def obtain_package_names(
         self, 
         page_size: Optional[int]=100, 
+        show_progress_bar: Optional[bool]=True,
         save_chunks: Optional[bool]=False,
-        show_progress_bar: Optional[bool]=True
-    ) -> List[dict]:
+    ) -> list[dict]:
 
         '''
         Function to obtain the names of the packages in the NPM repository
@@ -121,7 +104,7 @@ class NpmScraper(ScraperDataSource):
         
         Returns
         -------
-        List[dict]
+        list[dict]
             List of dictionaries with the name and version of the packages
         
         Examples
@@ -130,18 +113,21 @@ class NpmScraper(ScraperDataSource):
         >>> scraper.obtain_package_names()
         '''
         # Get the total number of packages
-        # response = requests.get(self.NPM_PACKAGE_REGISTRY_URL)
-        response = self.request_handler.do_request(self.NPM_PACKAGE_REGISTRY_URL)[1]
+        response = requests.get(self.NPM_PACKAGE_REGISTRY_URL, timeout=30)
         total_packages = response.json()['doc_count']
 
         # Calculate the number of pages (chunks)
         num_pages = (total_packages // page_size) + 1
 
+        MyLogger().get_logger().debug(f'Total number of packages: {total_packages}')
+        MyLogger().get_logger().debug(f'Number of pages: {num_pages}')
+
         # Initialize the progress bar if is set
         progress_bar = tqdm(total=num_pages) if show_progress_bar else None
-        
+
         # Initialize the chunks folder if is set
         if save_chunks:
+            MyLogger().get_logger().debug(f'Saving chunks at: {self.chunks_folder}')
             self._init_chunks_folder()
 
         # Obtain the names of the packages requesting the pages
@@ -156,27 +142,25 @@ class NpmScraper(ScraperDataSource):
                 try:
                     page = self._download_page(last_key, page_size)
                 except requests.exceptions.ConnectionError:
-                    MyLogger.log(f'Connection error in page {i} of {num_pages}')
-                    MyLogger.log(f'Last key: {last_key}')
-                    MyLogger.log('Retrying...')
-                    # Consume a proxy and retry
-                    self.request_handler.proxy_handler.get_next_proxy()
+                    MyLogger().get_logger().debug(f'Connection error in page {i} of {num_pages}')
+                    MyLogger().get_logger().debug(f'Last key: {last_key}')
+                    MyLogger().get_logger().debug('Retrying...')
 
                 # check if the page is empty
                 if len(page) == 0:
-                    MyLogger.log(f'Empty page {i} of {num_pages}')
-                    MyLogger.log(f'Last key: {last_key}')
+                    MyLogger().get_logger().debug(f'Empty page {i} of {num_pages}')
+                    MyLogger().get_logger().debug(f'Last key: {last_key}')
                     page = None
 
             pages.append(page)
-            MyLogger.log(f'Downloaded page {i} of {num_pages}')
+            MyLogger().get_logger().debug(f'Downloaded page {i} of {num_pages}')
 
             # get the last key of the page for the next iter
             last_key = page[-1]['id']
 
             # Save chunk if is set
             if save_chunks:
-                MyLogger.log(f'Saving chunk {i} of {num_pages}')
+                MyLogger().get_logger().debug(f'Saving chunk {i} of {num_pages}')
                 with open(f'{self.chunks_folder}/chunk_{i}.json', 'w') as f:
                     f.write(str(page))            
 
@@ -184,16 +168,16 @@ class NpmScraper(ScraperDataSource):
             if show_progress_bar:
                 progress_bar.update(1)
 
-        return [row['id'] for page in pages for row in page]
-
-    #region Private methods
+        package_names = [row['id'] for page in pages for row in page]
+        MyLogger().get_logger().info(f'Obtained {len(package_names)} packages from {self.NPM_PACKAGE_LIST_URL}')
+        return 
 
     def _init_chunks_folder(self):
         '''
         Function to initialize the chunks folder, where the chunks will be saved
         Loads the path from the configuration file
         '''
-        self.chunks_folder = f'{Configuration().get_key("folders", "working_dir")}/npm'
+        self.chunks_folder = f'{Configuration().get_key("folders", "working_dir")}/npm_package_names_chunks'
         os.makedirs(self.chunks_folder, exist_ok=True)
 
     def _download_page(
@@ -201,7 +185,7 @@ class NpmScraper(ScraperDataSource):
         start_key: Optional[str]=None, 
         size: Optional[int]=1000, 
         retries: Optional[int]=5
-    )-> List[dict]:
+    )-> list[dict]:
         '''
         Function to download a page of documents from the NPM repository and return a list of dictionaries with the name and version of the packages
         
@@ -216,7 +200,7 @@ class NpmScraper(ScraperDataSource):
         
         Returns
         -------
-        List[dict]
+        list[dict]
             List of dictionaries with the name and version of the packages
         '''
 
@@ -227,22 +211,29 @@ class NpmScraper(ScraperDataSource):
             encode_start_key = "\"" + start_key + "\""
             params = {'startkey': encode_start_key, 'limit': size}
 
-        response = self.request_handler.do_request(self.NPM_PACKAGE_LIST_URL, params=params)[1]
+        # Download the page
+        job = self.request_handler.do_request(
+            RequestJob(
+                key='npm_download_page',
+                url=self.NPM_PACKAGE_LIST_URL,
+                params=params,
+            )
+        )
         
         # If the response is None, return an empty list
-        if response is None:
-            MyLogger.log(f'None response at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
+        if job.response is None:
+            MyLogger().get_logger().debug(f'None response at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
             return []
                         
         # If the response returns an error, return an empty list
         try:
-            data = response.json()
+            data = job.response.json()
         except Exception as e:
-            MyLogger.log(f'EXCEPTION at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
-            MyLogger.log(f'Error parsing JSON: {e}')
-            MyLogger.log(f'Response: {response.text}')
-            MyLogger.log(f'Params: {params}')
-            MyLogger.log(f'Retrying, times left: {retries}')
+            MyLogger().get_logger().debug(f'EXCEPTION at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
+            MyLogger().get_logger().debug(f'Error parsing JSON: {e}')
+            MyLogger().get_logger().debug(f'Response: {job.response.text}')
+            MyLogger().get_logger().debug(f'Params: {params}')
+            MyLogger().get_logger().debug(f'Retrying, times left: {retries}')
             return self._download_page(start_key, size, retries-1)
             
         if data.keys() == {'error', 'reason'}:
@@ -281,7 +272,7 @@ class NpmScraper(ScraperDataSource):
         Returns
         -------
         dict
-            Dictionary with the parsed data
+            dictionary with the parsed data
         '''
 
         response_json = response.json()
@@ -320,6 +311,5 @@ class NpmScraper(ScraperDataSource):
             'url': f'{self.NPM_REPO_URL}/{package_name}'
         }
 
-    #endregion
     
     

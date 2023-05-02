@@ -114,7 +114,17 @@ class Package:
         >>> package = Package("numpy", "1.0.0", "https://numpy.org")
         >>> hash(package)
         '''
-        return hash(self.name + self.version)
+        
+        hash_code = 0
+        if self.name is not None:
+            hash_code += hash(self.name)
+        if self.version is not None:
+            hash_code += hash(self.version)
+        if self.url is not None:
+            hash_code += hash(self.url)
+        if self.dependencies is not None:
+            hash_code += hash(tuple(self.dependencies))
+        return hash_code
 
     def __str__(self) -> str:
         '''
@@ -142,7 +152,7 @@ class Package:
         Parameters
         ----------
         data : dict
-            Dictionary with the data to update
+            dictionary with the data to update
 
         Examples
         --------
@@ -171,7 +181,7 @@ class Package:
         Returns
         -------
         dict
-            Dictionary with the data of the package
+            dictionary with the data of the package
 
         Examples
         --------
@@ -210,7 +220,7 @@ class Package:
         Parameters
         ----------
         data : dict
-            Dictionary with the data
+            dictionary with the data
 
         Returns
         -------

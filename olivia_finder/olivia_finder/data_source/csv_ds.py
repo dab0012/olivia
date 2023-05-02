@@ -18,8 +18,7 @@ File information:
 
 from __future__ import annotations
 import os
-from typing import Dict, List, Optional
-from typing_extensions import override
+from typing import Optional
 import pandas as pd
 import tqdm
 from ..utilities.logger import MyLogger
@@ -64,7 +63,7 @@ class CSVDataSource(DataSource):
         The name of the field that contains the dependency packages versions
     dependent_url_field : Optional[str]
         The name of the field that contains the dependent packages urls
-    auxiliary_datasources : Optional[List[DataSource]]
+    auxiliary_datasources : Optional[list[DataSource]]
         List of auxiliary data sources
 
     Examples
@@ -85,7 +84,6 @@ class CSVDataSource(DataSource):
         dependent_version_field: Optional[str] = None,
         dependency_version_field: Optional[str] = None,
         dependent_url_field: Optional[str] = None,
-        auxiliary_datasources: Optional[List[DataSource]] = None
     ):
         """
         Constructor of the class
@@ -111,7 +109,7 @@ class CSVDataSource(DataSource):
         if self.file_path is not None:
             self._load_data()
         else:
-            MyLogger().log("File path is None. Data not loaded.")
+            MyLogger().get_logger().debug("File path is None. Data not loaded.")
             raise ValueError("File path cannot be None.")
 
     def _load_data(self):
@@ -204,18 +202,18 @@ class CSVDataSource(DataSource):
                 "version": dependency_version,
             })
 
-    def obtain_package_names(self) -> List[str]:
+    def obtain_package_names(self) -> list[str]:
         """
         Obtains the list of packages from the data source, sorted alphabetically.
 
         Returns
         -------
-        List[str]
+        list[str]
             The list of package names in the data source        
         """
         return sorted(self.data[self.dependent_field].unique())
     
-    def obtain_package_data(self, package_name: str, override_previous: Optional[bool] = True) -> Dict:
+    def obtain_package_data(self, package_name: str, override_previous: Optional[bool] = True) -> dict:
         """
         Obtains the package from the dataframe
         
@@ -228,7 +226,7 @@ class CSVDataSource(DataSource):
         
         Returns
         -------
-        Dict
+        dict
             The data of the package in the form of a dictionary
 
         Examples
@@ -258,7 +256,7 @@ class CSVDataSource(DataSource):
             package_rows = package_rows[package_rows[self.dependent_version_field] == last_version]
 
         if package_rows.empty:
-            MyLogger.log(f"Package {package_name} not found in data.")
+            MyLogger().get_logger().debug(f"Package {package_name} not found in data.")
             raise ValueError(f"Package {package_name} not found in data.")
 
         # Get the dependencies
@@ -294,43 +292,39 @@ class CSVDataSource(DataSource):
         }
     
     def obtain_packages_data(
-        self, 
-        package_name_list: Optional[List[str]] = None, 
+        self,
+        package_names: list[str],
         progress_bar: Optional[tqdm.tqdm] = None
-    ) -> List[Dict]:
+    ) -> list[dict]:
         '''
         Obtains the data of a list of package names from the CSV file
         If the package name list is None, it will obtain the package names from the CSV file and load their data
 
         Parameters
         ----------
-        package_name_list : Optional[List[str]], optional
-            The list of package names to obtain the data from, by default None
-        progress_bar : Optional[tqdm.tqdm], optional
-            The progress bar to use, by default None
+        package_names : list[str]
+            The list of package names
+        progress_bar : Optional[tqdm.tqdm]
+            The progress bar to update
 
         Returns
         -------
-        List[Dict]
+        list[dict]
             The list of dictionaries containing the data of the packages
         '''
-        
-        # If the package name list is None, obtain the package names from the csv data
-        if package_name_list is None:
-            package_name_list = self.obtain_package_names()
         
         # Define the list of packages and the list of not found packages
         packages = []
         not_found = []
 
         # Iterate over the package names and obtain the data
-        for package_name in package_name_list:
+        for package_name in package_names:
             try:
                 packages.append(self.obtain_package_data(package_name))
 
             # If the package is not found, add it to the not found list, and continue
             except ValueError:
-                MyLogger.log(f"Package {package_name} not found in data.")
+                MyLogger().get_logger().debug(f"Package {package_name} not found in data.")
                 not_found.append(package_name)
                 continue
             

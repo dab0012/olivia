@@ -9,4 +9,4 @@ sphinx
 sphinx-autodoc-typehints 
 numpydoc
 typing_extensions
-ipykernel
+singleton_decorator

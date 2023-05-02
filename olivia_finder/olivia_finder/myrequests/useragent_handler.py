@@ -1,46 +1,25 @@
 import os
-from typing import List
+from threading import Lock
 import random
 import requests
 from bs4 import BeautifulSoup
-from ..utilities.logger import MyLogger
-from ..utilities.util import Util
+from  ..utilities.logger import MyLogger
+from singleton_decorator import singleton
 
+@singleton
 class UserAgentHandler():
-    '''
-    Handles useragents for the requests
-
-
-    Parameters
-    ----------
-    use_file : bool, optional
-        If True, the user agents are loaded from the file, by default True
-
-    Attributes
-    ----------
-    USERAGENTSTRING_URL : str
-        URL to get user agents from the useragentstring.com API
-    DATA_FILE : str
-        file containing the user agents in txt format
-    useragents_list : List[str]
-        List of user agents
-
-    '''
-
+    '''UserAgentHandler class'''
     # Attributes
     # ----------
     
     USERAGENTSTRING_URL = 'https://www.useragentstring.com/pages/useragentstring.php?name=All'
-    '''URL to get user agents from the useragentstring.com API'''
     DATA_FILE: str
-    '''Path to the file containing the user agents'''
-    useragents_list: List[str]
-    '''List of user agents'''
+    useragents_list: list[str]
 
     def __init__(self, use_file: bool = True) -> None:
-        '''
-        Constructor
-        '''
+
+        # Lock to prevent concurrent access to the proxy list
+        self.lock = Lock()
 
         # Initialize the list before loading the user agents
         self.useragents_list = []
@@ -52,12 +31,12 @@ class UserAgentHandler():
             self.DATA_FILE = os.path.join(os.path.dirname(current_file_path), 'data', 'useragents.txt')
 
             if self._load_from_file(self.DATA_FILE):
-                MyLogger.log(f"Useragents loaded from file: {self.DATA_FILE}")
+                MyLogger().get_logger().info(f"Useragents loaded from file: {self.DATA_FILE}")
                 return
 
         # Load user agents from the useragentstring.com API
         if self._load_from_useragentstring():
-            MyLogger.log(f"Useragents loaded from USERAGENTSTRING_URL: {self.USERAGENTSTRING_URL}")
+            MyLogger().get_logger().info(f"Useragents loaded from USERAGENTSTRING_URL: {self.USERAGENTSTRING_URL}")
             return
 
         # If at this time there are no uses available, the default useragents are loaded using the list
@@ -70,8 +49,7 @@ class UserAgentHandler():
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0',
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15'
         ]
-
-        MyLogger.log("Useragents list is empty. Using default useragent")
+        MyLogger().get_logger().info("Useragents list is empty. Using default useragents")
 
     def _load_from_file(self, file_path:str) -> bool:
         '''
@@ -97,7 +75,7 @@ class UserAgentHandler():
                 return True
             
         except FileNotFoundError:
-            MyLogger.log(f"Useragents file not found: {file_path}")
+            MyLogger().get_logger().warning(f"Useragents file not found: {file_path}")
             return False
     
     def _load_from_useragentstring(self) -> bool:
@@ -116,12 +94,14 @@ class UserAgentHandler():
             True if the user agents were obtained correctly, False otherwise
         '''
 
+        MyLogger().get_logger().debug(f"Getting user agents from API: {self.USERAGENTSTRING_URL}")
+
         # Get user agents from the API
         try:
             user_agents_request = requests.get(self.USERAGENTSTRING_URL, timeout=60).text
         except Exception as e:
-            MyLogger.log(f"Error getting user agents from API: {self.USERAGENTSTRING_URL}")
-            MyLogger.log(f"Error: {e}")
+            MyLogger().get_logger().debug(f"Error getting user agents from API: {self.USERAGENTSTRING_URL}")
+            MyLogger().get_logger().debug(f"Error: {e}")
             return False
         
         # Parse the HTML
@@ -132,14 +112,14 @@ class UserAgentHandler():
 
             # Stores user agents in a list
             for li in lis:
-                # Add the user agent to the list            
-                ua = Util.clean_string(li.text)
+                # Add the user agent to the list (cleaning the blanks from the string)     
+                ua = li.text.strip()
                 self.useragents_list.append(ua)
             return True
         
         except Exception as e:
-            MyLogger.log(f"Error parsing user agents from API: {self.USERAGENTSTRING_URL}")
-            MyLogger.log(f"Error: {e}")
+            MyLogger().get_logger().warning(f"Error parsing user agents from API: {self.USERAGENTSTRING_URL}")
+            MyLogger().get_logger().warning(f"Error: {e}")
             return False
 
     def get_next_useragent(self) -> str:
@@ -151,7 +131,8 @@ class UserAgentHandler():
         str
             A random useragent
         '''
-        MyLogger.log("Getting next useragent")
         # Get a random useragent
         index = random.randint(0, len(self.useragents_list) - 1)
+
+        MyLogger().get_logger().debug(f"Next useragent: {self.useragents_list[index]}")
         return self.useragents_list[index]

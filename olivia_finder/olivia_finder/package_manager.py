@@ -14,11 +14,13 @@ File information:
 '''
 
 from __future__ import annotations
-from typing import Dict, List, Optional, Union
+from typing import Optional, Union
 import pickle
 import tqdm
 import pandas as pd
 
+from .myrequests.request_handler import RequestHandler
+from .data_source.scraper_ds import ScraperDataSource
 from .utilities.logger import MyLogger
 from .data_source.data_source import DataSource
 from .data_source.csv_ds import CSVDataSource
@@ -26,43 +28,22 @@ from .package import Package
 
 class PackageManager():
     '''
-    Class that represents a package manager, which is a collection of packages
-
-    Parameters
-    ----------
-    data_source : DataSource
-        Data source of the package manager
-
-    Raises
-    ------
-    ValueError
-        If the data source is invalid
-
-    Attributes
-    ----------
-    data_source : DataSource
-        Data source of the package manager
-    packages : set[Package]
-        Set of packages of the package manager
-
-    Examples
-    --------
-    >>> from olivia_finder.package_manager import PackageManager
-    >>> from olivia_finder.data_source import DataSource
-    >>> package_manager = PackageManager(DataSource())
     '''
 
-    def __init__(self, data_source: DataSource):
+    def __init__(self, name: str, data_sources: list[DataSource] = None):
         '''
         Constructor
         '''
-        if data_source is None:
+
+        self.name: str = name
+
+        if data_sources is None or not data_sources:
             raise ValueError("Data source cannot be None")
 
-        self.data_source: DataSource = data_source
-        self.packages: Dict[str, Package] = {}
+        self.data_sources: list[DataSource] = data_sources
+        self.packages: dict[str, Package] = {}
 
-    def save(self, path: str):
+    def save_package_manager(self, path: str):
         '''
         Saves the package manager to a file, normally it has the extension .olvpm for easy identification
         as an Olivia package manager file
@@ -72,13 +53,18 @@ class PackageManager():
         path : str
             Path of the file to save the package manager
         '''
-        # Use pickle to save the package manager
 
+        # Remove redundant objects
+        for data_source in self.data_sources:
+            if isinstance(data_source, ScraperDataSource):
+                data_source.request_handler = None
+
+        # Use pickle to save the package manager
         with open(path, "wb") as f:
             pickle.dump(self, f, protocol=pickle.HIGHEST_PROTOCOL)
 
     @classmethod
-    def load(cls, path: str):
+    def load_package_manager(cls, path: str):
         '''
         Load the package manager from a file, the file must have been created with the save method
         Normally, it has the extension .olvpm
@@ -101,11 +87,63 @@ class PackageManager():
         except PackageManagerLoadError:
             return None
 
+        if not isinstance(obj, PackageManager):
+            return None
+        # Set the request handler for the scraper data sources
+        for data_source in obj.data_sources:
+            if isinstance(data_source, ScraperDataSource):
+                data_source.request_handler = RequestHandler()
+
         return obj
+
+    def initialize(self, package_names: list[str] = None, show_progress: Optional[bool] = False):
+        '''
+        Initializes the package manager by loading the packages from the data source
+
+        Parameters
+        ----------
+        package_list : list[str]
+            List of package names to load, if None, all the packages will be loaded
+        show_progress : Optional[bool]
+            If True, a progress bar will be shown
+            
+        '''
+
+        # Get package names from the data sources if needed
+        if package_names is None:
+            for data_source in self.data_sources:
+                try:
+                    package_names = data_source.obtain_package_names()
+                    break
+                except NotImplementedError:
+                    MyLogger().get_logger().debug(f"Data source {data_source.name} does not implement obtain_package_names method")
+                    continue
+                except Exception as e:
+                    MyLogger().get_logger().error(f"Error while obtaining package names from data source {data_source.name}: {e}")
+                    continue
+
+        # Check if the package names are valid
+        if package_names is not None and not isinstance(package_names, list):
+            raise ValueError("No valid package names found")
+        
+        # Instantiate the progress bar if needed
+        progress_bar = tqdm.tqdm(
+            total=len(package_names),
+            colour="green",
+            desc="Loading packages",
+        ) if show_progress else None
+
+        # Obtain the packages data from the data source and store them
+        self.obtain_packages(
+            package_names.copy(), 
+            show_progress=show_progress, 
+            progress_bar=progress_bar,
+            extend=True
+        )
 
     def obtain_package(self, package_name: str) -> Union[Package, None]:
         '''
-        Builds a Package object from the package manager's data source
+        Builds a Package object using the data sources in order until one of them returns a valid package
 
         Parameters
         ----------
@@ -120,83 +158,90 @@ class PackageManager():
         Examples
         --------
         >>> package = package_manager.obtain_package("package_name")
-        >>> print(package.name)
+        >>> package
+        <Package: package_name>
         '''
-        # Obtain the package data from the data source
-        package_data = self.data_source.obtain_package_data(package_name)
+        # Obtain the package data from the data sources in order
+        package_data = None
+        for data_source in self.data_sources:
+            package_data = data_source.obtain_package_data(package_name)
+            if package_data is not None:
+                MyLogger().get_logger().debug(f"Package {package_name} found using {data_source.name}")
+                break
+            else:
+                MyLogger().get_logger().debug(f"Package {package_name} not found using {data_source.name}")
 
         # Return the package if it exists
         return None if package_data is None else Package.load(package_data)
 
     def obtain_packages(
         self,
-        package_names: Optional[List[str]] = None,
-        obtain_package_names: Optional[bool] = False,
+        package_names: Optional[list[str]] = None,
         extend: Optional[bool] = False,
-        show_progress: Optional[bool] = False
-    ) -> List[Package]:
+        show_progress: Optional[bool] = False,
+        progress_bar: Optional[tqdm.tqdm] = None
+    ) -> list[Package]:
         '''
-        Obtain a list of packages from the package manager's data source, 
-        if the list of package names is empty its assumed that we want to obtain all the packages
-
-
-        Parameters
-        ----------
-        package_names : Optional[List[str]], optional
-            List of package names to obtain, by default None
-
-        extend : Optional[bool], optional
-            If True, the packages will be added to the existing ones on the package manager, by default False
-
-        show_progress : Optional[bool], optional
-            If True, a progress bar will be shown, by default False
-
-        Returns
-        -------
-        List[Package]
-            List of packages obtained from the data source
-
-        Examples
-        --------
-        >>> # Obtain all the available packages from the data source
-        >>> packages = package_manager.obtain_packages()
-        >>> # Obtain packages from a list of names
-        >>> packages = package_manager.obtain_packages(["package_name_1", "package_name_2"])
-        >>> # Obtain packages from a list of names and add them to the existing ones showing a progress bar
-        >>> packages = package_manager.obtain_packages(["package_name_1", "package_name_2"], extend=True, show_progress=True)
         '''
 
-        # Obtain the packages if the list is empty
-        # This can raise an exception if the `data_source.obtain_package_names` method is not implemented
-        if obtain_package_names and package_names is None:
-            package_names = self.data_source.obtain_package_names()
-            if package_names is None:
-                raise PackageManagerLoadError("The data source cannot obtain the package names")
-            
+        # Check if the package names are valid
+        if package_names is not None and not isinstance(package_names, list):
+            raise ValueError("Package names must be a list")
         
         # Instantiate the progress bar if needed
-        progress_bar = tqdm.tqdm(total=len(package_names)) if show_progress else None
+        if show_progress and progress_bar is None:
+            progress_bar = tqdm.tqdm(total=len(package_names))
 
         # Obtain the packages data from the data source
-        packages_data = self.data_source.obtain_packages_data(package_names, progress_bar=progress_bar)[0]
-        package_list = [Package.load(package_data) for package_data in packages_data]
+        pending_packages = package_names.copy()
+        packages_data = []
+        preferred_data_source = self.data_sources[0]
 
-        if progress_bar is not None:
+        while len(pending_packages) > 0:
+
+            # if datasource is instance of ScraperDataSource use the obtain_packages_data method for parallelization
+            if isinstance(preferred_data_source, ScraperDataSource):
+                
+                data_found, not_found = preferred_data_source.obtain_packages_data(
+                    package_names=pending_packages, 
+                    progress_bar=progress_bar
+                )
+                packages_data.extend(data_found)
+                pending_packages = not_found
+                MyLogger().get_logger().info(f"Packages found: {len(data_found)}")
+                MyLogger().get_logger().info(f"Packages not found: {len(not_found)}")
+
+            # if not use the obtain_package_data method for sequential processing using the data_sources of the list
+            else:
+
+                package_name = pending_packages.pop(0)
+                package_data = self.obtain_package(package_name)
+                if package_data is not None:
+                    packages_data.append(package_data)
+                pending_packages.remove(package_name)
+
+                if show_progress:
+                    progress_bar.update(1)
+
+        if show_progress:
             progress_bar.close()
+        
+        packages = [Package.load(package_data) for package_data in packages_data]
 
-        # Add packages to the repo
+        # update the self.packages attribute overwriting the packages with the same name
+        # but conserving the other packages
         if extend:
-            for package in package_list:
+            for package in packages:
                 self.packages[package.name] = package
 
-        return package_list
-
+        return packages
+            
     @classmethod
     def load_csv_adjlist(
         cls,
         csv_path: str,
         dependent_field: Optional[str] = None,
-        dependency_field: Optional[str] = None,
+        dependency_field: Optional[str] = None, 
         version_field: Optional[str] = None,
         dependency_version_field: Optional[str] = None,
         url_field: Optional[str] = None,
@@ -306,13 +351,13 @@ class PackageManager():
         '''
         return self.packages.get(package_name, None)
 
-    def list_packages(self) -> List[Package]:
+    def list_packages(self) -> list[Package]:
         '''
         Obtain the list of packages of the package manager
 
         Returns
         -------
-        List[Package]
+        list[Package]
             List of packages of the package manager
 
         Examples
@@ -321,13 +366,13 @@ class PackageManager():
         '''
         return list(self.packages.values())
 
-    def list_package_names(self) -> List[str]:
+    def list_package_names(self) -> list[str]:
         '''
         Obtain the list of package names of the package manager
 
         Returns
         -------
-        List[str]
+        list[str]
             List of package names of the package manager
 
         Examples
@@ -359,7 +404,7 @@ class PackageManager():
         '''
 
         if not self.packages:
-            MyLogger.log("The package manager is empty")
+            MyLogger().get_logger().debug("The package manager is empty")
             return pd.DataFrame()
                     
 
@@ -381,6 +426,120 @@ class PackageManager():
                 )
             return pd.DataFrame(rows, columns=['name', 'dependency'])
 
+
+    def dependency_network(
+            self, 
+            package_name: str, 
+            dependency_network: dict = None, 
+            deep_level: int = 5,
+            generate = False
+        ) -> dict[str, list[Package]]:
+        """
+        Generates the dependency network of a package from the data source.
+
+        Parameters
+        ----------
+        package_name : str
+            The name of the package to generate the dependency network
+        dependency_network : dict, optional
+            The dependency network of the package            
+        deep_level : int, optional
+            The deep level of the dependency network, by default 5
+
+        Returns
+        -------
+        dict[str, list[Package]]
+            The dependency network of the package
+        """
+
+        if deep_level == 0:
+            return dependency_network
+        
+        if dependency_network is None:
+            dependency_network = {}
+
+        # If the dependency network is not specified, we create it obtaining the data from the package manager
+        if generate:
+            return self._generate_dependency_network(package_name, deep_level, dependency_network)
+        
+        # Use the data of the package manager
+        package = self.get_package(package_name)
+
+        if package is not None:
+
+            for dependency in package.dependencies:
+
+                if package.name not in dependency_network:
+                    dependency_network[package.name] = []
+
+                dependency_network[package.name].append(dependency)
+
+                # Rerun recursively
+                dependency_network = self.dependency_network(
+                    package_name = dependency.name, 
+                    dependency_network = dependency_network, 
+                    deep_level = deep_level - 1,
+                    generate = False
+                )
+        
+
+        return dependency_network
+
+    def _generate_dependency_network(self, package_name: str, deep_level: int = 5, dependency_network: dict = None) -> dict[str, list[Package]]:
+        """
+        Generates the dependency network of a package from the data source.
+
+        Parameters
+        ----------
+        package_name : str
+            The name of the package to generate the dependency network
+        deep_level : int, optional
+            The deep level of the dependency network, by default 5
+        dependency_network : dict, optional
+            The dependency network of the package
+
+        Returns
+        -------
+        dict[str, list[Package]]
+            The dependency network of the package
+        """
+        
+        # Obtain the data of target package
+        try:
+            current_package = self.obtain_package(package_name)
+        except ValueError:
+            MyLogger().get_logger().debug(
+                f"The package {package_name} does not exist in the data source {self.name}"
+            )
+            return dependency_network
+        
+        # Append the target package to the dependency network
+        dependency_network[package_name] = current_package.dependencies
+        
+        # Run the method recursively for each dependency while the deep level is not reached
+        for dependency in current_package.dependencies:
+
+            # Check if package is already in the dependency network
+            if dependency.name in dependency_network:
+                continue
+
+            try:     
+                self.dependency_network(
+                    dependency.name,                # The name of the dependency
+                    dependency_network,             # The global dependency network
+                    deep_level - 1,                 # The deep level is reduced by 1
+                    generate = True                 # The dependency network is generated
+                )
+            except Exception:
+                MyLogger().get_logger().debug(
+                    f"The package {dependency.name}, as dependency of {package_name} does not exist in the data source {self.name}"
+                )
+                continue
+
+        return dependency_network
+
+
+
 class PackageManagerLoadError(Exception):
     """
     Exception raised when an error occurs while loading a package manager
@@ -394,3 +553,18 @@ class PackageManagerLoadError(Exception):
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
+
+class PackageManagerSaveError(Exception):
+    """
+    Exception raised when an error occurs while saving a package manager
+
+    Attributes
+    ----------
+    message : str
+        Error message
+    """
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
