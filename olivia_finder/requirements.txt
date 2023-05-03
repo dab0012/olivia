@@ -11,3 +11,4 @@ singleton_decorator
 ipykernel
 networkx
 matplotlib
+pybraries

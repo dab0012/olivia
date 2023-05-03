@@ -123,7 +123,7 @@ class PackageManager():
                     continue
 
         # Check if the package names are valid
-        if package_names is not None and not isinstance(package_names, list):
+        if package_names is None or not isinstance(package_names, list):
             raise ValueError("No valid package names found")
         
         # Instantiate the progress bar if needed
@@ -426,7 +426,6 @@ class PackageManager():
                 )
             return pd.DataFrame(rows, columns=['name', 'dependency'])
 
-
     def dependency_network(
             self, 
             package_name: str, 
@@ -547,8 +546,6 @@ class PackageManager():
                         continue
 
         return dependency_network
-
-
 
 class PackageManagerLoadError(Exception):
     """
