@@ -295,7 +295,7 @@ class CSVDataSource(DataSource):
         self,
         package_names: list[str],
         progress_bar: Optional[tqdm.tqdm] = None
-    ) -> list[dict]:
+    ) -> tuple[list[dict], list[str]]:
         '''
         Obtains the data of a list of package names from the CSV file
         If the package name list is None, it will obtain the package names from the CSV file and load their data
@@ -309,8 +309,9 @@ class CSVDataSource(DataSource):
 
         Returns
         -------
-        list[dict]
-            The list of dictionaries containing the data of the packages
+        tuple[list[dict], list[str]]
+            The list of packages data and the list of not found packages
+        
         '''
         
         # Define the list of packages and the list of not found packages

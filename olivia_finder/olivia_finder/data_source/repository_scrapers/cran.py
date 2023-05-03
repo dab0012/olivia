@@ -19,7 +19,7 @@ File information:
 import requests
 from typing_extensions import override
 from bs4 import BeautifulSoup
-from typing import Optional
+from typing import Optional, Union
 
 from . import r
 from ..scraper_ds import ScraperDataSource
@@ -164,7 +164,7 @@ class CranScraper(ScraperDataSource):
         return f'{self.CRAN_PACKAGE_DATA_URL}{package_name}'
 
     @override
-    def _parser(self, response: requests.Response) -> dict[str, str]:
+    def _parser(self, response: requests.Response) -> Union[dict[str, str], None]:
         '''
         Parse the HTML of a package page in the CRAN website
 
@@ -177,6 +177,8 @@ class CranScraper(ScraperDataSource):
         -------
         dict[str, str]
             dictionary with the data of the package
+        None
+            if an error occurs
 
         '''
         soup = BeautifulSoup(response.text, 'html.parser')

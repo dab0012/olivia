@@ -143,8 +143,6 @@ class RequestWorker(Thread):
         self.user_agent_handler.lock.release()
         
         return proxy, user_agent
-
-        # return None, None
         
     def _do_request(
         self, 

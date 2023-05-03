@@ -119,11 +119,10 @@ class BioconductorScraper(ScraperDataSource):
             driver_options.headless = True
             driver = webdriver.Firefox(
                 options = driver_options, 
-                # executable_path = '/home/dnllns/Descargas/geckodriver/geckodriver'
             )
             
-        except ScraperError("Exception occurred while creating the Selenium driver.") as e:
-            raise e
+        except Exception as e:
+            raise ScraperError("Exception occurred while creating the Selenium driver.") from e
 
         # Scraping webpage with package list
         try:
@@ -131,8 +130,8 @@ class BioconductorScraper(ScraperDataSource):
             driver.get(self.BIOCONDUCTOR_LIST_URL)
             table = driver.find_element(By.ID, "biocViews_package_table")
             table_content = table.get_attribute("innerHTML")
-        except ScraperError("Exception occurred while scraping the Bioconductor website.") as e:
-            raise e
+        except Exception as e:
+            raise ScraperError("Exception occurred while scraping the Bioconductor website.") from e
 
         # Close the driver
         driver.close()
@@ -148,8 +147,8 @@ class BioconductorScraper(ScraperDataSource):
                     for cell in row.find_all("td")
                     if cell.find("a")
                 )
-        except ScraperError("Exception occurred while processing the HTML.") as e:
-            raise e
+        except Exception as e:
+            raise ScraperError("Exception occurred while processing the HTML.") from e
         
         # Sort the list of packages
         packages.sort()

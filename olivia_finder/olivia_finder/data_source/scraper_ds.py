@@ -17,7 +17,7 @@ File information:
 '''
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 import requests
 import tqdm
 from .data_source import DataSource
@@ -149,7 +149,6 @@ class ScraperDataSource(DataSource, ABC):
 
         MyLogger().get_logger().debug('Building jobs')
         jobs = self._build_jobs(package_names)
-        progress_bar if progress_bar is not None else None
 
         # Do the requests with the RequestHandler whitout parallelization
         MyLogger().get_logger().debug('Making requests')
@@ -177,7 +176,7 @@ class ScraperDataSource(DataSource, ABC):
         return packages, not_found
     
 
-    def obtain_package_data(self, package_name: str) -> dict:
+    def obtain_package_data(self, package_name: str) -> Union[dict, None]:
         """
         Obtain the data of a package from the web page of the package manager
 
@@ -190,7 +189,8 @@ class ScraperDataSource(DataSource, ABC):
         -------
         dict
             dictionary with the data of the package
-
+        None
+            If the package is not found
         """
 
         # Make the request, the response is the second element of the tuple returned by do_request

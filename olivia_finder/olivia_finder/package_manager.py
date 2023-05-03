@@ -411,15 +411,28 @@ class PackageManager():
         rows = []
 
         if full_data:
-            for package in self.packages:
-                rows.extend(
-                    [package.name, package.version, dependency.name, dependency.version]
-                    for dependency in package.dependencies
-                )
-            return pd.DataFrame(rows, columns=['name', 'version', 'dependency', 'dependency_version'])
-        else:
+            for package_name in self.packages.keys():
+                package = self.get_package(package_name)
 
-            for package in self.packages:
+
+                for dependency in package.dependencies:
+                    
+                    try:
+                        dependency_full = self.get_package(dependency.name)
+                        rows.append(
+                            [package.name, package.version, package.url, dependency_full.name, dependency_full.version, dependency_full.url]
+                        )
+                    except Exception:
+                        if dependency.name is not None:
+                            rows.append(
+                                [package.name, package.version, package.url, dependency.name, None, None]
+                            )
+
+
+            return pd.DataFrame(rows, columns=['name', 'version', 'url', 'dependency', 'dependency_version', 'dependency_url'])
+        else:
+            for package_name in self.packages.keys():
+                package = self.get_package(package_name)
                 rows.extend(
                     [package.name, dependency.name]
                     for dependency in package.dependencies

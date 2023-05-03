@@ -123,7 +123,7 @@ dl.py.class a {
 dl.py dl.field-list.simple {
   padding: 12px;
   background: #ffc9621f;
-  font-family: arial;
+  font-family: Arial, Helvetica, sans-serif;
   line-height: 20px;
   border-radius: 9px;
 }

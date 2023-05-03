@@ -64,7 +64,6 @@ class ProxyHandler():
                 # if any of the builders is not valid, ignore and continue with the next one
                 if not isinstance(builder, ProxyBuilder):
                     MyLogger().get_logger().debug(f"Builder {builder} is not a valid ProxyBuilderABC, ignoring")
-                    continue
                 else:
                     MyLogger().get_logger().debug(f"Builder {builder} is valid, adding to list")
                     self.proxy_builders.append(builder)

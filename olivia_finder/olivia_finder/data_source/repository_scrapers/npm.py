@@ -170,7 +170,7 @@ class NpmScraper(ScraperDataSource):
 
         package_names = [row['id'] for page in pages for row in page]
         MyLogger().get_logger().info(f'Obtained {len(package_names)} packages from {self.NPM_PACKAGE_LIST_URL}')
-        return 
+        return package_names
 
     def _init_chunks_folder(self):
         '''

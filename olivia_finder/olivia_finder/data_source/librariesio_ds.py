@@ -1,3 +1,4 @@
+from typing import Union
 from ..utilities.logger import MyLogger
 from ..utilities.config import Configuration
 from .data_source import DataSource
@@ -49,8 +50,8 @@ class LibrariesioDataSource(DataSource):
         # Create the search object
         try:
             self.search = Search()
-        except:
-            raise LibrariesIoException("Error creating the search object")
+        except Exception as e:
+            raise LibrariesIoException("Error creating the search object") from e
 
 
     def obtain_package_names(self) -> list[str]:
@@ -59,25 +60,22 @@ class LibrariesioDataSource(DataSource):
         """
         raise NotImplementedError
     
-    def obtain_package_data(self, package_name:str) -> dict:
+    def obtain_package_data(self, package_name:str) -> Union[dict, None]:
         """
-        Obtains the data of a package from the data source as a dictionary.
+        Obtains the data of a package from the data source.
 
         Parameters
         ----------
         package_name : str
-            Name of the package to obtain the data from
+            Name of the package
 
         Returns
         -------
         dict
-            The data of the package as a dictionary
-
-        Raises
-        ------
-        NotFoundInDataSourceException
-            If the package is not found in the data source
-
+            Dictionary with the package data
+        None
+            If the package is not found
+            
         Example
         -------
         >>> data_source = LibrariesioDataSource('name', 'description', 'platform')
