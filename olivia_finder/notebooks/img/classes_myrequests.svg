@@ -44,8 +44,8 @@
 <polyline fill="none" stroke="black" points="324,-121.5 699,-121.5 "/>
 <text text-anchor="start" x="332" y="-106.3" font-family="" font-size="14.00">PROXY_MAX_USES : int</text>
 <text text-anchor="start" x="332" y="-91.3" font-family="" font-size="14.00">lock : lock</text>
-<text text-anchor="start" x="332" y="-76.3" font-family="" font-size="14.00">proxy_builders : NoneType, list[ProxyBuilder], list</text>
-<text text-anchor="start" x="332" y="-61.3" font-family="" font-size="14.00">proxy_list : list[str], list</text>
+<text text-anchor="start" x="332" y="-76.3" font-family="" font-size="14.00">proxy_builders : NoneType, list, list[ProxyBuilder]</text>
+<text text-anchor="start" x="332" y="-61.3" font-family="" font-size="14.00">proxy_list : list, list[str]</text>
 <text text-anchor="start" x="332" y="-46.3" font-family="" font-size="14.00">proxy_max_uses : int</text>
 <text text-anchor="start" x="332" y="-31.3" font-family="" font-size="14.00">proxy_uses : dict</text>
 <polyline fill="none" stroke="black" points="324,-23.5 699,-23.5 "/>
