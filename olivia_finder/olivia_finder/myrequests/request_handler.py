@@ -8,7 +8,9 @@ from  ..utilities.logger import MyLogger
 
 class RequestHandler:
     ''''''
-    
+
+    PARALLEL_WORKERS = 8
+
     def __init__(self):
         '''
         Constructor
@@ -84,7 +86,7 @@ class RequestHandler:
         MyLogger().get_logger().debug("Job created")
 
 
-    def do_requests(self, request_jobs: list[RequestJob], num_workers: int = 8, progress_bar: tqdm.tqdm = None):
+    def do_requests(self, request_jobs: list[RequestJob], num_workers: int = PARALLEL_WORKERS, progress_bar: tqdm.tqdm = None):
         '''
         Do the requests
         
@@ -100,12 +102,13 @@ class RequestHandler:
         >>> for job in results:
         >>>     print(f'key: {job.key}, url: {job.url}, response: {job.response}')
         '''
+
+        # reet the class
         self._clear()
 
         MyLogger().get_logger().info("Starting requests")
-
-
         MyLogger().get_logger().debug(f"Number of jobs: {len(request_jobs)}")
+
         # Setup jobs
         self._setup_jobs(request_jobs, num_workers, progress_bar)
         
@@ -125,7 +128,6 @@ class RequestHandler:
         for worker in self.workers:
             MyLogger().get_logger().debug(f"Worker {worker.worker_id} finished")
             workers_finalized_jobs.extend(worker.my_jobs.copy())
-
 
         MyLogger().get_logger().info("All requests finished")
         return workers_finalized_jobs

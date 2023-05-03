@@ -36,17 +36,19 @@ class DataSource(ABC):
         Name of the data source
     description : str
         Description of the data source
-    packages_data : dict
-        dictionary with the data of the packages
 
+    Parameters
+    ----------
+    name : str
+        Name of the data source
+    description : str
+        Description of the data source
     """
 
     def __init__(self, name: str, description: str):
         
         self.name: str = name
         self.description: str = description
-        self.packages_data: dict = {}
-
 
     def get_info(self) -> dict:
         '''

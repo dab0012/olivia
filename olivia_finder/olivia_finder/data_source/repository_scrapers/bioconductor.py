@@ -36,13 +36,13 @@ class BioconductorScraper(ScraperDataSource):
     
     Parameters
     ----------
-    name : Optional[str]
+    name : str = None
         Name of the data source
-    description : Optional[str]
+    description : str = None
         Description of the data source
     auxiliary_datasources : Optional[list[DataSource]]
         List of auxiliary data sources
-    request_handler : Optional[RequestHandler]
+    request_handler : RequestHandler = None
         Request handler for the scraper, if None, it will be initialized with a generic RequestHandler
         
     Attributes
@@ -59,9 +59,9 @@ class BioconductorScraper(ScraperDataSource):
     
     def __init__(
         self, 
-        name: Optional[str] = None, 
-        description: Optional[str] = None, 
-        request_handler: Optional[RequestHandler] = None,
+        name: str = None, 
+        description: str = None, 
+        request_handler: RequestHandler = None,
     ):
         '''
         Constructor

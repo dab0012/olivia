@@ -46,8 +46,6 @@ class ScraperDataSource(DataSource, ABC):
         List of packages that are not found
     auxiliary_datasources : list[DataSource]
         List of auxiliary data sources
-    packages_data : dict
-        dictionary with the packages data
 
     Parameters
     ----------
@@ -61,12 +59,13 @@ class ScraperDataSource(DataSource, ABC):
         Request handler for making the requests, by default None
 
     """
+
     
     def __init__(
         self, 
-        name: Optional[str] = None, 
-        description: Optional[str] = None,
-        request_handler: Optional[RequestHandler] = None,
+        name: str = None, 
+        description: str = None,
+        request_handler: RequestHandler = None,
     ):
         """
         Constructor of the class
@@ -103,8 +102,8 @@ class ScraperDataSource(DataSource, ABC):
 
     def obtain_packages_data(
         self, 
-        package_names: Optional[list[str]] = None,
-        progress_bar: Optional[tqdm.tqdm] = None,
+        package_names: Optional[list[str]],
+        progress_bar: Optional[tqdm.tqdm],
     ) -> Tuple[list[dict], list[str]]:
         '''
         Scrape a list of packages from a package manager, if the package is not found, it is added to the not_found list
@@ -146,14 +145,13 @@ class ScraperDataSource(DataSource, ABC):
             MyLogger().get_logger().debug('Using package names from param list')
 
         MyLogger().get_logger().debug(f'Total packages to scrape: {len(package_names)}')
-
         MyLogger().get_logger().debug('Building jobs')
         jobs = self._build_jobs(package_names)
 
         # Do the requests with the RequestHandler whitout parallelization
         MyLogger().get_logger().debug('Making requests')
         finnalized_jobs = self.request_handler.do_requests(
-            jobs,
+            request_jobs=jobs,
             progress_bar=progress_bar
         )
 
@@ -173,6 +171,10 @@ class ScraperDataSource(DataSource, ABC):
             # Parse the source data and add it to the list
             packages.append(self._parser(finnalized_job.response))
 
+        # Clear the variables from memory
+        del jobs
+        del finnalized_jobs
+        
         return packages, not_found
     
 

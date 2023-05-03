@@ -458,17 +458,17 @@ Normally, it has the extension .olvpm</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>csv_path</strong><span class="classifier">str</span></dt><dd><p>Path of the csv file to load</p>
 </dd>
-<dt><strong>dependent_field</strong><span class="classifier">Optional[str], optional</span></dt><dd><p>Name of the dependent field, by default None</p>
+<dt><strong>dependent_field</strong><span class="classifier">str = None, optional</span></dt><dd><p>Name of the dependent field, by default None</p>
 </dd>
-<dt><strong>dependency_field</strong><span class="classifier">Optional[str], optional</span></dt><dd><p>Name of the dependency field, by default None</p>
+<dt><strong>dependency_field</strong><span class="classifier">str = None, optional</span></dt><dd><p>Name of the dependency field, by default None</p>
 </dd>
-<dt><strong>version_field</strong><span class="classifier">Optional[str], optional</span></dt><dd><p>Name of the version field, by default None</p>
+<dt><strong>version_field</strong><span class="classifier">str = None, optional</span></dt><dd><p>Name of the version field, by default None</p>
 </dd>
-<dt><strong>dependency_version_field</strong><span class="classifier">Optional[str], optional</span></dt><dd><p>Name of the dependency version field, by default None</p>
+<dt><strong>dependency_version_field</strong><span class="classifier">str = None, optional</span></dt><dd><p>Name of the dependency version field, by default None</p>
 </dd>
-<dt><strong>url_field</strong><span class="classifier">Optional[str], optional</span></dt><dd><p>Name of the url field, by default None</p>
+<dt><strong>url_field</strong><span class="classifier">str = None, optional</span></dt><dd><p>Name of the url field, by default None</p>
 </dd>
-<dt><strong>default_format</strong><span class="classifier">Optional[bool], optional</span></dt><dd><p>If True, the csv has the structure of full_adjlist.csv, by default False</p>
+<dt><strong>default_format</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, the csv has the structure of full_adjlist.csv, by default False</p>
 </dd>
 </dl>
 </dd>
@@ -520,9 +520,9 @@ if the list of package names is empty its assumed that we want to obtain all the
 <dd class="field-odd"><dl class="simple">
 <dt><strong>package_names</strong><span class="classifier">Optional[List[str]], optional</span></dt><dd><p>List of package names to obtain, by default None</p>
 </dd>
-<dt><strong>extend</strong><span class="classifier">Optional[bool], optional</span></dt><dd><p>If True, the packages will be added to the existing ones on the package manager, by default False</p>
+<dt><strong>extend</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, the packages will be added to the existing ones on the package manager, by default False</p>
 </dd>
-<dt><strong>show_progress</strong><span class="classifier">Optional[bool], optional</span></dt><dd><p>If True, a progress bar will be shown, by default False</p>
+<dt><strong>show_progress</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, a progress bar will be shown, by default False</p>
 </dd>
 </dl>
 </dd>

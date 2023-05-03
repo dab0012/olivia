@@ -27,28 +27,27 @@ class Package:
     ----------
     name : str
         Name of the package
-    version : Optional[str]
+    version : str = None
         Version of the package
-    url : Optional[str]
+    url : str = None
         URL of the package
-    dependencies : Optional[list[Package]]
+    dependencies : list[Package] = None
         List of dependencies of the package
     '''
 
     def __init__(
         self,
         name: str,
-        version: Optional[str] = None,
-        url: Optional[str] = None,
-        dependencies: Optional[list[Package]] = None
+        version: str = None,
+        url: str = None,
+        dependencies: list[Package] = None
     ):
         '''Constructor'''
 
         self.name: str = name
-        self.version: Optional[str] = version
-        self.url: Optional[str] = url
-        self.dependencies: Optional[list[Package]] = [
-        ] if dependencies is None else dependencies
+        self.version: str = version
+        self.url: str = url
+        self.dependencies: list[Package] = [] if dependencies is None else dependencies
 
     def print(self):
         '''

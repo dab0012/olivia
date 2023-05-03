@@ -280,19 +280,19 @@
 <span class="sd">    ----------</span>
 <span class="sd">    file_path : str</span>
 <span class="sd">        Path to the CSV file with the data</span>
-<span class="sd">    name : Optional[str]</span>
+<span class="sd">    name : str = None</span>
 <span class="sd">        Name of the data source</span>
-<span class="sd">    description : Optional[str]</span>
+<span class="sd">    description : str = None</span>
 <span class="sd">        Description of the data source</span>
-<span class="sd">    dependent_field : Optional[str]</span>
+<span class="sd">    dependent_field : str = None</span>
 <span class="sd">        The name of the field that contains the dependent packages</span>
-<span class="sd">    dependency_field : Optional[str]</span>
+<span class="sd">    dependency_field : str = None</span>
 <span class="sd">        The name of the field that contains the dependency packages</span>
-<span class="sd">    dependent_version_field : Optional[str]</span>
+<span class="sd">    dependent_version_field : str = None</span>
 <span class="sd">        The name of the field that contains the dependent packages versions</span>
-<span class="sd">    dependency_version_field : Optional[str]</span>
+<span class="sd">    dependency_version_field : str = None</span>
 <span class="sd">        The name of the field that contains the dependency packages versions</span>
-<span class="sd">    dependent_url_field : Optional[str]</span>
+<span class="sd">    dependent_url_field : str = None</span>
 <span class="sd">        The name of the field that contains the dependent packages urls</span>
 
 <span class="sd">    Examples</span>
@@ -462,7 +462,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        package_name : str</span>
 <span class="sd">            The name of the package</span>
-<span class="sd">        override_previous : Optional[bool]</span>
+<span class="sd">        override_previous : bool</span>
 <span class="sd">            If True, it will override the previous data with the same name but different version</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>

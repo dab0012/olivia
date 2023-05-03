@@ -372,10 +372,10 @@
 <span class="sd">        package_names : Optional[List[str]], optional</span>
 <span class="sd">            List of package names to obtain, by default None</span>
 
-<span class="sd">        extend : Optional[bool], optional</span>
+<span class="sd">        extend : bool, optional</span>
 <span class="sd">            If True, the packages will be added to the existing ones on the package manager, by default False</span>
 
-<span class="sd">        show_progress : Optional[bool], optional</span>
+<span class="sd">        show_progress : bool, optional</span>
 <span class="sd">            If True, a progress bar will be shown, by default False</span>
 
 <span class="sd">        Returns</span>
@@ -436,17 +436,17 @@
 <span class="sd">        ----------</span>
 <span class="sd">        csv_path : str</span>
 <span class="sd">            Path of the csv file to load</span>
-<span class="sd">        dependent_field : Optional[str], optional</span>
+<span class="sd">        dependent_field : str = None, optional</span>
 <span class="sd">            Name of the dependent field, by default None</span>
-<span class="sd">        dependency_field : Optional[str], optional</span>
+<span class="sd">        dependency_field : str = None, optional</span>
 <span class="sd">            Name of the dependency field, by default None</span>
-<span class="sd">        version_field : Optional[str], optional</span>
+<span class="sd">        version_field : str = None, optional</span>
 <span class="sd">            Name of the version field, by default None</span>
-<span class="sd">        dependency_version_field : Optional[str], optional</span>
+<span class="sd">        dependency_version_field : str = None, optional</span>
 <span class="sd">            Name of the dependency version field, by default None</span>
-<span class="sd">        url_field : Optional[str], optional</span>
+<span class="sd">        url_field : str = None, optional</span>
 <span class="sd">            Name of the url field, by default None</span>
-<span class="sd">        default_format : Optional[bool], optional</span>
+<span class="sd">        default_format : bool, optional</span>
 <span class="sd">            If True, the csv has the structure of full_adjlist.csv, by default False</span>
 
 <span class="sd">        Examples</span>

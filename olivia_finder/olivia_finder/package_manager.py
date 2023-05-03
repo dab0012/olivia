@@ -96,7 +96,7 @@ class PackageManager():
 
         return obj
 
-    def initialize(self, package_names: list[str] = None, show_progress: Optional[bool] = False):
+    def initialize(self, package_names: list[str] = None, show_progress: bool = False, chunk_size: int = 10000):
         '''
         Initializes the package manager by loading the packages from the data source
 
@@ -104,9 +104,10 @@ class PackageManager():
         ----------
         package_list : list[str]
             List of package names to load, if None, all the packages will be loaded
-        show_progress : Optional[bool]
+        show_progress : bool
             If True, a progress bar will be shown
-            
+        chunk_size : int
+            Size of the chunks to load the packages, this is done to avoid memory errors            
         '''
 
         # Get package names from the data sources if needed
@@ -131,15 +132,21 @@ class PackageManager():
             total=len(package_names),
             colour="green",
             desc="Loading packages",
+            unit="packages",
         ) if show_progress else None
 
-        # Obtain the packages data from the data source and store them
-        self.obtain_packages(
-            package_names.copy(), 
-            show_progress=show_progress, 
-            progress_bar=progress_bar,
-            extend=True
-        )
+        # Create a chunked list of package names
+        # This is done to avoid memory errors
+        package_names_chunked = [package_names[i:i + chunk_size] for i in range(0, len(package_names), chunk_size)]
+
+        for package_names in package_names_chunked:
+            # Obtain the packages data from the data source and store them
+            self.obtain_packages(
+                package_names=package_names, 
+                progress_bar=progress_bar,
+                extend=True
+            )
+
 
     def obtain_package(self, package_name: str) -> Union[Package, None]:
         '''
@@ -176,10 +183,9 @@ class PackageManager():
 
     def obtain_packages(
         self,
-        package_names: Optional[list[str]] = None,
-        extend: Optional[bool] = False,
-        show_progress: Optional[bool] = False,
-        progress_bar: Optional[tqdm.tqdm] = None
+        package_names: Optional[list[str]],
+        progress_bar: Optional[tqdm.tqdm],
+        extend: bool = False
     ) -> list[Package]:
         '''
         '''
@@ -187,10 +193,6 @@ class PackageManager():
         # Check if the package names are valid
         if package_names is not None and not isinstance(package_names, list):
             raise ValueError("Package names must be a list")
-        
-        # Instantiate the progress bar if needed
-        if show_progress and progress_bar is None:
-            progress_bar = tqdm.tqdm(total=len(package_names))
 
         # Obtain the packages data from the data source
         pending_packages = package_names.copy()
@@ -220,10 +222,10 @@ class PackageManager():
                     packages_data.append(package_data)
                 pending_packages.remove(package_name)
 
-                if show_progress:
+                if progress_bar is not None:
                     progress_bar.update(1)
 
-        if show_progress:
+        if progress_bar is not None:
             progress_bar.close()
         
         packages = [Package.load(package_data) for package_data in packages_data]
@@ -240,12 +242,12 @@ class PackageManager():
     def load_csv_adjlist(
         cls,
         csv_path: str,
-        dependent_field: Optional[str] = None,
-        dependency_field: Optional[str] = None, 
-        version_field: Optional[str] = None,
-        dependency_version_field: Optional[str] = None,
-        url_field: Optional[str] = None,
-        default_format: Optional[bool] = False
+        dependent_field: str = None,
+        dependency_field: str = None, 
+        version_field: str = None,
+        dependency_version_field: str = None,
+        url_field: str = None,
+        default_format: bool = False
     ) -> PackageManager:
         '''
         Load a csv file into a PackageManager object
@@ -254,17 +256,17 @@ class PackageManager():
         ----------
         csv_path : str
             Path of the csv file to load
-        dependent_field : Optional[str], optional
+        dependent_field : str = None, optional
             Name of the dependent field, by default None
-        dependency_field : Optional[str], optional
+        dependency_field : str = None, optional
             Name of the dependency field, by default None
-        version_field : Optional[str], optional
+        version_field : str = None, optional
             Name of the version field, by default None
-        dependency_version_field : Optional[str], optional
+        dependency_version_field : str = None, optional
             Name of the dependency version field, by default None
-        url_field : Optional[str], optional
+        url_field : str = None, optional
             Name of the url field, by default None
-        default_format : Optional[bool], optional
+        default_format : bool, optional
             If True, the csv has the structure of full_adjlist.csv, by default False
 
         Examples
@@ -527,7 +529,7 @@ class PackageManager():
                 f"The package {package_name} does not exist in the data source {self.name}"
             )
             return dependency_network
-        
+
         # Get the dependencies of the package and add it to the dependency network if it is not already in it
         dependencies = current_package.get_dependencies_names()
 
@@ -538,26 +540,20 @@ class PackageManager():
             for dependency_name in dependencies:
                 dependency_network[package_name].append(dependency_name)
 
-                # Check if the dependency of this package is already in the dependency network
-                # If not, we generate the dependency network of the dependency
-
                 if dependency_name in dependency_network:
                     continue
-                else:
-                    try:     
-                        self.dependency_network(
-                            dependency_name,                # The name of the dependency
-                            dependency_network,             # The global dependency network
-                            deep_level - 1,                 # The deep level is reduced by 1
-                            generate = True                 # The dependency network is generated
-                        )
+                try:     
+                    self.dependency_network(
+                        dependency_name,                # The name of the dependency
+                        dependency_network,             # The global dependency network
+                        deep_level - 1,                 # The deep level is reduced by 1
+                        generate = True                 # The dependency network is generated
+                    )
 
-                    except Exception:
-                        MyLogger().get_logger().debug(
-                            f"The package {dependency_name}, as dependency of {package_name} does not exist in the data source {self.name}"
-                        )
-                        continue
-
+                except Exception:
+                    MyLogger().get_logger().debug(
+                        f"The package {dependency_name}, as dependency of {package_name} does not exist in the data source {self.name}"
+                    )
         return dependency_network
 
 class PackageManagerLoadError(Exception):

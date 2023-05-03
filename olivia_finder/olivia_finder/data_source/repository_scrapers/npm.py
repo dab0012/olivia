@@ -49,11 +49,11 @@ class NpmScraper(ScraperDataSource):
         
     Parameters
     ----------
-    name : Optional[str]
+    name : str = None
         Name of the scraper
-    description : Optional[str]
+    description : str = None
         Description of the scraper
-    request_handler : Optional[RequestHandler]
+    request_handler : RequestHandler = None
         Request handler for the scraper, if None, it will be initialized with a generic RequestHandler
     '''
 
@@ -66,9 +66,9 @@ class NpmScraper(ScraperDataSource):
 
     def __init__(
         self, 
-        name: Optional[str] = NAME, 
-        description: Optional[str] = DESCRIPTION, 
-        request_handler: Optional[RequestHandler] = None
+        request_handler: RequestHandler = None,
+        name: str = NAME, 
+        description: str = DESCRIPTION, 
     ):
         '''
         Constructor of the class
@@ -85,9 +85,9 @@ class NpmScraper(ScraperDataSource):
     @override
     def obtain_package_names(
         self, 
-        page_size: Optional[int]=100, 
-        show_progress_bar: Optional[bool]=True,
-        save_chunks: Optional[bool]=False,
+        page_size: int = 100, 
+        show_progress_bar: bool = True,
+        save_chunks: bool = False,
     ) -> list[dict]:
 
         '''
@@ -95,12 +95,12 @@ class NpmScraper(ScraperDataSource):
 
         Parameters
         ----------
-        page_size : Optional[int]
-            Size of the page to download
-        save_chunks : Optional[bool]
-            Flag to save the chunks in the chunks folder
-        show_progress_bar : Optional[bool]
+        page_size : int = 100
+            Number of packages to be requested in each page
+        show_progress_bar : bool = True
             Flag to show the progress bar
+        save_chunks : bool = False
+            Flag to save the chunks of the registry in the chunks folder
         
         Returns
         -------
@@ -182,20 +182,20 @@ class NpmScraper(ScraperDataSource):
 
     def _download_page(
         self, 
-        start_key: Optional[str]=None, 
-        size: Optional[int]=1000, 
-        retries: Optional[int]=5
+        start_key: str = None, 
+        size: int = 1000, 
+        retries: int = 5
     )-> list[dict]:
         '''
         Function to download a page of documents from the NPM repository and return a list of dictionaries with the name and version of the packages
         
         Parameters
         ----------
-        start_key : Optional[str]
+        start_key : str = None
             Key to start the download
-        size : Optional[int]
+        size : int = None
             Size of the page to download
-        retries : Optional[int]
+        retries : int = None
             Number of retries to download the page
         
         Returns

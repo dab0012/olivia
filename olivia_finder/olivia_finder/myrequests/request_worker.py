@@ -1,4 +1,6 @@
+import queue
 import time
+from typing import Optional
 import requests
 from threading import Thread
 
@@ -23,15 +25,26 @@ class RequestWorker(Thread):
     Attributes
     ----------
     worker_id : int
-        Worker id, used for logging purposes
+        Id of the worker
     jobs_queue : queue.Queue
         Queue of RequestJob objects
-    my_jobs : list
-        List of RequestJob objects that this worker has done
+    my_jobs : list[RequestJob]
+        List of RequestJob objects that the worker has done
     proxy_handler : ProxyHandler
         ProxyHandler object
     user_agent_handler : UserAgentHandler
         UserAgentHandler object
+    stopped : bool
+        Flag to stop the worker
+
+    Parameters
+    ----------
+    worker_id : int
+        Id of the worker
+    jobs_queue : queue.Queue
+        Queue of RequestJob objects
+    progress_bar : tqdm.tqdm
+        Progress bar, if None, no progress bar will be shown
     '''
 
     # Constants
@@ -39,7 +52,7 @@ class RequestWorker(Thread):
     RETRY_DELAY = 3
     TIMEOUT = 30
     
-    def __init__(self, worker_id, jobs_queue, progress_bar: tqdm.tqdm = None):
+    def __init__(self, worker_id:int, jobs_queue: queue.Queue, progress_bar: tqdm.tqdm = None):
         '''
         Constructor
         '''
@@ -61,11 +74,8 @@ class RequestWorker(Thread):
         Run the worker
         '''
 
-        while True:
+        while not self.stopped:
 
-            if self.stopped:
-                break
-            
             # Get next url from the queue
             job = self.jobs_queue.get()
 
@@ -78,13 +88,13 @@ class RequestWorker(Thread):
             # If exit string is received, break the loop
             if job.key == RequestJob.FINALIZE_KEY:
                 break
-            
+
             # Get proxy and user agent
             MyLogger().get_logger().debug(f"Worker {self.worker_id}: Obtaining proxy and user agent")
             proxy, user_agent = self._obtain_request_args()
             MyLogger().get_logger().debug(f"Worker {self.worker_id}: Obtained proxy: {proxy} and user agent: {user_agent}")
 
-            
+
             # Do the request
             message = f"Worker {self.worker_id}: Doing request"
             MyLogger().get_logger().debug(message)
@@ -98,7 +108,7 @@ class RequestWorker(Thread):
                     headers={"User-Agent": user_agent}, 
                     params=job.params
                 )
-                
+
             except Exception as e:
                 MyLogger().get_logger().error(f"Worker {self.worker_id}: Error doing request job: {e}")
                 response = None
@@ -107,7 +117,7 @@ class RequestWorker(Thread):
             if response is None or response.status_code != 200:
                 MyLogger().get_logger().error(f"Worker {self.worker_id}: Error doing request job: {response}")
                 response = None
-            
+
             # Update the progress bar
             if self.progress_bar is not None:
                 self.progress_bar.update(1)
@@ -120,13 +130,13 @@ class RequestWorker(Thread):
             self.jobs_queue.task_done()
             MyLogger().get_logger().debug(f"Worker {self.worker_id}: Done for {job.url}")
             
-    def _obtain_request_args(self) -> tuple:
+    def _obtain_request_args(self) -> tuple[str, str]:
         '''
         Obtain the proxy and user agent to use for the request
 
         Returns
         -------
-        tuple
+        tuple[str, str]
             Tuple with the proxy and user agent to use for the request
         '''
         
@@ -148,13 +158,14 @@ class RequestWorker(Thread):
         self, 
         url,
         timeout=TIMEOUT,
-        data=None,
-        proxy=None,
-        headers=None,
-        params=None,
         retries=RETRIES,
-        retry_delay=RETRY_DELAY
-    ):
+        retry_delay=RETRY_DELAY,
+        data:dict = None,
+        proxy:str = None,
+        headers: dict = None,
+        params: dict = None
+    ) -> requests.Response:
+
         '''
         Do a request using requests library, with retries, the parameters are the same as requests.get
         Handles the exceptions and retries
@@ -163,21 +174,21 @@ class RequestWorker(Thread):
         Parameters
         ----------
         url : str
-            URL to do the request
+            Url to do the request
         timeout : int, optional
             Timeout for the request, by default TIMEOUT
-        data : dict, optional
-            Data to send with the request, by default None (POST request)
-        params : dict, optional
-            Parameters to send with the request, by default None (GET request)
-        proxy : str, optional
-            Proxy to use for the request, by default None
-        headers : dict, optional
-            Headers to use for the request, by default None
         retries : int, optional
-            Number of retries to do, by default RETRIES
+            Number of retries, by default RETRIES
         retry_delay : int, optional
-            Delay between retries, by default RETRIE_DELAY
+            Delay between retries, by default RETRY_DELAY
+        data : dict = None, optional
+            Data to send with the request, by default None
+        proxy : str = None, optional
+            Proxy to use for the request, by default None
+        headers : dict = None, optional
+            Headers to use for the request, by default None
+        params : dict = None, optional
+            Parameters to use for the request, by default None
 
         Returns
         -------

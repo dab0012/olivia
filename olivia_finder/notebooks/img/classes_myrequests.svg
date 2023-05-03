@@ -25,8 +25,8 @@
 <polygon fill="aliceblue" stroke="black" points="30.5,-256.5 30.5,-340.5 268.5,-340.5 268.5,-256.5 30.5,-256.5"/>
 <text text-anchor="middle" x="149.5" y="-325.3" font-family="" font-size="14.00">ProxyBuilder</text>
 <polyline fill="none" stroke="black" points="30.5,-317.5 268.5,-317.5 "/>
-<text text-anchor="start" x="38.5" y="-302.3" font-family="" font-size="14.00">request_timeout : Optional[int]</text>
-<text text-anchor="start" x="38.5" y="-287.3" font-family="" font-size="14.00">url : Optional[str]</text>
+<text text-anchor="start" x="38.5" y="-302.3" font-family="" font-size="14.00">request_timeout : int = None</text>
+<text text-anchor="start" x="38.5" y="-287.3" font-family="" font-size="14.00">url : str = None</text>
 <polyline fill="none" stroke="black" points="30.5,-279.5 268.5,-279.5 "/>
 <text text-anchor="start" x="38.5" y="-264.3" font-family="" font-size="14.00">get_proxies(): list[str]</text>
 </g>

@@ -14,9 +14,9 @@ from olivia_finder.myrequests.request_handler import RequestHandler
 # Auxiliary function to download a page of documents from the NPM repository
 
 def download_page(
-    start_key: Optional[str]=None, 
-    size: Optional[int]=1000, 
-    retries: Optional[int]=5,
+    start_key: str = None, 
+    size: int = None=1000, 
+    retries: int = None=5,
     rh: RequestHandler = RequestHandler()
 )-> list[dict]:
 
@@ -57,7 +57,7 @@ def download_page(
         return data['rows'][1:]
 
 
-def donwload_package_names(last_key: Optional[str]=None, next_page_=0, total_pages_=0) -> list[str]:
+def donwload_package_names(last_key: str = None, next_page_=0, total_pages_=0) -> list[str]:
 
     # # Cargar los paquetes ya obtenidos en una lista
     # package_names = []

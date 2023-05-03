@@ -37,8 +37,22 @@ class LibrariesioDataSource(DataSource):
         Description of the data source
     platform : str
         Platform of the data source to search for packages
-    api_key : str
-        API key for the libraries.io API
+    search : Search
+        Search object to search for packages in the data source
+
+    Parameters
+    ----------
+    name : str
+        Name of the data source
+    description : str
+        Description of the data source
+    platform : str
+        Platform of the data source to search for packages
+
+    Raises
+    ------
+    LibrariesIoException
+        If the search object cannot be created
 
     """
 

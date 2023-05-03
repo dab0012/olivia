@@ -274,19 +274,19 @@ Implements the DataSource interface.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>file_path</strong><span class="classifier">str</span></dt><dd><p>Path to the CSV file with the data</p>
 </dd>
-<dt><strong>name</strong><span class="classifier">Optional[str]</span></dt><dd><p>Name of the data source</p>
+<dt><strong>name</strong><span class="classifier">str = None</span></dt><dd><p>Name of the data source</p>
 </dd>
-<dt><strong>description</strong><span class="classifier">Optional[str]</span></dt><dd><p>Description of the data source</p>
+<dt><strong>description</strong><span class="classifier">str = None</span></dt><dd><p>Description of the data source</p>
 </dd>
-<dt><strong>dependent_field</strong><span class="classifier">Optional[str]</span></dt><dd><p>The name of the field that contains the dependent packages</p>
+<dt><strong>dependent_field</strong><span class="classifier">str = None</span></dt><dd><p>The name of the field that contains the dependent packages</p>
 </dd>
-<dt><strong>dependency_field</strong><span class="classifier">Optional[str]</span></dt><dd><p>The name of the field that contains the dependency packages</p>
+<dt><strong>dependency_field</strong><span class="classifier">str = None</span></dt><dd><p>The name of the field that contains the dependency packages</p>
 </dd>
-<dt><strong>dependent_version_field</strong><span class="classifier">Optional[str]</span></dt><dd><p>The name of the field that contains the dependent packages versions</p>
+<dt><strong>dependent_version_field</strong><span class="classifier">str = None</span></dt><dd><p>The name of the field that contains the dependent packages versions</p>
 </dd>
-<dt><strong>dependency_version_field</strong><span class="classifier">Optional[str]</span></dt><dd><p>The name of the field that contains the dependency packages versions</p>
+<dt><strong>dependency_version_field</strong><span class="classifier">str = None</span></dt><dd><p>The name of the field that contains the dependency packages versions</p>
 </dd>
-<dt><strong>dependent_url_field</strong><span class="classifier">Optional[str]</span></dt><dd><p>The name of the field that contains the dependent packages urls</p>
+<dt><strong>dependent_url_field</strong><span class="classifier">str = None</span></dt><dd><p>The name of the field that contains the dependent packages urls</p>
 </dd>
 </dl>
 </dd>
@@ -354,7 +354,7 @@ Implements the DataSource interface.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>package_name</strong><span class="classifier">str</span></dt><dd><p>The name of the package</p>
 </dd>
-<dt><strong>override_previous</strong><span class="classifier">Optional[bool]</span></dt><dd><p>If True, it will override the previous data with the same name but different version</p>
+<dt><strong>override_previous</strong><span class="classifier">bool</span></dt><dd><p>If True, it will override the previous data with the same name but different version</p>
 </dd>
 </dl>
 </dd>

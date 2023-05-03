@@ -72,11 +72,11 @@
 <span class="sd">        </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    name : Optional[str]</span>
+<span class="sd">    name : str = None</span>
 <span class="sd">        Name of the scraper</span>
-<span class="sd">    description : Optional[str]</span>
+<span class="sd">    description : str = None</span>
 <span class="sd">        Description of the scraper</span>
-<span class="sd">    request_handler : Optional[RequestHandler]</span>
+<span class="sd">    request_handler : RequestHandler = None</span>
 <span class="sd">        Request handler for the scraper, if None, it will be initialized with a generic RequestHandler</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
@@ -111,11 +111,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        page_size : Optional[int]</span>
+<span class="sd">        page_size : int = None</span>
 <span class="sd">            Size of the page to download</span>
-<span class="sd">        save_chunks : Optional[bool]</span>
+<span class="sd">        save_chunks : bool</span>
 <span class="sd">            Flag to save the chunks in the chunks folder</span>
-<span class="sd">        show_progress_bar : Optional[bool]</span>
+<span class="sd">        show_progress_bar : bool</span>
 <span class="sd">            Flag to show the progress bar</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
@@ -191,11 +191,11 @@
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        start_key : Optional[str]</span>
+<span class="sd">        start_key : str = None</span>
 <span class="sd">            Key to start the download</span>
-<span class="sd">        size : Optional[int]</span>
+<span class="sd">        size : int = None</span>
 <span class="sd">            Size of the page to download</span>
-<span class="sd">        retries : Optional[int]</span>
+<span class="sd">        retries : int = None</span>
 <span class="sd">            Number of retries to download the page</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>

@@ -49,19 +49,19 @@ class CSVDataSource(DataSource):
     ----------
     file_path : str
         Path to the CSV file with the data
-    name : Optional[str]
+    name : str = None
         Name of the data source
-    description : Optional[str]
+    description : str = None
         Description of the data source
-    dependent_field : Optional[str]
+    dependent_field : str = None
         The name of the field that contains the dependent packages
-    dependency_field : Optional[str]
+    dependency_field : str = None
         The name of the field that contains the dependency packages
-    dependent_version_field : Optional[str]
+    dependent_version_field : str = None
         The name of the field that contains the dependent packages versions
-    dependency_version_field : Optional[str]
+    dependency_version_field : str = None
         The name of the field that contains the dependency packages versions
-    dependent_url_field : Optional[str]
+    dependent_url_field : str = None
         The name of the field that contains the dependent packages urls
     auxiliary_datasources : Optional[list[DataSource]]
         List of auxiliary data sources
@@ -77,13 +77,13 @@ class CSVDataSource(DataSource):
     def __init__(
         self,
         file_path: str, 
-        name: Optional[str] = None, 
-        description: Optional[str] = None,
-        dependent_field: Optional[str] = None,
-        dependency_field: Optional[str] = None,
-        dependent_version_field: Optional[str] = None,
-        dependency_version_field: Optional[str] = None,
-        dependent_url_field: Optional[str] = None,
+        name: str = None, 
+        description: str = None,
+        dependent_field: str = None,
+        dependency_field: str = None,
+        dependent_version_field: str = None,
+        dependency_version_field: str = None,
+        dependent_url_field: str = None
     ):
         """
         Constructor of the class
@@ -154,13 +154,14 @@ class CSVDataSource(DataSource):
         # Load the data
         self.data = pd.read_csv(self.file_path)
         
-        # Check if the other fields are in the data
+        # Mandatory fields
         if self.dependent_field not in self.data.columns:
             raise ValueError(f"Field {self.dependent_field} not found on data.")
         
         if self.dependency_field not in self.data.columns:
             raise ValueError(f"Field {self.dependency_field} not found on data.")
         
+        # Optional fields
         if self.dependent_version_field is not None and self.dependent_version_field not in self.data.columns:
             raise ValueError(f"Field {self.dependent_version_field} not found on data.")
         
@@ -170,37 +171,37 @@ class CSVDataSource(DataSource):
         if self.dependent_url_field is not None and self.dependent_url_field not in self.data.columns:
             raise ValueError(f"Field {self.dependent_url_field} not found on data.")
 
-        # Load the packages data
-        self._load_packages_data()
+        # # Load the packages data
+        # self._load_packages_data()
 
-    def _load_packages_data(self):
-        """
-        Loads the packages from the data
-        """
-        for _, row in self.data.iterrows():
-            # Get the package name and version
-            package_name = row[self.dependent_field]
-            package_version = row[self.dependent_version_field] if self.dependent_version_field is not None else None
-            package_url = row[self.dependent_url_field] if self.dependent_url_field is not None else None
+    # def _load_packages_data(self):
+    #     """
+    #     Loads the packages from the data
+    #     """
+    #     for _, row in self.data.iterrows():
+    #         # Get the package name and version
+    #         package_name = row[self.dependent_field]
+    #         package_version = row[self.dependent_version_field] if self.dependent_version_field is not None else None
+    #         package_url = row[self.dependent_url_field] if self.dependent_url_field is not None else None
             
-            # Get the dependencies
-            dependency_name = row[self.dependency_field]
-            dependency_version = row[self.dependency_version_field] if self.dependency_version_field is not None else None
+    #         # Get the dependencies
+    #         dependency_name = row[self.dependency_field]
+    #         dependency_version = row[self.dependency_version_field] if self.dependency_version_field is not None else None
             
-            # Check if the package data is on the dictionary
-            if package_name not in self.packages_data:
-                self.packages_data[package_name] = {
-                    "name": package_name,
-                    "version": package_version,
-                    "url": package_url,
-                    "dependencies": [],
-                }
+    #         # Check if the package data is on the dictionary
+    #         if package_name not in self.packages_data:
+    #             self.packages_data[package_name] = {
+    #                 "name": package_name,
+    #                 "version": package_version,
+    #                 "url": package_url,
+    #                 "dependencies": [],
+    #             }
 
-            # Add the dependency of the current row
-            self.packages_data[package_name]["dependencies"].append({
-                "name": dependency_name,
-                "version": dependency_version,
-            })
+    #         # Add the dependency of the current row
+    #         self.packages_data[package_name]["dependencies"].append({
+    #             "name": dependency_name,
+    #             "version": dependency_version,
+    #         })
 
     def obtain_package_names(self) -> list[str]:
         """
@@ -213,7 +214,7 @@ class CSVDataSource(DataSource):
         """
         return sorted(self.data[self.dependent_field].unique())
     
-    def obtain_package_data(self, package_name: str, override_previous: Optional[bool] = True) -> dict:
+    def obtain_package_data(self, package_name: str, override_previous: bool = True) -> dict:
         """
         Obtains the package from the dataframe
         
@@ -221,7 +222,7 @@ class CSVDataSource(DataSource):
         ----------
         package_name : str
             The name of the package
-        override_previous : Optional[bool]
+        override_previous : bool
             If True, it will override the previous data with the same name but different version
         
         Returns
@@ -294,7 +295,7 @@ class CSVDataSource(DataSource):
     def obtain_packages_data(
         self,
         package_names: list[str],
-        progress_bar: Optional[tqdm.tqdm] = None
+        progress_bar: Optional[tqdm.tqdm]
     ) -> tuple[list[dict], list[str]]:
         '''
         Obtains the data of a list of package names from the CSV file

@@ -29,7 +29,7 @@
 <text text-anchor="middle" x="779.5" y="-325.3" font-family="" font-size="14.00">ScraperDataSource</text>
 <polyline fill="none" stroke="black" points="335.5,-317.5 1223.5,-317.5 "/>
 <text text-anchor="start" x="343.5" y="-302.3" font-family="" font-size="14.00">not_found : list</text>
-<text text-anchor="start" x="343.5" y="-287.3" font-family="" font-size="14.00">request_handler : Optional[RequestHandler]</text>
+<text text-anchor="start" x="343.5" y="-287.3" font-family="" font-size="14.00">request_handler : RequestHandler = None</text>
 <polyline fill="none" stroke="black" points="335.5,-279.5 1223.5,-279.5 "/>
 <text text-anchor="start" x="343.5" y="-264.3" font-family="" font-size="14.00">do_requests(urls: List[str], progress_bar: Optional[tqdm.tqdm]): List[Optional[requests.Response]]</text>
 <text text-anchor="start" x="343.5" y="-249.3" font-family="" font-size="14.00">obtain_package_data(package_name: str): Dict</text>
@@ -49,14 +49,14 @@
 <text text-anchor="middle" x="1626.5" y="-355.3" font-family="" font-size="14.00">CSVDataSource</text>
 <polyline fill="none" stroke="black" points="1241,-347.5 2012,-347.5 "/>
 <text text-anchor="start" x="1249" y="-332.3" font-family="" font-size="14.00">data : NoneType, DataFrame, TextFileReader</text>
-<text text-anchor="start" x="1249" y="-317.3" font-family="" font-size="14.00">dependency_field : Optional[str]</text>
-<text text-anchor="start" x="1249" y="-302.3" font-family="" font-size="14.00">dependency_version_field : Optional[str]</text>
-<text text-anchor="start" x="1249" y="-287.3" font-family="" font-size="14.00">dependent_field : Optional[str]</text>
-<text text-anchor="start" x="1249" y="-272.3" font-family="" font-size="14.00">dependent_url_field : Optional[str]</text>
-<text text-anchor="start" x="1249" y="-257.3" font-family="" font-size="14.00">dependent_version_field : Optional[str]</text>
+<text text-anchor="start" x="1249" y="-317.3" font-family="" font-size="14.00">dependency_field : str = None</text>
+<text text-anchor="start" x="1249" y="-302.3" font-family="" font-size="14.00">dependency_version_field : str = None</text>
+<text text-anchor="start" x="1249" y="-287.3" font-family="" font-size="14.00">dependent_field : str = None</text>
+<text text-anchor="start" x="1249" y="-272.3" font-family="" font-size="14.00">dependent_url_field : str = None</text>
+<text text-anchor="start" x="1249" y="-257.3" font-family="" font-size="14.00">dependent_version_field : str = None</text>
 <text text-anchor="start" x="1249" y="-242.3" font-family="" font-size="14.00">file_path : str</text>
 <polyline fill="none" stroke="black" points="1241,-234.5 2012,-234.5 "/>
-<text text-anchor="start" x="1249" y="-219.3" font-family="" font-size="14.00">obtain_package_data(package_name: str, override_previous: Optional[bool]): Dict</text>
+<text text-anchor="start" x="1249" y="-219.3" font-family="" font-size="14.00">obtain_package_data(package_name: str, override_previous: bool): Dict</text>
 <text text-anchor="start" x="1249" y="-204.3" font-family="" font-size="14.00">obtain_package_names(): List[str]</text>
 <text text-anchor="start" x="1249" y="-189.3" font-family="" font-size="14.00">obtain_packages_data(package_names: Optional[List[str]], progress_bar: Optional[tqdm.tqdm]): List[Dict]</text>
 </g>
@@ -91,7 +91,7 @@
 <polyline fill="none" stroke="black" points="353,-106.5 610,-106.5 "/>
 <text text-anchor="start" x="361" y="-91.3" font-family="" font-size="14.00">CRAN_PACKAGE_DATA_URL : str</text>
 <text text-anchor="start" x="361" y="-76.3" font-family="" font-size="14.00">CRAN_PACKAGE_LIST_URL : str</text>
-<text text-anchor="start" x="361" y="-61.3" font-family="" font-size="14.00">DESCRIPTION : str, Optional[str]</text>
+<text text-anchor="start" x="361" y="-61.3" font-family="" font-size="14.00">DESCRIPTION : str, str = None</text>
 <text text-anchor="start" x="361" y="-46.3" font-family="" font-size="14.00">NAME : str</text>
 <polyline fill="none" stroke="black" points="353,-38.5 610,-38.5 "/>
 <text text-anchor="start" x="361" y="-23.3" font-family="" font-size="14.00">obtain_package_names(): List[str]</text>
@@ -156,7 +156,7 @@
 <text text-anchor="start" x="636.5" y="-46.3" font-family="" font-size="14.00">NPM_REPO_URL : str</text>
 <text text-anchor="start" x="636.5" y="-31.3" font-family="" font-size="14.00">chunks_folder : NoneType</text>
 <polyline fill="none" stroke="black" points="628.5,-23.5 1526.5,-23.5 "/>
-<text text-anchor="start" x="636.5" y="-8.3" font-family="" font-size="14.00">obtain_package_names(page_size: Optional[int], save_chunks: Optional[bool], show_progress_bar: Optional[bool]): List[dict]</text>
+<text text-anchor="start" x="636.5" y="-8.3" font-family="" font-size="14.00">obtain_package_names(page_size: int = None, save_chunks: bool, show_progress_bar: bool): List[dict]</text>
 </g>
 <!-- olivia_finder.data_source.repository_scrapers.npm.NpmScraper&#45;&gt;olivia_finder.data_source.scraper_ds.ScraperDataSource -->
 <g id="edge5" class="edge">

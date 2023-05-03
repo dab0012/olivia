@@ -283,11 +283,11 @@
 <span class="sd">        Proxy handler, if None, it will be initialized with a generic ProxyHandler</span>
 <span class="sd">    useragents_handler : Optional[UserAgentHandler]</span>
 <span class="sd">        User agent handler, if None, it will be initialized with a generic UserAgentHandler</span>
-<span class="sd">    max_retry : Optional[int]</span>
+<span class="sd">    max_retry : int = None</span>
 <span class="sd">        Maximum number of retries for each request, if None, it will be initialized with the default value</span>
-<span class="sd">    request_timeout : Optional[int]</span>
+<span class="sd">    request_timeout : int = None</span>
 <span class="sd">        Timeout for each request, if None, it will be initialized with the default value</span>
-<span class="sd">    num_processes : Optional[int]</span>
+<span class="sd">    num_processes : int = None</span>
 <span class="sd">        Number of processes to use for parallel requests, if None, it will be initialized with the default value</span>
 <span class="sd">    '''</span>
 

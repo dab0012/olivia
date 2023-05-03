@@ -45,11 +45,11 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>name</strong><span class="classifier">Optional[str]</span></dt><dd><p>Name of the scraper</p>
+<dt><strong>name</strong><span class="classifier">str = None</span></dt><dd><p>Name of the scraper</p>
 </dd>
-<dt><strong>description</strong><span class="classifier">Optional[str]</span></dt><dd><p>Description of the scraper</p>
+<dt><strong>description</strong><span class="classifier">str = None</span></dt><dd><p>Description of the scraper</p>
 </dd>
-<dt><strong>request_handler</strong><span class="classifier">Optional[RequestHandler]</span></dt><dd><p>Request handler for the scraper, if None, it will be initialized with a generic RequestHandler</p>
+<dt><strong>request_handler</strong><span class="classifier">RequestHandler = None</span></dt><dd><p>Request handler for the scraper, if None, it will be initialized with a generic RequestHandler</p>
 </dd>
 </dl>
 </dd>
@@ -121,11 +121,11 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>page_size</strong><span class="classifier">Optional[int]</span></dt><dd><p>Size of the page to download</p>
+<dt><strong>page_size</strong><span class="classifier">int = None</span></dt><dd><p>Size of the page to download</p>
 </dd>
-<dt><strong>save_chunks</strong><span class="classifier">Optional[bool]</span></dt><dd><p>Flag to save the chunks in the chunks folder</p>
+<dt><strong>save_chunks</strong><span class="classifier">bool</span></dt><dd><p>Flag to save the chunks in the chunks folder</p>
 </dd>
-<dt><strong>show_progress_bar</strong><span class="classifier">Optional[bool]</span></dt><dd><p>Flag to show the progress bar</p>
+<dt><strong>show_progress_bar</strong><span class="classifier">bool</span></dt><dd><p>Flag to show the progress bar</p>
 </dd>
 </dl>
 </dd>
