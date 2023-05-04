@@ -275,6 +275,23 @@ class NpmScraper(ScraperDataSource):
         -------
         dict
             dictionary with the parsed data
+
+        Examples
+        --------
+        >>> response = requests.get('https://registry.npmjs.org/express')
+        >>> parser(response)
+        {
+            'name': 'express',
+            'version': '4.17.1',
+            'dependencies': [
+                {'name': 'accepts', 'version': '1.3.7'},
+                {'name': 'array-flatten', 'version': '1.1.1'},
+                {'name': 'body-parser', 'version': '1.19.0'},
+                {'name': 'content-disposition', 'version': '0.5.3'},
+                {'name': 'content-type', 'version': '1.0.4'}
+            ],
+            'url': 'https://www.npmjs.com/package/express'
+        }
         '''
 
         response_json = response.json()
@@ -285,7 +302,10 @@ class NpmScraper(ScraperDataSource):
 
         # Get the package name and version
         package_name = response_json['_id']
-        package_version = response_json['dist-tags']['latest']
+        try:
+            package_version = response_json['dist-tags']['latest']
+        except KeyError:
+            package_version = None
 
         # get the dependencies
         try:
@@ -293,18 +313,9 @@ class NpmScraper(ScraperDataSource):
         except KeyError:
             dependencies = {}
 
-        dep_list = []
-        for key in dependencies:
-            
-            # Get the name and version of the dependency
-            dep_name = key
-            dep_version = dependencies[key].replace('^', '')
-
-            # Add the dependency to the list
-            dep_list.append({
-                'name': dep_name,
-                'version': dep_version
-            })
+        dep_list = [
+            {'name': key, 'version': value} for key, value in dependencies.items()
+        ]
 
         return {
             'name': package_name,

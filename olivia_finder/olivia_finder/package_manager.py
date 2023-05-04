@@ -221,12 +221,14 @@ class PackageManager():
 
         # Obtain the packages data from the data source
         pending_packages = package_names.copy()
-        packages_data = []
         preferred_data_source = self.data_sources[0]
+
+        # Return list
+        packages = []
 
         # if datasource is instance of ScraperDataSource use the obtain_packages_data method for parallelization
         if isinstance(preferred_data_source, ScraperDataSource):
-            
+            packages_data = []
             data_found, not_found = preferred_data_source.obtain_packages_data(
                 package_names=pending_packages, 
                 progress_bar=progress_bar
@@ -235,21 +237,26 @@ class PackageManager():
             # pending_packages = not_found
             MyLogger().get_logger().info(f"Packages found: {len(data_found)}")
             MyLogger().get_logger().info(f"Packages not found: {len(not_found)}")
+            packages = [Package.load(package_data) for package_data in packages_data]
 
         # if not use the obtain_package_data method for sequential processing using the data_sources of the list
         else:
 
-            for package_name in pending_packages:
+            while len(pending_packages) > 0:
+                
+                package_name = pending_packages[0]
                 package_data = self.obtain_package(package_name)
                 if package_data is not None:
-                    packages_data.append(package_data)
-                pending_packages.remove(package_name)
+                    packages.append(package_data)
+
+                # Remove the package from the pending packages
+                del pending_packages[0]
 
                 if progress_bar is not None:
                     progress_bar.update(1)
         
-        MyLogger().get_logger().info(f"Total packages found: {len(packages_data)}")
-        packages = [Package.load(package_data) for package_data in packages_data]
+        MyLogger().get_logger().info(f"Total packages found: {len(packages)}")
+        
 
         # update the self.packages attribute overwriting the packages with the same name
         # but conserving the other packages
@@ -504,6 +511,7 @@ class PackageManager():
         
         # Use the data of the package manager
         current_package = self.get_package(package_name)
+        dependencies = []
         if (current_package is not None) and (package_name not in dependency_network):
 
             # Get the dependencies of the package and add it to the dependency network if it is not already in it
