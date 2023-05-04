@@ -146,6 +146,10 @@ class PackageManager():
                 progress_bar=progress_bar,
                 extend=True
             )
+        
+        # Close the progress bar if needed
+        if progress_bar is not None:
+            progress_bar.close()
 
 
     def obtain_package(self, package_name: str) -> Union[Package, None]:
@@ -188,8 +192,29 @@ class PackageManager():
         extend: bool = False
     ) -> list[Package]:
         '''
-        '''
+        Builds a list of Package objects using the data sources in order until one of them returns a valid package
 
+        Parameters
+        ----------
+        package_names : Optional[list[str]]
+            List of package names to load, if None, all the packages will be loaded
+        progress_bar : Optional[tqdm.tqdm]
+            Progress bar to show the progress of the loading
+        extend : bool
+            If True, the packages will be added to the package manager
+
+        Returns
+        -------
+        list[Package]
+            List of Package objects
+            
+        Examples
+        --------
+        >>> packages = package_manager.obtain_packages(["package_name_1", "package_name_2"])
+        >>> packages
+        [<Package: package_name_1>, <Package: package_name_2>]
+        '''
+        
         # Check if the package names are valid
         if package_names is not None and not isinstance(package_names, list):
             raise ValueError("Package names must be a list")
@@ -222,9 +247,6 @@ class PackageManager():
 
                 if progress_bar is not None:
                     progress_bar.update(1)
-
-        if progress_bar is not None:
-            progress_bar.close()
         
         MyLogger().get_logger().info(f"Total packages found: {len(packages_data)}")
         packages = [Package.load(package_data) for package_data in packages_data]
@@ -232,7 +254,7 @@ class PackageManager():
         # update the self.packages attribute overwriting the packages with the same name
         # but conserving the other packages
         if extend:
-            MyLogger().get_logger().info(f"Extending data source with obtained packages")
+            MyLogger().get_logger().info("Extending data source with obtained packages")
             for package in packages:
                 self.packages[package.name] = package
 
