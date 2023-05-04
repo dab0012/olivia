@@ -94,9 +94,8 @@ class PypiScraper(ScraperDataSource):
         try:
             # Get the list of packages
             pakage_list = [a.text for a in soup.find_all('a')]
-        except Exception as e:
-            raise ScraperError(f'Error obtaining the list of packages from {self.PYPI_PACKAGE_LIST_URL}') from e
-        
+        except ScraperError('Error obtaining the list of packages from {self.PYPI_PACKAGE_LIST_URL}'):
+            pass
 
         MyLogger().get_logger().info(f'Obtained {len(pakage_list)} packages from {self.PYPI_PACKAGE_LIST_URL}')
         return pakage_list

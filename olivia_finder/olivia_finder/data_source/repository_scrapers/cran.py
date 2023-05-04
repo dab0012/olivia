@@ -22,7 +22,7 @@ from bs4 import BeautifulSoup
 from typing import Optional, Union
 
 from . import r
-from ..scraper_ds import ScraperDataSource
+from ..scraper_ds import ScraperDataSource, ScraperError
 from ...myrequests.request_handler import RequestHandler
 from ...myrequests.job import RequestJob
 from ...utilities.logger import MyLogger
@@ -130,12 +130,11 @@ class CranScraper(ScraperDataSource):
             if not (cells := row.find_all("td")):
                 continue
             try: 
-                # We extract the name of the package
-                # The name is in the first cell of the row
+                # Get the name of the package
                 package_name = cells[0].find("a").text   
+
             # If an error occurs, we show the error message
-            except AttributeError as e:
-                MyLogger().get_logger().debug(f'Error while obtaining the name of a package: {e}')
+            except ScraperError(message=f'Error while obtaining the name of the package'):
                 continue
 
             # We add the package name to the list of packages
@@ -188,7 +187,7 @@ class CranScraper(ScraperDataSource):
         try:
             d = soup.find('h2').text
             name = clean_string(d).split(':')[0]
-        except Exception:
+        except ScraperError(message='Error while obtaining the name of the package'):
             return None
 
         # Get package version
@@ -196,8 +195,8 @@ class CranScraper(ScraperDataSource):
         try:
             d = soup.find('td', text='Version:').find_next_sibling('td').text
             version = clean_string(d)
-        except Exception:
-            MyLogger().get_logger().debug(f'Version not found for package {name}')
+        except ScraperError(message=f'Error while obtaining the version of the package {name}'):
+            pass
 
         # Get depends
         dep_list = []
@@ -205,8 +204,8 @@ class CranScraper(ScraperDataSource):
             d = soup.find('td', text='Depends:').find_next_sibling('td').text
             depends = clean_string(d)
             dep_list = r.parse_dependencies(depends)
-        except Exception:
-            MyLogger().get_logger().debug(f'Dependencies not found for package {name}')
+        except ScraperError(message=f'Depends not found for package {name}'):
+            pass
 
         # Get imports
         imp_list = []
@@ -214,8 +213,8 @@ class CranScraper(ScraperDataSource):
             d = soup.find('td', text='Imports:').find_next_sibling('td').text
             imports = clean_string(d)
             imp_list = r.parse_dependencies(imports)
-        except Exception:
-            MyLogger().get_logger().debug(f'Imports not found for package {name}')
+        except ScraperError(message=f'Imports not found for package {name}'):
+            pass
             
         # Build dictionary with package data
         # we consider that dependencies and imports are the same level of importance

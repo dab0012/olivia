@@ -111,19 +111,17 @@ class BioconductorScraper(ScraperDataSource):
 
 
         # Create the driver
-
         try:
             MyLogger().get_logger().debug("Creating the Selenium driver...")
 
             driver_options = webdriver.FirefoxOptions()
             driver_options.headless = True
             driver = webdriver.Firefox(
-                options = driver_options, 
+                options = driver_options
             )
-            
         except Exception as e:
-            raise ScraperError("Exception occurred while creating the Selenium driver.") from e
-
+            raise ScraperError("Exception occurred while creating the Selenium driver") from e
+    
         # Scraping webpage with package list
         try:
             MyLogger().get_logger().debug("Scraping the Bioconductor website...")
@@ -131,7 +129,7 @@ class BioconductorScraper(ScraperDataSource):
             table = driver.find_element(By.ID, "biocViews_package_table")
             table_content = table.get_attribute("innerHTML")
         except Exception as e:
-            raise ScraperError("Exception occurred while scraping the Bioconductor website.") from e
+            raise ScraperError("Exception occurred while scraping the Bioconductor website") from e
 
         # Close the driver
         driver.close()

@@ -1,29 +1,23 @@
 from typing import Union
+from ..utilities.exception import OliviaFinderException
 from ..utilities.logger import MyLogger
 from ..utilities.config import Configuration
 from .data_source import DataSource
 import sys
-
 
 # Load the Libraries.io API key before importing the librariesio package
 # -----------------------------------------------------------------------
 
 # try to load the API key from the configuration file
 API_KEY = Configuration().get_key('librariesio', 'api_key')
-
 if API_KEY is None:
-
-    # Log the error and raise an exception
     MyLogger().get_logger().error("API key for Libraries.io not found")
-    raise Exception("API key for Libraries.io not found")
-
+    raise OliviaFinderException("API key for Libraries.io not found")
 
 # Set as environment variable
 import os
 os.environ["LIBRARIES_API_KEY"] = API_KEY
-
 from pybraries.search import Search
-
 
 class LibrariesioDataSource(DataSource):
     """
@@ -39,33 +33,35 @@ class LibrariesioDataSource(DataSource):
         Platform of the data source to search for packages
     search : Search
         Search object to search for packages in the data source
-
-    Parameters
-    ----------
-    name : str
-        Name of the data source
-    description : str
-        Description of the data source
-    platform : str
-        Platform of the data source to search for packages
-
-    Raises
-    ------
-    LibrariesIoException
-        If the search object cannot be created
-
     """
-
     
     def __init__(self, name: str, description: str, platform: str):
+        """
+        Constructor of the class
+
+        Parameters
+        ----------
+        name : str
+            Name of the data source
+        description : str
+            Description of the data source
+        platform : str
+            Platform of the data source to search for packages
+
+        Raises
+        ------
+        LibrariesIoException
+            If the search object cannot be created
+        """
+
         super().__init__(name, description)
         self.platform = platform
 
         # Create the search object
         try:
             self.search = Search()
-        except Exception as e:
-            raise LibrariesIoException("Error creating the search object") from e
+        except LibrariesIoException("Error creating the search object"):
+            pass
 
 
     def obtain_package_names(self) -> list[str]:
@@ -100,10 +96,8 @@ class LibrariesioDataSource(DataSource):
         # Get the package version and url
         MyLogger().get_logger().debug(f"Obtaining data of {package_name}")
 
-
-        stdout = sys.stdout
-
-        # Redirigir la salida a /dev/null
+        # Redirect the output to /dev/null to avoid printing the output of the search (pybraries bug)
+        stdout = sys.stdout     # Keep the standard output backed up
         sys.stdout = open('/dev/null', 'w')
 
         try:
@@ -116,18 +110,15 @@ class LibrariesioDataSource(DataSource):
                 MyLogger().get_logger().debug(f"Package {package_name} not found")
                 return None
 
-        except LibrariesIoException:
-            MyLogger().get_logger().debug(f"Exception while obtaining {package_name} dependencies")
+        except LibrariesIoException(f"Exception while obtaining {package_name} dependencies"):
             return None
-        finally:
-            # Restore standard output
-            sys.stdout.close()
-            sys.stdout = stdout
         
-        # Obtain the version (field dependNCies_For_version)
+        finally:
+            # Restore the original standard output
+            sys.stdout.close()
+            sys.stdout = stdout 
+        
         version = dependencies_data["dependencies_for_version"]
-
-        # Get the URL (Package_Manger_url)
         url = dependencies_data["package_manager_url"]
 
         
@@ -177,10 +168,9 @@ class LibrariesioDataSource(DataSource):
                 packages_data.append(package_data)
 
         return packages_data
-    
-        
-class LibrariesIoException(Exception):
-    
-    def __init__(self, message):
-        MyLogger().get_logger().debug(message)
+
+class LibrariesIoException(OliviaFinderException):
+    """
+    Exception for the LibrariesioDataSource class
+    """
 

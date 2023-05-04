@@ -18,7 +18,6 @@ File information:
 
 from __future__ import annotations
 import os
-from typing import Optional
 import pandas as pd
 import tqdm
 from ..utilities.logger import MyLogger
@@ -31,47 +30,22 @@ class CSVDataSource(DataSource):
     
     Attributes
     ----------
-    data : pd.DataFrame
-        The data loaded from the CSV file
-    dependent_field : str
-        The name of the field that contains the dependent packages
-    dependency_field : str
-        The name of the field that contains the dependency packages
-    dependent_version_field : str
-        The name of the field that contains the dependent packages versions
-    dependency_version_field : str
-        The name of the field that contains the dependency packages versions
-    dependent_url_field : str
-        The name of the field that contains the dependent packages urls
-    
-        
-    Parameters
-    ----------
-    file_path : str
-        Path to the CSV file with the data
-    name : str = None
+    self.name : str
         Name of the data source
-    description : str = None
+    self.description : str
         Description of the data source
-    dependent_field : str = None
+    self.dependent_field : str
         The name of the field that contains the dependent packages
-    dependency_field : str = None
+    self.dependency_field : str
         The name of the field that contains the dependency packages
-    dependent_version_field : str = None
+    self.dependent_version_field : str
         The name of the field that contains the dependent packages versions
-    dependency_version_field : str = None
+    self.dependency_version_field : str
         The name of the field that contains the dependency packages versions
-    dependent_url_field : str = None
+    self.dependent_url_field : str
         The name of the field that contains the dependent packages urls
-    auxiliary_datasources : Optional[list[DataSource]]
-        List of auxiliary data sources
-
-    Examples
-    --------
-    >>> from olivia_finder.csv_ds import CSVDataSource
-    >>> csv_ds = CSVDataSource()
-    >>> csv_ds.load_data("data.csv", "dependent", "dependency")
-    >>> package_names = csv_ds.obtain_package_names()
+    self.file_path : str
+        The path to the CSV file
     """
     
     def __init__(
@@ -87,6 +61,30 @@ class CSVDataSource(DataSource):
     ):
         """
         Constructor of the class
+
+        Parameters
+        ----------
+        file_path : str
+            The path to the CSV file
+        name : str, optional
+            The name of the data source, by default None
+        description : str, optional
+            The description of the data source, by default None
+        dependent_field : str, optional
+            The name of the field that contains the dependent packages, by default None
+        dependency_field : str, optional
+            The name of the field that contains the dependency packages, by default None
+        dependent_version_field : str, optional
+            The name of the field that contains the dependent packages versions, by default None
+        dependency_version_field : str, optional
+            The name of the field that contains the dependency packages versions, by default None
+        dependent_url_field : str, optional
+            The name of the field that contains the dependent packages urls, by default None
+
+        Raises
+        ------
+        ValueError
+            If the file path is None, If the file is not a CSV file, If the dependent field is None,
         """
 
         # Set the name and description
@@ -170,38 +168,6 @@ class CSVDataSource(DataSource):
         
         if self.dependent_url_field is not None and self.dependent_url_field not in self.data.columns:
             raise ValueError(f"Field {self.dependent_url_field} not found on data.")
-
-        # # Load the packages data
-        # self._load_packages_data()
-
-    # def _load_packages_data(self):
-    #     """
-    #     Loads the packages from the data
-    #     """
-    #     for _, row in self.data.iterrows():
-    #         # Get the package name and version
-    #         package_name = row[self.dependent_field]
-    #         package_version = row[self.dependent_version_field] if self.dependent_version_field is not None else None
-    #         package_url = row[self.dependent_url_field] if self.dependent_url_field is not None else None
-            
-    #         # Get the dependencies
-    #         dependency_name = row[self.dependency_field]
-    #         dependency_version = row[self.dependency_version_field] if self.dependency_version_field is not None else None
-            
-    #         # Check if the package data is on the dictionary
-    #         if package_name not in self.packages_data:
-    #             self.packages_data[package_name] = {
-    #                 "name": package_name,
-    #                 "version": package_version,
-    #                 "url": package_url,
-    #                 "dependencies": [],
-    #             }
-
-    #         # Add the dependency of the current row
-    #         self.packages_data[package_name]["dependencies"].append({
-    #             "name": dependency_name,
-    #             "version": dependency_version,
-    #         })
 
     def obtain_package_names(self) -> list[str]:
         """
@@ -295,7 +261,7 @@ class CSVDataSource(DataSource):
     def obtain_packages_data(
         self,
         package_names: list[str],
-        progress_bar: Optional[tqdm.tqdm]
+        progress_bar: tqdm.tqdm = None
     ) -> tuple[list[dict], list[str]]:
         '''
         Obtains the data of a list of package names from the CSV file
@@ -304,8 +270,8 @@ class CSVDataSource(DataSource):
         Parameters
         ----------
         package_names : list[str]
-            The list of package names
-        progress_bar : Optional[tqdm.tqdm]
+            The list of package names to obtain the data from
+        progress_bar : tqdm.tqdm
             The progress bar to update
 
         Returns

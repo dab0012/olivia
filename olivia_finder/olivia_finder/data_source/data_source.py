@@ -21,15 +21,6 @@ class DataSource(ABC):
     This class is an abstract class, so it cannot be instantiated.
     The subclasses must implement the methods obtain_package_names, obtain_package_data and obtain_packages_data.
 
-    Parameters
-    ----------
-    name : str
-        Name of the data source
-    description : str
-        Description of the data source
-    auxiliary_datasources : Optional[list[DataSource]], optional
-        List of auxiliary data sources, by default None
-
     Attributes
     ----------
     name : str
@@ -37,15 +28,19 @@ class DataSource(ABC):
     description : str
         Description of the data source
 
-    Parameters
-    ----------
-    name : str
-        Name of the data source
-    description : str
-        Description of the data source
     """
 
     def __init__(self, name: str, description: str):
+        """
+        Constructor of the class
+
+        Parameters
+        ----------
+        name : str
+            Name of the data source
+        description : str
+            Description of the data source
+        """
         
         self.name: str = name
         self.description: str = description

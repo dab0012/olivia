@@ -20,10 +20,9 @@ File information:
 import os
 import requests
 from typing_extensions import override
-from typing import Optional
 from tqdm import tqdm
 
-from ..scraper_ds import ScraperDataSource
+from ..scraper_ds import ScraperDataSource, ScraperError
 from ...utilities.config import Configuration
 from ...utilities.logger import MyLogger
 from ...myrequests.request_handler import RequestHandler
@@ -228,12 +227,15 @@ class NpmScraper(ScraperDataSource):
         # If the response returns an error, return an empty list
         try:
             data = job.response.json()
-        except Exception as e:
-            MyLogger().get_logger().debug(f'EXCEPTION at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
-            MyLogger().get_logger().debug(f'Error parsing JSON: {e}')
-            MyLogger().get_logger().debug(f'Response: {job.response.text}')
-            MyLogger().get_logger().debug(f'Params: {params}')
-            MyLogger().get_logger().debug(f'Retrying, times left: {retries}')
+
+        except ScraperError("Error parsing JSON"):
+
+            msg = f'EXCEPTION at __download_page: url={self.NPM_PACKAGE_LIST_URL}\n'
+            msg += f'Response: {job.response.text}\n'
+            msg += f'Params: {params}\n'
+            msg += f'Retrying, times left: {retries}\n'
+            MyLogger().get_logger().debug(msg)
+            
             return self._download_page(start_key, size, retries-1)
             
         if data.keys() == {'error', 'reason'}:

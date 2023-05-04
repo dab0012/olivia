@@ -17,14 +17,14 @@ File information:
 '''
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Optional, Tuple, Union
+from typing import Tuple, Union
 import requests
 import tqdm
 from .data_source import DataSource
 from ..myrequests.request_handler import RequestHandler
 from ..myrequests.job import RequestJob
+from ..utilities.exception import OliviaFinderException
 from ..utilities.logger import MyLogger
-
 class ScraperDataSource(DataSource, ABC):
 
     """
@@ -43,23 +43,8 @@ class ScraperDataSource(DataSource, ABC):
     request_handler : RequestHandler
         Request handler for making the requests
     not_found : list[str]
-        List of packages that are not found
-    auxiliary_datasources : list[DataSource]
-        List of auxiliary data sources
-
-    Parameters
-    ----------
-    name : str, optional
-        Name of the data source, by default None
-    description : str, optional
-        Description of the data source, by default None
-    auxiliary_datasources : list[DataSource], optional
-        List of auxiliary data sources, by default None
-    request_handler : RequestHandler, optional
-        Request handler for making the requests, by default None
-
+        List of packages not found
     """
-
     
     def __init__(
         self, 
@@ -69,16 +54,21 @@ class ScraperDataSource(DataSource, ABC):
     ):
         """
         Constructor of the class
+
+        Parameters
+        ----------
+        name : str, optional
+            Name of the data source, by default None
+        description : str, optional
+            Description of the data source, by default None
+        request_handler : RequestHandler, optional
+            Request handler for making the requests, by default None
         """
 
-        # Call the constructor of the parent class (DataSource)
         super().__init__(name, description)
 
-        # if request_handler is None build a generic RequestHandler
-        if request_handler is None:
-            self.request_handler: RequestHandler = RequestHandler()
-        else:
-            self.request_handler: RequestHandler = request_handler
+        # Initialize the request handler, use the default one if None is passed
+        self.request_handler = request_handler if request_handler is not None else RequestHandler()
 
         # Initialize the not_found list for storing the packages that are not found
         self.not_found = []   
@@ -102,9 +92,9 @@ class ScraperDataSource(DataSource, ABC):
 
     def obtain_packages_data(
         self, 
-        package_names: Optional[list[str]],
-        progress_bar: Optional[tqdm.tqdm],
-    ) -> Tuple[list[dict], list[str]]:
+        package_names: list[str] = None,
+        progress_bar: tqdm.tqdm = None,
+    ) -> Tuple[dict[dict], list[str]]:
         '''
         Scrape a list of packages from a package manager, if the package is not found, it is added to the not_found list
         Overrides the method of the DataSource class
@@ -157,6 +147,7 @@ class ScraperDataSource(DataSource, ABC):
 
         # Initialize the list of packages
         packages = []
+        packages_keys = {}
 
         # Initialize the list of packages not found
         not_found = []
@@ -169,15 +160,19 @@ class ScraperDataSource(DataSource, ABC):
                 continue
 
             # Parse the source data and add it to the list
-            packages.append(self._parser(finnalized_job.response))
+            if finnalized_job.key not in packages_keys:
+                packages_keys[finnalized_job.key] = True
+                packages.append(self._parser(finnalized_job.response))
 
-        # Clear the variables from memory
+        # Clear the variables to save memory
         del jobs
         del finnalized_jobs
+        del packages_keys
+        del package_names
         
+        # Return the packages and the packages not found
         return packages, not_found
     
-
     def obtain_package_data(self, package_name: str) -> Union[dict, None]:
         """
         Obtain the data of a package from the web page of the package manager
@@ -215,10 +210,8 @@ class ScraperDataSource(DataSource, ABC):
         MyLogger().get_logger().debug(f'Package {package_name} scraped successfully')
         return package_data 
 
-
     # Abstract methods
     # ----------------
-
     # This methods should be implemented in the child class
 
     @abstractmethod
@@ -272,35 +265,12 @@ class ScraperDataSource(DataSource, ABC):
         '''
         raise NotImplementedError
     
-class ScraperError(Exception):
-    """
-    Exception for the Scraper class
+class ScraperError(OliviaFinderException):
+    '''
+    Exception raised when an error occurs while scraping
+    '''
     
-    Attributes
-    ----------
-    message : str
-        Message of the exception
-        
-    Parameters
-    ----------
-    message : str, optional
-        Message of the exception, by default ''
-    """
-    
-    def __init__(self, message: str = ''):
-        '''Constructor'''
-        super().__init__()
-        self.message = message
-        MyLogger().get_logger().debug(str(self))
 
-    def __str__(self):
-        """
-        String representation of the exception
-        
-        Returns
-        -------
-        str
-            String representation of the exception
-        """
-        return f'ScraperError: {self.message}'
+
+
     

@@ -199,24 +199,22 @@ class PackageManager():
         packages_data = []
         preferred_data_source = self.data_sources[0]
 
-        while len(pending_packages) > 0:
+        # if datasource is instance of ScraperDataSource use the obtain_packages_data method for parallelization
+        if isinstance(preferred_data_source, ScraperDataSource):
+            
+            data_found, not_found = preferred_data_source.obtain_packages_data(
+                package_names=pending_packages, 
+                progress_bar=progress_bar
+            )
+            packages_data.extend(data_found)
+            # pending_packages = not_found
+            MyLogger().get_logger().info(f"Packages found: {len(data_found)}")
+            MyLogger().get_logger().info(f"Packages not found: {len(not_found)}")
 
-            # if datasource is instance of ScraperDataSource use the obtain_packages_data method for parallelization
-            if isinstance(preferred_data_source, ScraperDataSource):
-                
-                data_found, not_found = preferred_data_source.obtain_packages_data(
-                    package_names=pending_packages, 
-                    progress_bar=progress_bar
-                )
-                packages_data.extend(data_found)
-                pending_packages = not_found
-                MyLogger().get_logger().info(f"Packages found: {len(data_found)}")
-                MyLogger().get_logger().info(f"Packages not found: {len(not_found)}")
+        # if not use the obtain_package_data method for sequential processing using the data_sources of the list
+        else:
 
-            # if not use the obtain_package_data method for sequential processing using the data_sources of the list
-            else:
-
-                package_name = pending_packages.pop(0)
+            for package_name in pending_packages:
                 package_data = self.obtain_package(package_name)
                 if package_data is not None:
                     packages_data.append(package_data)
@@ -228,11 +226,13 @@ class PackageManager():
         if progress_bar is not None:
             progress_bar.close()
         
+        MyLogger().get_logger().info(f"Total packages found: {len(packages_data)}")
         packages = [Package.load(package_data) for package_data in packages_data]
 
         # update the self.packages attribute overwriting the packages with the same name
         # but conserving the other packages
         if extend:
+            MyLogger().get_logger().info(f"Extending data source with obtained packages")
             for package in packages:
                 self.packages[package.name] = package
 
