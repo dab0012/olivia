@@ -3,9 +3,8 @@
 
 from abc import abstractmethod, ABC
 import numpy as np
-import networkx as nx
 from intbitset import intbitset
-
+from contextlib import contextmanager
 from olivia.lib.transientsequence import TransientSequence
 
 
@@ -191,5 +190,20 @@ class DescendentAggregator(AscendentAggregator, ABC):
             If not, a raw array indexed by node is returned.
 
         """
-        with nx.utils.contextmanagers.reversed(self._G):
+        with self.reversed(self._G):
             return super(DescendentAggregator, self).compute()
+
+    @contextmanager
+    def reversed(self, graph):
+        """
+        A context manager that temporarily reverses the direction of edges in a
+        directed graph.
+        """
+        # Reverse the edges in the graph
+        graph = graph.reverse(copy=True)
+
+        # Yield the reversed graph
+        yield graph
+
+        # Reverse the edges again to restore the original graph
+        graph = graph.reverse(copy=True)
