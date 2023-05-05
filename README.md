@@ -26,7 +26,7 @@ Olivia-Finder's documentation can be found in the following link
 ## Intended audience
 
 Olivia Finder is intended for use by developers, researchers, and centralised package managers interested in vulnerability identification and analysis.
-First, it is designed for joint use with Olivia
+It is designed for joint use with Olivia.
 
 ## Key features
 
