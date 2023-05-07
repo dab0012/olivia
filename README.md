@@ -6,9 +6,8 @@ Olivia Finder is a Python library that allows users to obtain from package data 
 
 Olivia-Finder's documentation can be found in the following link
 
-<a href="https://dab0012.github.io/olivia-finder">
-:book:
-</a>
+[![Olivia-Finder doc](https://img.shields.io/badge/DOC-Olivia--Finder-blue)](https://dab0012.github.io/olivia-finder)
+
 
 ## Quality metrics
 
@@ -18,6 +17,7 @@ Olivia-Finder's documentation can be found in the following link
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
+
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
@@ -39,7 +39,7 @@ Olivia Finder offers the following features:
 Run olivia-finder introduction notebook in Deepnote cloud 
 <br>
 
-[<img src="https://deepnote.com/buttons/try-in-a-jupyter-notebook-small.svg">](https://deepnote.com/workspace/olivia-0732-b407de18-1731-4b54-b602-aa8db84aa932/project/olivia-finder-627b89b5-a14d-43dd-8e37-100bca8981fc/notebook/olivia-finder%2Folivia_finder%2Fnotebooks%2Folivia_finder_implementation_details-5721bfb8509248bdae331a339efef4aa)
+[<img src="https://deepnote.com/buttons/try-in-a-jupyter-notebook-white-small.svg">](https://deepnote.com/workspace/olivia-0732-b407de18-1731-4b54-b602-aa8db84aa932/project/olivia-finder-627b89b5-a14d-43dd-8e37-100bca8981fc/notebook/olivia-finder%2Folivia_finder%2Fnotebooks%2Folivia_finder_implementation_details-5721bfb8509248bdae331a339efef4aa)
 
 ## License
 
@@ -47,19 +47,21 @@ Olivia Finder is distributed under the MIT License. See LICENSE file for details
 
 ## **Previous TFG notebooks (Olivia)**
 
-[:chart_with_upwards_trend: OLIVIA Model](https://github.com/dsr0018/olivia/blob/master/A-Model.ipynb)
+[![https://github.com/dsr0018/olivia](https://img.shields.io/badge/Github-Olivia-purple)](https://github.com/dsr0018/olivia)
 
-[:mag: OLIVIA Analysis](https://github.com/dsr0018/olivia/blob/master/B-Analysis.ipynb)
+[![Olivia - Model](https://img.shields.io/badge/Jupyter-Olivia%20--%20Model-%23fa0297)](https://github.com/dsr0018/olivia/blob/master/A-Model.ipynb)
+[![Olivia - Analysis](https://img.shields.io/badge/Jupyter-Olivia%20--%20Analysis-%23fa0297)](https://github.com/dsr0018/olivia/blob/master/B-Analysis.ipynb)
+[![Olivia - Imunization](https://img.shields.io/badge/Jupyter-Olivia%20--%20Imunization-%23fa0297)](https://github.com/dsr0018/olivia/blob/master/C-Immunization.ipynb)
 
-[:syringe: OLIVIA Imunization](https://github.com/dsr0018/olivia/blob/master/C-Immunization.ipynb)
+**Try it in Google colab**
 
-[![Open In Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dab0012/olivia-finder/blob/master/olivia/Olivia.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dab0012/olivia-finder/blob/master/olivia/Olivia.ipynb)
 
 **Acknowledgements**
 
-Olivia Finder uses data from the Olivia project, which was created by @dsr0018. The Olivia project is distributed under the MIT License. See [https://github.com/dsr0018/olivia](https://github.com/dsr0018/olivia) for more information.
+Olivia Finder uses data from the Olivia project, which was created by @dsr0018
 
-<br>
+The Olivia project is distributed under the MIT License.
 
 # **Author:** 
 
