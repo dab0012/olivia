@@ -3,10 +3,6 @@ tqdm
 requests
 BeautifulSoup4
 selenium
-sphinx 
-sphinx-autodoc-typehints 
-numpydoc
-typing_extensions
 singleton_decorator
 ipykernel
 networkx

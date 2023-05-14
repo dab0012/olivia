@@ -1,0 +1,87 @@
+/* Custom dark theme for pdoc3 */
+
+:root {
+  --pdoc-background: #1a1a1a;
+}
+
+.pdoc {
+  --text: #dcdcdc;
+  --muted: #a0a0a0;
+  --link: #ffa500;
+  /* Naranja brillante */
+  --link-hover: #ff8c00;
+  /* Naranja más oscuro */
+  --code: #2b2b2b;
+  --active: #403600;
+
+  --accent: #1f0d31;
+  /* Violeta oscuro */
+  --accent2: #8a2be2;
+  /* Violeta brillante */
+
+  --nav-hover: rgba(255, 255, 255, 0.1);
+  --name: #6b9bc8;
+  --def: #8fdf6f;
+  --annotation: #5cc43e;
+}
+
+
+.pdoc-alert-warning {
+  background-color: #ff8c00 !important;
+  border-color: #6d4009 !important;
+}
+
+.pdoc-alert-warning code {
+  color: #ff4000 !important;
+}
+
+.pdoc-alert-warning p,
+.pdoc-alert-note p,
+.pdoc-alert-danger p {
+  color: black !important;
+}
+
+.pdoc-alert-danger {
+  background-color: #ff0000 !important;
+  border-color: #710d0d !important;
+}
+
+.pdoc-alert-note {
+  background-color: #3686ff !important;
+  border-color: #113161 !important;
+}
+
+.pdoc-alert-note code {
+  color: #00ffab !important;
+}
+
+.pdoc-alert-note li {
+  color: #000000 !important;
+}
+
+
+code {
+  color: #00f3ffe3 !important;
+}
+
+.pdoc-code code {
+  color: #eeeeeee3 !important;
+}
+
+
+body {
+  position: relative;
+}
+
+@media (min-width: 1600px) {
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 25%;
+    height: 100%;
+    background: linear-gradient(to right, rgb(26, 26, 26) 0%, rgb(31, 13, 49) 100%);
+    z-index: 1;
+  }
+}
