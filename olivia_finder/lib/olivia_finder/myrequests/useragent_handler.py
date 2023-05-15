@@ -6,9 +6,11 @@ from bs4 import BeautifulSoup
 from  ..utilities.logger import MyLogger
 from singleton_decorator import singleton
 
+
 @singleton
 class UserAgentHandler():
     '''UserAgentHandler class'''
+
     # Attributes
     # ----------
     
@@ -57,11 +59,13 @@ class UserAgentHandler():
 
         Parameters
         ----------
+
         file_path : str
             Path to the file containing the user agents
 
         Returns
         -------
+
         bool
             True if the user agents were loaded correctly, False otherwise
         '''
@@ -85,11 +89,13 @@ class UserAgentHandler():
 
         Parameters
         ----------
+
         max_count : int, optional
             Maximum number of user agents to be obtained, by default 30
 
         Returns
         -------
+
         bool
             True if the user agents were obtained correctly, False otherwise
         '''
@@ -128,6 +134,7 @@ class UserAgentHandler():
 
         Returns
         -------
+
         str
             A random useragent
         '''

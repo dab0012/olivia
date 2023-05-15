@@ -4,7 +4,8 @@ requests
 BeautifulSoup4
 selenium
 singleton_decorator
-ipykernel
 networkx
 matplotlib
 pybraries
+typing_extensions
+# pdoc
