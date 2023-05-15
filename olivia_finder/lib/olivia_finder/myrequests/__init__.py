@@ -1,4 +1,4 @@
-"""# **Subpackage olivia_finder.myrequests**
+"""# Subpackage olivia_finder.myrequests
 
 
 ### Description
