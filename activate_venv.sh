@@ -19,6 +19,4 @@ else
     pip install -r olivia_finder/requirements.txt
 fi
 
-# Set source folders to path
-export PYTHONPATH=$PYTHONPATH:$(pwd)/olivia_finder
 

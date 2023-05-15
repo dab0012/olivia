@@ -1,9 +1,21 @@
-# **OLIVIA-FINDER**
+# **OLIVIA FINDER**
 ## Introduction
-Olivia Finder is an open source tool that can be used to extract data from software package dependency networks in package managers. It is designed to work in conjunction with Olivia, and uses web-scraping techniques and CSV files as data sources. With Olivia Finder, you can easily extract information on package dependencies, versions, and other relevant data. This information can be used to analyze software packages and their dependencies, identify potential vulnerabilities or issues, and make informed decisions about which packages to use or avoid. Additionally, Olivia Finder is highly customizable and extensible, allowing you to tailor it to your specific needs and requirements.
+Olivia Finder is an open source tool that can be used to extract data from software package dependency networks in package managers. 
+
+It is designed to work in conjunction with Olivia, and uses web-scraping techniques and CSV files as data sources. With Olivia Finder, you can easily extract information on package dependencies, versions, and other relevant data. This information can be used to analyze software packages and their dependencies, identify potential vulnerabilities or issues, and make informed decisions about which packages to use or avoid. Additionally, Olivia Finder is highly customizable and extensible, allowing you to tailor it to your specific needs and requirements.
+
+## Olivia Finder datasets
+
+The data obtainded using olivia finder has been published on zenodo
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7938227.svg)](https://doi.org/10.5281/zenodo.7938227)
+
+
 
 ## Doc pages
-Olivia Finder's documentation is found in Github Pages.The documentation includes details about the functionalities implemented in the library, as well as instructions on how to install the previous requirements and configure a virtual environment for use.
+Olivia Finder's documentation is found in Github Pages. 
+
+The documentation includes details about the functionalities implemented in the library, as well as instructions on how to install the previous requirements and configure a virtual environment for use.
 
 [![Olivia-Finder doc](https://img.shields.io/badge/DOC-Olivia--Finder-blue)](https://dab0012.github.io/olivia-finder)
 
@@ -32,44 +44,7 @@ Run olivia-finder introduction notebook in Deepnote cloud
 
 ## License
 
-Olivia Finder is distributed under the MIT License. See LICENSE file for details.
-
-## Olivia-Finder data
-
-Olivia-Finder has the capacity to obtain data from the following sources
-
-| Repositorio de Software | Olivia-Finder | Libraries.io CSV Data | External Datasets |
-|-------------------------|:-------------:|:---------------------:|:------------------:|
-| Alcatraz                | :x:             | :white_check_mark:          | :x:                    |
-| Bower                   | :x:             | :white_check_mark:          | :x:                    |
-| Bioconductor            | :white_check_mark:             | :x:                       | :x:       |
-| CRAN                    | :white_check_mark:  | :white_check_mark:          | :x:                    |
-| CPAN                    | :x:  | :white_check_mark:                       | :x:                    |
-| Cargo                   | :x:  | :white_check_mark:          | :white_check_mark:       |
-| Carthage                | :x:             | :white_check_mark:                       | :x:       |
-| CocoaPods               | :x:  | :white_check_mark:          | :x:                    |
-| Clojars                 | :x:             | :white_check_mark:          | :x:                    |
-| Dub                     | :x:             | :white_check_mark:          | :x:                    |
-| Elm                     | :x:             | :white_check_mark:                       | :x:       |
-| Go                      | :x:  | :white_check_mark:          | :x:       |
-| Hackage                 | :x:             | ::                       | :x:       |
-| Haxelib                 | :x:             | :white_check_mark:          | :x:                    |
-| Hex                     | :x:             | :white_check_mark:          | :x:                    |
-| Homebrew                | :x:             | :white_check_mark:          | :x:                    |
-| Inqlude                 | :x:             | :white_check_mark:          | :x:                    |
-| Julia                   | :x:             | :white_check_mark:          | :x:                    |
-| Maven                   | :x:  | :white_check_mark:                       | :x:                    |
-| Meteor                  | :x:             | :white_check_mark:          | :x:                    |
-| Nimble                  | :x:             | :white_check_mark:          | :x:                    |
-| NPM                     | :white_check_mark:          | :white_check_mark:                    | :X:
-| NuGet                   | :x:  | :white_check_mark:          | :x:                    |
-| Packagist               | :x:  | :white_check_mark:          | :x:                    |
-| Pub                     | :x:  | :white_check_mark:          | :x:                    |
-| PyPI                    | :white_check_mark:  | :white_check_mark:          | :x:                    |
-| Puppet                  | :x:             | :white_check_mark:          | :x:                    |
-| Racket                  | :x:             | :white_check_mark:          | :x:                    |
-| Rubygems                | :x:  | :white_check_mark:          | :x:                    |
-| SwiftPM                 | :x:             | :white_check_mark:                       | :x:       |
+Olivia Finder is distributed under the MIT License. See [LICENSE](https://github.com/dab0012/olivia-finder/blob/06fb2d32146134e833df36bbf9828d4a9c72dc30/LICENSE) file for details.
 
 ## **Previous TFG notebooks (Olivia)**
 
