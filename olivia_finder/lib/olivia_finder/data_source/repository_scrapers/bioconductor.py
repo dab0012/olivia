@@ -18,7 +18,6 @@ File information:
 
 import requests
 from bs4 import BeautifulSoup
-from typing import Optional
 from typing_extensions import override
 from . import r
 from ..scraper_ds import ScraperDataSource, ScraperError

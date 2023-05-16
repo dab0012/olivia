@@ -12,21 +12,55 @@ from threading import Lock
 import random
 import requests
 from bs4 import BeautifulSoup
-from  ..utilities.logger import MyLogger
-from singleton_decorator import singleton
+from ..utilities.logger import MyLogger
 
-@singleton
 class UserAgentHandler():
-    '''UserAgentHandler class'''
+    '''
+    UserAgentHandler class
 
-    # Attributes
-    # ----------
+    This class is a singleton class that handles the user agents used by the requests
+    to the different data sources. It can load the user agents from a file or from the
+    useragentstring.com API. 
+    
+    If the user agents are loaded from a file, the file must be located in the data
+    folder of the package and must be named useragents.txt. The file must contain one
+    user agent per line.
+
+    If the user agents are loaded from the useragentstring.com API, the user agents
+    are loaded from the URL specified in the class variable USERAGENTSTRING_URL. The
+    user agents are loaded from the page https://www.useragentstring.com/pages/useragentstring.php?name=All
+    and the user agents are extracted from the table in the page. 
+
+    
+    Attributes
+    ----------
+    USERAGENTSTRING_URL : str
+        The URL of the page with the list of user agents
+    DATA_FILE : str
+        The path to the file with the user agents
+    useragents_list : list[str]
+        The list of user agents loaded from the file or from the useragentstring.com API,
+        default is an empty list that will be filled with the default user agents if the
+        user agents cannot be loaded from the external sources
+    '''
+
+   
     
     USERAGENTSTRING_URL = 'https://www.useragentstring.com/pages/useragentstring.php?name=All'
     DATA_FILE: str
     useragents_list: list[str]
 
     def __init__(self, use_file: bool = True) -> None:
+        '''
+        Constructor
+
+        Parameters
+        ----------
+        use_file : bool = True
+            If True, the user agents are loaded from the file specified in the class variable DATA_FILE.
+            If False, the user agents are loaded from the useragentstring.com API.
+
+        '''
 
         # Lock to prevent concurrent access to the proxy list
         self.lock = Lock()
@@ -63,19 +97,23 @@ class UserAgentHandler():
 
     def _load_from_file(self, file_path:str) -> bool:
         '''
-        Load user agents from a file
+        Load user agents from a file, one user agent per line, and save them in the user agent list
 
         Parameters
         ----------
-
         file_path : str
             Path to the file containing the user agents
 
         Returns
         -------
-
         bool
             True if the user agents were loaded correctly, False otherwise
+
+        Examples
+        --------
+        >>> useragent_handler = UserAgentHandler()
+        >>> useragent_handler._load_from_file('data/useragents.txt')
+            True
         '''
 
         if file_path is None:
@@ -97,13 +135,11 @@ class UserAgentHandler():
 
         Parameters
         ----------
-
         max_count : int, optional
             Maximum number of user agents to be obtained, by default 30
 
         Returns
         -------
-
         bool
             True if the user agents were obtained correctly, False otherwise
         '''
@@ -138,7 +174,7 @@ class UserAgentHandler():
 
     def get_next_useragent(self) -> str:
         '''
-        Returns a random useragent from the list
+        Returns a random useragent from the list, if the list is empty, returns a default useragent
 
         Returns
         -------
@@ -146,8 +182,12 @@ class UserAgentHandler():
         str
             A random useragent
         '''
-        # Get a random useragent
-        index = random.randint(0, len(self.useragents_list) - 1)
 
+        # If the list is empty, return a default useragent (THIS SHOULD NOT HAPPEN)
+        if len(self.useragents_list) == 0:
+            MyLogger().get_logger().warning("Useragents list is empty")
+            return "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+
+        index = random.randint(0, len(self.useragents_list) - 1)
         MyLogger().get_logger().debug(f"Next useragent: {self.useragents_list[index]}")
         return self.useragents_list[index]
