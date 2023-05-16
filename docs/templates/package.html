@@ -1,0 +1,9 @@
+{% extends "module.html" %}
+
+{% block page_content %}
+{{ super() }}
+
+{% for obj in package.sortedmodules %}
+    {% include "module_link.html" %}
+{% endfor %}
+{% endblock %}

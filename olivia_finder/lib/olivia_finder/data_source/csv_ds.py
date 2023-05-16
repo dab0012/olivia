@@ -1,20 +1,3 @@
-'''
-csv_ds.py
-=========
-
-Description
------------
-
-Module that contains the CSVDataSource class, which implements the methods for loading a network from a CSV file.
-
-File information:
-    - File: csv_ds.py
-    - Project: data_source
-    - Created Date: 2023-03-18 14:40:56
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
-
-'''
 
 from __future__ import annotations
 import os
@@ -26,26 +9,8 @@ from .data_source import DataSource
 class CSVDataSource(DataSource):
     """
     Class that implements the methods for loading a network from a CSV file.
-    Implements the DataSource interface.
+    Implements the **DataSource** abstract class.
     
-    Attributes
-    ----------
-    self.name : str
-        Name of the data source
-    self.description : str
-        Description of the data source
-    self.dependent_field : str
-        The name of the field that contains the dependent packages
-    self.dependency_field : str
-        The name of the field that contains the dependency packages
-    self.dependent_version_field : str
-        The name of the field that contains the dependent packages versions
-    self.dependency_version_field : str
-        The name of the field that contains the dependency packages versions
-    self.dependent_url_field : str
-        The name of the field that contains the dependent packages urls
-    self.file_path : str
-        The path to the CSV file
     """
     
     def __init__(
@@ -176,7 +141,13 @@ class CSVDataSource(DataSource):
         Returns
         -------
         list[str]
-            The list of package names in the data source        
+            The list of package names in the data source    
+
+        Examples
+        --------
+        >>> data_source = CSVDataSource("test.csv", "name", "dependency")
+        >>> data_source.obtain_package_names()
+        ["package1", "package2", "package3"]    
         """
         return sorted(self.data[self.dependent_field].unique())
     
@@ -200,17 +171,17 @@ class CSVDataSource(DataSource):
         --------
         >>> data_source = CSVDataSource("test.csv", "name", "dependency")
         >>> data_source.obtain_package_data("package1")
-            {
-                "name": "package1",
-                "version": "1.0.0",
-                "url": "
-                "dependencies": [
-                    {
-                        "name": "package2",
-                        "version": "1.0.0"
-                    },
-                ]
-            }
+        {
+            "name": "package1",
+            "version": "1.0.0",
+            "url": "
+            "dependencies": [
+                {
+                    "name": "package2",
+                    "version": "1.0.0"
+                },
+            ]
+        }
         """
 
         # Get the rows of the package
@@ -278,6 +249,28 @@ class CSVDataSource(DataSource):
         -------
         tuple[list[dict], list[str]]
             The list of packages data and the list of not found packages
+
+        Examples
+        --------
+        >>> data_source = CSVDataSource("test.csv", "name", "dependency")
+        >>> data_source.obtain_packages_data(["package1", "package2"])
+        (
+            [
+                {
+                    "name": "package1",
+                    "version": "1.0.0",
+                    "url": "
+                    "dependencies": [ ... ]
+                },
+                {
+                    "name": "package2",
+                    "version": "1.0.0",
+                    "url": "
+                    "dependencies": [ ... ]
+                }
+            ],
+            []
+        )
         
         '''
         

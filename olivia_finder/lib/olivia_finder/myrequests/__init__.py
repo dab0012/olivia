@@ -1,21 +1,18 @@
-"""# Subpackage olivia_finder.myrequests
+"""
 
-
-### Description
-
+## **Description**
 
 The MyRequest subpackage is designed to obtain data repetitively from a web server
 
 It is able to perform requests with thread parallelism
 
-##### Package structure:
+## **Package structure**
 
-```
+```bash
 ├── data
 │   └── useragents.txt
 ├── __init__.py
 ├── job.py
-├── proxy_builder.py
 ├── proxy_builders
 │   ├── __init__.py
 │   ├── list_builder.py
@@ -27,13 +24,13 @@ It is able to perform requests with thread parallelism
 └── useragent_handler.py
 ```
 
-##### Package modules:
+## **Package modules**
 
 - **olivia_finder.myrequests.job**
 
   It represents a web request work, implements Thread
 
-- **olivia_finder.myrequests.proxy_builder**
+- **olivia_finder.myrequests.proxy_builders.proxy_builder**
 
   It contains the ProxyBuilder class, used to request proxies from web services
 
@@ -50,7 +47,7 @@ It is able to perform requests with thread parallelism
   It contains the **RequestHandler** class, from which we can perform the corresponding works
 
 
-### Class ProxyBuilder and subclasses
+## **Class ProxyBuilder and subclasses**
 
 
 You have the functionality of obtaining a list of internet proxys from some more or less stable data source
@@ -67,8 +64,7 @@ We can focus on two different ways:
 This is shown below
 
 
-**_Web scraping implementation (from sslproxies.org)_**
-
+**Web scraping implementation (from sslproxies.org)**
 
 
 ```python
@@ -89,7 +85,7 @@ pb_SSLProxies.get_proxies()
 
 
 
-**_Web list implementation (from lists)_**
+**Web list implementation (from lists)**
 
 
 
@@ -120,16 +116,14 @@ pb_ListBuilder.get_proxies()
      '200.106.184.97:999']
 
 
-
-### Class ProxyHandler
-
+### **Class ProxyHandler**
 
 
 ```python
 ph = ProxyHandler()
 ```
 
-### Class UserAgentHandler
+### **Class UserAgentHandler**
 
 
 The purpose of this class is to provide a set of useragents to be used by the **RequestHandler** object with the aim of hiding the original identity of the web request
@@ -165,7 +159,6 @@ The class is prepared to load the useragents from a text file contained in the p
 The default constructor loads the usragents from the file
 
 
-
 ```python
 ua_handler = UserAgentHandler()
 ua_handler.useragents_list[:5]
@@ -175,8 +168,7 @@ ua_handler.useragents_list[:5]
      'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko',
      'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/600.8.9 (KHTML, like Gecko) Version/8.0.8 Safari/600.8.9']
-
-
+     
 .. note::
      
     We can force obtaining the useragents from the Internet with the flag: `use_file=False`
@@ -184,7 +176,6 @@ ua_handler.useragents_list[:5]
 ```python
 ua_handler = UserAgentHandler(use_file=False)
 ua_handler.useragents_list[:5]
-
 ```
 
 

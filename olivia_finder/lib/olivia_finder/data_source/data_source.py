@@ -1,47 +1,41 @@
-'''
-Description
------------
-
-Module that contains the DataSource class, which is the base class for data sources.
-
-File information:
-    - File: data_source.py
-    - Project: data_source
-    - Created Date: 2023-03-21 19:09:54
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
-'''
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
 
 class DataSource(ABC):
-    """
+    '''
     Base class for data sources.
-    This class is an abstract class, so it cannot be instantiated.
-    The subclasses must implement the methods obtain_package_names, obtain_package_data and obtain_packages_data.
 
-    Attributes
-    ----------
-    name : str
-        Name of the data source
-    description : str
-        Description of the data source
+    .. warning:: 
+    
+        This class is an abstract class, so it can't be instantiated.
 
-    """
+    The subclasses must implement the methods:
+    - `DataSource.obtain_package_names`
+    - `DataSource.obtain_package_data`
+    - `DataSource.obtain_packages_data`
+
+
+    .. note::
+
+        The `name` and `description` parameters are mandatory, and must be passed as arguments.
+        The use of this parameters is to be able to identify the data source, and to be able to show a description of it.
+    '''
 
     def __init__(self, name: str, description: str):
-        """
-        Constructor of the class
+        '''
+        Constructor of the DataSource class.
 
         Parameters
         ----------
+
         name : str
-            Name of the data source
+            The name of the data source
         description : str
-            Description of the data source
-        """
-        
+            The description of the data source
+        '''
+
+            
         self.name: str = name
         self.description: str = description
 
@@ -75,6 +69,7 @@ class DataSource(ABC):
     def obtain_package_names(self) -> list[str]:
         """
         Obtains the list of packages from the data source.
+        
         Is an optional method, if the data source does not implement it, it will
         be considered that it does not have a list of packages available.
 

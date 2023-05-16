@@ -1,13 +1,14 @@
 from typing_extensions import override
 from bs4 import BeautifulSoup
 import requests
-from ..proxy_builder import ProxyBuilder
+from .proxy_builder import ProxyBuilder
 
 
 class SSLProxiesBuilder(ProxyBuilder):
     '''
     SSLProxies proxy builder, gets the proxies from https://www.sslproxies.org/
-    Implements the abstract method _parse_request to parse the response 
+
+    Implements the abstract method `ProxyBuilder._parse_request()` to parse the response 
     '''
     
     def __init__(self, request_timeout: int = 60):

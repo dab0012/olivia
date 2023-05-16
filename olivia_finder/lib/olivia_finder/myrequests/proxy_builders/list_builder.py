@@ -1,6 +1,6 @@
 from typing_extensions import override
 import requests
-from ..proxy_builder import ProxyBuilder
+from .proxy_builder import ProxyBuilder
 
 
 class ListProxyBuilder(ProxyBuilder):

@@ -23,16 +23,13 @@ class LibrariesioDataSource(DataSource):
     """
     Data source for the Libraries.io API
 
-    Attributes
-    ----------
-    name : str
-        Name of the data source
-    description : str
-        Description of the data source
-    platform : str
-        Platform of the data source to search for packages
-    search : Search
-        Search object to search for packages in the data source
+    .. warning::
+
+        - The API key must be set as an environment variable with the name `LIBRARIES_API_KEY`
+        - The class will raise an exception if the API key is not found
+        - The API key can be set in the configuration file
+        - The API key can be obtained from the user's profile in Libraries.io
+
     """
     
     def __init__(self, name: str, description: str, platform: str):

@@ -1,3 +1,12 @@
+"""
+
+.. danger:: 
+
+    Remove the @singleton decorator before documenting the class
+    Doc fails with the @singleton decorator
+
+"""
+
 import os
 from threading import Lock
 import random
@@ -5,7 +14,6 @@ import requests
 from bs4 import BeautifulSoup
 from  ..utilities.logger import MyLogger
 from singleton_decorator import singleton
-
 
 @singleton
 class UserAgentHandler():

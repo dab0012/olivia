@@ -1,17 +1,23 @@
 '''
-__init__.py
-==================
-
-Description
------------
 
 Module that contains the custom implementation of the Scraper class for a set of package managers
 
-File information:
-    - File: __init__.py
-    - Project: scrapers
-    - Created Date: 2023-03-18 14:40:56
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
+The included package managers are:
+
+## **NPM**
+(Node Package Manager from https://www.npmjs.com/)
+`olivia_finder.data_source.repository_scrapers.npm.NpmScraper`
+
+## **PyPI**
+(Python Package Index from https://pypi.org/)
+`olivia_finder.data_source.repository_scrapers.pypi.PypiScraper`
+
+## **CRAN** 
+(Comprehensive R Archive Network from https://cran.r-project.org/)
+`olivia_finder.data_source.repository_scrapers.cran.CranScraper`
+
+## **Bioconductor**
+(Bioconductor from https://www.bioconductor.org/)
+`olivia_finder.data_source.repository_scrapers.bioconductor.BioconductorScraper`
 
 '''

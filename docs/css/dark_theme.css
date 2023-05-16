@@ -41,6 +41,13 @@
   color: black !important;
 }
 
+.pdoc-alert-warning li,
+.pdoc-alert-note li,
+.pdoc-alert-danger li {
+  color: black !important;
+}
+
+
 .pdoc-alert-danger {
   background-color: #ff0000 !important;
   border-color: #710d0d !important;
@@ -58,7 +65,6 @@
 .pdoc-alert-note li {
   color: #000000 !important;
 }
-
 
 code {
   color: #00f3ffe3 !important;
@@ -84,4 +90,28 @@ body {
     background: linear-gradient(to right, rgb(26, 26, 26) 0%, rgb(31, 13, 49) 100%);
     z-index: 1;
   }
+}
+
+.docstring ul li strong {
+  color: #c661ff !important
+}
+
+.pdoc-alert-warning ul li strong,
+.pdoc-alert-note ul li strong,
+.pdoc-alert-danger ul li strong {
+  color: black !important;
+}
+
+.docstring h6 {
+  font-weight: bolder;
+  font-size: 1.1em;
+}
+
+.pdoc .docstring .pdoc-code {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.pdoc-code .go {
+  color: #77a0ff !important;
 }
