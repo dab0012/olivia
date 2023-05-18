@@ -260,12 +260,14 @@ class PackageManager():
         [<Package: package_name_1>, <Package: package_name_2>]
         '''
         
+
         # Check if the package names are valid
         if package_names is not None and not isinstance(package_names, list):
             raise ValueError("Package names must be a list")
+        else:
+            # Obtain the packages data from the data source
+            pending_packages = package_names.copy()
 
-        # Obtain the packages data from the data source
-        pending_packages = package_names.copy()
         preferred_data_source = self.data_sources[0]
 
         # Return list
