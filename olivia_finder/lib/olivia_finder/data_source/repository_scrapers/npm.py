@@ -22,7 +22,7 @@ import requests
 from typing_extensions import override
 from tqdm import tqdm
 
-from ..scraper_ds import ScraperDataSource, ScraperError
+from ..scraper_ds import ScraperDataSource
 from ...utilities.config import Configuration
 from ...utilities.logger import MyLogger
 from ...myrequests.request_handler import RequestHandler
@@ -118,15 +118,15 @@ class NpmScraper(ScraperDataSource):
         # Calculate the number of pages (chunks)
         num_pages = (total_packages // page_size) + 1
 
-        MyLogger().get_logger().debug(f'Total number of packages: {total_packages}')
-        MyLogger().get_logger().debug(f'Number of pages: {num_pages}')
+        MyLogger.get_logger('scraper').debug(f'Total number of packages: {total_packages}')
+        MyLogger.get_logger('scraper').debug(f'Number of pages: {num_pages}')
 
         # Initialize the progress bar if is set
         progress_bar = tqdm(total=num_pages) if show_progress_bar else None
 
         # Initialize the chunks folder if is set
         if save_chunks:
-            MyLogger().get_logger().debug(f'Saving chunks at: {self.chunks_folder}')
+            MyLogger.get_logger('scraper').debug(f'Saving chunks at: {self.chunks_folder}')
             self._init_chunks_folder()
 
         # Obtain the names of the packages requesting the pages
@@ -141,25 +141,25 @@ class NpmScraper(ScraperDataSource):
                 try:
                     page = self._download_page(last_key, page_size)
                 except requests.exceptions.ConnectionError:
-                    MyLogger().get_logger().debug(f'Connection error in page {i} of {num_pages}')
-                    MyLogger().get_logger().debug(f'Last key: {last_key}')
-                    MyLogger().get_logger().debug('Retrying...')
+                    MyLogger.get_logger('scraper').debug(f'Connection error in page {i} of {num_pages}')
+                    MyLogger.get_logger('scraper').debug(f'Last key: {last_key}')
+                    MyLogger.get_logger('scraper').debug('Retrying...')
 
                 # check if the page is empty
                 if len(page) == 0:
-                    MyLogger().get_logger().debug(f'Empty page {i} of {num_pages}')
-                    MyLogger().get_logger().debug(f'Last key: {last_key}')
+                    MyLogger.get_logger('scraper').debug(f'Empty page {i} of {num_pages}')
+                    MyLogger.get_logger('scraper').debug(f'Last key: {last_key}')
                     page = None
 
             pages.append(page)
-            MyLogger().get_logger().debug(f'Downloaded page {i} of {num_pages}')
+            MyLogger.get_logger('scraper').debug(f'Downloaded page {i} of {num_pages}')
 
             # get the last key of the page for the next iter
             last_key = page[-1]['id']
 
             # Save chunk if is set
             if save_chunks:
-                MyLogger().get_logger().debug(f'Saving chunk {i} of {num_pages}')
+                MyLogger.get_logger('scraper').debug(f'Saving chunk {i} of {num_pages}')
                 with open(f'{self.chunks_folder}/chunk_{i}.json', 'w') as f:
                     f.write(str(page))            
 
@@ -168,7 +168,7 @@ class NpmScraper(ScraperDataSource):
                 progress_bar.update(1)
 
         package_names = [row['id'] for page in pages for row in page]
-        MyLogger().get_logger().info(f'Obtained {len(package_names)} packages from {self.NPM_PACKAGE_LIST_URL}')
+        MyLogger.get_logger('scraper').info(f'Obtained {len(package_names)} packages from {self.NPM_PACKAGE_LIST_URL}')
         return package_names
 
     def _init_chunks_folder(self):
@@ -221,20 +221,20 @@ class NpmScraper(ScraperDataSource):
         
         # If the response is None, return an empty list
         if job.response is None:
-            MyLogger().get_logger().debug(f'None response at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
+            MyLogger.get_logger('scraper').debug(f'None response at __download_page: url={self.NPM_PACKAGE_LIST_URL}')
             return []
                         
         # If the response returns an error, return an empty list
         try:
             data = job.response.json()
 
-        except ScraperError("Error parsing JSON"):
+        except Exception as e:
 
             msg = f'EXCEPTION at __download_page: url={self.NPM_PACKAGE_LIST_URL}\n'
             msg += f'Response: {job.response.text}\n'
             msg += f'Params: {params}\n'
             msg += f'Retrying, times left: {retries}\n'
-            MyLogger().get_logger().debug(msg)
+            MyLogger.get_logger('scraper').debug(msg)
             
             return self._download_page(start_key, size, retries-1)
             

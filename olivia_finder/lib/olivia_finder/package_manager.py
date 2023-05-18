@@ -19,6 +19,7 @@ import pickle
 import tqdm
 import pandas as pd
 
+from .utilities.config import Configuration
 from .myrequests.request_handler import RequestHandler
 from .data_source.scraper_ds import ScraperDataSource
 from .utilities.logger import MyLogger
@@ -28,20 +29,53 @@ from .package import Package
 
 class PackageManager():
     '''
+    Class that represents a package manager, which provides a way to obtain packages from a data source and store them
+    
+    Attributes
+    ----------
+    name : str
+        Name of the package manager
+    data_sources : list[DataSource]
+        List of data sources to obtain the packages
+    packages : dict[str, Package]
+        Dictionary of packages, the key is the name of the package and the value is the Package object
+
     '''
 
-    def __init__(self, name: str, data_sources: list[DataSource] = None):
+    def __init__(self, name: str, data_sources: Optional[list[DataSource]] = None):
         '''
-        Constructor
+        Constructor of the PackageManager class
+
+        Parameters
+        ----------
+        name : str
+            Name of the package manager
+        data_sources : Optional[list[DataSource]]
+            List of data sources to obtain the packages, if None, an empty list will be used
+
+        Raises
+        ------
+        ValueError
+            If the data_sources parameter is None or empty
+
+        Examples
+        --------
+        >>> package_manager = PackageManager("My package manager", [CSVDataSource("csv_data_source", "path/to/file.csv")])
         '''
 
         self.name: str = name
 
-        if data_sources is None or not data_sources:
-            raise ValueError("Data source cannot be None")
+        if not data_sources:
+            raise ValueError("Data source cannot be empty")
 
         self.data_sources: list[DataSource] = data_sources
         self.packages: dict[str, Package] = {}
+        self.logger = MyLogger.get_logger(
+            logger_name="package_manager",
+            enable_console=False,
+            log_file=Configuration().get_key('folders', 'log_dir') + "/package_manager.log",
+            log_level=Configuration().get_key('logger', 'level')
+        )
 
     def save_package_manager(self, path: str):
         '''
@@ -57,7 +91,7 @@ class PackageManager():
         # Remove redundant objects
         for data_source in self.data_sources:
             if isinstance(data_source, ScraperDataSource):
-                data_source.request_handler = None
+                del data_source.request_handler
 
         # Use pickle to save the package manager
         with open(path, "wb") as f:
@@ -94,9 +128,17 @@ class PackageManager():
             if isinstance(data_source, ScraperDataSource):
                 data_source.request_handler = RequestHandler()
 
+        # Set the logger
+        obj.logger = MyLogger.get_logger(
+            logger_name="package_manager",
+            enable_console=False,
+            log_file=Configuration().get_key('folders', 'log_dir') + "/package_manager.log",
+            log_level=Configuration().get_key('logger', 'level')
+        )
+
         return obj
 
-    def initialize(self, package_names: list[str] = None, show_progress: bool = False, chunk_size: int = 10000):
+    def initialize(self, package_names: list[str], show_progress: bool = False, chunk_size: int = 10000):
         '''
         Initializes the package manager by loading the packages from the data source
 
@@ -107,7 +149,10 @@ class PackageManager():
         show_progress : bool
             If True, a progress bar will be shown
         chunk_size : int
-            Size of the chunks to load the packages, this is done to avoid memory errors            
+            Size of the chunks to load the packages, this is done to avoid memory errors
+
+        .. warning:: for large package lists, this method can take a long time to complete
+
         '''
 
         # Get package names from the data sources if needed
@@ -117,10 +162,10 @@ class PackageManager():
                     package_names = data_source.obtain_package_names()
                     break
                 except NotImplementedError:
-                    MyLogger().get_logger().debug(f"Data source {data_source.name} does not implement obtain_package_names method")
+                    self.logger.debug(f"Data source {data_source.name} does not implement obtain_package_names method")
                     continue
                 except Exception as e:
-                    MyLogger().get_logger().error(f"Error while obtaining package names from data source {data_source.name}: {e}")
+                    self.logger.error(f"Error while obtaining package names from data source {data_source.name}: {e}")
                     continue
 
         # Check if the package names are valid
@@ -177,17 +222,17 @@ class PackageManager():
         for data_source in self.data_sources:
             package_data = data_source.obtain_package_data(package_name)
             if package_data is not None:
-                MyLogger().get_logger().debug(f"Package {package_name} found using {data_source.name}")
+                self.logger.debug(f"Package {package_name} found using {data_source.name}")
                 break
             else:
-                MyLogger().get_logger().debug(f"Package {package_name} not found using {data_source.name}")
+                self.logger.debug(f"Package {package_name} not found using {data_source.name}")
 
         # Return the package if it exists
         return None if package_data is None else Package.load(package_data)
 
     def obtain_packages(
         self,
-        package_names: Optional[list[str]],
+        package_names: list[str],
         progress_bar: Optional[tqdm.tqdm],
         extend: bool = False
     ) -> list[Package]:
@@ -196,12 +241,12 @@ class PackageManager():
 
         Parameters
         ----------
-        package_names : Optional[list[str]]
-            List of package names to load, if None, all the packages will be loaded
-        progress_bar : Optional[tqdm.tqdm]
-            Progress bar to show the progress of the loading
+        package_names : list[str]
+            List of package names
+        progress_bar : tqdm.tqdm
+            Progress bar to show the progress of the operation
         extend : bool
-            If True, the packages will be added to the package manager
+            If True, the packages will be added to the existing ones, otherwise, the existing ones will be replaced
 
         Returns
         -------
@@ -231,12 +276,11 @@ class PackageManager():
             packages_data = []
             data_found, not_found = preferred_data_source.obtain_packages_data(
                 package_names=pending_packages, 
-                progress_bar=progress_bar
+                progress_bar=progress_bar # type: ignore
             )
             packages_data.extend(data_found)
             # pending_packages = not_found
-            MyLogger().get_logger().info(f"Packages found: {len(data_found)}")
-            MyLogger().get_logger().info(f"Packages not found: {len(not_found)}")
+            self.logger.info(f"Packages found: {len(data_found)}, Packages not found: {len(not_found)}")
             packages = [Package.load(package_data) for package_data in packages_data]
 
         # if not use the obtain_package_data method for sequential processing using the data_sources of the list
@@ -255,13 +299,13 @@ class PackageManager():
                 if progress_bar is not None:
                     progress_bar.update(1)
         
-        MyLogger().get_logger().info(f"Total packages found: {len(packages)}")
+        self.logger.info(f"Total packages found: {len(packages)}")
         
 
         # update the self.packages attribute overwriting the packages with the same name
         # but conserving the other packages
         if extend:
-            MyLogger().get_logger().info("Extending data source with obtained packages")
+            self.logger.info("Extending data source with obtained packages")
             for package in packages:
                 self.packages[package.name] = package
 
@@ -435,7 +479,7 @@ class PackageManager():
         '''
 
         if not self.packages:
-            MyLogger().get_logger().debug("The package manager is empty")
+            self.logger.debug("The package manager is empty")
             return pd.DataFrame()
                     
 
@@ -555,7 +599,7 @@ class PackageManager():
         try:
             current_package = self.obtain_package(package_name)
         except ValueError:
-            MyLogger().get_logger().debug(
+            self.logger.debug(
                 f"The package {package_name} does not exist in the data source {self.name}"
             )
             return dependency_network
@@ -581,7 +625,7 @@ class PackageManager():
                     )
 
                 except Exception:
-                    MyLogger().get_logger().debug(
+                    self.logger.debug(
                         f"The package {dependency_name}, as dependency of {package_name} does not exist in the data source {self.name}"
                     )
         return dependency_network

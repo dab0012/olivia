@@ -68,18 +68,18 @@ class ProxyBuilder(ABC):
         except Exception as e:
             message = f"Error getting proxies from {self.__class__.__name__}: {e}"
             message += f"URL: {self.url}"
-            MyLogger().get_logger().error(message)
+            MyLogger.get_logger('myrequests').error(message)
             return []
         
         # Reesponse is OK, parse the response and return the proxies
         proxies = []
         if response.status_code == 200:
             proxies = self._parse_request(response)
-            MyLogger().get_logger().debug(f"Found {len(proxies)} proxies from {self.__class__.__name__}")
+            MyLogger.get_logger('myrequests').debug(f"Found {len(proxies)} proxies from {self.__class__.__name__}")
         else:
             message = f"Error getting proxies from {self.__class__.__name__}"
             message += f"Request returned status code: {response.status_code}"
-            MyLogger().get_logger().error(message)
+            MyLogger.get_logger('myrequests').error(message)
 
         return proxies
     

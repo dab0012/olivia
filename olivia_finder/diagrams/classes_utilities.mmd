@@ -1,0 +1,30 @@
+classDiagram
+  class Configuration {
+    get_key(section: str, key: str)
+  }
+  class ConsoleFormatter {
+    BLUE : str
+    DEFAULT_FORMAT_END : str
+    DEFAULT_FORMAT_PRE : str
+    FORMATS : dict
+    GREEN : str
+    ORANGE : str
+    RED : str
+    RESET : str
+    YELLOW : str
+    format(record)
+  }
+  class MyLogger {
+    disable()
+    disable_all_loggers()
+    enable()
+    enable_all_loggers()
+    get_logger() logging.Logger
+    set_level(level)
+  }
+  class OliviaFinderException {
+    errors : NoneType
+    message
+  }
+  class _SingletonWrapper {
+  }

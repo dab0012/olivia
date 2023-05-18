@@ -1,10 +1,13 @@
 
 from __future__ import annotations
 import os
+from typing import Optional
 import pandas as pd
 import tqdm
 from ..utilities.logger import MyLogger
+from ..utilities.config import Configuration
 from .data_source import DataSource
+
 
 class CSVDataSource(DataSource):
     """
@@ -16,13 +19,13 @@ class CSVDataSource(DataSource):
     def __init__(
         self,
         file_path: str, 
-        name: str = None, 
-        description: str = None,
-        dependent_field: str = None,
-        dependency_field: str = None,
-        dependent_version_field: str = None,
-        dependency_version_field: str = None,
-        dependent_url_field: str = None
+        name: Optional[str] = None, 
+        description: Optional[str] = None,
+        dependent_field: Optional[str] = None,
+        dependency_field: Optional[str] = None,
+        dependent_version_field: Optional[str] = None,
+        dependency_version_field: Optional[str] = None,
+        dependent_url_field: Optional[str] = None
     ):
         """
         Constructor of the class
@@ -60,19 +63,25 @@ class CSVDataSource(DataSource):
         super().__init__(name, description)
 
         # Set the dataframe as None and the fields
-        self.data: pd.DataFrame = None
-        self.dependent_field: str = dependent_field
-        self.dependency_field: str = dependency_field
-        self.dependent_version_field: str = dependent_version_field
-        self.dependency_version_field: str = dependency_version_field
-        self.dependent_url_field: str = dependent_url_field
-        self.file_path: str = file_path
+        self.data: Optional[pd.DataFrame] = None
+        self.dependent_field = dependent_field
+        self.dependency_field = dependency_field
+        self.dependent_version_field = dependent_version_field
+        self.dependency_version_field = dependency_version_field
+        self.dependent_url_field = dependent_url_field
+        self.file_path = file_path
+        self.logger = MyLogger.get_logger(
+            logger_name="csv_datasource",
+            enable_console=False,
+            log_file=Configuration().get_key('folders', 'log_dir') + "/csv_datasource.log",
+            log_level=Configuration().get_key('logger', 'level')
+        )
 
         # Load the data if the file path is setted
         if self.file_path is not None:
             self._load_data()
         else:
-            MyLogger().get_logger().debug("File path is None. Data not loaded.")
+            self.logger.debug("File path is None. Data not loaded.")
             raise ValueError("File path cannot be None.")
 
     def _load_data(self):
@@ -194,7 +203,7 @@ class CSVDataSource(DataSource):
             package_rows = package_rows[package_rows[self.dependent_version_field] == last_version]
 
         if package_rows.empty:
-            MyLogger().get_logger().debug(f"Package {package_name} not found in data.")
+            self.logger.debug(f"Package {package_name} not found in data.")
             raise ValueError(f"Package {package_name} not found in data.")
 
         # Get the dependencies
@@ -285,7 +294,7 @@ class CSVDataSource(DataSource):
 
             # If the package is not found, add it to the not found list, and continue
             except ValueError:
-                MyLogger().get_logger().debug(f"Package {package_name} not found in data.")
+                self.logger.debug(f"Package {package_name} not found in data.")
                 not_found.append(package_name)
                 continue
             

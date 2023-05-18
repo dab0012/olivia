@@ -22,7 +22,7 @@ from bs4 import BeautifulSoup
 from typing import Optional, Union
 
 from . import r
-from ..scraper_ds import ScraperDataSource, ScraperError
+from ..scraper_ds import ScraperDataSource
 from ...myrequests.request_handler import RequestHandler
 from ...myrequests.job import RequestJob
 from ...utilities.logger import MyLogger
@@ -110,7 +110,7 @@ class CranScraper(ScraperDataSource):
         )
 
         if job.response is None:
-            MyLogger().get_logger().error('Error while obtaining the list of packages from CRAN')
+            MyLogger.get_logger('scraper').error('Error while obtaining the list of packages from CRAN')
             return []
 
         # Parse HTML
@@ -134,14 +134,16 @@ class CranScraper(ScraperDataSource):
                 package_name = cells[0].find("a").text   
 
             # If an error occurs, we show the error message
-            except ScraperError(message=f'Error while obtaining the name of the package'):
+            except Exception as e:
+                MyLogger.get_logger('scraper').debug(f'Error while obtaining the name of a package: {e}')
+                MyLogger.get_logger('scraper').debug(f'Row: {row}')
                 continue
 
             # We add the package name to the list of packages
             packages.append(package_name)
-            MyLogger().get_logger().debug(f'Package {package_name} added to the list of packages')
+            MyLogger.get_logger('scraper').debug(f'Package {package_name} added to the list of packages')
 
-        MyLogger().get_logger().info(f'Obtained {len(packages)} packages from {self.CRAN_PACKAGE_LIST_URL}')
+        MyLogger.get_logger('scraper').info(f'Obtained {len(packages)} packages from {self.CRAN_PACKAGE_LIST_URL}')
         return packages
 
     @override
@@ -187,7 +189,8 @@ class CranScraper(ScraperDataSource):
         try:
             d = soup.find('h2').text
             name = clean_string(d).split(':')[0]
-        except ScraperError(message='Error while obtaining the name of the package'):
+        except Exception as e:
+            MyLogger.get_logger('scraper').error(f'Error while obtaining the name of the package: {e}')
             return None
 
         # Get package version
@@ -195,7 +198,8 @@ class CranScraper(ScraperDataSource):
         try:
             d = soup.find('td', text='Version:').find_next_sibling('td').text
             version = clean_string(d)
-        except ScraperError(message=f'Error while obtaining the version of the package {name}'):
+        except Exception as e:
+            MyLogger.get_logger('scraper').error(f'Error while obtaining the version of the package: {e}')
             pass
 
         # Get depends
@@ -204,7 +208,8 @@ class CranScraper(ScraperDataSource):
             d = soup.find('td', text='Depends:').find_next_sibling('td').text
             depends = clean_string(d)
             dep_list = r.parse_dependencies(depends)
-        except ScraperError(message=f'Depends not found for package {name}'):
+        except Exception as e:
+            MyLogger.get_logger('scraper').error(f'Error while obtaining the dependencies of the package: {e}')
             pass
 
         # Get imports
@@ -213,7 +218,8 @@ class CranScraper(ScraperDataSource):
             d = soup.find('td', text='Imports:').find_next_sibling('td').text
             imports = clean_string(d)
             imp_list = r.parse_dependencies(imports)
-        except ScraperError(message=f'Imports not found for package {name}'):
+        except Exception as e:
+            MyLogger.get_logger('scraper').error(f'Error while obtaining the imports of the package: {e}')
             pass
             
         # Build dictionary with package data

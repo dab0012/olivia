@@ -20,7 +20,7 @@ import re
 import requests
 from typing_extensions import override
 from bs4 import BeautifulSoup
-from ..scraper_ds import ScraperDataSource, ScraperError
+from ..scraper_ds import ScraperDataSource
 from ...myrequests.request_handler import RequestHandler
 from ...myrequests.job import RequestJob
 from ...utilities.logger import MyLogger
@@ -87,17 +87,18 @@ class PypiScraper(ScraperDataSource):
         job = self.request_handler.do_request(job)
 
         if job.response is None:
-            raise ScraperError(f'Error obtaining the list of packages from {self.PYPI_PACKAGE_LIST_URL}')
+            raise OliviaFinderException(f'Error obtaining the list of packages from {self.PYPI_PACKAGE_LIST_URL}')
         
         soup = BeautifulSoup(job.response.text, 'html.parser')
         
         try:
             # Get the list of packages
             pakage_list = [a.text for a in soup.find_all('a')]
-        except ScraperError('Error obtaining the list of packages from {self.PYPI_PACKAGE_LIST_URL}'):
+        except Exception as e:
+            MyLogger.get_logger('scraper').error(f'Error obtaining the list of packages from {self.PYPI_PACKAGE_LIST_URL}')
             pass
 
-        MyLogger().get_logger().info(f'Obtained {len(pakage_list)} packages from {self.PYPI_PACKAGE_LIST_URL}')
+        MyLogger.get_logger('scraper').info(f'Obtained {len(pakage_list)} packages from {self.PYPI_PACKAGE_LIST_URL}')
         return pakage_list
     
     @override

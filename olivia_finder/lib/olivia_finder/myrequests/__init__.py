@@ -341,3 +341,14 @@ print(finalized_jobs[0].response.text[10000:20000])
 ```
 
 """
+
+from olivia_finder.utilities.logger import MyLogger
+from olivia_finder.utilities.config import Configuration
+
+# Custom logger for the module
+MyLogger.get_logger(
+    logger_name="myrequests",
+    enable_console=False,
+    log_file=Configuration().get_key('folders', 'log_dir') + "/myrequests.log",
+    log_level=Configuration().get_key('logger', 'level')
+)

@@ -20,7 +20,7 @@ import requests
 from bs4 import BeautifulSoup
 from typing_extensions import override
 from . import r
-from ..scraper_ds import ScraperDataSource, ScraperError
+from ..scraper_ds import ScraperDataSource
 from ...myrequests.request_handler import RequestHandler
 from ...utilities.utilities import clean_string
 from ...utilities.logger import MyLogger
@@ -92,12 +92,12 @@ class BioconductorScraper(ScraperDataSource):
             
         Raises
         ------
-        ScraperError
+        OliviaFinderException
             If the list of packages cannot be obtained
             
         Example
         -------
-        >>> scraper = BiocScraper()
+        >>> scraper = BioconductorScraper()
         >>> package_names = scraper.obtain_package_names()
         '''
 
@@ -111,7 +111,7 @@ class BioconductorScraper(ScraperDataSource):
 
         # Create the driver
         try:
-            MyLogger().get_logger().debug("Creating the Selenium driver...")
+            MyLogger.get_logger('scraper').debug("Creating the Selenium driver...")
 
             driver_options = webdriver.FirefoxOptions()
             driver_options.headless = True
@@ -119,23 +119,23 @@ class BioconductorScraper(ScraperDataSource):
                 options = driver_options
             )
         except Exception as e:
-            raise ScraperError("Exception occurred while creating the Selenium driver") from e
+            raise OliviaFinderException("Exception occurred while creating the Selenium driver") from e
     
         # Scraping webpage with package list
         try:
-            MyLogger().get_logger().debug("Scraping the Bioconductor website...")
+            MyLogger.get_logger('scraper').debug("Scraping the Bioconductor website...")
             driver.get(self.BIOCONDUCTOR_LIST_URL)
             table = driver.find_element(By.ID, "biocViews_package_table")
             table_content = table.get_attribute("innerHTML")
         except Exception as e:
-            raise ScraperError("Exception occurred while scraping the Bioconductor website") from e
+            raise OliviaFinderException("Exception occurred while scraping the Bioconductor website") from e
 
         # Close the driver
         driver.close()
 
         # Process the HTML to obtain packages
         try:
-            MyLogger().get_logger().debug("Processing the HTML...")
+            MyLogger.get_logger('scraper').debug("Processing the HTML...")
             soup = BeautifulSoup(table_content, 'html.parser')
             packages = []
             for row in soup.find_all("tr"):
@@ -145,11 +145,11 @@ class BioconductorScraper(ScraperDataSource):
                     if cell.find("a")
                 )
         except Exception as e:
-            raise ScraperError("Exception occurred while processing the HTML.") from e
+            raise OliviaFinderException("Exception occurred while processing the HTML.") from e
         
         # Sort the list of packages
         packages.sort()
-        MyLogger().get_logger().info(f"Obtained {len(packages)} packages from {self.BIOCONDUCTOR_LIST_URL}")
+        MyLogger.get_logger('scraper').info(f"Obtained {len(packages)} packages from {self.BIOCONDUCTOR_LIST_URL}")
         
         return packages
     

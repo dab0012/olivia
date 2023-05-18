@@ -17,7 +17,7 @@ class RequestHandler:
         '''
 
         message = "Creating RequestHandler object"
-        MyLogger().get_logger().info(message)
+        MyLogger.get_logger('myrequests').info(message)
 
         # Create jobs queue
         self.jobs_queue = queue.Queue()
@@ -51,7 +51,7 @@ class RequestHandler:
             job.progress_bar = progress_bar
             self.jobs_queue.put(job)
 
-        MyLogger().get_logger().debug(f"Jobs queue size: {self.jobs_queue.qsize()}")
+        MyLogger.get_logger('myrequests').debug(f"Jobs queue size: {self.jobs_queue.qsize()}")
 
         # Workers keep working till they receive an exit string
         # So we need to add the number of workers times the exit string to the queue
@@ -60,14 +60,13 @@ class RequestHandler:
             self.jobs_queue.put(RequestJob.end_job_signal())
 
         # Create workers and add to the queue
-        MyLogger().get_logger().debug("Creating workers")
+        MyLogger.get_logger('myrequests').debug("Creating workers")
 
         for i in range(self.num_workers):
             worker = RequestWorker(i, self.jobs_queue, progress_bar)
             self.workers.append(worker)
 
-        MyLogger().get_logger().debug("Workers created")
-        MyLogger().get_logger().debug(f"Number of workers: {len(self.workers)}")
+        MyLogger.get_logger('myrequests').debug(f"Created workers: {len(self.workers)}")
 
     
     def _setup_job(self, request_job: RequestJob):
@@ -83,7 +82,7 @@ class RequestHandler:
         self.workers.append(
             RequestWorker(0, self.jobs_queue)
         )
-        MyLogger().get_logger().debug("Job created")
+        MyLogger.get_logger('myrequests').debug("Job created")
 
 
     def do_requests(self, request_jobs: list[RequestJob], num_workers: int = PARALLEL_WORKERS, progress_bar: tqdm.tqdm = None):
@@ -106,30 +105,30 @@ class RequestHandler:
         # reet the class
         self._clear()
 
-        MyLogger().get_logger().info("Starting requests")
-        MyLogger().get_logger().debug(f"Number of jobs: {len(request_jobs)}")
+        MyLogger.get_logger('myrequests').info("Starting requests")
+        MyLogger.get_logger('myrequests').debug(f"Number of jobs: {len(request_jobs)}")
 
         # Setup jobs
         self._setup_jobs(request_jobs, num_workers, progress_bar)
         
         # Start workers
         for worker in self.workers:
-            MyLogger().get_logger().debug(f"Starting worker {worker.worker_id}")
+            MyLogger.get_logger('myrequests').debug(f"Starting worker {worker.worker_id}")
             worker.start()
             
         # Join workers to wait till they finished
         for worker in self.workers:
 
             worker.join()
-            MyLogger().get_logger().debug(f"Joining worker {worker.worker_id}")
+            MyLogger.get_logger('myrequests').debug(f"Joining worker {worker.worker_id}")
 
         # Combine results from all workers
         workers_finalized_jobs = []
         for worker in self.workers:
-            MyLogger().get_logger().debug(f"Worker {worker.worker_id} finished")
+            MyLogger.get_logger('myrequests').debug(f"Worker {worker.worker_id} finished")
             workers_finalized_jobs.extend(worker.my_jobs.copy())
 
-        MyLogger().get_logger().info("All requests finished")
+        MyLogger.get_logger('myrequests').info("All requests finished")
         return workers_finalized_jobs
 
     def do_request(self, job: RequestJob):
@@ -162,18 +161,18 @@ class RequestHandler:
 
         # Start worker
         worker = RequestWorker(0, self.jobs_queue)
-        MyLogger().get_logger().debug(f"Starting worker {worker.worker_id}")
+        MyLogger.get_logger('myrequests').debug(f"Starting worker {worker.worker_id}")
 
-        MyLogger().get_logger().info(f"Starting request for {job.key}: {job.url}")
+        MyLogger.get_logger('myrequests').info(f"Starting request for {job.key}: {job.url}")
         worker.start()
 
         # Join worker to wait till it finished
         worker.join()
-        MyLogger().get_logger().debug(f"Joining worker {worker.worker_id}")
-        MyLogger().get_logger().info(f"Request for {job.key}: {job.url} finished")
+        MyLogger.get_logger('myrequests').debug(f"Joining worker {worker.worker_id}")
+        MyLogger.get_logger('myrequests').info(f"Request for {job.key}: {job.url} finished")
 
         if worker.my_jobs[0].response is None:
-            MyLogger().get_logger().error(f"Request for {job.key}: {job.url} failed: response is None")
+            MyLogger.get_logger('myrequests').error(f"Request for {job.key}: {job.url} failed: response is None")
 
         # Return the job
         return worker.my_jobs[0]

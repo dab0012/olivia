@@ -1,0 +1,17 @@
+classDiagram
+  class utilities {
+  }
+  class config {
+  }
+  class exception {
+  }
+  class logger {
+  }
+  class singleton_decorator {
+  }
+  class utilities {
+  }
+  config --> singleton_decorator
+  exception --> logger
+  logger --> config
+  logger --> singleton_decorator

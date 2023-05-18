@@ -11,7 +11,6 @@ import sys
 # try to load the API key from the configuration file
 API_KEY = Configuration().get_key('librariesio', 'api_key')
 if API_KEY is None:
-    MyLogger().get_logger().error("API key for Libraries.io not found")
     raise OliviaFinderException("API key for Libraries.io not found")
 
 # Set as environment variable
@@ -53,11 +52,17 @@ class LibrariesioDataSource(DataSource):
 
         super().__init__(name, description)
         self.platform = platform
+        self.logger = MyLogger.get_logger(
+            logger_name="librariesio_datasource",
+            enable_console=False,
+            log_file=Configuration().get_key('folders', 'log_dir') + "/librariesio_datasource.log",
+            log_level=Configuration().get_key('logger', 'level')
+        )
 
         # Create the search object
         try:
             self.search = Search()
-        except LibrariesIoException("Error creating the search object"):
+        except Exception as e:
             pass
 
 
@@ -91,7 +96,7 @@ class LibrariesioDataSource(DataSource):
         """
 
         # Get the package version and url
-        MyLogger().get_logger().debug(f"Obtaining data of {package_name}")
+        self.logger.debug(f"Obtaining data of {package_name}")
 
         # Redirect the output to /dev/null to avoid printing the output of the search (pybraries bug)
         stdout = sys.stdout     # Keep the standard output backed up
@@ -104,10 +109,11 @@ class LibrariesioDataSource(DataSource):
 
             # Check if data is empty
             if dependencies_data is None:
-                MyLogger().get_logger().debug(f"Package {package_name} not found")
+                self.logger.debug(f"Package {package_name} not found")
                 return None
 
-        except LibrariesIoException(f"Exception while obtaining {package_name} dependencies"):
+        except Exception as e:
+            self.logger.error(f"Exception while obtaining {package_name} dependencies")
             return None
         
         finally:
@@ -165,9 +171,4 @@ class LibrariesioDataSource(DataSource):
                 packages_data.append(package_data)
 
         return packages_data
-
-class LibrariesIoException(OliviaFinderException):
-    """
-    Exception for the LibrariesioDataSource class
-    """
 

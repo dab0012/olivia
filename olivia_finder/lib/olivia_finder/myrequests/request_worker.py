@@ -82,7 +82,7 @@ class RequestWorker(Thread):
             message = f"Worker {self.worker_id}: Got job from queue\n"
             message += f"Job key: {job.key}\n"
             message += f"url: {job.url}"
-            MyLogger().get_logger().debug(message)
+            MyLogger.get_logger('myrequests').debug(message)
 
 
             # If exit string is received, break the loop
@@ -90,14 +90,14 @@ class RequestWorker(Thread):
                 break
 
             # Get proxy and user agent
-            MyLogger().get_logger().debug(f"Worker {self.worker_id}: Obtaining proxy and user agent")
+            MyLogger.get_logger('myrequests').debug(f"Worker {self.worker_id}: Obtaining proxy and user agent")
             proxy, user_agent = self._obtain_request_args()
-            MyLogger().get_logger().debug(f"Worker {self.worker_id}: Obtained proxy: {proxy} and user agent: {user_agent}")
+            MyLogger.get_logger('myrequests').debug(f"Worker {self.worker_id}: Obtained proxy: {proxy} and user agent: {user_agent}")
 
 
             # Do the request
             message = f"Worker {self.worker_id}: Doing request"
-            MyLogger().get_logger().debug(message)
+            MyLogger.get_logger('myrequests').debug(message)
 
             try:
 
@@ -110,12 +110,12 @@ class RequestWorker(Thread):
                 )
 
             except Exception as e:
-                MyLogger().get_logger().error(f"Worker {self.worker_id}: Error doing request job: {e}")
+                MyLogger.get_logger('myrequests').error(f"Worker {self.worker_id}: Error doing request job: {e}")
                 response = None
 
             # Check if the response is valid
             if response is None or response.status_code != 200:
-                MyLogger().get_logger().error(f"Worker {self.worker_id}: Error doing request job: {response}")
+                MyLogger.get_logger('myrequests').error(f"Worker {self.worker_id}: Error doing request job: {response}")
                 response = None
 
             # Update the progress bar
@@ -128,7 +128,7 @@ class RequestWorker(Thread):
 
             # Mark the task as done
             self.jobs_queue.task_done()
-            MyLogger().get_logger().debug(f"Worker {self.worker_id}: Done for {job.url}")
+            MyLogger.get_logger('myrequests').debug(f"Worker {self.worker_id}: Done for {job.url}")
             
     def _obtain_request_args(self) -> tuple[str, str]:
         '''
@@ -216,14 +216,14 @@ class RequestWorker(Thread):
 
         except Exception as ex_1:
 
-            MyLogger().get_logger().error(f"Worker {self.worker_id}: {url}, Exception: {ex_1}")
+            MyLogger.get_logger('myrequests').error(f"Worker {self.worker_id}: {url}, Exception: {ex_1}")
             response = None
 
             # Retry if there are retries left
             while response is None and retries > 0:
                 retries -= 1
                 time.sleep(retry_delay)
-                MyLogger().get_logger().debug(f"Worker {self.worker_id}: Retrying {url}, Retries left: {retries}")
+                MyLogger.get_logger('myrequests').debug(f"Worker {self.worker_id}: Retrying {url}, Retries left: {retries}")
                 try:
                     response = requests.get(
                         url, 
@@ -233,10 +233,10 @@ class RequestWorker(Thread):
                         data=data,
                     )
                 except Exception as e_2:
-                    MyLogger().get_logger().error(f"Worker {self.worker_id}: {url}, Exception: {e_2}")
+                    MyLogger.get_logger('myrequests').error(f"Worker {self.worker_id}: {url}, Exception: {e_2}")
                     response = None
 
-        MyLogger().get_logger().debug(f"Worker {self.worker_id}: {url}, Response: {response}")
+        MyLogger.get_logger('myrequests').debug(f"Worker {self.worker_id}: {url}, Response: {response}")
             
         return response
     

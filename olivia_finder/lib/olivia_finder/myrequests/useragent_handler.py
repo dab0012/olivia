@@ -13,7 +13,9 @@ import random
 import requests
 from bs4 import BeautifulSoup
 from ..utilities.logger import MyLogger
+from ..utilities.singleton_decorator import singleton
 
+@singleton
 class UserAgentHandler():
     '''
     UserAgentHandler class
@@ -75,12 +77,12 @@ class UserAgentHandler():
             self.DATA_FILE = os.path.join(os.path.dirname(current_file_path), 'data', 'useragents.txt')
 
             if self._load_from_file(self.DATA_FILE):
-                MyLogger().get_logger().info(f"Useragents loaded from file: {self.DATA_FILE}")
+                MyLogger.get_logger('myrequests').info(f"Useragents loaded from file: {self.DATA_FILE}")
                 return
 
         # Load user agents from the useragentstring.com API
         if self._load_from_useragentstring():
-            MyLogger().get_logger().info(f"Useragents loaded from USERAGENTSTRING_URL: {self.USERAGENTSTRING_URL}")
+            MyLogger.get_logger('myrequests').info(f"Useragents loaded from USERAGENTSTRING_URL: {self.USERAGENTSTRING_URL}")
             return
 
         # If at this time there are no uses available, the default useragents are loaded using the list
@@ -93,7 +95,7 @@ class UserAgentHandler():
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0',
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15'
         ]
-        MyLogger().get_logger().info("Useragents list is empty. Using default useragents")
+        MyLogger.get_logger('myrequests').info("Useragents list is empty. Using default useragents")
 
     def _load_from_file(self, file_path:str) -> bool:
         '''
@@ -125,7 +127,7 @@ class UserAgentHandler():
                 return True
             
         except FileNotFoundError:
-            MyLogger().get_logger().warning(f"Useragents file not found: {file_path}")
+            MyLogger.get_logger('myrequests').warning(f"Useragents file not found: {file_path}")
             return False
     
     def _load_from_useragentstring(self) -> bool:
@@ -144,14 +146,14 @@ class UserAgentHandler():
             True if the user agents were obtained correctly, False otherwise
         '''
 
-        MyLogger().get_logger().debug(f"Getting user agents from API: {self.USERAGENTSTRING_URL}")
+        MyLogger.get_logger('myrequests').debug(f"Getting user agents from API: {self.USERAGENTSTRING_URL}")
 
         # Get user agents from the API
         try:
             user_agents_request = requests.get(self.USERAGENTSTRING_URL, timeout=60).text
         except Exception as e:
-            MyLogger().get_logger().debug(f"Error getting user agents from API: {self.USERAGENTSTRING_URL}")
-            MyLogger().get_logger().debug(f"Error: {e}")
+            MyLogger.get_logger('myrequests').debug(f"Error getting user agents from API: {self.USERAGENTSTRING_URL}")
+            MyLogger.get_logger('myrequests').debug(f"Error: {e}")
             return False
         
         # Parse the HTML
@@ -168,8 +170,8 @@ class UserAgentHandler():
             return True
         
         except Exception as e:
-            MyLogger().get_logger().warning(f"Error parsing user agents from API: {self.USERAGENTSTRING_URL}")
-            MyLogger().get_logger().warning(f"Error: {e}")
+            MyLogger.get_logger('myrequests').warning(f"Error parsing user agents from API: {self.USERAGENTSTRING_URL}")
+            MyLogger.get_logger('myrequests').warning(f"Error: {e}")
             return False
 
     def get_next_useragent(self) -> str:
@@ -185,9 +187,9 @@ class UserAgentHandler():
 
         # If the list is empty, return a default useragent (THIS SHOULD NOT HAPPEN)
         if len(self.useragents_list) == 0:
-            MyLogger().get_logger().warning("Useragents list is empty")
+            MyLogger.get_logger('myrequests').warning("Useragents list is empty")
             return "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
 
         index = random.randint(0, len(self.useragents_list) - 1)
-        MyLogger().get_logger().debug(f"Next useragent: {self.useragents_list[index]}")
+        MyLogger.get_logger('myrequests').debug(f"Next useragent: {self.useragents_list[index]}")
         return self.useragents_list[index]

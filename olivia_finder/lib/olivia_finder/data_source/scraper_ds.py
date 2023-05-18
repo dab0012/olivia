@@ -25,6 +25,7 @@ from ..myrequests.request_handler import RequestHandler
 from ..myrequests.job import RequestJob
 from ..utilities.exception import OliviaFinderException
 from ..utilities.logger import MyLogger
+
 class ScraperDataSource(DataSource, ABC):
 
     """
@@ -127,19 +128,19 @@ class ScraperDataSource(DataSource, ABC):
 
         # If package_names is None, obtain the package names from the data source
         if package_names is None or len(package_names) == 0:
-            MyLogger().get_logger().debug('Package names list is None or empty')
-            MyLogger().get_logger().debug(f'Obtaining package names from Scraper: {self.name}, {self.description}')
+            MyLogger.get_logger('scraper').debug('Package names list is None or empty')
+            MyLogger.get_logger('scraper').debug(f'Obtaining package names from Scraper: {self.name}, {self.description}')
             package_names = self.obtain_package_names()
 
         else:
-            MyLogger().get_logger().debug('Using package names from param list')
+            MyLogger.get_logger('scraper').debug('Using package names from param list')
 
-        MyLogger().get_logger().debug(f'Total packages to scrape: {len(package_names)}')
-        MyLogger().get_logger().debug('Building jobs')
+        MyLogger.get_logger('scraper').debug(f'Total packages to scrape: {len(package_names)}')
+        MyLogger.get_logger('scraper').debug('Building jobs')
         jobs = self._build_jobs(package_names)
 
         # Do the requests with the RequestHandler whitout parallelization
-        MyLogger().get_logger().debug('Making requests')
+        MyLogger.get_logger('scraper').debug('Making requests')
         finnalized_jobs = self.request_handler.do_requests(
             request_jobs=jobs,
             progress_bar=progress_bar
@@ -191,7 +192,7 @@ class ScraperDataSource(DataSource, ABC):
         """
 
         # Make the request, the response is the second element of the tuple returned by do_request
-        MyLogger().get_logger().debug(f'Scraping package {package_name}')
+        MyLogger.get_logger('scraper').debug(f'Scraping package {package_name}')
         request_job = self.request_handler.do_request(
             RequestJob(package_name, self._build_url(package_name))
         )
@@ -199,15 +200,17 @@ class ScraperDataSource(DataSource, ABC):
         # Parse the response
         if request_job.response is None:
             
-            MyLogger().get_logger().debug(f'Package {package_name} not found')
-            MyLogger().get_logger().debug(f'Adding {package_name} to the not found list')
+            MyLogger.get_logger('scraper').debug(
+                f'Package {package_name} not found\n' +
+                f'Adding {package_name} to the not found list'
+            )
             self.not_found.append(package_name)
             return None
         else:
             package_data = self._parser(request_job.response)
 
         # If the package is found, log it and return the package data
-        MyLogger().get_logger().debug(f'Package {package_name} scraped successfully')
+        MyLogger.get_logger('scraper').debug(f'Package {package_name} scraped successfully')
         return package_data 
 
     # Abstract methods
@@ -265,7 +268,7 @@ class ScraperDataSource(DataSource, ABC):
         '''
         raise NotImplementedError
     
-class ScraperError(OliviaFinderException):
+class ScraperError(OliviaFinderException, BaseException):
     '''
     Exception raised when an error occurs while scraping
     '''

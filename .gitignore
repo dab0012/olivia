@@ -1,6 +1,11 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*.log
-.vscode/
 .venv/
+.vscode/
+.pylintrc
+*.log
+*.pot
+*.py[co]
+*.pyc
+*.pyd
+*.so
+*.egg
+*.egg-info

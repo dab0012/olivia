@@ -63,14 +63,14 @@ class ProxyHandler():
             for builder in builders:
                 # if any of the builders is not valid, ignore and continue with the next one
                 if not isinstance(builder, ProxyBuilder):
-                    MyLogger().get_logger().debug(f"Builder {builder} is not a valid ProxyBuilderABC, ignoring")
+                    MyLogger.get_logger('myrequests').debug(f"Builder {builder} is not a valid ProxyBuilderABC, ignoring")
                 else:
-                    MyLogger().get_logger().debug(f"Builder {builder} is valid, adding to list")
+                    MyLogger.get_logger('myrequests').debug(f"Builder {builder} is valid, adding to list")
                     self.proxy_builders.append(builder)
             
             # Check if any builder is valid
             if len(self.proxy_builders) == 0:
-                MyLogger().get_logger().debug("No valid proxy builders were provided")
+                MyLogger.get_logger('myrequests').debug("No valid proxy builders were provided")
                 raise ValueError("No valid proxy builders were provided")
 
             # Set builders
@@ -78,7 +78,7 @@ class ProxyHandler():
 
         # Get proxies from builder
         self.proxy_list = self._request_proxies()
-        MyLogger().get_logger().info(f"Proxy Handler initialized with {len(self.proxy_list)} proxies")
+        MyLogger.get_logger('myrequests').info(f"Proxy Handler initialized with {len(self.proxy_list)} proxies")
 
     def get_next_proxy(self) -> Union[str, None]:
         '''
@@ -96,16 +96,16 @@ class ProxyHandler():
         >>> proxy = proxy_handler.get_next_proxy()
             'http://1.1.1.1:8080'
         '''
-        MyLogger().get_logger().debug("Getting next proxy")
+        MyLogger.get_logger('myrequests').debug("Getting next proxy")
 
         # Check if proxies are empty and get new ones
         if len(self.proxy_list) == 0:
-            MyLogger().get_logger().info("No proxies available, trying to get new ones")
+            MyLogger.get_logger('myrequests').info("No proxies available, trying to get new ones")
             self.proxy_list = self._request_proxies()
 
         # Check if proxies are still empty
         if len(self.proxy_list) == 0:
-            MyLogger().get_logger().warning("No proxies available after trying to get new ones")
+            MyLogger.get_logger('myrequests').warning("No proxies available after trying to get new ones")
             return None
 
         # proxy rotation
@@ -138,7 +138,7 @@ class ProxyHandler():
         if self.proxy_uses[proxy] > self.proxy_max_uses:
             del self.proxy_uses[proxy]
             self.proxy_list.remove(proxy)
-            MyLogger().get_logger().debug(f"Proxy {proxy} removed from list")
+            MyLogger.get_logger('myrequests').debug(f"Proxy {proxy} removed from list")
 
     def _request_proxies(self) -> list[str]:
         '''
@@ -156,7 +156,7 @@ class ProxyHandler():
 
         # remove duplicates
         proxies = list(set(proxies))
-        MyLogger().get_logger().debug(f"Proxies len: {len(proxies)}")
+        MyLogger.get_logger('myrequests').debug(f"Proxies len: {len(proxies)}")
 
         return proxies
     
