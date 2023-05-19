@@ -259,14 +259,10 @@ class PackageManager():
         >>> packages
         [<Package: package_name_1>, <Package: package_name_2>]
         '''
-        
 
         # Check if the package names are valid
-        if package_names is not None and not isinstance(package_names, list):
+        if isinstance(package_names, list):
             raise ValueError("Package names must be a list")
-        else:
-            # Obtain the packages data from the data source
-            pending_packages = package_names.copy()
 
         preferred_data_source = self.data_sources[0]
 
@@ -277,7 +273,7 @@ class PackageManager():
         if isinstance(preferred_data_source, ScraperDataSource):
             packages_data = []
             data_found, not_found = preferred_data_source.obtain_packages_data(
-                package_names=pending_packages, 
+                package_names=package_names, 
                 progress_bar=progress_bar # type: ignore
             )
             packages_data.extend(data_found)
@@ -288,22 +284,21 @@ class PackageManager():
         # if not use the obtain_package_data method for sequential processing using the data_sources of the list
         else:
 
-            while len(pending_packages) > 0:
+            while len(package_names) > 0:
                 
-                package_name = pending_packages[0]
+                package_name = package_names[0]
                 package_data = self.obtain_package(package_name)
                 if package_data is not None:
                     packages.append(package_data)
 
                 # Remove the package from the pending packages
-                del pending_packages[0]
+                del package_names[0]
 
                 if progress_bar is not None:
                     progress_bar.update(1)
         
         self.logger.info(f"Total packages found: {len(packages)}")
         
-
         # update the self.packages attribute overwriting the packages with the same name
         # but conserving the other packages
         if extend:
