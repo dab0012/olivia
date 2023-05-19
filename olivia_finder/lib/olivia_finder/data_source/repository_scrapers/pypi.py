@@ -1,21 +1,3 @@
-'''
-pypi.py
-==================
-
-Description
------------
-
-Module that contains ...
-
-File information:
-    - File: pypi.py
-    - Project: scrapers
-    - Created Date: 2023-03-18 14:40:56
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
-
-'''
-
 import re
 import requests
 from typing_extensions import override
@@ -24,8 +6,7 @@ from ..scraper_ds import ScraperDataSource
 from ...myrequests.request_handler import RequestHandler
 from ...myrequests.job import RequestJob
 from ...utilities.logger import MyLogger
-
-
+from ...utilities.exception import OliviaFinderException
 
 class PypiScraper(ScraperDataSource):
     ''' 
