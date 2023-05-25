@@ -69,5 +69,9 @@ The Olivia project is distributed under the MIT License.
 
 **Daniel Alonso Báscones**, (dab0012\<at>alu.ubu.es)
 
+**Carlos López Nozal**, (clopezno\<at>ubu.es)
+
 University of Burgos, 2023
+
+
 
