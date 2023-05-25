@@ -8,7 +8,6 @@ from ..utilities.logger import MyLogger
 from ..utilities.config import Configuration
 from .data_source import DataSource
 
-
 class CSVDataSource(DataSource):
     """
     Class that implements the methods for loading a network from a CSV file.
@@ -137,8 +136,7 @@ class CSVDataSource(DataSource):
         
         if self.dependent_url_field is not None and self.dependent_url_field not in self.data.columns:
             raise ValueError(f"Field {self.dependent_url_field} not found on data.")
-        
-        
+          
     def obtain_package_names(self) -> List[str]:
         """
         Obtains the list of packages from the data source, sorted alphabetically.
