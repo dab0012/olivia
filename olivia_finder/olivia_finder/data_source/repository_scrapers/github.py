@@ -1,5 +1,5 @@
 import re
-from typing import List
+from typing import List, Union
 import requests
 from typing_extensions import override
 from bs4 import BeautifulSoup
@@ -28,25 +28,44 @@ class GithubScraper(ScraperDataSource):
 
         super().__init__(request_handler)
 
+    def obtain_package_names(self) -> List[str]:
+        raise NotImplementedError("This method is not implemented")
+
     @override
-    def obtain_package_names(self, repository: str) -> List[str]:
+    def obtain_package_data(self, package_name: str) -> Union[dict, None]:
         '''
         Obtain the list of packages names from the github repository 
 
         Parameters
         ----------
-        repository : str
-            Repository to scrape
+        pkg_name : str
+            Name of the package (repository) to scrape
 
         Returns
         -------
         List[str]
             List of packages names
+            
+        Examples
+        --------
+        >>> from olivia_finder.data_source.repository_scrapers.github import GithubScraper
+        >>> scraper = GithubScraper()
+        >>> scraper.obtain_packages_data("
+        ...     "dab0012/olivia_finder"
+        ... )
+        [
+            {
+                "name": "dab0012/olivia_finder",
+                "version": "0.1.0",
+                "url": "www.github.com/dab0012/olivia_finder"
+                dependencies: [ ... ]
+            }
+        ]
 
         '''
 
         # Build the request job and do the request
-        url = self._build_url(repository)
+        url = self._build_url(package_name)
         job = self.request_handler.do_request(
             RequestJob("Repository packages", url)
         )
@@ -54,13 +73,11 @@ class GithubScraper(ScraperDataSource):
         if job.response is None:
             raise OliviaFinderException(f'Error obtaining the list of packages from {url}')
         
-        
         # Get the list of packages
         soup = BeautifulSoup(job.response.text, 'html.parser')
 
-
         next_page = True
-        dependencies = []
+        dependencies = {}
 
         # Loop through all pages
         while next_page:
@@ -81,21 +98,33 @@ class GithubScraper(ScraperDataSource):
                 dep_name = dep_name.replace(" ", "").replace("\n", "")
                 dep_version = dep_version.replace(" ", "").replace("\n", "")
 
-                dependencies.append({
+
+                dependencies[dep_name] = {
                     "name": dep_name,
                     "version": dep_version,
                     "url": dep_url
-                })
+                }
 
             # Check if next page exists and update url
             next_page = soup.find("a", {"class":"next_page"}) != None
             if next_page:
                 url = f"https://github.com{soup.find('a', {'class':'next_page'})['href']}"
         
-        return dependencies
+        dep_list = []
+        for dep in dependencies:
+            dep_list.append(dependencies[dep])
+        
+        package = {
+            "name": package_name,
+            "version": "",
+            "url": f"https://github.com/{package_name}",
+            "dependencies": dep_list
+        }
+        
+        return package
     
-
-    def _parser(self, response) -> dict:
+    def _parser(self, response):
+        # TODO: Implement this method        
         pass
 
     @override

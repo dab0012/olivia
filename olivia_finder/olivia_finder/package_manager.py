@@ -5,6 +5,7 @@ import pickle
 import tqdm
 import pandas as pd
 
+from .data_source.repository_scrapers.github import GithubScraper
 from .utilities.config import Configuration
 from .myrequests.request_handler import RequestHandler
 from .data_source.scraper_ds import ScraperDataSource
@@ -323,6 +324,16 @@ class PackageManager():
         # Obtain the package data from the data sources in order
         package_data = None
         for data_source in self.data_sources:
+            
+            if isinstance(data_source, GithubScraper):
+                package_data = data_source.obtain_package_data(package_name)
+                if package_data is not None:
+                    self.logger.debug(f"Package {package_name} found using {data_source.__class__.__name__}")
+                    break
+                else:
+                    self.logger.debug(f"Package {package_name} not found using {data_source.__class__.__name__}")
+
+            
             package_data = data_source.obtain_package_data(package_name)
             if package_data is not None:
                 self.logger.debug(f"Package {package_name} found using {data_source.__class__.__name__}")
@@ -374,6 +385,7 @@ class PackageManager():
 
         # if datasource is instance of ScraperDataSource use the obtain_packages_data method for parallelization
         if isinstance(preferred_data_source, ScraperDataSource):
+            
             packages_data = []
             data_found, not_found = preferred_data_source.obtain_packages_data(
                 package_names=package_names, 
@@ -383,7 +395,7 @@ class PackageManager():
             # pending_packages = not_found
             self.logger.info(f"Packages found: {len(data_found)}, Packages not found: {len(not_found)}")
             packages = [Package.load(package_data) for package_data in packages_data]
-
+            
         # if not use the obtain_package_data method for sequential processing using the data_sources of the list
         else:
 
@@ -574,14 +586,13 @@ class PackageManager():
 
         # Use the data of the package manager
         current_package = self.get_package(package_name)
+        dependencies =  current_package.get_dependency_names() if current_package is not None else []
 
-        if current_package is not None:
-
-            # Get the dependencies of the package and add it to the dependency network if it is not already in it
-            adjlist[package_name] = current_package.get_dependency_names()
+        # Get the dependencies of the package and add it to the dependency network if it is not already in it
+        adjlist[package_name] = dependencies
             
         # Append the dependencies of the package to the dependency network
-        for dependency_name in current_package.get_dependency_names():
+        for dependency_name in dependencies:
 
             if (dependency_name not in adjlist) and  (self.get_package(dependency_name) is not None):
                     

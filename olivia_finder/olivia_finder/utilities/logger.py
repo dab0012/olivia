@@ -156,10 +156,8 @@ class MyLogger:
 
             # Read config values from file to use as default values
             # the values passed as parameters have priority over the values read from the file
-
             config = MyLogger.read_config()
-            if config is None:
-                raise OliviaFinderException("No configuration file found")
+
             
             if level is None:
                 level = config["log_level"]
