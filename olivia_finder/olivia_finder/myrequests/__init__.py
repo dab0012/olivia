@@ -357,15 +357,16 @@ myrequests_file_level = Configuration().get_key('logger', 'myrequests_file_level
 
 # Custom logger for the modulemyrequests_filename
 MyLogger.get_logger(
-    logger_name=myrequests_name,
-    enable_console=myrequests_console,
-    console_level=myrequests_console_level,
-    filename=file_path,
-    file_level=myrequests_file_level,
+  logger_name=myrequests_name,
+  enable_console=myrequests_console,
+  console_level=myrequests_console_level,
+  filename=file_path,
+  file_level=myrequests_file_level,
 )
 
 # Disable logger if it is disabled in the configuration file
 status = Configuration().get_key('logger', 'myrequests_status')
 if status.upper() == 'DISABLED':
-    MyLogger.disable_console(myrequests_name)
-    MyLogger.disable_file(myrequests_name)
+  MyLogger.disable_console("root")
+  MyLogger.disable_console(myrequests_name)
+  MyLogger.disable_file(myrequests_name)

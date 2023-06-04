@@ -3,7 +3,7 @@ from typing import List, Optional
 import tqdm
 from .job import RequestJob
 from .request_worker import RequestWorker
-from  ..utilities.logger import MyLogger
+from ..utilities.logger import MyLogger
 from ..utilities.config import Configuration
 
 
@@ -208,7 +208,7 @@ class RequestHandler:
         self.logger.info(f"Request for {job.key}: {job.url} finished")
 
         if worker.my_jobs[0].response is None:
-            self.logger.error(f"Request for {job.key}: {job.url} failed: response is None")
+            self.logger.info(f"Request for {job.key}: {job.url} failed: response is None")
 
         # Return the job
         return worker.my_jobs[0]

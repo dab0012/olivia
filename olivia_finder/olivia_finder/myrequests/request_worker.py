@@ -1,3 +1,4 @@
+import logging
 import queue
 import time
 from typing import Optional, Tuple
@@ -53,7 +54,6 @@ class RequestWorker(Thread):
         # Create handlers (Singletons)
         self.proxy_handler = ProxyHandler()
         self.user_agent_handler = UserAgentHandler()
-
         self.stopped = False
 
         # Get logger name from config file
@@ -102,12 +102,12 @@ class RequestWorker(Thread):
                 )
 
             except Exception as e:
-                self.logger.error(f"Worker {self.worker_id}: Error doing request job: {e}")
+                self.logger.info(f"Worker {self.worker_id}: Error doing request job: {e}")
                 response = None
 
             # Check if the response is valid
             if response is None or response.status_code != 200:
-                self.logger.error(f"Worker {self.worker_id}: Error doing request job: {response}")
+                self.logger.info(f"Worker {self.worker_id}: Error doing request job: {response}")
                 response = None
 
             # Update the progress bar

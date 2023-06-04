@@ -701,7 +701,7 @@ class PackageManager():
         # If the default dtasource is a CSV_Datasource, we use custom implementation
         defaul_datasource = self.get_default_datasource()
         if isinstance(defaul_datasource, CSVDataSource):
-            return nx.from_pandas_edgelist(defaul_datasource.data, source="name", target="dependency")
+            return nx.from_pandas_edgelist(defaul_datasource.data, source="name", target="dependency", create_using=nx.DiGraph())
 
         # If the default datasource is not a CSV_Datasource, we use the default implementation
         df = self.export_dataframe()

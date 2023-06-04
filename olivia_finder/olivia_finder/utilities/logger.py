@@ -226,6 +226,10 @@ class MyLogger:
                 "If you want to change the configuration of the logger, you must call the static method 'get_logger()' with the new configuration."
             )
 
+        # Disable root logger
+        logging.getLogger().propagate = False
+        logging.getLogger().disabled = True
+
         MyLogger.__instances[name] = self # type: ignore
 
         self.__logger = logging.getLogger(name)
