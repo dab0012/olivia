@@ -34,7 +34,7 @@ class ProxyBuilder(ABC):
         
         # Get logger name from config file
         self.logger = MyLogger.get_logger(
-            Configuration().get_key('logger', 'myrequests_name')
+            Configuration().get_key('logger_myrequests', 'name')
         )
 
         # Check if this clas is not instantiated directly

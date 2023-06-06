@@ -1051,6 +1051,8 @@ cran_libio.obtain_packages_data(['A3', 'AER', "NON_EXISTING_PACKAGE"])
       'url': 'https://cran.r-project.org/package=AER'}]
 
 
-
-
 '''
+
+# Initialize the logger
+from olivia_finder.utilities.logger import MyLogger
+MyLogger.configure('logger_myrequests')

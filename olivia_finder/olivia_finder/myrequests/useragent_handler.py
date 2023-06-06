@@ -69,7 +69,7 @@ class UserAgentHandler():
 
         # Get logger name from config file
         self.logger = MyLogger.get_logger(
-            Configuration().get_key('logger', 'myrequests_name')
+            Configuration().get_key("logger_myrequests", "name")
         )
 
         # Lock to prevent concurrent access to the proxy list

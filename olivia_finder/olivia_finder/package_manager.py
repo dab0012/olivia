@@ -47,17 +47,12 @@ class PackageManager():
 
         self.data_sources: List[DataSource] = data_sources
         self.packages: Dict[str, Package] = {}
+        # Init the logger for the package manager
+        MyLogger.configure("logger_packagemanager")
         self.logger = MyLogger.get_logger(
-            logger_name=Configuration().get_key('logger', 'packagemanager_name'),
-            level=Configuration().get_key('logger', 'global_level'),
-            enable_console=Configuration().get_key('logger', 'packagemanager_console'),
-            console_level=Configuration().get_key('logger', 'packagemanager_console_level'),
-            filename=f"{Configuration().get_key('folders', 'logger')}/{Configuration().get_key('logger', 'packagemanager_filename')}",
-            file_level=Configuration().get_key('logger', 'packagemanager_file_level')
+            logger_name=Configuration().get_key('logger_packagemanager', 'name')
         )
 
-        if Configuration().get_key('logger', 'packagemanager_status').lower() == "disabled":
-            self.logger.disabled = True
 
     def save(self, path: str):
         '''
@@ -96,14 +91,10 @@ class PackageManager():
             PackageManager object if the file exists and is valid, None otherwise
         '''
 
-        # Set the logger
+        # Init the logger for the package manager
+        MyLogger.configure("logger_packagemanager")
         logger = MyLogger.get_logger(
-            logger_name=Configuration().get_key('logger', 'packagemanager_name'),
-            level=Configuration().get_key('logger', 'global_level'),
-            enable_console=Configuration().get_key('logger', 'packagemanager_console'),
-            console_level=Configuration().get_key('logger', 'packagemanager_console_level'),
-            filename=f"{Configuration().get_key('folders', 'logger')}/{Configuration().get_key('logger', 'packagemanager_filename')}",
-            file_level=Configuration().get_key('logger', 'packagemanager_file_level')
+            logger_name=Configuration().get_key('logger_packagemanager', 'name')
         )
 
         # Try to load the package manager from the file
@@ -175,13 +166,9 @@ class PackageManager():
         '''
 
         # Init the logger for the package manager
+        MyLogger.configure("logger_packagemanager")
         logger = MyLogger.get_logger(
-            logger_name=Configuration().get_key('logger', 'packagemanager_name'),
-            level=Configuration().get_key('logger', 'global_level'),
-            enable_console=Configuration().get_key('logger', 'packagemanager_console'),
-            console_level=Configuration().get_key('logger', 'packagemanager_console_level'),
-            filename=f"{Configuration().get_key('folders', 'logger')}/{Configuration().get_key('logger', 'packagemanager_filename')}",
-            file_level=Configuration().get_key('logger', 'packagemanager_file_level')
+            logger_name=Configuration().get_key('logger_packagemanager', 'name')
         )
 
         try:

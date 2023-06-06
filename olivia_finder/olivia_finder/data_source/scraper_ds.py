@@ -1,16 +1,15 @@
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 import requests
 import tqdm
-
 from ..utilities.config import Configuration
+from ..utilities.logger import MyLogger
 from .data_source import DataSource
 from ..myrequests.request_handler import RequestHandler
 from ..myrequests.job import RequestJob
 from ..utilities.exception import OliviaFinderException
-from ..utilities.logger import MyLogger
 
 class ScraperDataSource(DataSource, ABC):
 
@@ -25,7 +24,7 @@ class ScraperDataSource(DataSource, ABC):
     
     def __init__(
         self, 
-        request_handler: RequestHandler = None,
+        request_handler: Optional[RequestHandler] = None,
     ):
         """
         Constructor of the class
@@ -41,9 +40,11 @@ class ScraperDataSource(DataSource, ABC):
 
         # Initialize the not_found list for storing the packages that are not found
         self.not_found = []
-        self.logger = MyLogger.get_logger(
-            Configuration().get_key('logger', 'scraping_name')
-        )
+
+        # Initialize the logger
+        super().__init__()
+
+
 
     def _build_jobs(self, package_names:List[str]) -> List[RequestJob]:
         '''

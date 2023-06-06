@@ -52,7 +52,7 @@ class ProxyHandler():
 
         # Get logger name from config file
         self.logger = MyLogger.get_logger(
-            Configuration().get_key('logger', 'myrequests_name')
+            Configuration().get_key("logger_myrequests", "name")
         )
 
         # Set attributes
@@ -102,7 +102,6 @@ class ProxyHandler():
         >>> proxy = proxy_handler.get_next_proxy()
             'http://1.1.1.1:8080'
         '''
-        self.logger.debug("Getting next proxy")
 
         # Check if proxies are empty and get new ones
         if len(self.proxy_list) == 0:
@@ -117,6 +116,7 @@ class ProxyHandler():
         # proxy rotation
         proxy = self.proxy_list.pop(0)
         self.proxy_list.append(proxy)
+        self.logger.debug(f"Next proxy: {proxy}")
 
         # Handle proxy usage lifetime
         self._handle_lifetime(proxy)

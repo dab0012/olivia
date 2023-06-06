@@ -61,7 +61,7 @@ class CranScraper(ScraperDataSource):
 
     def __init__(
         self, 
-        request_handler: RequestHandler = None
+        request_handler: Optional[RequestHandler] = None
     ):
         '''
         Constructor of the class
@@ -184,7 +184,7 @@ class CranScraper(ScraperDataSource):
             d = soup.find('h2').text
             name = clean_string(d).split(':')[0]
         except Exception as e:
-            self.logger.error(f'Error while obtaining the name of the package: {e}')
+            self.logger.info(f'Error while obtaining the name of the package: {e}')
             return None
 
         # Get package version
@@ -193,7 +193,7 @@ class CranScraper(ScraperDataSource):
             d = soup.find('td', text='Version:').find_next_sibling('td').text
             version = clean_string(d)
         except Exception as e:
-            self.logger.error(f'Error while obtaining the version of the package: {e}')
+            self.logger.info(f'Error while obtaining the version of the package: {e}')
 
         # Get depends
         dep_list = []
@@ -202,7 +202,7 @@ class CranScraper(ScraperDataSource):
             depends = clean_string(d)
             dep_list = r.parse_dependencies(depends)
         except Exception as e:
-            self.logger.error(f'Error while obtaining the dependencies of the package: {e}')
+            self.logger.info(f'Error while obtaining the dependencies of the package: {e}')
 
         # Get imports
         imp_list = []
@@ -211,7 +211,7 @@ class CranScraper(ScraperDataSource):
             imports = clean_string(d)
             imp_list = r.parse_dependencies(imports)
         except Exception as e:
-            self.logger.error(f'Error while obtaining the imports of the package: {e}')
+            self.logger.info(f'Error while obtaining the imports of the package: {e}')
             
         # Build dictionary with package data
         # we consider that dependencies and imports are the same level of importance

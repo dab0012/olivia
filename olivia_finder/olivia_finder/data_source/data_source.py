@@ -2,6 +2,8 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import List
+from ..utilities.config import Configuration
+from ..utilities.logger import MyLogger
 
 class DataSource(ABC):
     '''
@@ -22,6 +24,14 @@ class DataSource(ABC):
         The `name` and `description` parameters are mandatory, and must be passed as arguments.
         The use of this parameters is to be able to identify the data source, and to be able to show a description of it.
     '''
+
+    def __init__(self):
+        '''
+        Initialize the class
+        '''
+        self.logger = MyLogger().get_logger(
+            Configuration().get_key("logger_datasource", "name")
+        )
 
     @abstractmethod
     def obtain_package_names(self) -> List[str]:

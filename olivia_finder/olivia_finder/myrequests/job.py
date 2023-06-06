@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict
+from typing import Dict, Optional
 import requests
 
 class RequestJob:
@@ -10,23 +10,23 @@ class RequestJob:
 
     FINALIZE_KEY = "FINALIZE"
 
-    def __init__(self, key: object, url: str, params: Dict[str, str] = None):
+    def __init__(self, key: object, url: Optional[str], params: Dict[str, str] = None):
         '''
         Constructor
 
         Parameters
         ----------
         key : object
-            Key to identify the job
-        url : str
-            URL to do the request
+            Key of the job
+        url : Optional[str]
+            Url of the request
         params : Dict[str, str]
-            Parameters to pass to the request
+            Parameters of the request
         '''
 
         self.key: object = key
-        self.url: str = url
-        self.response: requests.Response = None
+        self.url: Optional[str] = url
+        self.response: Optional[requests.Response] = None
         self.params: Dict[str, str] = params
 
     def set_response(self, job_response: requests.Response):

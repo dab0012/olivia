@@ -49,21 +49,8 @@ class LibrariesioDataSource(DataSource):
         LibrariesIoException
             If the search object cannot be created
         """
-
+        super().__init__()
         self.platform = platform
-        logger_name = Configuration().get_key('logger', 'librariesio_name')
-        self.logger = MyLogger.get_logger(
-            logger_name=logger_name,
-            level=Configuration().get_key('logger', 'global_level'),
-            enable_console=Configuration().get_key('logger', 'librariesio_console'),
-            console_level=Configuration().get_key('logger', 'librariesio_console_level'),
-            filename=f"{Configuration().get_key('folders', 'logger')}/{Configuration().get_key('logger', 'librariesio_filename')}",
-            file_level=Configuration().get_key('logger', 'librariesio_file_level')
-        )
-
-        if Configuration().get_key('logger', 'librariesio_status').lower() == 'disabled':
-            MyLogger.disable_console(logger_name) 
-            MyLogger.disable_file(logger_name)
 
         # Create the search object
         try:

@@ -342,31 +342,7 @@ print(finalized_jobs[0].response.text[10000:20000])
 
 """
 
+# Initialize the logger
 from olivia_finder.utilities.logger import MyLogger
-from olivia_finder.utilities.config import Configuration
+MyLogger.configure('logger_myrequests')
 
-# Set logger configuration
-
-myrequests_name = Configuration().get_key('logger', 'myrequests_name')
-myrequests_console = Configuration().get_key('logger', 'myrequests_console')
-myrequests_console_level = Configuration().get_key('logger', 'myrequests_console_level')
-myrequests_filename = Configuration().get_key('logger', 'myrequests_filename')
-logs_path = Configuration().get_key('folders', 'logger')
-file_path = f'{logs_path}/{myrequests_filename}'
-myrequests_file_level = Configuration().get_key('logger', 'myrequests_file_level')
-
-# Custom logger for the modulemyrequests_filename
-MyLogger.get_logger(
-  logger_name=myrequests_name,
-  enable_console=myrequests_console,
-  console_level=myrequests_console_level,
-  filename=file_path,
-  file_level=myrequests_file_level,
-)
-
-# Disable logger if it is disabled in the configuration file
-status = Configuration().get_key('logger', 'myrequests_status')
-if status.upper() == 'DISABLED':
-  MyLogger.disable_console("root")
-  MyLogger.disable_console(myrequests_name)
-  MyLogger.disable_file(myrequests_name)

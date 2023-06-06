@@ -57,19 +57,8 @@ class CSVDataSource(DataSource):
         self.dependent_url_field = dependent_url_field
         self.file_path = file_path
 
-        logger_name = Configuration().get_key('logger', 'csvdatasource_name')
-        self.logger = MyLogger.get_logger(
-            logger_name=logger_name,
-            level=Configuration().get_key('logger', 'global_level'),
-            enable_console=Configuration().get_key('logger', 'csvdatasource_console'),
-            console_level=Configuration().get_key('logger', 'csvdatasource_console_level'),
-            filename=f"{Configuration().get_key('folders', 'logger')}/{Configuration().get_key('logger', 'csvdatasource_filename')}",
-            file_level=Configuration().get_key('logger', 'csvdatasource_file_level')
-        )
-
-        if Configuration().get_key('logger', 'csvdatasource_status').lower() == "disabled":
-            MyLogger.disable_console(logger_name=logger_name)
-            MyLogger.disable_file(logger_name=logger_name)
+        # Initialize the logger
+        super().__init__()
 
         # Load the data if the file path is setted
         if self.file_path is not None:

@@ -18,18 +18,16 @@ class OliviaFinderException(Exception, BaseException):
 
     def __str__(self):
         '''String representation of the exception'''
-        return f"EXCEPTION -> type: {self.__class__.__name__}, message: {self.message}"
+        return f"{self.__class__.__name__}: {self.message}"
     
     def __repr__(self):
         '''Representation of the exception'''
-        return f"EXCEPTION -> type: {self.__class__.__name__}, message: {self.message}"
-    
+        return f"{self.__class__.__name__}: {self.message}"
+
 class ConfigFileNotFound(OliviaFinderException):
     """Exception raised when the config file is not found"""
-    pass
 
 class ConfigKeyNotFound(OliviaFinderException):
     """Exception raised when the key is not found in the config file"""
-    pass
     
     

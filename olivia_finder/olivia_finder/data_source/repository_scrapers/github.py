@@ -1,5 +1,5 @@
 import re
-from typing import List, Union
+from typing import List, Optional, Union
 import requests
 from typing_extensions import override
 from bs4 import BeautifulSoup
@@ -16,7 +16,7 @@ class GithubScraper(ScraperDataSource):
 
     '''
 
-    def __init__(self, request_handler: RequestHandler = None):
+    def __init__(self, request_handler: Optional[RequestHandler] = None):
         '''
         Constructor
 

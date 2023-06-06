@@ -58,7 +58,7 @@ class RequestWorker(Thread):
 
         # Get logger name from config file
         self.logger = MyLogger.get_logger(
-            Configuration().get_key('logger', 'myrequests_name')
+            Configuration().get_key('logger_myrequests', 'name')
         )
 
 
@@ -83,9 +83,7 @@ class RequestWorker(Thread):
                 break
 
             # Get proxy and user agent
-            self.logger.debug(f"Worker {self.worker_id}: Obtaining proxy and user agent")
             proxy, user_agent = self._obtain_request_args()
-            self.logger.debug(f"Worker {self.worker_id}: Obtained proxy: {proxy} and user agent: {user_agent}")
 
             # Do the request
             message = f"Worker {self.worker_id}: Doing request"
@@ -102,12 +100,12 @@ class RequestWorker(Thread):
                 )
 
             except Exception as e:
-                self.logger.info(f"Worker {self.worker_id}: Error doing request job: {e}")
+                self.logger.error(f"Worker {self.worker_id}: Error doing request job: {e}")
                 response = None
 
             # Check if the response is valid
             if response is None or response.status_code != 200:
-                self.logger.info(f"Worker {self.worker_id}: Error doing request job: {response}")
+                self.logger.error(f"Worker {self.worker_id}: Error doing request job: {response}")
                 response = None
 
             # Update the progress bar
@@ -120,7 +118,6 @@ class RequestWorker(Thread):
 
             # Mark the task as done
             self.jobs_queue.task_done()
-            self.logger.debug(f"Worker {self.worker_id}: Done for {job.url}")
             
     def _obtain_request_args(self) -> Tuple[str, str]:
         '''
@@ -156,7 +153,7 @@ class RequestWorker(Thread):
         proxy:Optional[str] = None,
         headers: Optional[dict] = None,
         params: Optional[dict] = None
-    ) -> requests.Response:
+    ) -> Optional[requests.Response]:
 
         '''
         Do a request using requests library, with retries, the parameters are the same as requests.get
