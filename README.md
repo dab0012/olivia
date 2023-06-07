@@ -10,6 +10,10 @@ The data obtainded using olivia finder has been published on zenodo
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7938227.svg)](https://doi.org/10.5281/zenodo.7938227)
 
+All data at kaggle
+
+[![Olivia Finder Results](https://img.shields.io/badge/Kaggle-All%20Data%20-%23ffff)](https://www.kaggle.com/datasets/danielalonsob/olivia-finder-results)
+
 
 
 ## Doc pages
@@ -40,10 +44,12 @@ Olivia Finder is destined to be used by developers, researchers and centralized 
 Run olivia-finder notebooks in Deepnote cloud 
 <br>
 
-|  Implementation | Data manipulation | Usage |   |
-|---|---|---|---|
-| [<img src="https://deepnote.com/buttons/try-in-a-jupyter-notebook-white-small.svg">](https://deepnote.com/workspace/olivia-0732-b407de18-1731-4b54-b602-aa8db84aa932/project/olivia-finder-627b89b5-a14d-43dd-8e37-100bca8981fc/notebook/olivia-finder%2Folivia_finder%2Fnotebooks%2Folivia_finder_implementation_details-5721bfb8509248bdae331a339efef4aa) | [<img src="https://deepnote.com/buttons/try-in-a-jupyter-notebook-white-small.svg">](https://deepnote.com/workspace/olivia-0732-b407de18-1731-4b54-b602-aa8db84aa932/project/olivia-finder-627b89b5-a14d-43dd-8e37-100bca8981fc/notebook/olivia-finder%2Folivia_finder%2Fnotebooks%2Folivia_finder_implementation_details-5721bfb8509248bdae331a339efef4aa) | [<img src="https://deepnote.com/buttons/try-in-a-jupyter-notebook-white-small.svg">](https://deepnote.com/workspace/olivia-0732-b407de18-1731-4b54-b602-aa8db84aa932/project/olivia-finder-627b89b5-a14d-43dd-8e37-100bca8981fc/notebook/olivia-finder%2Folivia_finder%2Fnotebooks%2Folivia_finder_implementation_details-5721bfb8509248bdae331a339efef4aa) |   
+|  Implementation | Data manipulation | Usage | Bowtie Metrics |Github Example  | 
+|---|---|---|---|---|
+| [![Olivia Finder - Implementation](https://img.shields.io/badge/Kaggle-Implementation%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/olivia-finder-implementation) | [![Data Manipulation](https://img.shields.io/badge/Kaggle-Data%20Manipulation%20-%23ffff)](https://www.kaggle.com/danielalonsob/olivia-finder-data-manipulation) | [<img src="https://deepnote.com/buttons/try-in-a-jupyter-notebook-white-small.svg">](https://deepnote.com/@olivia-0732/olivia-finder-eacd7775-abe3-4a75-89fa-db586279d05f) | [![Bowtie](https://img.shields.io/badge/Kaggle-Bowtie%20Metrics%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/olivia-finder-bowtie-metrics) | [![Github example](https://img.shields.io/badge/Kaggle-Github%20Example%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/olivia-finder-github-example)
 
+
+ 
 ## License
 
 Olivia Finder is distributed under the MIT License. See [LICENSE](https://github.com/dab0012/olivia-finder/blob/06fb2d32146134e833df36bbf9828d4a9c72dc30/LICENSE) file for details.
