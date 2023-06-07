@@ -90,9 +90,10 @@ class GithubScraper(ScraperDataSource):
             for d in soup.findAll("li", {"class":"Box-row"}):
 
                 # Get data and store in the list
-                dep_name = d.find("a").text
+                # dep_name = d.find("a").text
+                dep_name = d.find("a")['href'][1:]
                 dep_version = d.find("span").text
-                dep_url = f'https://github.com{d.find("a")["href"]}'
+                dep_url = f'https://github.com/{dep_name}'
 
                 # Clean up data
                 dep_name = dep_name.replace(" ", "").replace("\n", "")
