@@ -52,7 +52,9 @@ Run olivia-finder notebooks in Deepnote cloud
  
 ## License
 
-Olivia Finder is distributed under the MIT License. See [LICENSE](https://github.com/dab0012/olivia-finder/blob/06fb2d32146134e833df36bbf9828d4a9c72dc30/LICENSE) file for details.
+Olivia Finder is distributed under the MIT License. 
+
+See [LICENSE](https://github.com/dab0012/olivia-finder/blob/06fb2d32146134e833df36bbf9828d4a9c72dc30/LICENSE) file for details.
 
 ## Olivia Notebooks (Previous TFG)
 
@@ -60,13 +62,6 @@ Olivia Finder is distributed under the MIT License. See [LICENSE](https://github
 |---|---|---|---|
 |[![Olivia - Model](https://img.shields.io/badge/Jupyter-Olivia%20--%20Model-%23fa0297)](https://github.com/dsr0018/olivia/blob/master/A-Model.ipynb) | [![Olivia - Analysis](https://img.shields.io/badge/Jupyter-Olivia%20--%20Analysis-%23fa0297)](https://github.com/dsr0018/olivia/blob/master/B-Analysis.ipynb)  |  [![Olivia - Imunization](https://img.shields.io/badge/Jupyter-Olivia%20--%20Imunization-%23fa0297)](https://github.com/dsr0018/olivia/blob/master/C-Immunization.ipynb) |  [![https://github.com/dsr0018/olivia](https://img.shields.io/badge/Github-Olivia-purple)](https://github.com/dsr0018/olivia) |
 | [![Olivia - Model](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dab0012/olivia-finder/blob/master/notebooks/olivia/A-Model.ipynb) |  [![Olivia - Model](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dab0012/olivia-finder/blob/master/notebooks/olivia/B-Analysis.ipynb) | [![Olivia - Model](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dab0012/olivia-finder/blob/master/notebooks/olivia/C-Immunization.ipynb)  |  
-
-
-
-
-
-
-
 
 
 **Acknowledgements**
