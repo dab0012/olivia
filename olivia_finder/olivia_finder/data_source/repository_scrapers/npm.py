@@ -1,24 +1,5 @@
-'''
-npm.py
-==================
-
-Description
------------
-
-Module that contains ...
-
-File information:
-    - File: npm.py
-    - Project: scrapers
-    - Created Date: 2023-03-18 14:40:56
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
-
-'''
-
-
 import os
-from typing import List
+from typing import List, Optional
 import requests
 from typing_extensions import override
 from tqdm import tqdm
@@ -53,12 +34,10 @@ class NpmScraper(ScraperDataSource):
     NPM_PACKAGE_REGISTRY_URL: str   = 'https://skimdb.npmjs.com/registry'
     NPM_PACKAGE_LIST_URL: str       = 'https://skimdb.npmjs.com/registry/_all_docs'
     NPM_REPO_URL: str               = 'https://www.npmjs.com/package'
-    NAME: str                       = "NPM Scraper"
-    DESCRIPTION: str                = "Scraper class implementation for the NPM package manager."
 
     def __init__(
         self, 
-        request_handler: RequestHandler = None,
+        request_handler: Optional[RequestHandler] = None,
     ):
         '''
         Constructor of the class
@@ -306,6 +285,16 @@ class NpmScraper(ScraperDataSource):
 
         dep_list = [
             {'name': key, 'version': value} for key, value in dependencies.items()
+        ]
+
+        # get dev dependencies
+        try:
+            dev_dependencies = response_json['versions'][package_version]['devDependencies']
+        except KeyError:
+            dev_dependencies = {}
+
+        dep_list += [
+            {'name': key, 'version': value} for key, value in dev_dependencies.items()
         ]
 
         return {
