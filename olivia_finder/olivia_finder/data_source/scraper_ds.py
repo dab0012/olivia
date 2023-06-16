@@ -10,6 +10,7 @@ from .data_source import DataSource
 from ..myrequests.request_handler import RequestHandler
 from ..myrequests.job import RequestJob
 from ..utilities.exception import OliviaFinderException
+import gc
 
 class ScraperDataSource(DataSource, ABC):
 
@@ -65,22 +66,19 @@ class ScraperDataSource(DataSource, ABC):
 
     def obtain_packages_data(
         self, 
-        package_names: List[str] = None,
-        progress_bar: tqdm.tqdm = None,
-    ) -> Tuple[Dict[Dict], List[str]]:
+        package_names: Optional[List[str]] = None,
+        progress_bar: Optional[tqdm.tqdm] = None,
+    ) -> Tuple[List[Dict], List[str]]:
         '''
         Scrape a list of packages from a package manager, if the package is not found, it is added to the not_found list
         Overrides the method of the DataSource class
 
         Parameters
         ----------
-        package_names : List[str], optional
-            List of package names to scrape, by default None
-        progress_bar : tqdm.tqdm, optional
-            Progress bar for visualizing the progress, by default None
-        full_scrape : bool, optional
-            If True, it tries to scrape all the packages obtainig the package names from the data source, by default False
-            Only works if package_names is None
+        package_names : Optional[List[str]], optional
+            List of package names to scrape, if None, the package names are obtained from the data source, by default None
+        progress_bar : Optional[tqdm.tqdm], optional
+            Progress bar, by default None
 
         Raises
         ------
@@ -101,7 +99,7 @@ class ScraperDataSource(DataSource, ABC):
         # If package_names is None, obtain the package names from the data source
         if package_names is None or not package_names:
             self.logger.debug('Package names list is None or empty')
-            self.logger.debug(f'Obtaining package names from Scraper: {self.name}, {self.description}')
+            self.logger.debug('Obtaining package names from data source')
             package_names = self.obtain_package_names()
 
         else:
@@ -142,6 +140,7 @@ class ScraperDataSource(DataSource, ABC):
         del finnalized_jobs
         del packages_keys
         del package_names
+        gc.collect()
 
         # Return the packages and the packages not found
         return packages, not_found

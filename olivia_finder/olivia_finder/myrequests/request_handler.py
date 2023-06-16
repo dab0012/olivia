@@ -1,15 +1,16 @@
 import queue
-from typing import List, Optional
 import tqdm
+import gc
+from typing import List, Optional
 from .job import RequestJob
 from .request_worker import RequestWorker
 from ..utilities.logger import MyLogger
 from ..utilities.config import Configuration
 
-
 class RequestHandler:
     '''
-    Class to handle requests in with concurrent workers
+    Main class of the myrequests package. It handles the requests to the server using concurrent workers.
+
     '''
 
     PARALLEL_WORKERS = 8
@@ -20,20 +21,14 @@ class RequestHandler:
         '''
 
         # Get logger name from config file
-        self.logger = MyLogger.get_logger(
-            Configuration().get_key('logger_myrequests', 'name')
-        )
-
+        self.logger = MyLogger.get_logger(Configuration().get_key('logger_myrequests', 'name'))
         self.logger.debug("Creating RequestHandler object")
 
-        # Create jobs queue
+        # Initialize 
         self.jobs_queue = queue.Queue()
-
-        # Number of workers
         self.num_workers = 1
         self.workers: List[RequestWorker] = []
 
-    
     def _clear(self):
         '''
         Reset the RequestHandler object
@@ -42,16 +37,18 @@ class RequestHandler:
         # Delete the objects
         del self.jobs_queue
         del self.workers
-        
-        # Create jobs queue
-        self.jobs_queue = queue.Queue()
-        
-        # Number of workers
+        gc.collect()
+
+        # Initialize        
+        self.jobs_queue = queue.Queue()        
         self.num_workers = 1
         self.workers: List[RequestWorker] = []
 
-
-    def _setup_jobs(self, request_jobs: List[RequestJob], num_workers: int, progress_bar: Optional[tqdm.tqdm] = None):
+    def _setup_jobs(
+            self, 
+            request_jobs: List[RequestJob], 
+            num_workers: int, 
+            progress_bar: Optional[tqdm.tqdm] = None) -> None:
         '''
         Setup the jobs
 
@@ -87,7 +84,6 @@ class RequestHandler:
 
         self.logger.debug(f"Created workers: {len(self.workers)}")
 
-    
     def _setup_job(self, request_job: RequestJob):
         '''
         Setup a single job
@@ -111,8 +107,11 @@ class RequestHandler:
         )
         self.logger.debug("Job created")
 
-
-    def do_requests(self, request_jobs: List[RequestJob], num_workers: int = PARALLEL_WORKERS, progress_bar: Optional[tqdm.tqdm] = None) -> List[RequestJob]:
+    def do_requests(
+            self, 
+            request_jobs: List[RequestJob], 
+            num_workers: int = PARALLEL_WORKERS, 
+            progress_bar: Optional[tqdm.tqdm] = None) -> List[RequestJob]:
         '''
         Do the requests
 
@@ -138,7 +137,7 @@ class RequestHandler:
         >>>     print(f'key: {job.key}, url: {job.url}, response: {job.response}')
         '''
 
-        # reet the class
+        # Clear the RequestHandler object
         self._clear()
 
         self.logger.info("Starting requests")
@@ -165,6 +164,10 @@ class RequestHandler:
             workers_finalized_jobs.extend(worker.my_jobs.copy())
 
         self.logger.info("All requests finished")
+
+        # Clear memory
+        self._clear()
+
         return workers_finalized_jobs
 
     def do_request(self, job: RequestJob):

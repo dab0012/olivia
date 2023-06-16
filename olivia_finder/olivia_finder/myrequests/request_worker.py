@@ -26,11 +26,15 @@ class RequestWorker(Thread):
     '''
 
     # Constants
-    RETRIES = 3
-    RETRY_DELAY = 3
+    RETRIES = 0
+    RETRY_DELAY = 0
     TIMEOUT = 30
     
-    def __init__(self, worker_id:int, jobs_queue: queue.Queue, progress_bar: Optional[tqdm.tqdm] = None):
+    def __init__(
+            self, 
+            worker_id: int, 
+            jobs_queue: queue.Queue, 
+            progress_bar: Optional[tqdm.tqdm] = None):
         '''
         Constructor
 
@@ -64,41 +68,32 @@ class RequestWorker(Thread):
 
     def run(self):
         '''
-        Run the worker
+        Run the worker thread till it receives an exit signal
         '''
 
         while not self.stopped:
 
             # Get next url from the queue
             job = self.jobs_queue.get()
+            message =   f"Worker {self.worker_id}: Got job from queue\n" + \
+                        f"Worker {self.worker_id}: {job}" + \
+                        f"Worker {self.worker_id}: Queue size: {self.jobs_queue.qsize()}"
 
-            message = f"Worker {self.worker_id}: Got job from queue\n"
-            message += f"Job key: {job.key}\n"
-            message += f"url: {job.url}"
             self.logger.debug(message)
-
 
             # If exit string is received, break the loop
             if job.key == RequestJob.FINALIZE_KEY:
                 break
 
-            # Get proxy and user agent
-            proxy, user_agent = self._obtain_request_args()
-
             # Do the request
             message = f"Worker {self.worker_id}: Doing request"
             self.logger.debug(message)
-
             try:
-
-                # Do the request using requests
-                response = self._do_request(
-                    job.url, 
-                    proxy=proxy, 
-                    headers={"User-Agent": user_agent}, 
-                    params=job.params
-                )
-
+                proxy, user_agent = self._obtain_request_args()
+                response = self._do_request(job.url, 
+                                            proxy=proxy, 
+                                            headers={"User-Agent": user_agent}, 
+                                            params=job.params)
             except Exception as e:
                 self.logger.error(f"Worker {self.worker_id}: Error doing request job: {e}")
                 response = None
@@ -108,16 +103,13 @@ class RequestWorker(Thread):
                 self.logger.error(f"Worker {self.worker_id}: Error doing request job: {response}")
                 response = None
 
-            # Update the progress bar
-            if self.progress_bar is not None:
-                self.progress_bar.update(1)
-
             # Set the response in the job and add it to the list of jobs
             job.set_response(response)
             self.my_jobs.append(job)
-
-            # Mark the task as done
             self.jobs_queue.task_done()
+
+            if self.progress_bar is not None:
+                self.progress_bar.update(1)
             
     def _obtain_request_args(self) -> Tuple[str, str]:
         '''
@@ -128,9 +120,7 @@ class RequestWorker(Thread):
         tuple[str, str]
             Tuple with the proxy and user agent to use for the request
         '''
-        
-        # Protect the access to the objects
-        
+
         # Get a proxy with the lock
         self.proxy_handler.lock.acquire()
         proxy = self.proxy_handler.get_next_proxy()
@@ -143,17 +133,15 @@ class RequestWorker(Thread):
         
         return proxy, user_agent
         
-    def _do_request(
-        self, 
-        url,
-        timeout=TIMEOUT,
-        retries=RETRIES,
-        retry_delay=RETRY_DELAY,
-        data:Optional[dict] = None,
-        proxy:Optional[str] = None,
-        headers: Optional[dict] = None,
-        params: Optional[dict] = None
-    ) -> Optional[requests.Response]:
+    def _do_request(self, 
+                    url: str,
+                    timeout: int = TIMEOUT,
+                    retries: int = RETRIES,
+                    retry_delay: int = RETRY_DELAY,
+                    data: Optional[dict] = None,
+                    proxy: Optional[str] = None,
+                    headers: Optional[dict] = None,
+                    params: Optional[dict] = None) -> Optional[requests.Response]:
 
         '''
         Do a request using requests library, with retries, the parameters are the same as requests.get
@@ -186,42 +174,37 @@ class RequestWorker(Thread):
 
         '''
         
+        # Do the request
+        if proxy is None:
+            curr_proxy = None
+        else:
+            curr_proxy = {"http": proxy}
+
         try:
-            # Do the request using requests
+            response = requests.get(url, 
+                                    timeout=timeout, 
+                                    headers=headers,
+                                    proxies=curr_proxy,
+                                    data=data,
+                                    params=params)
 
-            curr_proxy = {
-                "http": proxy
-            }
-            
-            response = requests.get(
-                url, 
-                timeout=timeout, 
-                headers=headers,
-                proxies=curr_proxy,
-                data=data,
-                params=params,
-            )
-
-        except Exception as ex_1:
-
-            self.logger.error(f"Worker {self.worker_id}: {url}, Exception: {ex_1}")
-            response = None
+        except Exception as e1:
 
             # Retry if there are retries left
+            self.logger.error(f"Worker {self.worker_id}: {url}, Exception: {e1}")
+            response = None
             while response is None and retries > 0:
                 retries -= 1
                 time.sleep(retry_delay)
                 self.logger.debug(f"Worker {self.worker_id}: Retrying {url}, Retries left: {retries}")
                 try:
-                    response = requests.get(
-                        url, 
-                        timeout=timeout, 
-                        headers=headers,
-                        proxies=curr_proxy,
-                        data=data,
-                    )
-                except Exception as e_2:
-                    self.logger.error(f"Worker {self.worker_id}: {url}, Exception: {e_2}")
+                    response = requests.get(url, 
+                                            timeout=timeout, 
+                                            headers=headers,
+                                            proxies=curr_proxy,
+                                            data=data)
+                except Exception as e2:
+                    self.logger.error(f"Worker {self.worker_id}: {url}, Exception: {e2}")
                     response = None
 
         self.logger.debug(f"Worker {self.worker_id}: {url}, Response: {response}")
