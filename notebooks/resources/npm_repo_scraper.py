@@ -48,7 +48,6 @@ processed_batches = os.listdir(out_folder)
 num_csvs = len([file for file in processed_batches if file.endswith(".csv")])
 batched_packages = batched_packages[num_csvs:]
 
-
 # Set up de la carpeta de salida y el fichero de paquetes no encontrados
 # ---------------------------------------------------------------------
 if not os.path.exists(out_folder):
@@ -106,7 +105,9 @@ for batch in tqdm.tqdm(batched_packages):
 
     # Convertimos la lista de diccionarios en un dataframe y lo guardamos en un csv
     df = pd.DataFrame(batch_data)
-    df.to_csv(f"{out_folder}/npm_packages_found_{batch_id}.csv", index=False)
+    first_package = batch[0]
+    last_package = batch[-1]
+    df.to_csv(f"{out_folder}/npm_packages_found_{batch_id}_{first_package}:{last_package}.csv", index=False)
 
     # Clear memory
     print("Clearing memory...")
@@ -121,14 +122,18 @@ print("Scraping done!")
 
 print("Concatenating csvs...")
 dfs = []
-for i in tqdm.tqdm(range(num_batches)):
-    df = pd.read_csv(f"{out_folder}/npm_packages_found_{i}.csv")
+
+# list all csv files in the directory 
+csv_files = os.listdir(out_folder)
+csv_files = [file for file in csv_files if file.endswith(".csv")]
+
+for f in tqdm.tqdm(csv_files):
+    df = pd.read_csv(f)
     dfs.append(df)
 
     # Clear memory
     del df
     gc.collect()
-
 
 df = pd.concat(dfs)
 df.to_csv(f"{out_folder}/all_npm_packages_found.csv", index=False)
