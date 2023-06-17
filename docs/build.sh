@@ -2,12 +2,19 @@
 
 # pip install pdoc
 
+# Añadiar al path el directorio de olivia_finder
+export PYTHONPATH=$PYTHONPATH:$(pwd)/olivia_finder/
+
+# Añadir al path el fichero de configuración de olivia_finder
+export OLIVIA_FINDER_CONFIG_FILE_PATH=$(pwd)/olivia_finder/config.ini
+
+
 # Si se ha usado el flag --theme dark, se añade el css de dark mode
 # Se sobrescribe el fichero de tema original de pdoc en el venv .venv/lib/python3.9/site-packages/pdoc/templates/theme.css
 if [ "$1" == "--theme" ] && [ "$2" == "dark" ]; then
-    cp docs/css/dark_theme.css .venv/lib/python3.9/site-packages/pdoc/templates/theme.css
+    cp docs/css/dark_theme.css .venv/lib/python3.10/site-packages/pdoc/templates/theme.css
 else
-    cp docs/css/default_theme.css .venv/lib/python3.9/site-packages/pdoc/templates/theme.css
+    cp docs/css/default_theme.css .venv/lib/python3.10/site-packages/pdoc/templates/theme.css
 fi
 
 # Remove old docs

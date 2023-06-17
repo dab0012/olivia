@@ -168,7 +168,7 @@ class UserAgentHandler():
         try:
             soup = BeautifulSoup(user_agents_request, 'html.parser')
             div = soup.find(id="liste")     # Find the div element with id = liste
-            lis = div.find_all("li")        # Search for all li elements within the div element
+            lis = div.find_all("li")        # type: ignore # Search for all li elements within the div element
 
             # Stores user agents in a list
             for li in lis:

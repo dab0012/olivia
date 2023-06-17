@@ -4,8 +4,6 @@ from abc import ABC, abstractmethod
 from typing import Dict, List, Optional, Tuple, Union
 import requests
 import tqdm
-from ..utilities.config import Configuration
-from ..utilities.logger import MyLogger
 from .data_source import DataSource
 from ..myrequests.request_handler import RequestHandler
 from ..myrequests.job import RequestJob

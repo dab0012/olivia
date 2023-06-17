@@ -1,21 +1,3 @@
-'''
-bioconductor.py
-==================
-
-Description
------------
-
-Module that contains ...
-
-File information:
-    - File: bioconductor.py
-    - Project: scrapers
-    - Created Date: 2023-03-18 14:40:56
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
-
-'''
-
 from typing import Dict, List
 import requests
 from bs4 import BeautifulSoup
@@ -26,7 +8,6 @@ from . import r
 from ..scraper_ds import ScraperDataSource
 from ...myrequests.request_handler import RequestHandler
 from ...utilities.utilities import clean_string
-from ...utilities.logger import MyLogger
 
 # Selenium imports (for scraping JavaScript pages)
 from selenium import webdriver                                    

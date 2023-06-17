@@ -10,7 +10,7 @@ class RequestJob:
 
     FINALIZE_KEY = "FINALIZE"
 
-    def __init__(self, key: object, url: Optional[str], params: Dict[str, str] = None):
+    def __init__(self, key: object, url: Optional[str], params: Optional[Dict[str, str]] = None):
         '''
         Constructor
 
@@ -27,7 +27,7 @@ class RequestJob:
         self.key: object = key
         self.url: Optional[str] = url
         self.response: Optional[requests.Response] = None
-        self.params: Dict[str, str] = params
+        self.params: Optional[Dict[str, str]] = params
 
     def set_response(self, job_response: requests.Response):
         '''

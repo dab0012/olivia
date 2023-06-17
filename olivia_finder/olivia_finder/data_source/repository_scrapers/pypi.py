@@ -1,12 +1,11 @@
 import re
-from typing import List
+from typing import List, Optional
 import requests
 from typing_extensions import override
 from bs4 import BeautifulSoup
 from ..scraper_ds import ScraperDataSource
 from ...myrequests.request_handler import RequestHandler
 from ...myrequests.job import RequestJob
-from ...utilities.logger import MyLogger
 from ...utilities.exception import OliviaFinderException
 
 class PypiScraper(ScraperDataSource):
@@ -27,7 +26,7 @@ class PypiScraper(ScraperDataSource):
     PYPI_PACKAGE_DATA_URL: str  = "https://pypi.org/pypi/"
 
 
-    def __init__(self, request_handler: RequestHandler = None):
+    def __init__(self, request_handler: Optional[RequestHandler] = None):
         '''
         Constructor
         '''
@@ -68,6 +67,7 @@ class PypiScraper(ScraperDataSource):
         
         soup = BeautifulSoup(job.response.text, 'html.parser')
         
+        pakage_list = []
         try:
             # Get the list of packages
             pakage_list = [a.text for a in soup.find_all('a')]

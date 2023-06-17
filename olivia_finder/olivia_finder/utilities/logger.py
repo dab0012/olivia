@@ -14,10 +14,13 @@ class MyLogger:
 
         Parameters
         ----------
-        logger_name : str
-            Name of the logger to initialize
-        config : Configuration
-            Configuration object with the configuration of the logger
+        config_key : str
+            Key of the configuration file that contains the logger configuration
+
+        Returns
+        -------
+        logging.Logger
+            Logger with the given name
         '''
 
         logger_name = Configuration().get_key(config_key, 'name')
@@ -103,10 +106,19 @@ class MyLogger:
         """
         Enables the console
 
+        Parameters
+        ----------
+        logger_name : str
+            Name of the logger to enable the console for.
+        
+        console_level : str
+            Log level to configure.
+
         Examples
         --------
         >>> from my_logger import MyLogger
         >>> MyLogger.enable_console()
+
         """
         
         # The handler is created for the console
@@ -124,6 +136,17 @@ class MyLogger:
     def enable_file(logger_name: str, log_file: str, log_file_level: str) -> None:
         """
         Enables the file
+
+        Parameters
+        ----------
+        logger_name : str
+            Name of the logger to enable the file for.
+
+        log_file : str
+            Name of the file to store the logs in.
+
+        log_file_level : str
+            Log level to configure.
 
         Examples
         --------
@@ -151,35 +174,35 @@ class MyLogger:
         
         Parameters
         ----------
-            logger_name : str
-                Name of the logger to configure the level for.
-                
-            handler_type : str
-                Type of handler to configure.
-                
-            level : str
-                Log level to configure.
-                
-        .. note::
-            Valid handler types are: 
-            -   ``console`` for the console handler
-            -   ``file`` for the file handler
-            -   ``all`` for both handlers
-            -   ``global`` for all handlers of all loggers
+        logger_name : str
+            Name of the logger to configure the level for.
             
-            Valid log levels are:
-            -   ``DEBUG`` for debugging messages
-            -   ``INFO`` for informational messages
-            -   ``WARNING`` for warning messages
-            -   ``ERROR`` for error messages
-            -   ``CRITICAL`` for critical messages
-            -   ``NOTSET`` for messages without level
+        handler_type : str
+            Type of handler to configure.
+            
+        level : str
+            Log level to configure.
+            
+    .. note::
+        Valid handler types are: 
+        -   ``console`` for the console handler
+        -   ``file`` for the file handler
+        -   ``all`` for both handlers
+        -   ``global`` for all handlers of all loggers
+        
+        Valid log levels are:
+        -   ``DEBUG`` for debugging messages
+        -   ``INFO`` for informational messages
+        -   ``WARNING`` for warning messages
+        -   ``ERROR`` for error messages
+        -   ``CRITICAL`` for critical messages
+        -   ``NOTSET`` for messages without level
                                 
         Raises
         ------
-            NotImplementedError
-                If the specified handler type is not valid
-                If the specified log level is not valid
+        NotImplementedError
+            If the specified handler type is not valid
+            If the specified log level is not valid
                 
         Examples
         --------
@@ -190,16 +213,16 @@ class MyLogger:
         """
         
         logger = logging.getLogger(logger_name)
-
+        handler_list = []
         # Validate the handler type
         if handler_type == "console":
-            handler = logger.handlers[0]
+            handler_list.append(logger.handlers[0])
         elif handler_type == "file":
-            handler = logger.handlers[1]
+            handler_list.append(logger.handlers[1])
         elif handler_type == "all":
-            handler = logger.handlers
+            handler_list = logger.handlers
         elif handler_type == "global":
-            handler = logging.root.handlers
+            handler_list = logging.root.handlers
         else:
             raise NotImplementedError(
                 "The specified handler type is not valid",
@@ -207,28 +230,30 @@ class MyLogger:
                 "Valid handler types are: 'console', 'file', 'all', 'global'",
             )
 
-        # Validate the log level
-        if level.upper() == "DEBUG":
-            handler.setLevel(logging.DEBUG)
-        elif level.upper() == "INFO":
-            handler.setLevel(logging.INFO)
-        elif level.upper() == "WARNING":
-            handler.setLevel(logging.WARNING)
-        elif level.upper() == "ERROR":
-            handler.setLevel(logging.ERROR)
-        elif level.upper() == "CRITICAL":
-            handler.setLevel(logging.CRITICAL)
-        elif level.upper() == "NOTSET":
-            handler.setLevel(logging.NOTSET)
-        else:
-            raise NotImplementedError(
-                "The specified log level is not valid",
-                "\n",
-                "Valid log levels are: 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL', 'NOTSET'",
-            )
+        for handler in handler_list:
+
+            # Validate the log level
+            if level.upper() == "DEBUG":
+                handler.setLevel(logging.DEBUG)
+            elif level.upper() == "INFO":
+                handler.setLevel(logging.INFO)
+            elif level.upper() == "WARNING":
+                handler.setLevel(logging.WARNING)
+            elif level.upper() == "ERROR":
+                handler.setLevel(logging.ERROR)
+            elif level.upper() == "CRITICAL":
+                handler.setLevel(logging.CRITICAL)
+            elif level.upper() == "NOTSET":
+                handler.setLevel(logging.NOTSET)
+            else:
+                raise NotImplementedError(
+                    "The specified log level is not valid",
+                    "\n",
+                    "Valid log levels are: 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL', 'NOTSET'",
+                )
         
         # Set the level of the logger
-        logger.setLevel(handler.level)
+        logger.setLevel(level.upper())
 
 class ConsoleLogFormatter(logging.Formatter):
     """

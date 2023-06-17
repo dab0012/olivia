@@ -1,52 +1,42 @@
-'''
-package.py
-==========
-
-Description
------------
-
-Module that contains the class that represents a package in the network
-
-File information:
-    - File: package.py
-    - Project: olivia_finder
-    - Created Date: 2023-03-18 14:40:56
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
-
-'''
-
 from __future__ import annotations
 from typing import List, Optional
 
 class Package:
     '''
     Class that represents a package in the network
-
-    Attributes
-    ----------
-    name : str
-        Name of the package
-    version : str = None
-        Version of the package
-    url : str = None
-        URL of the package
-    dependencies : List[Package] = None
-        List of dependencies of the package
     '''
 
     def __init__(
         self,
         name: str,
-        version: str = None,
-        url: str = None,
-        dependencies: List[Package] = None
+        version: Optional[str] = None,
+        url: Optional[str] = None,
+        dependencies: Optional[List[Package]] = None
     ):
-        '''Constructor'''
+        '''
+        Constructor of the class
+
+        Parameters
+        ----------
+        name : str
+            Name of the package
+        version : Optional[str], optional
+            Version of the package, by default None
+        url : Optional[str], optional
+            Url of the package, by default None
+        dependencies : Optional[List[Package]], optional
+            List of dependencies of the package, by default None
+
+        Examples
+        --------
+        >>> from olivia_finder.package import Package
+        >>> package = Package("numpy", "1.0.0", "https://numpy.org")
+        
+        '''
 
         self.name: str = name
-        self.version: str = version
-        self.url: str = url
+        self.version: Optional[str] = version
+        self.url: Optional[str] = url
         self.dependencies: List[Package] = [] if dependencies is None else dependencies
 
     def print(self):
@@ -165,7 +155,7 @@ class Package:
         if 'url' in data:
             self.url = data['url']
         if 'dependencies' in data:
-            self.dependencies = set(data['dependencies'])
+            self.dependencies = list(set(data['dependencies']))
 
     def to_dict(self):
         '''

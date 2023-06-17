@@ -1,6 +1,5 @@
 from typing import List, Union
 from ..utilities.exception import OliviaFinderException
-from ..utilities.logger import MyLogger
 from ..utilities.config import Configuration
 from .data_source import DataSource
 import sys

@@ -1,21 +1,3 @@
-'''
-cran.py
-==================
-
-Description
------------
-
-Module that contains ...
-
-File information:
-    - File: cran.py
-    - Project: scrapers
-    - Created Date: 2023-03-18 14:40:56
-    - Author: Daniel Alonso Báscones
-    - Copyright (c) 2023 Daniel Alonso Báscones
-
-'''
-
 import requests
 from typing_extensions import override
 from bs4 import BeautifulSoup
@@ -25,7 +7,6 @@ from . import r
 from ..scraper_ds import ScraperDataSource
 from ...myrequests.request_handler import RequestHandler
 from ...myrequests.job import RequestJob
-from ...utilities.logger import MyLogger
 from ...utilities.utilities import clean_string
 
 class CranScraper(ScraperDataSource):
@@ -159,7 +140,7 @@ class CranScraper(ScraperDataSource):
         return f'{self.CRAN_PACKAGE_DATA_URL}{package_name}'
 
     @override
-    def _parser(self, response: requests.Response) -> Union[Dict[str, str], None]:
+    def _parser(self, response: requests.Response) -> Optional[Dict]:
         '''
         Parse the HTML of a package page in the CRAN website
 
@@ -170,8 +151,8 @@ class CranScraper(ScraperDataSource):
 
         Returns
         -------
-        Dict[str, str]
-            dictionary with the data of the package
+        Dict
+            Dictionary with the information of the package, or
         None
             if an error occurs
 

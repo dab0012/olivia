@@ -4,8 +4,6 @@ import os
 from typing import List, Optional
 import pandas as pd
 import tqdm
-from ..utilities.logger import MyLogger
-from ..utilities.config import Configuration
 from .data_source import DataSource
 
 class CSVDataSource(DataSource):
@@ -141,6 +139,12 @@ class CSVDataSource(DataSource):
         >>> data_source.obtain_package_names()
         ["package1", "package2", "package3"]    
         """
+
+        # Check if the data is loaded
+        if self.data is None:
+            raise ValueError("Data is not loaded.")
+        
+        # Return the list of packages
         return sorted(self.data[self.dependent_field].unique())
     
     def obtain_package_data(self, package_name: str, override_previous: bool = True) -> dict:
@@ -175,6 +179,10 @@ class CSVDataSource(DataSource):
             ]
         }
         """
+
+        # Check if the data is loaded
+        if self.data is None:
+            raise ValueError("Data is not loaded.")
 
         # Get the rows of the package
         package_rows = self.data[self.data[self.dependent_field] == package_name]

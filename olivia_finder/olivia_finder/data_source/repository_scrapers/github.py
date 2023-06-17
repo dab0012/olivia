@@ -1,4 +1,3 @@
-import re
 from typing import List, Optional, Union
 import requests
 from typing_extensions import override
@@ -6,7 +5,6 @@ from bs4 import BeautifulSoup
 from ..scraper_ds import ScraperDataSource
 from ...myrequests.request_handler import RequestHandler
 from ...myrequests.job import RequestJob
-from ...utilities.logger import MyLogger
 from ...utilities.exception import OliviaFinderException
 
 class GithubScraper(ScraperDataSource):

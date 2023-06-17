@@ -1,4 +1,3 @@
-import logging
 import queue
 import time
 from typing import Optional, Tuple

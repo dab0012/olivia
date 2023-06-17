@@ -6,7 +6,6 @@ from tqdm import tqdm
 
 from ..scraper_ds import ScraperDataSource
 from ...utilities.config import Configuration
-from ...utilities.logger import MyLogger
 from ...myrequests.request_handler import RequestHandler
 from ...myrequests.job import RequestJob
 
@@ -116,7 +115,7 @@ class NpmScraper(ScraperDataSource):
                     self.logger.debug('Retrying...')
 
                 # check if the page is empty
-                if len(page) == 0:
+                if len(page) == 0: # type: ignore
                     self.logger.debug(f'Empty page {i} of {num_pages}')
                     self.logger.debug(f'Last key: {last_key}')
                     page = None
@@ -134,8 +133,7 @@ class NpmScraper(ScraperDataSource):
                     f.write(str(page))            
 
             # Update progress bar if is set
-            if show_progress_bar:
-                progress_bar.update(1)
+            progress_bar.update(1) if progress_bar is not None else None
 
         package_names = [row['id'] for page in pages for row in page]
         self.logger.info(f'Obtained {len(package_names)} packages from {self.NPM_PACKAGE_LIST_URL}')
@@ -151,7 +149,7 @@ class NpmScraper(ScraperDataSource):
 
     def _download_page(
         self, 
-        start_key: str = None, 
+        start_key: Optional[str] = None,
         size: int = 1000, 
         retries: int = 5
     )-> List[dict]:

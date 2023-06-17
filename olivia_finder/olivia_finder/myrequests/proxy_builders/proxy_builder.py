@@ -1,7 +1,7 @@
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
 import requests
 
 from ...utilities.config import Configuration
@@ -19,8 +19,10 @@ class ProxyBuilder(ABC):
     - :class:`olivia_finder.myrequests.proxy_builders.list_builder.ListProxyBuilder`
 
     '''
+    
+    
 
-    def __init__(self, url: str = None, request_timeout: int = None):
+    def __init__(self, url: Optional[str] = None, request_timeout: Optional[int] = None) -> None:
         '''
         Constructor
         
