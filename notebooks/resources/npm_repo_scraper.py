@@ -2,21 +2,22 @@ import math
 import pandas as pd
 import tqdm as tqdm
 import gc as gc
+import sys
+import os
+
+REPO_PATH = "/home/dnllns/Documentos/repositorios/olivia-finder"
+OLIVIA_FINDER_PATH = f"{REPO_PATH}/olivia_finder"
 
 # Add the project root to the python path so that we can import modules
-import sys
-sys.path.append("/home/dnllns/Documentos/repositorios/olivia-finder/olivia_finder")
-
+sys.path.append(OLIVIA_FINDER_PATH)
 # Set environment variable for the config file
-import os
-os.environ['OLIVIA_FINDER_CONFIG_FILE_PATH'] = "/home/dnllns/Documentos/repositorios/olivia-finder/olivia_finder/config.ini"
-
+os.environ['OLIVIA_FINDER_CONFIG_FILE_PATH'] = f"{OLIVIA_FINDER_PATH}/config.ini"
 
 from olivia_finder.data_source.repository_scrapers.npm import NpmScraper
 from olivia_finder.myrequests.request_handler import RequestHandler
 
-packages_file = "/home/dnllns/Documentos/repositorios/olivia-finder/notebooks/results/package_lists/npm_packages_full_list.txt"
-out_folder = "/home/dnllns/Documentos/repositorios/olivia-finder/notebooks/results/csv_datasets/npm/chunks"
+packages_file = f"{REPO_PATH}/notebooks/results/package_lists/npm_packages_full_list.txt"
+out_folder = f"{REPO_PATH}/notebooks/results/csv_datasets/npm/chunks"
 
 # Leer fichero de paquetes
 # ------------------------
@@ -27,7 +28,6 @@ print(f"Total number of packages: {len(packages)}")
 # Separacion en lotes 
 # -------------------
 batch_size = 10000
-
 num_batches = math.ceil(len(packages) / batch_size)
 print(f"Number of batches: {num_batches}")
 batched_packages = []
@@ -42,14 +42,18 @@ for i in range(num_batches):
 del packages
 gc.collect()
 
+# Descartamos los lotes ya procesados en out_folder (Ejecuciones anteriores)
+# --------------------------------------------------------------------------
+processed_batches = os.listdir(out_folder)
+num_csvs = len([file for file in processed_batches if file.endswith(".csv")])
+batched_packages = batched_packages[num_csvs:]
+
+
 # Set up de la carpeta de salida y el fichero de paquetes no encontrados
 # ---------------------------------------------------------------------
-
-# Create the output folder if it doesn't exist
 if not os.path.exists(out_folder):
     os.makedirs(out_folder)
 
-# Set up the not found packages file
 not_found_file = open(f"{out_folder}/npm_packages_not_found.txt", "w")
 not_found_file.close()
 
