@@ -31,7 +31,7 @@ class NpmScraper(ScraperDataSource):
     '''
 
     # Constants
-    NPM_PACKAGE_REGISTRY_URL: str   = 'https://skimdb.npmjs.com/registry'
+    NPM_PACKAGE_REGISTRY_URL: str   = 'https://registry.npmjs.org/'
     NPM_PACKAGE_LIST_URL: str       = 'https://skimdb.npmjs.com/registry/_all_docs'
     NPM_REPO_URL: str               = 'https://www.npmjs.com/package'
 

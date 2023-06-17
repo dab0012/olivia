@@ -4,6 +4,7 @@ import tqdm as tqdm
 import gc as gc
 import sys
 import os
+import time
 
 REPO_PATH = "/home/dnllns/Documentos/repositorios/olivia-finder"
 OLIVIA_FINDER_PATH = f"{REPO_PATH}/olivia_finder"
@@ -107,7 +108,9 @@ for batch in tqdm.tqdm(batched_packages):
     df = pd.DataFrame(batch_data)
     first_package = batch[0]
     last_package = batch[-1]
-    df.to_csv(f"{out_folder}/npm_packages_found_{batch_id}_{first_package}:{last_package}.csv", index=False)
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+    df.to_csv(f"{out_folder}/npm_packages_found_{batch_id}_{timestamp}.csv", index=False)
+    print(f"Saved csv with packages from {first_package} to {last_package}")
 
     # Clear memory
     print("Clearing memory...")
