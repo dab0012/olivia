@@ -271,7 +271,12 @@ class NpmScraper(ScraperDataSource):
             return {}
 
         # Get the package name and version
-        package_name = response_json['_id']
+        try:
+            package_name = response_json['_id']
+        except KeyError:
+            # If the package does not have a name, return an empty dict
+            return {}
+        
         try:
             package_version = response_json['dist-tags']['latest']
         except KeyError:

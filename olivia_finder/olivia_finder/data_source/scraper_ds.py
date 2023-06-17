@@ -133,7 +133,9 @@ class ScraperDataSource(DataSource, ABC):
             # Parse the source data and add it to the list
             if finnalized_job.key not in packages_keys:
                 packages_keys[finnalized_job.key] = True
-                packages.append(self._parser(finnalized_job.response))
+                package = self._parser(finnalized_job.response)
+                if package is not None and package != {}:
+                    packages.append(package)
 
         # Clear the variables to save memory
         del jobs
