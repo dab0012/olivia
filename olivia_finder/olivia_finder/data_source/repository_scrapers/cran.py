@@ -13,29 +13,6 @@ class CranScraper(ScraperDataSource):
     '''
     Class that scrapes the CRAN website to obtain information about R packages.
     Implements the abstract methods of the ScraperDataSource class.
-
-    As the CRAN repository can contain packages who depend on Bioconductor packages, this class also can
-    obtain the list of Bioconductor packages from the Bioconductor website and merge it with the CRAN packages.
-    This functionality is implemented in the method obtain_package_data() and it is optional.
-
-    Parameters
-    ----------
-    name : str = None
-        Name of the data source
-    description : str = None
-        Description of the data source
-    auxiliary_datasources : Optional[List[DataSource]]
-        List of auxiliary data sources that can be used to obtain information about packages        
-    request_handler : RequestHandler = None
-        Request handler for the scraper, if None, it will be initialized with a generic RequestHandler
-
-    Attributes
-    ----------
-    CRAN_PACKAGE_LIST_URL : str
-        URL of the CRAN website where the list of packages is located
-    CRAN_PACKAGE_DATA_URL : str
-        URL of the CRAN website where the data of a package is located
-
     '''
 
     # Class variables
@@ -49,8 +26,8 @@ class CranScraper(ScraperDataSource):
 
         Parameters
         ----------
-        request_handler : RequestHandler = None
-            Request handler for the scraper, if None, it will be initialized with a generic RequestHandler
+        request_handler : Optional[RequestHandler], optional
+            
         '''
 
         # We initialize the class variables
