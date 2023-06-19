@@ -283,6 +283,8 @@ class NpmScraper(ScraperDataSource):
         # get the dependencies
         try:
             dependencies = response_json['versions'][package_version]['dependencies']
+            if dependencies is None:
+                dependencies = {}
         except KeyError:
             dependencies = {}
 
@@ -293,6 +295,8 @@ class NpmScraper(ScraperDataSource):
         # get dev dependencies
         try:
             dev_dependencies = response_json['versions'][package_version]['devDependencies']
+            if dev_dependencies is None:
+                dev_dependencies = {}
         except KeyError:
             dev_dependencies = {}
 
