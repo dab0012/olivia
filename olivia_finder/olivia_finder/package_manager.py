@@ -76,7 +76,7 @@ class PackageManager():
 
     @classmethod
     def load_from_persistence(cls, path: str):
-        '''
+        '''_fro
         Load the package manager from a file, the file must have been created with the save method
         Normally, it has the extension .olvpm
 
@@ -92,10 +92,10 @@ class PackageManager():
         '''
 
         # Init the logger for the package manager
-        MyLogger.configure("logger_packagemanager")
-        logger = MyLogger.get_logger(
-            logger_name=Configuration().get_key('logger_packagemanager', 'name')
-        )
+        logger = MyLogger.configure("logger_packagemanager")
+        # logger = MyLogger.get_logger(
+        #     logger_name=Configuration().get_key('logger_packagemanager', 'name')
+        # )
 
         # Try to load the package manager from the file
         try:
@@ -115,6 +115,8 @@ class PackageManager():
         for data_source in obj.data_sources:
             if isinstance(data_source, ScraperDataSource):
                 data_source.request_handler = RequestHandler()
+                # Set the logger for the scraper data source
+                data_source.logger = MyLogger.configure("logger_datasource")
 
         obj.logger = logger
 
@@ -320,13 +322,18 @@ class PackageManager():
                 else:
                     self.logger.debug(f"Package {package_name} not found using {data_source.__class__.__name__}")
 
-            
-            package_data = data_source.obtain_package_data(package_name)
-            if package_data is not None:
-                self.logger.debug(f"Package {package_name} found using {data_source.__class__.__name__}")
-                break
+            elif isinstance(data_source, CSVDataSource) or isinstance(data_source, ScraperDataSource):
+                
+                package_data = data_source.obtain_package_data(package_name)
+                if package_data is not None:
+                    self.logger.debug(f"Package {package_name} found using {data_source.__class__.__name__}")
+                    break
+                else:
+                    self.logger.debug(f"Package {package_name} not found using {data_source.__class__.__name__}")
+
             else:
-                self.logger.debug(f"Package {package_name} not found using {data_source.__class__.__name__}")
+                package_data = self.get_package(package_name).to_dict()
+
 
         # Return the package if it exists
         return None if package_data is None else Package.load(package_data)
@@ -573,7 +580,7 @@ class PackageManager():
 
         # Use the data of the package manager
         current_package = self.get_package(package_name)
-        dependencies =  current_package.get_dependency_names() if current_package is not None else []
+        dependencies =  current_package.get_dependencies_names() if current_package is not None else []
 
         # Get the dependencies of the package and add it to the dependency network if it is not already in it
         adjlist[package_name] = dependencies
@@ -622,8 +629,8 @@ class PackageManager():
             current_package = self.fetch_package(package_name)
             dependencies = current_package.get_dependencies_names()
 
-        except Exception:
-            self.logger.debug(f"Package {package_name} not found")
+        except Exception as e:
+            self.logger.debug(f"Package {package_name} not found: {e}")
 
         # Add the package to the adjacency list if it is not already in it
         adjlist[package_name] = dependencies
@@ -651,7 +658,7 @@ class PackageManager():
     ):
         
         filtered = df[df[filter_field] == filter_value] if filter_field else df
-        links = list(zip(filtered["dependency"], filtered["name"]))
+        links = list(zip(filtered["name"], filtered["dependency"]))
         G.add_edges_from(links)
         return G
 
@@ -742,7 +749,7 @@ class PackageManager():
             for dependency_name in dependencies:
                 G.add_edge(package_name, dependency_name)
 
-        return G
+        return G.reverse()
     
     def get_default_datasource(self):
         """

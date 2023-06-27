@@ -3,15 +3,17 @@ classDiagram
     TIMEOUT : int
   }
   class ProxyBuilder {
+    logger : RootLogger, NoneType, Logger
     request_timeout : Optional[int]
     url : Optional[str]
-    get_proxies() list[str]
+    get_proxies() List[str]
   }
   class ProxyHandler {
     PROXY_MAX_USES : int
     lock : lock
-    proxy_builders : list, list[ProxyBuilder]
-    proxy_list : list, list[str]
+    logger : RootLogger, Logger, NoneType
+    proxy_builders : List[ProxyBuilder], list
+    proxy_list : List[str], list
     proxy_max_uses : int
     proxy_uses : dict
     get_next_proxy() Union[str, None]
@@ -19,17 +21,18 @@ classDiagram
   class RequestHandler {
     PARALLEL_WORKERS : int
     jobs_queue : Queue
+    logger : RootLogger, Logger, NoneType
     num_workers : int
-    workers : list[RequestWorker]
+    workers : List[RequestWorker]
     do_request(job: RequestJob)
-    do_requests(request_jobs: list[RequestJob], num_workers: int, progress_bar: tqdm.tqdm)
+    do_requests(request_jobs: List[RequestJob], num_workers: int, progress_bar: Optional[tqdm.tqdm]) List[RequestJob]
   }
   class RequestJob {
     FINALIZE_KEY : str
     key : object
-    params : Optional[dict[str, str]]
-    response : Response
-    url : str
+    params : Optional[Dict[str, str]]
+    response : Response, Optional[requests.Response]
+    url : Optional[str]
     end_job_signal() RequestJob
     set_response(job_response: requests.Response)
   }
@@ -38,8 +41,9 @@ classDiagram
     RETRY_DELAY : int
     TIMEOUT : int
     jobs_queue : Queue
+    logger : RootLogger, Logger, NoneType
     my_jobs : list
-    progress_bar : tqdm
+    progress_bar : Optional[tqdm.tqdm]
     proxy_handler
     stopped : bool
     user_agent_handler
@@ -53,8 +57,9 @@ classDiagram
     DATA_FILE : str
     USERAGENTSTRING_URL : str
     lock : lock
+    logger : Logger, NoneType, RootLogger
+    useragents_list : List[str]
     useragents_list : list
-    useragents_list : list[str]
     get_next_useragent() str
   }
   ListProxyBuilder --|> ProxyBuilder

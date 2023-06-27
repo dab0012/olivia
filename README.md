@@ -12,7 +12,7 @@ The data obtainded using olivia finder has been published on zenodo
 
 All data at kaggle
 
-[![Olivia Finder Results](https://img.shields.io/badge/Kaggle-All%20Data%20-%23ffff)](https://www.kaggle.com/datasets/danielalonsob/olivia-finder-results)
+[![Olivia Finder Results](https://img.shields.io/badge/Kaggle-All%20Data%20-%23ffff)](https://www.kaggle.com/datasets/danielalonsob/dependency-networks)
 
 
 
@@ -46,7 +46,7 @@ Run olivia-finder notebooks in Deepnote cloud
 
 |  Implementation | Data manipulation | Usage | Bowtie Metrics |Github Example  | 
 |---|---|---|---|---|
-| [![Olivia Finder - Implementation](https://img.shields.io/badge/Kaggle-Implementation%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/olivia-finder-implementation) | [![Data Manipulation](https://img.shields.io/badge/Kaggle-Data%20Manipulation%20-%23ffff)](https://www.kaggle.com/danielalonsob/olivia-finder-data-manipulation) | [<img src="https://deepnote.com/buttons/try-in-a-jupyter-notebook-white-small.svg">](https://deepnote.com/@olivia-0732/olivia-finder-eacd7775-abe3-4a75-89fa-db586279d05f) | [![Bowtie](https://img.shields.io/badge/Kaggle-Bowtie%20Metrics%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/olivia-finder-bowtie-metrics) | [![Github example](https://img.shields.io/badge/Kaggle-Github%20Example%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/olivia-finder-github-example)
+| [![Olivia Finder - Implementation](https://img.shields.io/badge/Kaggle-Implementation%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/olivia-finder-implementation) | [![Data Manipulation](https://img.shields.io/badge/Kaggle-Data%20Manipulation%20-%23ffff)](https://www.kaggle.com/danielalonsob/olivia-finder-data-manipulation) | [<img src="https://deepnote.com/buttons/try-in-a-jupyter-notebook-white-small.svg">](https://deepnote.com/@olivia-0732/olivia-finder-eacd7775-abe3-4a75-89fa-db586279d05f) | [![Bowtie](https://img.shields.io/badge/Kaggle-Bowtie%20Metrics%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/bowtie-network-analisys) | [![Github example](https://img.shields.io/badge/Kaggle-Github%20Example%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/olivia-finder-github-example)
 
 
  

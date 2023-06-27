@@ -11,7 +11,8 @@ classDiagram
   }
   class utilities {
   }
+  config --> exception
   config --> singleton_decorator
-  exception --> logger
   logger --> config
-  logger --> singleton_decorator
+  logger --> exception
+  logger --> utilities
