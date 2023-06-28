@@ -68,8 +68,11 @@ class PackageManager():
         # Remove redundant objects
         for data_source in self.data_sources:
             if isinstance(data_source, ScraperDataSource):
-                del data_source.request_handler
-
+                try:
+                    del data_source.request_handler
+                except AttributeError:
+                    pass
+                
         # Use pickle to save the package manager
         with open(path, "wb") as f:
             pickle.dump(self, f, protocol=pickle.HIGHEST_PROTOCOL)
