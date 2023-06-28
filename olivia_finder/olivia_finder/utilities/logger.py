@@ -38,17 +38,18 @@ class MyLogger:
         
         # Check if the logger has file handler
         if Configuration().get_key(config_key, 'file_handler').upper() == 'ENABLED':
-            # We enable the file
-            MyLogger.enable_file(
-                logger_name=logger_name,
-                log_file=f'{logger_name}.log',
-                log_file_level=Configuration().get_key(config_key, 'level')
-            )
 
             # Folder where the log files will be stored
             log_folder = Configuration().get_key('folders', 'logger')
             setup_path(log_folder)
-        
+
+            # We enable the file
+            MyLogger.enable_file(
+                logger_name=logger_name,
+                log_file=f'{log_folder}/{logger_name}.log',
+                log_file_level=Configuration().get_key(config_key, 'level')
+            )
+      
         # Check if the logger has console handler
         if Configuration().get_key(config_key, 'console_handler').upper() == 'ENABLED':
             # We enable the console

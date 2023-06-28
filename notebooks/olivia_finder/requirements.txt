@@ -8,3 +8,4 @@ matplotlib
 pybraries
 typing_extensions
 # pdoc
+scipy

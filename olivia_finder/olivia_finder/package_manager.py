@@ -4,16 +4,17 @@ from typing import Dict, List, Optional, Union
 import pickle
 import tqdm
 import pandas as pd
+import networkx as nx
 
-from .data_source.repository_scrapers.github import GithubScraper
 from .utilities.config import Configuration
 from .myrequests.request_handler import RequestHandler
-from .data_source.scraper_ds import ScraperDataSource
 from .utilities.logger import MyLogger
 from .data_source.data_source import DataSource
+from .data_source.scraper_ds import ScraperDataSource
 from .data_source.csv_ds import CSVDataSource
+from .data_source.librariesio_ds import LibrariesioDataSource
+from .data_source.repository_scrapers.github import GithubScraper
 from .package import Package
-import networkx as nx
 
 
 class PackageManager():
@@ -72,10 +73,15 @@ class PackageManager():
                     del data_source.request_handler
                 except AttributeError:
                     pass
-                
-        # Use pickle to save the package manager
-        with open(path, "wb") as f:
-            pickle.dump(self, f, protocol=pickle.HIGHEST_PROTOCOL)
+        
+        try:
+
+            # Use pickle to save the package manager
+            with open(path, "wb") as f:
+                pickle.dump(self, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+        except Exception as e:
+            raise PackageManagerSaveError(f"Error saving package manager: {e}") from e
 
     @classmethod
     def load_from_persistence(cls, path: str):
@@ -258,8 +264,8 @@ class PackageManager():
                 try:
                     package_names = data_source.obtain_package_names()
                     break
-                except NotImplementedError:
-                    self.logger.debug(f"Data source does not implement obtain_package_names method")
+                except NotImplementedError as e:
+                    self.logger.debug(f"Data source {data_source} does not implement obtain_package_names method: {e}")
                     continue
                 except Exception as e:
                     self.logger.error(f"Error while obtaining package names from data source: {e}")
@@ -268,7 +274,7 @@ class PackageManager():
         # Check if the package names are valid
         if package_names is None or not isinstance(package_names, list):
             raise ValueError("No valid package names found")
-        
+
         # Instantiate the progress bar if needed
         progress_bar = tqdm.tqdm(
             total=len(package_names),
@@ -288,7 +294,7 @@ class PackageManager():
                 progress_bar=progress_bar,
                 extend=True
             )
-        
+
         # Close the progress bar if needed
         if progress_bar is not None:
             progress_bar.close()
@@ -317,25 +323,16 @@ class PackageManager():
         package_data = None
         for data_source in self.data_sources:
             
-            if isinstance(data_source, GithubScraper):
+            if isinstance(data_source, (GithubScraper, CSVDataSource, ScraperDataSource, LibrariesioDataSource)):
                 package_data = data_source.obtain_package_data(package_name)
-                if package_data is not None:
-                    self.logger.debug(f"Package {package_name} found using {data_source.__class__.__name__}")
-                    break
-                else:
-                    self.logger.debug(f"Package {package_name} not found using {data_source.__class__.__name__}")
-
-            elif isinstance(data_source, CSVDataSource) or isinstance(data_source, ScraperDataSource):
-                
-                package_data = data_source.obtain_package_data(package_name)
-                if package_data is not None:
-                    self.logger.debug(f"Package {package_name} found using {data_source.__class__.__name__}")
-                    break
-                else:
-                    self.logger.debug(f"Package {package_name} not found using {data_source.__class__.__name__}")
-
             else:
                 package_data = self.get_package(package_name).to_dict()
+
+            if package_data is not None:
+                self.logger.debug(f"Package {package_name} found using {data_source.__class__.__name__}")
+                break
+            else:
+                self.logger.debug(f"Package {package_name} not found using {data_source.__class__.__name__}")
 
 
         # Return the package if it exists
@@ -545,12 +542,7 @@ class PackageManager():
                 )
             return pd.DataFrame(rows, columns=['name', 'dependency'])
 
-    def get_adjlist(
-            self, 
-            package_name: str, 
-            adjlist: Optional[Dict] = {}, 
-            deep_level: int = 5,
-        ) -> Dict[str, List[str]]:
+    def get_adjlist(self, package_name: str, adjlist: Optional[Dict] = None, deep_level: int = 5) -> Dict[str, List[str]]:
         """
         Generates the dependency network of a package from the data source.
 
@@ -559,7 +551,7 @@ class PackageManager():
         package_name : str
             The name of the package to generate the dependency network
         adjlist : Optional[Dict], optional
-            The dependency network of the package, by default {}
+            The dependency network of the package, by default None
         deep_level : int, optional
             The deep level of the dependency network, by default 5
 
@@ -572,7 +564,7 @@ class PackageManager():
         # If the deep level is 0, we return the dependency network (Stop condition)
         if deep_level == 0:
             return adjlist
-        
+
         # If the dependency network is not specified, we create it (Initial case)
         if adjlist is None:
             adjlist = {}
@@ -587,18 +579,18 @@ class PackageManager():
 
         # Get the dependencies of the package and add it to the dependency network if it is not already in it
         adjlist[package_name] = dependencies
-            
+
         # Append the dependencies of the package to the dependency network
         for dependency_name in dependencies:
 
             if (dependency_name not in adjlist) and  (self.get_package(dependency_name) is not None):
-                    
+
                 adjlist = self.get_adjlist(
                     package_name = dependency_name, 
                     adjlist = adjlist, 
                     deep_level = deep_level - 1,
                 )
-    
+
         return adjlist
 
     def fetch_adjlist(self, package_name: str, deep_level: int = 5, adjlist: dict = None) -> Dict[str, List[str]]:
@@ -665,24 +657,22 @@ class PackageManager():
         G.add_edges_from(links)
         return G
 
-    def get_network(
-        self,
-        chunk_size = int(1e6),
-        filter_field=None,
-        filter_value=None,
-    ) -> nx.DiGraph:
+    def get_network_graph(
+            self, chunk_size = int(1e6), 
+            source_field = "dependency", target_field = "name",
+            filter_field=None, filter_value=None) -> nx.DiGraph:
         """
-        Builds a dependency network from a dataframe of dependencies.
+        Builds a dependency network graph from a dataframe of dependencies.
         The dataframe must have two columns: dependent and dependency.
 
         Parameters
         ----------
         chunk_size : int
             Number of rows to process at a time
-        dependent_field : str
-            Name of the column containing the dependent
-        dependency_field : str
-            Name of the column containing the dependency
+        source_field : str
+            Name of the column containing the source node
+        target_field : str
+            Name of the column containing the target node
         filter_field : str, optional
             Name of the column to filter on, by default None
         filter_value : str, optional
@@ -696,9 +686,12 @@ class PackageManager():
 
 
         # If the default dtasource is a CSV_Datasource, we use custom implementation
-        defaul_datasource = self.get_default_datasource()
+        defaul_datasource = self.__get_default_datasource()
         if isinstance(defaul_datasource, CSVDataSource):
-            return nx.from_pandas_edgelist(defaul_datasource.data, source="name", target="dependency", create_using=nx.DiGraph())
+            return nx.from_pandas_edgelist(
+                defaul_datasource.data, source=source_field, 
+                target=target_field, create_using=nx.DiGraph()
+            )
 
         # If the default datasource is not a CSV_Datasource, we use the default implementation
         df = self.export_dataframe()
@@ -721,9 +714,9 @@ class PackageManager():
         except Exception as e:
             print('\n', e)
 
-    def get_dependency_network(self, package_name: str, deep_level: int = 5, generate = False) -> nx.DiGraph:
+    def get_transitive_network_graph(self, package_name: str, deep_level: int = 5, generate = False) -> nx.DiGraph:
         """
-        Gets the dependency network of a package from the data source as a NetworkX graph.
+        Gets the transitive dependency network of a package as a NetworkX graph.
 
         Parameters
         ----------
@@ -731,6 +724,8 @@ class PackageManager():
             The name of the package to get the dependency network
         deep_level : int, optional
             The deep level of the dependency network, by default 5
+        generate : bool, optional
+            If True, the dependency network is generated from the data source, by default False
 
         Returns
         -------
@@ -746,15 +741,15 @@ class PackageManager():
             # Get the dependency network from in-memory data
             dependency_network = self.get_adjlist(package_name=package_name, deep_level=deep_level)
 
-        # Create a NetworkX graph from the dependency network
+        # Create a NetworkX graph of the dependency network as (DEPENDENCY ---> PACKAGE)
         G = nx.DiGraph()
         for package_name, dependencies in dependency_network.items():
             for dependency_name in dependencies:
-                G.add_edge(package_name, dependency_name)
+                G.add_edge(dependency_name, package_name)
 
-        return G.reverse()
+        return G
     
-    def get_default_datasource(self):
+    def __get_default_datasource(self):
         """
         Gets the default data source
 
