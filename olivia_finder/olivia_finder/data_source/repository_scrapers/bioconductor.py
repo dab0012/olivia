@@ -19,17 +19,12 @@ class BioconductorScraper(ScraperDataSource):
     
     Parameters
     ----------
-    auxiliary_datasources : Optional[List[DataSource]]
-        List of auxiliary data sources
+
     request_handler : RequestHandler = None
         Request handler for the scraper, if None, it will be initialized with a generic RequestHandler
         
     Attributes
     ----------
-    NAME : str
-        The name of the data source
-    DESCRIPTION : str
-        The description of the data source
     BIOCONDUCTOR_LIST_URL : str
         The URL of the page with the list of Bioconductor packages
     BIOCONDUCTOR_PACKAGE_DATA_URL : str
@@ -57,7 +52,6 @@ class BioconductorScraper(ScraperDataSource):
     def obtain_package_names(self) -> List[str]:
         '''
         Get the list of packages from the Bioconductor website
-        TODO: FIX THIS METHOD, IT REQUIRES FIREFOX INSTALLED IN THE SYSTEM and it can be fixed 
 
         Returns
         -------

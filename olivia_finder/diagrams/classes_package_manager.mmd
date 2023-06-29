@@ -1,0 +1,27 @@
+classDiagram
+  class PackageManager {
+    data_sources : Optional[List[DataSource]]
+    logger : NoneType, Logger, RootLogger
+    packages : Dict[str, Package]
+    export_dataframe(full_data) pd.DataFrame
+    fetch_adjlist(package_name: str, deep_level: int, adjlist: dict) Dict[str, List[str]]
+    fetch_package(package_name: str) Union[Package, None]
+    fetch_package_names() List[str]
+    fetch_packages(package_names: List[str], progress_bar: Optional[tqdm.tqdm], extend: bool) List[Package]
+    get_adjlist(package_name: str, adjlist: Optional[Dict], deep_level: int) Dict[str, List[str]]
+    get_network_graph(chunk_size, source_field, target_field, filter_field, filter_value) nx.DiGraph
+    get_package(package_name: str) Union[Package, None]
+    get_packages() List[Package]
+    get_transitive_network_graph(package_name: str, deep_level: int, generate) nx.DiGraph
+    initialize(package_names: Optional[List[str]], show_progress: Optional[bool], chunk_size: Optional[int])
+    load_from_csv(csv_path: str, dependent_field: Optional[str], dependency_field: Optional[str], version_field: Optional[str], dependency_version_field: Optional[str], url_field: Optional[str], default_format: Optional[bool]) PackageManager
+    load_from_persistence(path: str)
+    package_names() List[str]
+    save(path: str)
+  }
+  class PackageManagerLoadError {
+    message
+  }
+  class PackageManagerSaveError {
+    message
+  }
