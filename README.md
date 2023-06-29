@@ -8,7 +8,7 @@ It is designed to work in conjunction with Olivia, and uses web-scraping techniq
 
 The data obtainded using olivia finder has been published on zenodo
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7938227.svg)](https://doi.org/10.5281/zenodo.7938227)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8095863.svg)](https://doi.org/10.5281/zenodo.8095863)
 
 All data at kaggle
 
