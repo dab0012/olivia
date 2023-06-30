@@ -67,75 +67,75 @@
                         <label class="view-source-button" for="mod-pypi-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="kn">import</span> <span class="nn">re</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="kn">import</span> <span class="nn">requests</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">override</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">from</span> <span class="nn">..scraper_ds</span> <span class="kn">import</span> <span class="n">ScraperDataSource</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">from</span> <span class="nn">...myrequests.request_handler</span> <span class="kn">import</span> <span class="n">RequestHandler</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="kn">from</span> <span class="nn">...myrequests.job</span> <span class="kn">import</span> <span class="n">RequestJob</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="kn">from</span> <span class="nn">...utilities.logger</span> <span class="kn">import</span> <span class="n">MyLogger</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span> <span class="nn">...utilities.exception</span> <span class="kn">import</span> <span class="n">OliviaFinderException</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="k">class</span> <span class="nc">PypiScraper</span><span class="p">(</span><span class="n">ScraperDataSource</span><span class="p">):</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="w">    </span><span class="sd">&#39;&#39;&#39; </span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="sd">    Class that scrapes the PyPI website to obtain information about Python packages</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="sd">    Implements the abstract class Scraper and accordingly DataSource class</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="sd">    </span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="sd">    Attributes</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="sd">    ----------</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="sd">    PYPI_PACKAGE_LIST_URL : str</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">        URL of the PyPI website where the list of packages is located</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="sd">    PYPI_PACKAGE_DATA_URL : str</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">        URL of the PyPI website where the data of a package is located</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">    &#39;&#39;&#39;</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>
-</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>    <span class="c1"># Class variables  </span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>    <span class="n">PYPI_PACKAGE_LIST_URL</span><span class="p">:</span> <span class="nb">str</span>  <span class="o">=</span> <span class="s2">&quot;https://pypi.org/simple/&quot;</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>    <span class="n">PYPI_PACKAGE_DATA_URL</span><span class="p">:</span> <span class="nb">str</span>  <span class="o">=</span> <span class="s2">&quot;https://pypi.org/pypi/&quot;</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="kn">from</span> <span class="nn">...utilities.exception</span> <span class="kn">import</span> <span class="n">OliviaFinderException</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="k">class</span> <span class="nc">PypiScraper</span><span class="p">(</span><span class="n">ScraperDataSource</span><span class="p">):</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="w">    </span><span class="sd">&#39;&#39;&#39; </span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="sd">    Class that scrapes the PyPI website to obtain information about Python packages</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="sd">    Implements the abstract class Scraper and accordingly DataSource class</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="sd">    </span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="sd">    Attributes</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="sd">    ----------</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="sd">    PYPI_PACKAGE_LIST_URL : str</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="sd">        URL of the PyPI website where the list of packages is located</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">    PYPI_PACKAGE_DATA_URL : str</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="sd">        URL of the PyPI website where the data of a package is located</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">    &#39;&#39;&#39;</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>    <span class="c1"># Class variables  </span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>    <span class="n">PYPI_PACKAGE_LIST_URL</span><span class="p">:</span> <span class="nb">str</span>  <span class="o">=</span> <span class="s2">&quot;https://pypi.org/simple/&quot;</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>    <span class="n">PYPI_PACKAGE_DATA_URL</span><span class="p">:</span> <span class="nb">str</span>  <span class="o">=</span> <span class="s2">&quot;https://pypi.org/pypi/&quot;</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>
 </span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>
-</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>
-</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_handler</span><span class="p">:</span> <span class="n">RequestHandler</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="sd">        Constructor</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="sd">        &#39;&#39;&#39;</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">request_handler</span><span class="p">)</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>    <span class="nd">@override</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>    <span class="k">def</span> <span class="nf">obtain_package_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="sd">        Obtain the list of packages names from the PyPI website</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="sd">        Implements the abstract method of DataSource class</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">        Returns</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="sd">        -------</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="sd">        List[str]</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">            List of packages names</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a><span class="sd">            </span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a><span class="sd">        Handles</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="sd">        -------</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a><span class="sd">        Exception</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="sd">            If there is an error obtaining the list of packages, it returns an empty list</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="sd">            </span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">        Example</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">        -------</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="sd">        &gt;&gt;&gt; pypi_scraper = PypiScraper()</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">        &gt;&gt;&gt; pypi_scraper.obtain_package_names()</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">        [&#39;package1&#39;, &#39;package2&#39;, ...]</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">        &#39;&#39;&#39;</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>        <span class="c1"># Build the request job</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>        <span class="n">job</span> <span class="o">=</span> <span class="n">RequestJob</span><span class="p">(</span><span class="s2">&quot;PYPI package names&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_LIST_URL</span><span class="p">)</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>        <span class="c1"># Get the HTML of the page</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>        <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_handler</span><span class="o">.</span><span class="n">do_request</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>        <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">response</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>            <span class="k">raise</span> <span class="n">OliviaFinderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error obtaining the list of packages from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_LIST_URL</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>        
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RequestHandler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a><span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="sd">        Constructor</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="sd">        &#39;&#39;&#39;</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">request_handler</span><span class="p">)</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>    <span class="nd">@override</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>    <span class="k">def</span> <span class="nf">obtain_package_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a><span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="sd">        Obtain the list of packages names from the PyPI website</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="sd">        Implements the abstract method of DataSource class</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="sd">        Returns</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">        -------</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="sd">        List[str]</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="sd">            List of packages names</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">            </span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a><span class="sd">        Handles</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a><span class="sd">        -------</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="sd">        Exception</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a><span class="sd">            If there is an error obtaining the list of packages, it returns an empty list</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="sd">            </span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="sd">        Example</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">        -------</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">        &gt;&gt;&gt; pypi_scraper = PypiScraper()</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="sd">        &gt;&gt;&gt; pypi_scraper.obtain_package_names()</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">        [&#39;package1&#39;, &#39;package2&#39;, ...]</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">        &#39;&#39;&#39;</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>        <span class="c1"># Build the request job</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>        <span class="n">job</span> <span class="o">=</span> <span class="n">RequestJob</span><span class="p">(</span><span class="s2">&quot;PYPI package names&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_LIST_URL</span><span class="p">)</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>        <span class="c1"># Get the HTML of the page</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>        <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_handler</span><span class="o">.</span><span class="n">do_request</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>        <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">response</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>            <span class="k">raise</span> <span class="n">OliviaFinderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error obtaining the list of packages from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_LIST_URL</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>        
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>        
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>        <span class="n">pakage_list</span> <span class="o">=</span> <span class="p">[]</span>
 </span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>        <span class="k">try</span><span class="p">:</span>
 </span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>            <span class="c1"># Get the list of packages</span>
 </span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>            <span class="n">pakage_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)]</span>
@@ -264,65 +264,66 @@
 
     </div>
     <a class="headerlink" href="#PypiScraper"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="PypiScraper-13"><a href="#PypiScraper-13"><span class="linenos"> 13</span></a><span class="k">class</span> <span class="nc">PypiScraper</span><span class="p">(</span><span class="n">ScraperDataSource</span><span class="p">):</span>
-</span><span id="PypiScraper-14"><a href="#PypiScraper-14"><span class="linenos"> 14</span></a><span class="w">    </span><span class="sd">&#39;&#39;&#39; </span>
-</span><span id="PypiScraper-15"><a href="#PypiScraper-15"><span class="linenos"> 15</span></a><span class="sd">    Class that scrapes the PyPI website to obtain information about Python packages</span>
-</span><span id="PypiScraper-16"><a href="#PypiScraper-16"><span class="linenos"> 16</span></a><span class="sd">    Implements the abstract class Scraper and accordingly DataSource class</span>
-</span><span id="PypiScraper-17"><a href="#PypiScraper-17"><span class="linenos"> 17</span></a><span class="sd">    </span>
-</span><span id="PypiScraper-18"><a href="#PypiScraper-18"><span class="linenos"> 18</span></a><span class="sd">    Attributes</span>
-</span><span id="PypiScraper-19"><a href="#PypiScraper-19"><span class="linenos"> 19</span></a><span class="sd">    ----------</span>
-</span><span id="PypiScraper-20"><a href="#PypiScraper-20"><span class="linenos"> 20</span></a><span class="sd">    PYPI_PACKAGE_LIST_URL : str</span>
-</span><span id="PypiScraper-21"><a href="#PypiScraper-21"><span class="linenos"> 21</span></a><span class="sd">        URL of the PyPI website where the list of packages is located</span>
-</span><span id="PypiScraper-22"><a href="#PypiScraper-22"><span class="linenos"> 22</span></a><span class="sd">    PYPI_PACKAGE_DATA_URL : str</span>
-</span><span id="PypiScraper-23"><a href="#PypiScraper-23"><span class="linenos"> 23</span></a><span class="sd">        URL of the PyPI website where the data of a package is located</span>
-</span><span id="PypiScraper-24"><a href="#PypiScraper-24"><span class="linenos"> 24</span></a><span class="sd">    &#39;&#39;&#39;</span>
-</span><span id="PypiScraper-25"><a href="#PypiScraper-25"><span class="linenos"> 25</span></a>
-</span><span id="PypiScraper-26"><a href="#PypiScraper-26"><span class="linenos"> 26</span></a>    <span class="c1"># Class variables  </span>
-</span><span id="PypiScraper-27"><a href="#PypiScraper-27"><span class="linenos"> 27</span></a>    <span class="n">PYPI_PACKAGE_LIST_URL</span><span class="p">:</span> <span class="nb">str</span>  <span class="o">=</span> <span class="s2">&quot;https://pypi.org/simple/&quot;</span>
-</span><span id="PypiScraper-28"><a href="#PypiScraper-28"><span class="linenos"> 28</span></a>    <span class="n">PYPI_PACKAGE_DATA_URL</span><span class="p">:</span> <span class="nb">str</span>  <span class="o">=</span> <span class="s2">&quot;https://pypi.org/pypi/&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="PypiScraper-12"><a href="#PypiScraper-12"><span class="linenos"> 12</span></a><span class="k">class</span> <span class="nc">PypiScraper</span><span class="p">(</span><span class="n">ScraperDataSource</span><span class="p">):</span>
+</span><span id="PypiScraper-13"><a href="#PypiScraper-13"><span class="linenos"> 13</span></a><span class="w">    </span><span class="sd">&#39;&#39;&#39; </span>
+</span><span id="PypiScraper-14"><a href="#PypiScraper-14"><span class="linenos"> 14</span></a><span class="sd">    Class that scrapes the PyPI website to obtain information about Python packages</span>
+</span><span id="PypiScraper-15"><a href="#PypiScraper-15"><span class="linenos"> 15</span></a><span class="sd">    Implements the abstract class Scraper and accordingly DataSource class</span>
+</span><span id="PypiScraper-16"><a href="#PypiScraper-16"><span class="linenos"> 16</span></a><span class="sd">    </span>
+</span><span id="PypiScraper-17"><a href="#PypiScraper-17"><span class="linenos"> 17</span></a><span class="sd">    Attributes</span>
+</span><span id="PypiScraper-18"><a href="#PypiScraper-18"><span class="linenos"> 18</span></a><span class="sd">    ----------</span>
+</span><span id="PypiScraper-19"><a href="#PypiScraper-19"><span class="linenos"> 19</span></a><span class="sd">    PYPI_PACKAGE_LIST_URL : str</span>
+</span><span id="PypiScraper-20"><a href="#PypiScraper-20"><span class="linenos"> 20</span></a><span class="sd">        URL of the PyPI website where the list of packages is located</span>
+</span><span id="PypiScraper-21"><a href="#PypiScraper-21"><span class="linenos"> 21</span></a><span class="sd">    PYPI_PACKAGE_DATA_URL : str</span>
+</span><span id="PypiScraper-22"><a href="#PypiScraper-22"><span class="linenos"> 22</span></a><span class="sd">        URL of the PyPI website where the data of a package is located</span>
+</span><span id="PypiScraper-23"><a href="#PypiScraper-23"><span class="linenos"> 23</span></a><span class="sd">    &#39;&#39;&#39;</span>
+</span><span id="PypiScraper-24"><a href="#PypiScraper-24"><span class="linenos"> 24</span></a>
+</span><span id="PypiScraper-25"><a href="#PypiScraper-25"><span class="linenos"> 25</span></a>    <span class="c1"># Class variables  </span>
+</span><span id="PypiScraper-26"><a href="#PypiScraper-26"><span class="linenos"> 26</span></a>    <span class="n">PYPI_PACKAGE_LIST_URL</span><span class="p">:</span> <span class="nb">str</span>  <span class="o">=</span> <span class="s2">&quot;https://pypi.org/simple/&quot;</span>
+</span><span id="PypiScraper-27"><a href="#PypiScraper-27"><span class="linenos"> 27</span></a>    <span class="n">PYPI_PACKAGE_DATA_URL</span><span class="p">:</span> <span class="nb">str</span>  <span class="o">=</span> <span class="s2">&quot;https://pypi.org/pypi/&quot;</span>
+</span><span id="PypiScraper-28"><a href="#PypiScraper-28"><span class="linenos"> 28</span></a>
 </span><span id="PypiScraper-29"><a href="#PypiScraper-29"><span class="linenos"> 29</span></a>
-</span><span id="PypiScraper-30"><a href="#PypiScraper-30"><span class="linenos"> 30</span></a>
-</span><span id="PypiScraper-31"><a href="#PypiScraper-31"><span class="linenos"> 31</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_handler</span><span class="p">:</span> <span class="n">RequestHandler</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-</span><span id="PypiScraper-32"><a href="#PypiScraper-32"><span class="linenos"> 32</span></a><span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-</span><span id="PypiScraper-33"><a href="#PypiScraper-33"><span class="linenos"> 33</span></a><span class="sd">        Constructor</span>
-</span><span id="PypiScraper-34"><a href="#PypiScraper-34"><span class="linenos"> 34</span></a><span class="sd">        &#39;&#39;&#39;</span>
-</span><span id="PypiScraper-35"><a href="#PypiScraper-35"><span class="linenos"> 35</span></a>
-</span><span id="PypiScraper-36"><a href="#PypiScraper-36"><span class="linenos"> 36</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">request_handler</span><span class="p">)</span>
-</span><span id="PypiScraper-37"><a href="#PypiScraper-37"><span class="linenos"> 37</span></a>
-</span><span id="PypiScraper-38"><a href="#PypiScraper-38"><span class="linenos"> 38</span></a>    <span class="nd">@override</span>
-</span><span id="PypiScraper-39"><a href="#PypiScraper-39"><span class="linenos"> 39</span></a>    <span class="k">def</span> <span class="nf">obtain_package_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-</span><span id="PypiScraper-40"><a href="#PypiScraper-40"><span class="linenos"> 40</span></a><span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-</span><span id="PypiScraper-41"><a href="#PypiScraper-41"><span class="linenos"> 41</span></a><span class="sd">        Obtain the list of packages names from the PyPI website</span>
-</span><span id="PypiScraper-42"><a href="#PypiScraper-42"><span class="linenos"> 42</span></a><span class="sd">        Implements the abstract method of DataSource class</span>
-</span><span id="PypiScraper-43"><a href="#PypiScraper-43"><span class="linenos"> 43</span></a>
-</span><span id="PypiScraper-44"><a href="#PypiScraper-44"><span class="linenos"> 44</span></a><span class="sd">        Returns</span>
-</span><span id="PypiScraper-45"><a href="#PypiScraper-45"><span class="linenos"> 45</span></a><span class="sd">        -------</span>
-</span><span id="PypiScraper-46"><a href="#PypiScraper-46"><span class="linenos"> 46</span></a><span class="sd">        List[str]</span>
-</span><span id="PypiScraper-47"><a href="#PypiScraper-47"><span class="linenos"> 47</span></a><span class="sd">            List of packages names</span>
-</span><span id="PypiScraper-48"><a href="#PypiScraper-48"><span class="linenos"> 48</span></a><span class="sd">            </span>
-</span><span id="PypiScraper-49"><a href="#PypiScraper-49"><span class="linenos"> 49</span></a><span class="sd">        Handles</span>
-</span><span id="PypiScraper-50"><a href="#PypiScraper-50"><span class="linenos"> 50</span></a><span class="sd">        -------</span>
-</span><span id="PypiScraper-51"><a href="#PypiScraper-51"><span class="linenos"> 51</span></a><span class="sd">        Exception</span>
-</span><span id="PypiScraper-52"><a href="#PypiScraper-52"><span class="linenos"> 52</span></a><span class="sd">            If there is an error obtaining the list of packages, it returns an empty list</span>
-</span><span id="PypiScraper-53"><a href="#PypiScraper-53"><span class="linenos"> 53</span></a><span class="sd">            </span>
-</span><span id="PypiScraper-54"><a href="#PypiScraper-54"><span class="linenos"> 54</span></a><span class="sd">        Example</span>
-</span><span id="PypiScraper-55"><a href="#PypiScraper-55"><span class="linenos"> 55</span></a><span class="sd">        -------</span>
-</span><span id="PypiScraper-56"><a href="#PypiScraper-56"><span class="linenos"> 56</span></a><span class="sd">        &gt;&gt;&gt; pypi_scraper = PypiScraper()</span>
-</span><span id="PypiScraper-57"><a href="#PypiScraper-57"><span class="linenos"> 57</span></a><span class="sd">        &gt;&gt;&gt; pypi_scraper.obtain_package_names()</span>
-</span><span id="PypiScraper-58"><a href="#PypiScraper-58"><span class="linenos"> 58</span></a><span class="sd">        [&#39;package1&#39;, &#39;package2&#39;, ...]</span>
-</span><span id="PypiScraper-59"><a href="#PypiScraper-59"><span class="linenos"> 59</span></a><span class="sd">        &#39;&#39;&#39;</span>
-</span><span id="PypiScraper-60"><a href="#PypiScraper-60"><span class="linenos"> 60</span></a>
-</span><span id="PypiScraper-61"><a href="#PypiScraper-61"><span class="linenos"> 61</span></a>        <span class="c1"># Build the request job</span>
-</span><span id="PypiScraper-62"><a href="#PypiScraper-62"><span class="linenos"> 62</span></a>        <span class="n">job</span> <span class="o">=</span> <span class="n">RequestJob</span><span class="p">(</span><span class="s2">&quot;PYPI package names&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_LIST_URL</span><span class="p">)</span>
-</span><span id="PypiScraper-63"><a href="#PypiScraper-63"><span class="linenos"> 63</span></a>
-</span><span id="PypiScraper-64"><a href="#PypiScraper-64"><span class="linenos"> 64</span></a>        <span class="c1"># Get the HTML of the page</span>
-</span><span id="PypiScraper-65"><a href="#PypiScraper-65"><span class="linenos"> 65</span></a>        <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_handler</span><span class="o">.</span><span class="n">do_request</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
-</span><span id="PypiScraper-66"><a href="#PypiScraper-66"><span class="linenos"> 66</span></a>
-</span><span id="PypiScraper-67"><a href="#PypiScraper-67"><span class="linenos"> 67</span></a>        <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">response</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="PypiScraper-68"><a href="#PypiScraper-68"><span class="linenos"> 68</span></a>            <span class="k">raise</span> <span class="n">OliviaFinderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error obtaining the list of packages from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_LIST_URL</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-</span><span id="PypiScraper-69"><a href="#PypiScraper-69"><span class="linenos"> 69</span></a>        
-</span><span id="PypiScraper-70"><a href="#PypiScraper-70"><span class="linenos"> 70</span></a>        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
-</span><span id="PypiScraper-71"><a href="#PypiScraper-71"><span class="linenos"> 71</span></a>        
+</span><span id="PypiScraper-30"><a href="#PypiScraper-30"><span class="linenos"> 30</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RequestHandler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+</span><span id="PypiScraper-31"><a href="#PypiScraper-31"><span class="linenos"> 31</span></a><span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+</span><span id="PypiScraper-32"><a href="#PypiScraper-32"><span class="linenos"> 32</span></a><span class="sd">        Constructor</span>
+</span><span id="PypiScraper-33"><a href="#PypiScraper-33"><span class="linenos"> 33</span></a><span class="sd">        &#39;&#39;&#39;</span>
+</span><span id="PypiScraper-34"><a href="#PypiScraper-34"><span class="linenos"> 34</span></a>
+</span><span id="PypiScraper-35"><a href="#PypiScraper-35"><span class="linenos"> 35</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">request_handler</span><span class="p">)</span>
+</span><span id="PypiScraper-36"><a href="#PypiScraper-36"><span class="linenos"> 36</span></a>
+</span><span id="PypiScraper-37"><a href="#PypiScraper-37"><span class="linenos"> 37</span></a>    <span class="nd">@override</span>
+</span><span id="PypiScraper-38"><a href="#PypiScraper-38"><span class="linenos"> 38</span></a>    <span class="k">def</span> <span class="nf">obtain_package_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span id="PypiScraper-39"><a href="#PypiScraper-39"><span class="linenos"> 39</span></a><span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+</span><span id="PypiScraper-40"><a href="#PypiScraper-40"><span class="linenos"> 40</span></a><span class="sd">        Obtain the list of packages names from the PyPI website</span>
+</span><span id="PypiScraper-41"><a href="#PypiScraper-41"><span class="linenos"> 41</span></a><span class="sd">        Implements the abstract method of DataSource class</span>
+</span><span id="PypiScraper-42"><a href="#PypiScraper-42"><span class="linenos"> 42</span></a>
+</span><span id="PypiScraper-43"><a href="#PypiScraper-43"><span class="linenos"> 43</span></a><span class="sd">        Returns</span>
+</span><span id="PypiScraper-44"><a href="#PypiScraper-44"><span class="linenos"> 44</span></a><span class="sd">        -------</span>
+</span><span id="PypiScraper-45"><a href="#PypiScraper-45"><span class="linenos"> 45</span></a><span class="sd">        List[str]</span>
+</span><span id="PypiScraper-46"><a href="#PypiScraper-46"><span class="linenos"> 46</span></a><span class="sd">            List of packages names</span>
+</span><span id="PypiScraper-47"><a href="#PypiScraper-47"><span class="linenos"> 47</span></a><span class="sd">            </span>
+</span><span id="PypiScraper-48"><a href="#PypiScraper-48"><span class="linenos"> 48</span></a><span class="sd">        Handles</span>
+</span><span id="PypiScraper-49"><a href="#PypiScraper-49"><span class="linenos"> 49</span></a><span class="sd">        -------</span>
+</span><span id="PypiScraper-50"><a href="#PypiScraper-50"><span class="linenos"> 50</span></a><span class="sd">        Exception</span>
+</span><span id="PypiScraper-51"><a href="#PypiScraper-51"><span class="linenos"> 51</span></a><span class="sd">            If there is an error obtaining the list of packages, it returns an empty list</span>
+</span><span id="PypiScraper-52"><a href="#PypiScraper-52"><span class="linenos"> 52</span></a><span class="sd">            </span>
+</span><span id="PypiScraper-53"><a href="#PypiScraper-53"><span class="linenos"> 53</span></a><span class="sd">        Example</span>
+</span><span id="PypiScraper-54"><a href="#PypiScraper-54"><span class="linenos"> 54</span></a><span class="sd">        -------</span>
+</span><span id="PypiScraper-55"><a href="#PypiScraper-55"><span class="linenos"> 55</span></a><span class="sd">        &gt;&gt;&gt; pypi_scraper = PypiScraper()</span>
+</span><span id="PypiScraper-56"><a href="#PypiScraper-56"><span class="linenos"> 56</span></a><span class="sd">        &gt;&gt;&gt; pypi_scraper.obtain_package_names()</span>
+</span><span id="PypiScraper-57"><a href="#PypiScraper-57"><span class="linenos"> 57</span></a><span class="sd">        [&#39;package1&#39;, &#39;package2&#39;, ...]</span>
+</span><span id="PypiScraper-58"><a href="#PypiScraper-58"><span class="linenos"> 58</span></a><span class="sd">        &#39;&#39;&#39;</span>
+</span><span id="PypiScraper-59"><a href="#PypiScraper-59"><span class="linenos"> 59</span></a>
+</span><span id="PypiScraper-60"><a href="#PypiScraper-60"><span class="linenos"> 60</span></a>        <span class="c1"># Build the request job</span>
+</span><span id="PypiScraper-61"><a href="#PypiScraper-61"><span class="linenos"> 61</span></a>        <span class="n">job</span> <span class="o">=</span> <span class="n">RequestJob</span><span class="p">(</span><span class="s2">&quot;PYPI package names&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_LIST_URL</span><span class="p">)</span>
+</span><span id="PypiScraper-62"><a href="#PypiScraper-62"><span class="linenos"> 62</span></a>
+</span><span id="PypiScraper-63"><a href="#PypiScraper-63"><span class="linenos"> 63</span></a>        <span class="c1"># Get the HTML of the page</span>
+</span><span id="PypiScraper-64"><a href="#PypiScraper-64"><span class="linenos"> 64</span></a>        <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_handler</span><span class="o">.</span><span class="n">do_request</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+</span><span id="PypiScraper-65"><a href="#PypiScraper-65"><span class="linenos"> 65</span></a>
+</span><span id="PypiScraper-66"><a href="#PypiScraper-66"><span class="linenos"> 66</span></a>        <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">response</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="PypiScraper-67"><a href="#PypiScraper-67"><span class="linenos"> 67</span></a>            <span class="k">raise</span> <span class="n">OliviaFinderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error obtaining the list of packages from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_LIST_URL</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span id="PypiScraper-68"><a href="#PypiScraper-68"><span class="linenos"> 68</span></a>        
+</span><span id="PypiScraper-69"><a href="#PypiScraper-69"><span class="linenos"> 69</span></a>        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+</span><span id="PypiScraper-70"><a href="#PypiScraper-70"><span class="linenos"> 70</span></a>        
+</span><span id="PypiScraper-71"><a href="#PypiScraper-71"><span class="linenos"> 71</span></a>        <span class="n">pakage_list</span> <span class="o">=</span> <span class="p">[]</span>
 </span><span id="PypiScraper-72"><a href="#PypiScraper-72"><span class="linenos"> 72</span></a>        <span class="k">try</span><span class="p">:</span>
 </span><span id="PypiScraper-73"><a href="#PypiScraper-73"><span class="linenos"> 73</span></a>            <span class="c1"># Get the list of packages</span>
 </span><span id="PypiScraper-74"><a href="#PypiScraper-74"><span class="linenos"> 74</span></a>            <span class="n">pakage_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)]</span>
@@ -457,18 +458,18 @@ URL of the PyPI website where the data of a package is located</li>
                                         <input id="PypiScraper.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">PypiScraper</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">request_handler</span><span class="p">:</span> <span class="n"><a href="../../myrequests/request_handler.html#RequestHandler">olivia_finder.myrequests.request_handler.RequestHandler</a></span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+        <span class="name">PypiScraper</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">request_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n"><a href="../../myrequests/request_handler.html#RequestHandler">olivia_finder.myrequests.request_handler.RequestHandler</a></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
 
                 <label class="view-source-button" for="PypiScraper.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#PypiScraper.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="PypiScraper.__init__-31"><a href="#PypiScraper.__init__-31"><span class="linenos">31</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_handler</span><span class="p">:</span> <span class="n">RequestHandler</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-</span><span id="PypiScraper.__init__-32"><a href="#PypiScraper.__init__-32"><span class="linenos">32</span></a><span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-</span><span id="PypiScraper.__init__-33"><a href="#PypiScraper.__init__-33"><span class="linenos">33</span></a><span class="sd">        Constructor</span>
-</span><span id="PypiScraper.__init__-34"><a href="#PypiScraper.__init__-34"><span class="linenos">34</span></a><span class="sd">        &#39;&#39;&#39;</span>
-</span><span id="PypiScraper.__init__-35"><a href="#PypiScraper.__init__-35"><span class="linenos">35</span></a>
-</span><span id="PypiScraper.__init__-36"><a href="#PypiScraper.__init__-36"><span class="linenos">36</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">request_handler</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="PypiScraper.__init__-30"><a href="#PypiScraper.__init__-30"><span class="linenos">30</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RequestHandler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+</span><span id="PypiScraper.__init__-31"><a href="#PypiScraper.__init__-31"><span class="linenos">31</span></a><span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+</span><span id="PypiScraper.__init__-32"><a href="#PypiScraper.__init__-32"><span class="linenos">32</span></a><span class="sd">        Constructor</span>
+</span><span id="PypiScraper.__init__-33"><a href="#PypiScraper.__init__-33"><span class="linenos">33</span></a><span class="sd">        &#39;&#39;&#39;</span>
+</span><span id="PypiScraper.__init__-34"><a href="#PypiScraper.__init__-34"><span class="linenos">34</span></a>
+</span><span id="PypiScraper.__init__-35"><a href="#PypiScraper.__init__-35"><span class="linenos">35</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">request_handler</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -489,40 +490,41 @@ URL of the PyPI website where the data of a package is located</li>
 
     </div>
     <a class="headerlink" href="#PypiScraper.obtain_package_names"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="PypiScraper.obtain_package_names-38"><a href="#PypiScraper.obtain_package_names-38"><span class="linenos">38</span></a>    <span class="nd">@override</span>
-</span><span id="PypiScraper.obtain_package_names-39"><a href="#PypiScraper.obtain_package_names-39"><span class="linenos">39</span></a>    <span class="k">def</span> <span class="nf">obtain_package_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-</span><span id="PypiScraper.obtain_package_names-40"><a href="#PypiScraper.obtain_package_names-40"><span class="linenos">40</span></a><span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-</span><span id="PypiScraper.obtain_package_names-41"><a href="#PypiScraper.obtain_package_names-41"><span class="linenos">41</span></a><span class="sd">        Obtain the list of packages names from the PyPI website</span>
-</span><span id="PypiScraper.obtain_package_names-42"><a href="#PypiScraper.obtain_package_names-42"><span class="linenos">42</span></a><span class="sd">        Implements the abstract method of DataSource class</span>
-</span><span id="PypiScraper.obtain_package_names-43"><a href="#PypiScraper.obtain_package_names-43"><span class="linenos">43</span></a>
-</span><span id="PypiScraper.obtain_package_names-44"><a href="#PypiScraper.obtain_package_names-44"><span class="linenos">44</span></a><span class="sd">        Returns</span>
-</span><span id="PypiScraper.obtain_package_names-45"><a href="#PypiScraper.obtain_package_names-45"><span class="linenos">45</span></a><span class="sd">        -------</span>
-</span><span id="PypiScraper.obtain_package_names-46"><a href="#PypiScraper.obtain_package_names-46"><span class="linenos">46</span></a><span class="sd">        List[str]</span>
-</span><span id="PypiScraper.obtain_package_names-47"><a href="#PypiScraper.obtain_package_names-47"><span class="linenos">47</span></a><span class="sd">            List of packages names</span>
-</span><span id="PypiScraper.obtain_package_names-48"><a href="#PypiScraper.obtain_package_names-48"><span class="linenos">48</span></a><span class="sd">            </span>
-</span><span id="PypiScraper.obtain_package_names-49"><a href="#PypiScraper.obtain_package_names-49"><span class="linenos">49</span></a><span class="sd">        Handles</span>
-</span><span id="PypiScraper.obtain_package_names-50"><a href="#PypiScraper.obtain_package_names-50"><span class="linenos">50</span></a><span class="sd">        -------</span>
-</span><span id="PypiScraper.obtain_package_names-51"><a href="#PypiScraper.obtain_package_names-51"><span class="linenos">51</span></a><span class="sd">        Exception</span>
-</span><span id="PypiScraper.obtain_package_names-52"><a href="#PypiScraper.obtain_package_names-52"><span class="linenos">52</span></a><span class="sd">            If there is an error obtaining the list of packages, it returns an empty list</span>
-</span><span id="PypiScraper.obtain_package_names-53"><a href="#PypiScraper.obtain_package_names-53"><span class="linenos">53</span></a><span class="sd">            </span>
-</span><span id="PypiScraper.obtain_package_names-54"><a href="#PypiScraper.obtain_package_names-54"><span class="linenos">54</span></a><span class="sd">        Example</span>
-</span><span id="PypiScraper.obtain_package_names-55"><a href="#PypiScraper.obtain_package_names-55"><span class="linenos">55</span></a><span class="sd">        -------</span>
-</span><span id="PypiScraper.obtain_package_names-56"><a href="#PypiScraper.obtain_package_names-56"><span class="linenos">56</span></a><span class="sd">        &gt;&gt;&gt; pypi_scraper = PypiScraper()</span>
-</span><span id="PypiScraper.obtain_package_names-57"><a href="#PypiScraper.obtain_package_names-57"><span class="linenos">57</span></a><span class="sd">        &gt;&gt;&gt; pypi_scraper.obtain_package_names()</span>
-</span><span id="PypiScraper.obtain_package_names-58"><a href="#PypiScraper.obtain_package_names-58"><span class="linenos">58</span></a><span class="sd">        [&#39;package1&#39;, &#39;package2&#39;, ...]</span>
-</span><span id="PypiScraper.obtain_package_names-59"><a href="#PypiScraper.obtain_package_names-59"><span class="linenos">59</span></a><span class="sd">        &#39;&#39;&#39;</span>
-</span><span id="PypiScraper.obtain_package_names-60"><a href="#PypiScraper.obtain_package_names-60"><span class="linenos">60</span></a>
-</span><span id="PypiScraper.obtain_package_names-61"><a href="#PypiScraper.obtain_package_names-61"><span class="linenos">61</span></a>        <span class="c1"># Build the request job</span>
-</span><span id="PypiScraper.obtain_package_names-62"><a href="#PypiScraper.obtain_package_names-62"><span class="linenos">62</span></a>        <span class="n">job</span> <span class="o">=</span> <span class="n">RequestJob</span><span class="p">(</span><span class="s2">&quot;PYPI package names&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_LIST_URL</span><span class="p">)</span>
-</span><span id="PypiScraper.obtain_package_names-63"><a href="#PypiScraper.obtain_package_names-63"><span class="linenos">63</span></a>
-</span><span id="PypiScraper.obtain_package_names-64"><a href="#PypiScraper.obtain_package_names-64"><span class="linenos">64</span></a>        <span class="c1"># Get the HTML of the page</span>
-</span><span id="PypiScraper.obtain_package_names-65"><a href="#PypiScraper.obtain_package_names-65"><span class="linenos">65</span></a>        <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_handler</span><span class="o">.</span><span class="n">do_request</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
-</span><span id="PypiScraper.obtain_package_names-66"><a href="#PypiScraper.obtain_package_names-66"><span class="linenos">66</span></a>
-</span><span id="PypiScraper.obtain_package_names-67"><a href="#PypiScraper.obtain_package_names-67"><span class="linenos">67</span></a>        <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">response</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="PypiScraper.obtain_package_names-68"><a href="#PypiScraper.obtain_package_names-68"><span class="linenos">68</span></a>            <span class="k">raise</span> <span class="n">OliviaFinderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error obtaining the list of packages from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_LIST_URL</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-</span><span id="PypiScraper.obtain_package_names-69"><a href="#PypiScraper.obtain_package_names-69"><span class="linenos">69</span></a>        
-</span><span id="PypiScraper.obtain_package_names-70"><a href="#PypiScraper.obtain_package_names-70"><span class="linenos">70</span></a>        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
-</span><span id="PypiScraper.obtain_package_names-71"><a href="#PypiScraper.obtain_package_names-71"><span class="linenos">71</span></a>        
+            <div class="pdoc-code codehilite"><pre><span></span><span id="PypiScraper.obtain_package_names-37"><a href="#PypiScraper.obtain_package_names-37"><span class="linenos">37</span></a>    <span class="nd">@override</span>
+</span><span id="PypiScraper.obtain_package_names-38"><a href="#PypiScraper.obtain_package_names-38"><span class="linenos">38</span></a>    <span class="k">def</span> <span class="nf">obtain_package_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span id="PypiScraper.obtain_package_names-39"><a href="#PypiScraper.obtain_package_names-39"><span class="linenos">39</span></a><span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+</span><span id="PypiScraper.obtain_package_names-40"><a href="#PypiScraper.obtain_package_names-40"><span class="linenos">40</span></a><span class="sd">        Obtain the list of packages names from the PyPI website</span>
+</span><span id="PypiScraper.obtain_package_names-41"><a href="#PypiScraper.obtain_package_names-41"><span class="linenos">41</span></a><span class="sd">        Implements the abstract method of DataSource class</span>
+</span><span id="PypiScraper.obtain_package_names-42"><a href="#PypiScraper.obtain_package_names-42"><span class="linenos">42</span></a>
+</span><span id="PypiScraper.obtain_package_names-43"><a href="#PypiScraper.obtain_package_names-43"><span class="linenos">43</span></a><span class="sd">        Returns</span>
+</span><span id="PypiScraper.obtain_package_names-44"><a href="#PypiScraper.obtain_package_names-44"><span class="linenos">44</span></a><span class="sd">        -------</span>
+</span><span id="PypiScraper.obtain_package_names-45"><a href="#PypiScraper.obtain_package_names-45"><span class="linenos">45</span></a><span class="sd">        List[str]</span>
+</span><span id="PypiScraper.obtain_package_names-46"><a href="#PypiScraper.obtain_package_names-46"><span class="linenos">46</span></a><span class="sd">            List of packages names</span>
+</span><span id="PypiScraper.obtain_package_names-47"><a href="#PypiScraper.obtain_package_names-47"><span class="linenos">47</span></a><span class="sd">            </span>
+</span><span id="PypiScraper.obtain_package_names-48"><a href="#PypiScraper.obtain_package_names-48"><span class="linenos">48</span></a><span class="sd">        Handles</span>
+</span><span id="PypiScraper.obtain_package_names-49"><a href="#PypiScraper.obtain_package_names-49"><span class="linenos">49</span></a><span class="sd">        -------</span>
+</span><span id="PypiScraper.obtain_package_names-50"><a href="#PypiScraper.obtain_package_names-50"><span class="linenos">50</span></a><span class="sd">        Exception</span>
+</span><span id="PypiScraper.obtain_package_names-51"><a href="#PypiScraper.obtain_package_names-51"><span class="linenos">51</span></a><span class="sd">            If there is an error obtaining the list of packages, it returns an empty list</span>
+</span><span id="PypiScraper.obtain_package_names-52"><a href="#PypiScraper.obtain_package_names-52"><span class="linenos">52</span></a><span class="sd">            </span>
+</span><span id="PypiScraper.obtain_package_names-53"><a href="#PypiScraper.obtain_package_names-53"><span class="linenos">53</span></a><span class="sd">        Example</span>
+</span><span id="PypiScraper.obtain_package_names-54"><a href="#PypiScraper.obtain_package_names-54"><span class="linenos">54</span></a><span class="sd">        -------</span>
+</span><span id="PypiScraper.obtain_package_names-55"><a href="#PypiScraper.obtain_package_names-55"><span class="linenos">55</span></a><span class="sd">        &gt;&gt;&gt; pypi_scraper = PypiScraper()</span>
+</span><span id="PypiScraper.obtain_package_names-56"><a href="#PypiScraper.obtain_package_names-56"><span class="linenos">56</span></a><span class="sd">        &gt;&gt;&gt; pypi_scraper.obtain_package_names()</span>
+</span><span id="PypiScraper.obtain_package_names-57"><a href="#PypiScraper.obtain_package_names-57"><span class="linenos">57</span></a><span class="sd">        [&#39;package1&#39;, &#39;package2&#39;, ...]</span>
+</span><span id="PypiScraper.obtain_package_names-58"><a href="#PypiScraper.obtain_package_names-58"><span class="linenos">58</span></a><span class="sd">        &#39;&#39;&#39;</span>
+</span><span id="PypiScraper.obtain_package_names-59"><a href="#PypiScraper.obtain_package_names-59"><span class="linenos">59</span></a>
+</span><span id="PypiScraper.obtain_package_names-60"><a href="#PypiScraper.obtain_package_names-60"><span class="linenos">60</span></a>        <span class="c1"># Build the request job</span>
+</span><span id="PypiScraper.obtain_package_names-61"><a href="#PypiScraper.obtain_package_names-61"><span class="linenos">61</span></a>        <span class="n">job</span> <span class="o">=</span> <span class="n">RequestJob</span><span class="p">(</span><span class="s2">&quot;PYPI package names&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_LIST_URL</span><span class="p">)</span>
+</span><span id="PypiScraper.obtain_package_names-62"><a href="#PypiScraper.obtain_package_names-62"><span class="linenos">62</span></a>
+</span><span id="PypiScraper.obtain_package_names-63"><a href="#PypiScraper.obtain_package_names-63"><span class="linenos">63</span></a>        <span class="c1"># Get the HTML of the page</span>
+</span><span id="PypiScraper.obtain_package_names-64"><a href="#PypiScraper.obtain_package_names-64"><span class="linenos">64</span></a>        <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_handler</span><span class="o">.</span><span class="n">do_request</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+</span><span id="PypiScraper.obtain_package_names-65"><a href="#PypiScraper.obtain_package_names-65"><span class="linenos">65</span></a>
+</span><span id="PypiScraper.obtain_package_names-66"><a href="#PypiScraper.obtain_package_names-66"><span class="linenos">66</span></a>        <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">response</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="PypiScraper.obtain_package_names-67"><a href="#PypiScraper.obtain_package_names-67"><span class="linenos">67</span></a>            <span class="k">raise</span> <span class="n">OliviaFinderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error obtaining the list of packages from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">PYPI_PACKAGE_LIST_URL</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span id="PypiScraper.obtain_package_names-68"><a href="#PypiScraper.obtain_package_names-68"><span class="linenos">68</span></a>        
+</span><span id="PypiScraper.obtain_package_names-69"><a href="#PypiScraper.obtain_package_names-69"><span class="linenos">69</span></a>        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+</span><span id="PypiScraper.obtain_package_names-70"><a href="#PypiScraper.obtain_package_names-70"><span class="linenos">70</span></a>        
+</span><span id="PypiScraper.obtain_package_names-71"><a href="#PypiScraper.obtain_package_names-71"><span class="linenos">71</span></a>        <span class="n">pakage_list</span> <span class="o">=</span> <span class="p">[]</span>
 </span><span id="PypiScraper.obtain_package_names-72"><a href="#PypiScraper.obtain_package_names-72"><span class="linenos">72</span></a>        <span class="k">try</span><span class="p">:</span>
 </span><span id="PypiScraper.obtain_package_names-73"><a href="#PypiScraper.obtain_package_names-73"><span class="linenos">73</span></a>            <span class="c1"># Get the list of packages</span>
 </span><span id="PypiScraper.obtain_package_names-74"><a href="#PypiScraper.obtain_package_names-74"><span class="linenos">74</span></a>            <span class="n">pakage_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)]</span>

@@ -22,7 +22,7 @@ rm -rf docs/olivia_finder docs/*.html docs/*.js
 
 if [ "$1" == "--server" ]; then
     # Run server
-    pdoc olivia_finder/lib/olivia_finder \
+    pdoc olivia_finder/olivia_finder \
     --footer-text "Olivia Finder Doc, by Daniel Alonso Báscones" \
     --logo https://raw.githubusercontent.com/dab0012/olivia-finder/master/docs/img/logo.png \
     --favicon https://raw.githubusercontent.com/dab0012/olivia-finder/master/docs/img/favicon.ico \
@@ -33,7 +33,7 @@ else
     # Generate new docs
     pdoc \
         -d numpy \
-        -o docs olivia_finder/lib/olivia_finder \
+        -o docs olivia_finder/olivia_finder \
         --footer-text "Olivia Finder Doc, by Daniel Alonso Báscones" \
         --logo https://raw.githubusercontent.com/dab0012/olivia-finder/master/docs/img/logo.png \
         --favicon https://raw.githubusercontent.com/dab0012/olivia-finder/master/docs/img/favicon.ico \
