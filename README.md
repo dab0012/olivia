@@ -6,11 +6,11 @@ It is designed to work in conjunction with Olivia, and uses web-scraping techniq
 
 ## Olivia Finder datasets
 
-The data obtainded using olivia finder has been published on zenodo
+The data obtainded using olivia finder has been published on Zenodo
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8095863.svg)](https://doi.org/10.5281/zenodo.8095863)
 
-All data at kaggle
+All data at Kaggle
 
 [![Olivia Finder Results](https://img.shields.io/badge/Kaggle-All%20Data%20-%23ffff)](https://www.kaggle.com/datasets/danielalonsob/dependency-networks)
 
@@ -25,17 +25,20 @@ The documentation includes details about the functionalities implemented in the 
 
 
 ## Quality metrics
+<!---
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/771e39014ceb48688cb9d341c705ecf9)](https://www.codacy.com/gh/dab0012/olivia-finder/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dab0012/olivia-finder&amp;utm_campaign=Badge_Grade)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia) 
+-->
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
-
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=bugs)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia) 
+
+
 ## Intended audience
 
 Olivia Finder is destined to be used by developers, researchers and centralized packages interested in the identification and analysis of vulnerabilities. It is designed to be used jointly with Olivia, suggesting that users must be familiar with this related tool. In general, users are expected to have technical knowledge and experience in handling networks of software packages.
@@ -49,6 +52,19 @@ Run olivia-finder notebooks in Deepnote cloud
 | [![Olivia Finder - Implementation](https://img.shields.io/badge/Kaggle-Implementation%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/olivia-finder-implementation) | [![Data Manipulation](https://img.shields.io/badge/Kaggle-Data%20Manipulation%20-%23ffff)](https://www.kaggle.com/danielalonsob/olivia-finder-data-manipulation) | [<img src="https://deepnote.com/buttons/try-in-a-jupyter-notebook-white-small.svg">](https://deepnote.com/@olivia-0732/olivia-finder-eacd7775-abe3-4a75-89fa-db586279d05f) | [![Bowtie](https://img.shields.io/badge/Kaggle-Bowtie%20Metrics%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/bowtie-network-analisys) | [![Github example](https://img.shields.io/badge/Kaggle-Github%20Example%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/olivia-finder-github-example)
 
 
+## Olivia Notebooks (Previous TFG)
+
+| Model | Analisis | Immunization |  Repository |
+|---|---|---|---|
+|[![Olivia - Model](https://img.shields.io/badge/Jupyter-Olivia%20--%20Model-%23fa0297)](https://github.com/dsr0018/olivia/blob/master/A-Model.ipynb) | [![Olivia - Analysis](https://img.shields.io/badge/Jupyter-Olivia%20--%20Analysis-%23fa0297)](https://github.com/dsr0018/olivia/blob/master/B-Analysis.ipynb)  |  [![Olivia - Imunization](https://img.shields.io/badge/Jupyter-Olivia%20--%20Imunization-%23fa0297)](https://github.com/dsr0018/olivia/blob/master/C-Immunization.ipynb) |  [![https://github.com/dsr0018/olivia](https://img.shields.io/badge/Github-Olivia-purple)](https://github.com/dsr0018/olivia) |
+ 
+
+**Acknowledgements**
+
+Olivia Finder uses data from the Olivia project, which was created by @dsr0018
+
+The Olivia project is distributed under the MIT License.
+
  
 ## License
 
@@ -56,19 +72,6 @@ Olivia Finder is distributed under the MIT License.
 
 See [LICENSE](https://github.com/dab0012/olivia-finder/blob/06fb2d32146134e833df36bbf9828d4a9c72dc30/LICENSE) file for details.
 
-## Olivia Notebooks (Previous TFG)
-
-| Model | Analisis | Immunization |  Repository |
-|---|---|---|---|
-|[![Olivia - Model](https://img.shields.io/badge/Jupyter-Olivia%20--%20Model-%23fa0297)](https://github.com/dsr0018/olivia/blob/master/A-Model.ipynb) | [![Olivia - Analysis](https://img.shields.io/badge/Jupyter-Olivia%20--%20Analysis-%23fa0297)](https://github.com/dsr0018/olivia/blob/master/B-Analysis.ipynb)  |  [![Olivia - Imunization](https://img.shields.io/badge/Jupyter-Olivia%20--%20Imunization-%23fa0297)](https://github.com/dsr0018/olivia/blob/master/C-Immunization.ipynb) |  [![https://github.com/dsr0018/olivia](https://img.shields.io/badge/Github-Olivia-purple)](https://github.com/dsr0018/olivia) |
-| [![Olivia - Model](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dab0012/olivia-finder/blob/master/notebooks/olivia/A-Model.ipynb) |  [![Olivia - Model](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dab0012/olivia-finder/blob/master/notebooks/olivia/B-Analysis.ipynb) | [![Olivia - Model](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dab0012/olivia-finder/blob/master/notebooks/olivia/C-Immunization.ipynb)  |  
-
-
-**Acknowledgements**
-
-Olivia Finder uses data from the Olivia project, which was created by @dsr0018
-
-The Olivia project is distributed under the MIT License.
 
 # **Author:** 
 
