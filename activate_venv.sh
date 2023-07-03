@@ -16,7 +16,7 @@ else
     which python3
     echo "Installing requirements..."
     # pip install -r olivia/requirements.txt
-    pip install -r olivia_finder/lib/requirements.txt
+    pip install -r olivia_finder/requirements.txt
 fi
 
 

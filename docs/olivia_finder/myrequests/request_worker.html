@@ -558,7 +558,7 @@ The exit string is a RequestJob object with key = RequestJob.FINALIZE_KEY</p>
                                         <input id="RequestWorker.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">RequestWorker</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">worker_id</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">jobs_queue</span><span class="p">:</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span>,</span><span class="param">	<span class="n">progress_bar</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tqdm</span><span class="o">.</span><span class="n">std</span><span class="o">.</span><span class="n">tqdm</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+        <span class="name">RequestWorker</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">worker_id</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">jobs_queue</span><span class="p">:</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span>,</span><span class="param">	<span class="n">progress_bar</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tqdm</span><span class="o">.</span><span class="n">std</span><span class="o">.</span><span class="n">tqdm</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
 
                 <label class="view-source-button" for="RequestWorker.__init__-view-source"><span>View Source</span></label>
 
@@ -813,7 +813,6 @@ Progress bar, if None, no progress bar will be shown</li>
                 <dd id="RequestWorker.name" class="variable">name</dd>
                 <dd id="RequestWorker.ident" class="variable">ident</dd>
                 <dd id="RequestWorker.is_alive" class="function">is_alive</dd>
-                <dd id="RequestWorker.isAlive" class="function">isAlive</dd>
                 <dd id="RequestWorker.daemon" class="variable">daemon</dd>
                 <dd id="RequestWorker.isDaemon" class="function">isDaemon</dd>
                 <dd id="RequestWorker.setDaemon" class="function">setDaemon</dd>

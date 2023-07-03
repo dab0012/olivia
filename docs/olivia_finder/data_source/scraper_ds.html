@@ -607,7 +607,7 @@ This class implements the methods _build_urls, obtain_package_data and obtain_pa
                                         <input id="ScraperDataSource.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">ScraperDataSource</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">request_handler</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n"><a href="../myrequests/request_handler.html#RequestHandler">olivia_finder.myrequests.request_handler.RequestHandler</a></span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+        <span class="name">ScraperDataSource</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">request_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n"><a href="../myrequests/request_handler.html#RequestHandler">olivia_finder.myrequests.request_handler.RequestHandler</a></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
 
                 <label class="view-source-button" for="ScraperDataSource.__init__-view-source"><span>View Source</span></label>
 
@@ -676,7 +676,7 @@ Request handler for making the requests, by default None</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">obtain_packages_data</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">package_names</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">progress_bar</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tqdm</span><span class="o">.</span><span class="n">std</span><span class="o">.</span><span class="n">tqdm</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>:</span></span>
+        <span class="name">obtain_packages_data</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">package_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">progress_bar</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tqdm</span><span class="o">.</span><span class="n">std</span><span class="o">.</span><span class="n">tqdm</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>:</span></span>
 
                 <label class="view-source-button" for="ScraperDataSource.obtain_packages_data-view-source"><span>View Source</span></label>
 
@@ -807,7 +807,7 @@ Progress bar, by default None</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">obtain_package_data</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">package_name</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span>:</span></span>
+        <span class="name">obtain_package_data</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">package_name</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="ScraperDataSource.obtain_package_data-view-source"><span>View Source</span></label>
 

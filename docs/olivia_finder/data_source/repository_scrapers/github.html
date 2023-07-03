@@ -393,7 +393,7 @@ Implements the abstract class Scraper and accordingly DataSource class</p>
                                         <input id="GithubScraper.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">GithubScraper</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">request_handler</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n"><a href="../../myrequests/request_handler.html#RequestHandler">olivia_finder.myrequests.request_handler.RequestHandler</a></span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+        <span class="name">GithubScraper</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">request_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n"><a href="../../myrequests/request_handler.html#RequestHandler">olivia_finder.myrequests.request_handler.RequestHandler</a></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
 
                 <label class="view-source-button" for="GithubScraper.__init__-view-source"><span>View Source</span></label>
 
@@ -460,7 +460,7 @@ To be implemented by the child class</p>
                     <div class="decorator">@override</div>
 
         <span class="def">def</span>
-        <span class="name">obtain_package_data</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">package_name</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span>:</span></span>
+        <span class="name">obtain_package_data</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">package_name</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="GithubScraper.obtain_package_data-view-source"><span>View Source</span></label>
 
