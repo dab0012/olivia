@@ -1,0 +1,11 @@
+pandas
+tqdm
+requests
+BeautifulSoup4
+selenium
+networkx
+matplotlib
+pybraries
+typing_extensions
+# pdoc
+scipy
