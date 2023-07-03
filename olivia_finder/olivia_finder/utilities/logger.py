@@ -170,7 +170,7 @@ class MyLogger:
         logging.getLogger(logger_name).setLevel(log_file_level.upper())
 
     @staticmethod
-    def configure_level(logger_name: str, handler_type: str, level: str) -> None:
+    def configure_level(logger_key: str, handler_type: str, level: str) -> None:
         """
         Description
         -----------
@@ -178,7 +178,7 @@ class MyLogger:
         
         Parameters
         ----------
-        logger_name : str
+        logger_key : str
             Name of the logger to configure the level for.
             
         handler_type : str
@@ -216,7 +216,7 @@ class MyLogger:
         >>> logger.configure_level("file", "DEBUG")
         """
         
-        logger = logging.getLogger(logger_name)
+        logger = MyLogger.get_logger(logger_key)
         handler_list = []
         # Validate the handler type
         if handler_type == "console":

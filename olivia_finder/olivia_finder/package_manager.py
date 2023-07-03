@@ -1582,8 +1582,8 @@ class PackageManager():
 
         self.data_sources: List[DataSource] = data_sources
         self.packages: Dict[str, Package] = {}
+
         # Init the logger for the package manager
-        MyLogger.configure("logger_packagemanager")
         self.logger = MyLogger.get_logger('logger_packagemanager')
 
 
@@ -1633,7 +1633,7 @@ class PackageManager():
         '''
 
         # Init the logger for the package manager
-        logger = MyLogger.configure("logger_packagemanager")
+        logger = MyLogger.get_logger("logger_packagemanager")
 
         # Try to load the package manager from the file
         try:
@@ -1654,7 +1654,7 @@ class PackageManager():
             if isinstance(data_source, ScraperDataSource):
                 data_source.request_handler = RequestHandler()
                 # Set the logger for the scraper data source
-                data_source.logger = MyLogger.configure("logger_datasource")
+                data_source.logger = MyLogger.get_logger("logger_datasource")
 
         obj.logger = logger
 
@@ -1706,10 +1706,7 @@ class PackageManager():
         '''
 
         # Init the logger for the package manager
-        MyLogger.configure("logger_packagemanager")
-        logger = MyLogger.get_logger(
-            logger_name=Configuration().get_key('logger_packagemanager', 'name')
-        )
+        logger = MyLogger.get_logger('logger_packagemanager')
 
         try:
             logger.info(f"Loading csv file from {csv_path}")

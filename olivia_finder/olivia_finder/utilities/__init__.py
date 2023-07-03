@@ -109,16 +109,14 @@ The class MyLogger implements an utility loging tools to register the actions of
 
 
 ```python
-logger = MyLogger.configure('olivia_finder_logger')
+
+logger = MyLogger.get_logger("olivia_finder_logger")
 
 logger.debug('Debug message')
 logger.info('Info message')
 logger.warning('Warning message')
 logger.error('Error message')
 logger.critical('Critical message')
-
-# Acess the logger using the configured name
-MyLogger.get_logger(logger.name).debug('Debug message')
 
 # Acess the logger using the default logging class
 import logging
@@ -160,12 +158,13 @@ Change log level
 
 
 ```python
-MyLogger.configure_level(logger.name, 'console', 'warning')
-MyLogger.get_logger(logger.name).debug('Debug message')
-MyLogger.get_logger(logger.name).info('Info message')
-MyLogger.get_logger(logger.name).warning('Warning message')
-MyLogger.get_logger(logger.name).error('Error message')
-MyLogger.get_logger(logger.name).critical('Critical message')
+MyLogger.configure_level("olivia_finder_logger", 'console', 'warning')
+logger = MyLogger.get_logger("olivia_finder_logger")
+logger.debug('Debug message')
+logger.info('Info message')
+logger.warning('Warning message')
+logger.error('Error message')
+logger.critical('Critical message')
 ```
 
     [33;20m2023-06-28 19:26:34,331 [olivia_finder(WARNING)] -> 446635553.py:4[0m
