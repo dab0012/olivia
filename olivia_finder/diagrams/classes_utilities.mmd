@@ -1,0 +1,28 @@
+classDiagram
+  class ConfigFileNotFound {
+  }
+  class ConfigKeyNotFound {
+  }
+  class Configuration {
+    get_key(section: str, key: str)
+  }
+  class ConsoleLogFormatter {
+    format(record: logging.LogRecord) str
+  }
+  class FileLogFormatter {
+    format(record: logging.LogRecord) str
+  }
+  class MyLogger {
+    configure(config_key: str) logging.Logger
+    configure_level(logger_name: str, handler_type: str, level: str) None
+    enable_console(logger_name: str, console_level: str) None
+    enable_file(logger_name: str, log_file: str, log_file_level: str) None
+    get_logger(logger_name: Optional[str]) logging.Logger
+  }
+  class OliviaFinderException {
+    message : str
+  }
+  class _SingletonWrapper {
+  }
+  ConfigFileNotFound --|> OliviaFinderException
+  ConfigKeyNotFound --|> OliviaFinderException
