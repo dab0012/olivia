@@ -1,7 +1,25 @@
 '''
-# **Subpackage utilities**
+# Subpackage utilities
 
-## Module config
+The utility package is designed to contain source code that is used in the library on a recurring basis, and whose functionality is to provide a certain utility to the library.
+
+## Module structure
+
+**Package structure**
+
+```bash
+../../olivia_finder/olivia_finder/utilities
+├── config.py
+├── exception.py
+├── __init__.py
+├── logger.py
+├── singleton_decorator.py
+└── utilities.py
+```
+
+
+## Module `utilities.config`
+
 
 Provides the configuration class, which is used to obtain the configuration variables defined in the .ini configuration file
 
@@ -9,111 +27,201 @@ Provides the configuration class, which is used to obtain the configuration vari
 
     It is a Singleton instance so only one instance is accessible from any part of the code through the constructor
 
-```python
-Configuration().get_key('logger', 'status')
->>> 'ENABLED'
-```
+    
 
-## Module logger
-
-The class MyLogger implements a customized logger to register the actions of execution
-
-It is a Singleton instance so only one instance is accessible from any part of the code through the constructor
 
 
 ```python
-MyLogger().set_level("DEBUG")
-
-# Log messages
-MyLogger().get_logger().debug("Hello World 1")
-MyLogger().get_logger().info("Hello World 2")
-
-# disable logger
-MyLogger().disable()
-MyLogger().get_logger().error("Hello World 3")
-
-# re-enable logger
-MyLogger().enable()
-
-MyLogger().get_logger().warning("Hello World 4")
-MyLogger().get_logger().error("Hello World 5")
-MyLogger().get_logger().critical("Hello World 6")
-
-# reset logger level
-MyLogger().set_level(Configuration().get_key('logger', 'level'))
+from olivia_finder.utilities.config import Configuration
 ```
+
+You need to provide a configuration file
+
+The configuration file is located in the root of the olivia_finder package
+
+In this execution we are using a personalized configuration file for demonstration
+
 
 ```python
->>> [2023-05-15 20:31:29,729 [DEBUG] in 1504849287.<module> (1504849287.py:4)
->>> Hello World 1
->>> [2023-05-15 20:31:29,729 [INFO] in 1504849287.<module> (1504849287.py:5)
->>> Hello World 2
->>> [2023-05-15 20:31:29,730 [WARNING] in 1504849287.<module> (1504849287.py:14)
->>> Hello World 4
->>> [2023-05-15 20:31:29,730 [ERROR] in 1504849287.<module> (1504849287.py:15)
->>> Hello World 5
->>> [2023-05-15 20:31:29,731 [CRITICAL] in 1504849287.<module> (1504849287.py:16)
->>> Hello World 6
+!cat ./config.ini
 ```
 
-The **console handler** shows the different levels using indicative colors
+    [olivia_finder_logger]
+    ; Levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
+    name                     = olivia_finder
+    level                    = DEBUG
+    status                   = ENABLED
+    file_handler             = ENABLED
+    console_handler          = ENABLED
+    
+    ; Myrequests configuration
+    [logger_myrequests]
+    name                 = olivia_finder.myrequests
+    level                = DEBUG
+    status               = DISABLED
+    file_handler         = DISABLED
+    console_handler      = DISABLED
+    
+    ; Package Manager configuration
+    [logger_packagemanager]
+    name                 = olivia_finder.packagemanager
+    level                = DEBUG
+    status               = DISABLED
+    file_handler         = DISABLED
+    console_handler      = DISABLED
+    
+    ; CSV Datasource configuration
+    [logger_datasource]
+    name                 = olivia_finder.datasource
+    level                = DEBUG
+    status               = DISABLED
+    file_handler         = DISABLED
+    console_handler      = DISABLED
+    
+    ; Output directory for the results
+    [folders]
+    logger                      = logs/
+    working_dir                 = results/working/
+    
+    
+    ; Libraries.io configuration
+    [librariesio]
+    api_key                     = 558f419425861e607e78cd4e3a0b129b
 
-The **file handler** has the default format
+Acess the keys using `get_key` method
+
+
+```python
+Configuration().get_key('olivia_finder_logger', 'status')
+``
+    'ENABLED'
+
+
+## Module `utilities.logger`
 
 
 
-```bash
->$ cat logs/example_log.log
+```python
+from olivia_finder.utilities.logger import MyLogger
 ```
 
-```bash
-2023-04-25 18:58:06 [DEBUG] Hello World 1 (1008465612.py:7)
-2023-04-25 18:58:06 [INFO] Hello World 2 (1008465612.py:8)
-2023-04-25 18:58:06 [WARNING] Hello World 4 (1008465612.py:17)
-2023-04-25 18:58:06 [ERROR] Hello World 5 (1008465612.py:18)
-2023-04-25 18:58:06 [CRITICAL] Hello World 6 (1008465612.py:19)
-2023-04-25 19:00:07 [INFO] RequestHandler: Creating RequestHandler object
-Number of jobs: 1
-Number of workers: 1
-Creating jobs queue (request_handler.py:20)
-2023-04-25 19:00:07 [INFO] Jobs queue created (request_handler.py:25)
-2023-04-25 19:00:07 [INFO] Jobs queue size: 1 (request_handler.py:26)
-2023-04-25 19:00:07 [INFO] Creating workers (request_handler.py:35)
-2023-04-25 19:00:07 [DEBUG] Starting new HTTPS connection (1): www.sslproxies.org:443 (connectionpool.py:973)
-2023-04-25 19:00:07 [DEBUG] https://www.sslproxies.org:443 "GET / HTTP/1.1" 200 None (connectionpool.py:452)
-2023-04-25 19:00:08 [DEBUG] Found 100 proxies from SSLProxiesBuilder (proxy_builder.py:75)
-2023-04-25 19:00:08 [DEBUG] Starting new HTTPS connection (1): raw.githubusercontent.com:443 (connectionpool.py:973)
-2023-04-25 19:00:08 [DEBUG] https://raw.githubusercontent.com:443 "GET /mertguvencli/http-proxy-list/main/proxy-list/data.txt HTTP/1.1" 200 2034 (connectionpool.py:452)
-2023-04-25 19:00:08 [DEBUG] Found 307 proxies from ListProxyBuilder (proxy_builder.py:75)
-2023-04-25 19:00:08 [DEBUG] Starting new HTTPS connection (1): raw.githubusercontent.com:443 (connectionpool.py:973)
-2023-04-25 19:00:08 [DEBUG] https://raw.githubusercontent.com:443 "GET /TheSpeedX/SOCKS-List/master/http.txt HTTP/1.1" 200 18270 (connectionpool.py:452)
-2023-04-25 19:00:08 [DEBUG] Found 2580 proxies from ListProxyBuilder (proxy_builder.py:75)
-2023-04-25 19:00:08 [DEBUG] Proxies len: 2661 (proxy_handler.py:160)
-2023-04-25 19:00:08 [DEBUG] Proxy Handler initialized with 2661 proxies (proxy_handler.py:82)
-2023-04-25 19:00:08 [DEBUG] Useragents loaded from file: /home/dnllns/Documentos/repositorios/olivia-finder/olivia_finder/olivia_finder/myrequests/data/useragents.txt (useragent_handler.py:35)
-2023-04-25 19:00:08 [INFO] Workers created (request_handler.py:40)
-2023-04-25 19:00:08 [INFO] Number of workers: 1 (request_handler.py:41)
-2023-04-25 19:00:08 [DEBUG] Worker 0: Got job from queue
-Job key: networkx
-url: https://www.pypi.org/project/networkx/ (request_worker.py:67)
-...
-url: None (request_worker.py:67)
-2023-04-25 19:00:13 [INFO] Joining worker 1 (request_handler.py:67)
-2023-04-25 19:00:13 [INFO] Joining worker 2 (request_handler.py:67)
-2023-04-25 19:00:13 [INFO] Joining worker 3 (request_handler.py:67)
-2023-04-25 19:00:13 [INFO] Worker 0 finished (request_handler.py:73)
-2023-04-25 19:00:13 [INFO] Worker 1 finished (request_handler.py:73)
-2023-04-25 19:00:13 [INFO] Worker 2 finished (request_handler.py:73)
-2023-04-25 19:00:13 [INFO] Worker 3 finished (request_handler.py:73)
+The class MyLogger implements an utility loging tools to register the actions of execution. It is based on the default Python logging module
+
+
+```python
+logger = MyLogger.configure('olivia_finder_logger')
+
+logger.debug('Debug message')
+logger.info('Info message')
+logger.warning('Warning message')
+logger.error('Error message')
+logger.critical('Critical message')
+
+# Acess the logger using the configured name
+MyLogger.get_logger(logger.name).debug('Debug message')
+
+# Acess the logger using the default logging class
+import logging
+logging.getLogger(logger.name).debug('Debug message')
+```
+
+    [32;20m2023-06-28 19:26:34,316 [olivia_finder(DEBUG)] -> 4423775.py:3[0m
+    Debug message
+    [34;20m2023-06-28 19:26:34,318 [olivia_finder(INFO)] -> 4423775.py:4[0m
+    Info message
+    [33;20m2023-06-28 19:26:34,318 [olivia_finder(WARNING)] -> 4423775.py:5[0m
+    Warning message
+    [38;5;208;20m2023-06-28 19:26:34,319 [olivia_finder(ERROR)] -> 4423775.py:6[0m
+    Error message
+    [31;20m2023-06-28 19:26:34,319 [olivia_finder(CRITICAL)] -> 4423775.py:7[0m
+    Critical message
+    [32;20m2023-06-28 19:26:34,320 [olivia_finder(DEBUG)] -> 4423775.py:10[0m
+    Debug message
+    [32;20m2023-06-28 19:26:34,320 [olivia_finder(DEBUG)] -> 4423775.py:14[0m
+    Debug message
+
+
+Default logger is root
+
+
+```python
+# The default logger is root and it is not configured
+MyLogger.get_logger().debug('Debug message')
+MyLogger.get_logger().info('Info message')
+MyLogger.get_logger().warning('Warning message')
+MyLogger.get_logger().error('Error message')
+MyLogger.get_logger().critical('Critical message')
+```
+    Warning message
+    Error message
+    Critical message
+
+Change log level
+
+
+```python
+MyLogger.configure_level(logger.name, 'console', 'warning')
+MyLogger.get_logger(logger.name).debug('Debug message')
+MyLogger.get_logger(logger.name).info('Info message')
+MyLogger.get_logger(logger.name).warning('Warning message')
+MyLogger.get_logger(logger.name).error('Error message')
+MyLogger.get_logger(logger.name).critical('Critical message')
+```
+
+    [33;20m2023-06-28 19:26:34,331 [olivia_finder(WARNING)] -> 446635553.py:4[0m
+    Warning message
+    [38;5;208;20m2023-06-28 19:26:34,332 [olivia_finder(ERROR)] -> 446635553.py:5[0m
+    Error message
+    [31;20m2023-06-28 19:26:34,333 [olivia_finder(CRITICAL)] -> 446635553.py:6[0m
+    Critical message
+
+## Module `utilities.exceptions`
+
+Includes a series of exceptions to be used by the library and provide a more generic context in the case of being rised
+
+
+```python
+from olivia_finder.utilities.exception import OliviaFinderException
 ```
 
 
-## Module utilities
+```python
+OliviaFinderException('Test exception')
+```
+    OliviaFinderException: Test exception
 
-Includes some utilities to work with the module
 
-## Module exceptions
 
-Includes some exceptions to work with the module
+## Module `utilities.singleton_decorator`
+
+This module includes a decorator-based implementation of the Singleton design pattern
+
+
+```python
+from olivia_finder.utilities.singleton_decorator import singleton
+```
+
+
+```python
+# Dummy class
+@singleton
+class Dummy:
+    def __init__(self, name):
+        self.name = name
+```
+
+
+```python
+print(Dummy('test').name)
+print(Dummy('test2').name)
+```
+
+    test
+    test
+
+
+## Module `utilities.utilities`
+
+A module containing common source code to be reused
 
 '''

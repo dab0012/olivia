@@ -23,6 +23,12 @@ class _SingletonWrapper:
         if self._instance is None:
             self._instance = self.__wrapped__(*args, **kwargs)
         return self._instance       
+    
+    def destroy(self):
+        """
+        Destroys the instance of decorated class
+        """
+        self._instance = None
 
 def singleton(cls):
     """

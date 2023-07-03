@@ -1,3 +1,97 @@
+"""
+
+Define the data structure of a package
+
+
+
+```python
+from olivia_finder.package import Package
+
+
+package = Package(
+        "AER", "3.1.1", "https://cran.r-project.org/web/packages/AER/index.html", 
+        [
+                Package("car", "3.0-10", "https://cran.r-project.org/web/packages/car/index.html", []),
+                Package("effects", "4.2-0","https://cran.r-project.org/web/packages/effects/index.html", []),
+                Package("foreign", "0.8-80", "https://cran.r-project.org/web/packages/foreign/index.html", []),
+        ]
+)
+
+package.print()
+```
+
+    Package:
+      name: AER
+      version: 3.1.1
+      url: https://cran.r-project.org/web/packages/AER/index.html
+      dependencies:
+        car:3.0-10
+        effects:4.2-0
+        foreign:0.8-80
+
+
+
+```python
+package.to_dict()
+```
+
+    {'name': 'AER',
+     'version': '3.1.1',
+     'url': 'https://cran.r-project.org/web/packages/AER/index.html',
+     'dependencies': [{'name': 'car',
+       'version': '3.0-10',
+       'url': 'https://cran.r-project.org/web/packages/car/index.html',
+       'dependencies': []},
+      {'name': 'effects',
+       'version': '4.2-0',
+       'url': 'https://cran.r-project.org/web/packages/effects/index.html',
+       'dependencies': []},
+      {'name': 'foreign',
+       'version': '0.8-80',
+       'url': 'https://cran.r-project.org/web/packages/foreign/index.html',
+       'dependencies': []}]}
+
+
+
+
+```python
+package.load(
+    {
+        "name": "AER",
+        "version": "3.1.1",
+        "url": "https://cran.r-project.org/web/packages/AER/index.html",
+        "dependencies": [
+            {
+                "name": "car",
+                "version": "3.0-10",
+                "url": "https://cran.r-project.org/web/packages/car/index.html",
+                "dependencies": []
+            },
+            {
+                "name": "effects",
+                "version": "4.2-0",
+                "url": "https://cran.r-project.org/web/packages/effects/index.html",
+                "dependencies": []
+            },
+            {
+                "name": "foreign",
+                "version": "0.8-80",
+                "url": "https://cran.r-project.org/web/packages/foreign/index.html",
+                "dependencies": []
+            }
+        ]
+    }
+
+)
+```
+
+
+
+
+    <olivia_finder.package.Package at 0x7f3c2eb5c2e0>
+
+"""
+
 from __future__ import annotations
 from typing import List, Optional
 

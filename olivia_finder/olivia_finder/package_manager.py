@@ -1,3 +1,1537 @@
+'''
+
+## Initialize a package manager
+
+
+**Note:**
+
+Initialization based on a scraper-type datasource involves initializing the data prior to its use.
+
+Initialization based on a CSV-type datasource already contains all the data and can be retrieved directly.
+
+Loading from a persistence file implies that the file contains an object that has already been initialized or already contains data.
+
+A bioconductor scraping based package manager
+
+
+```python
+from olivia_finder.package_manager import PackageManager
+```
+
+
+```python
+bioconductor_pm_scraper = PackageManager(
+    data_sources=[                  # List of data sources
+        BioconductorScraper(),
+    ]
+)
+```
+
+A cran package manager loaded from a csv file
+
+
+```python
+cran_pm_csv = PackageManager(
+    data_sources=[                  # List of data sources
+        CSVDataSource(
+            # Path to the CSV file
+            "aux_data/cran_adjlist_test.csv",
+            dependent_field="Project Name",
+            dependency_field="Dependency Name",
+            dependent_version_field="Version Number",
+        )
+    ]
+)
+
+# Is needed to initialize the package manager to fill the package list with the csv data
+cran_pm_csv.initialize(show_progress=True)
+```
+
+    Loading packages: 100%|[32m██████████[0m| 275/275 [00:00<00:00, 729.91packages/s]
+
+
+A pypi package manager loaded from persistence file
+
+
+```python
+bioconductor_pm_loaded = PackageManager.load_from_persistence("../results/package_managers/bioconductor_scraper.olvpm")
+```
+
+A Maven package manager loaded from librariesio api
+
+
+```python
+maven_pm_libio = PackageManager(
+    data_sources=[                  # List of data sources
+        LibrariesioDataSource(platform="maven")
+    ]
+)
+```
+
+**For scraping-based datasources: Initialize the structure with the data of the selected sources**
+
+
+<span style="color:red">Note:</span>
+
+The automatic obtaining of bioconductor packages as mentioned above depends on Selenium, which requires a pre-installed browser in the system, in our case Firefox.
+
+It is possible that if you are running this notebook from a third-party Jupyter server, do not have a browser available
+
+As a solution to this problem it is proposed to use the package_names parameter, in this way we can add a list of packages and the process can be continued
+
+
+```python
+# bioconductor_pm_scraper.initialize(show_progress=True)
+```
+
+Note: If we do not provide a list of packages it will be obtained automatically if that functionality is implemented in datasource
+
+Initialization of the bioconductor package manager using package list
+
+
+```python
+# Initialize the package list
+bioconductor_package_list = []
+with open('../results/package_lists/bioconductor_scraped.txt', 'r') as file:
+    bioconductor_package_list = file.read().splitlines()
+
+# Initialize the package manager with the package list
+bioconductor_pm_scraper.initialize(show_progress=True, package_names=bioconductor_package_list[:10])
+```
+
+    Loading packages: 100%|[32m██████████[0m| 10/10 [00:06<00:00,  1.43packages/s]
+
+
+Initialization of the Pypi package manager
+
+
+
+```python
+pypi_pm_scraper = PackageManager(
+    data_sources=[                  # List of data sources
+        PypiScraper(),
+    ]
+)
+
+pypi_package_list = []
+with open('../results/package_lists/pypi_scraped.txt', 'r') as file:
+    pypi_package_list = file.read().splitlines()
+
+# Initialize the package manager
+pypi_pm_scraper.initialize(show_progress=True, package_names=pypi_package_list[:10])
+
+# Save the package manager
+pypi_pm_scraper.save(path="aux_data/pypi_pm_scraper_test.olvpm")
+```
+
+    Loading packages: 100%|[32m██████████[0m| 10/10 [00:01<00:00,  6.75packages/s]
+
+
+Initialization of the npm package manager
+
+
+```python
+# Initialize the package manager
+npm_package_list = []
+with open('../results/package_lists/npm_scraped.txt', 'r') as file:
+    npm_package_list = file.read().splitlines()
+
+npm_pm_scraper = PackageManager(
+    data_sources=[                  # List of data sources
+        NpmScraper(),
+    ]
+)
+
+# Initialize the package manager
+npm_pm_scraper.initialize(show_progress=True, package_names=npm_package_list[:10])
+
+# Save the package manager
+npm_pm_scraper.save(path="aux_data/npm_pm_scraper_test.olvpm")
+```
+
+    Loading packages: 100%|[32m██████████[0m| 10/10 [00:02<00:00,  3.88packages/s]
+
+
+And using a csv based package manager
+
+
+```python
+cran_pm_csv.initialize(show_progress=True)
+```
+
+    Loading packages: 100%|[32m██████████[0m| 275/275 [00:00<00:00, 675.72packages/s]
+
+
+## Persistence
+
+
+**Save the package manager**
+
+
+
+```python
+pypi_pm_scraper.save("aux_data/pypi_scraper_pm_saved.olvpm")
+```
+
+**Load package manager from persistence file**
+
+
+
+```python
+from olivia_finder.package_manager import PackageManager
+```
+
+
+```python
+bioconductor_pm_loaded = PackageManager.load_from_persistence("../results/package_managers/bioconductor_scraper.olvpm")
+```
+
+
+```python
+cran_pm_loaded = PackageManager.load_from_persistence("../results/package_managers/cran_scraper.olvpm")
+```
+
+
+```python
+pypi_pm_loaded = PackageManager.load_from_persistence("../results/package_managers/pypi_scraper.olvpm")
+```
+
+
+```python
+npm_pm_loaded = PackageManager.load_from_persistence("../results/package_managers/npm_scraper.olvpm")
+```
+
+## Package manager functionalities
+
+
+**List package names**
+
+
+
+```python
+bioconductor_pm_loaded.package_names()[300:320]
+```
+
+
+    ['CNVgears',
+     'CONSTANd',
+     'CTSV',
+     'CellNOptR',
+     'ChAMP',
+     'ChIPseqR',
+     'CiteFuse',
+     'Clonality',
+     'CopyNumberPlots',
+     'CytoGLMM',
+     'DEFormats',
+     'DEScan2',
+     'DEsingle',
+     'DMRcaller',
+     'DOSE',
+     'DSS',
+     'DelayedMatrixStats',
+     'DirichletMultinomial',
+     'EBImage',
+     'EDASeq']
+
+
+
+
+```python
+pypi_pm_loaded.package_names()[300:320]
+```
+
+
+
+
+    ['adafruit-circuitpython-bh1750',
+     'adafruit-circuitpython-ble-beacon',
+     'adafruit-circuitpython-ble-eddystone',
+     'adafruit-circuitpython-bluefruitspi',
+     'adafruit-circuitpython-bno08x',
+     'adafruit-circuitpython-circuitplayground',
+     'adafruit-circuitpython-debug-i2c',
+     'adafruit-circuitpython-displayio-ssd1306',
+     'adafruit-circuitpython-ds18x20',
+     'adafruit-circuitpython-ens160',
+     'adafruit-circuitpython-fingerprint',
+     'adafruit-circuitpython-gc-iot-core',
+     'adafruit-circuitpython-hcsr04',
+     'adafruit-circuitpython-htu31d',
+     'adafruit-circuitpython-imageload',
+     'adafruit-circuitpython-itertools',
+     'adafruit-circuitpython-lis2mdl',
+     'adafruit-circuitpython-lps2x',
+     'adafruit-circuitpython-lsm9ds0',
+     'adafruit-circuitpython-max31855']
+
+
+
+<span style="color: red"> Obtaining package names from libraries io api is not suported</span>
+
+
+```python
+maven_pm_libio.package_names()
+```
+
+
+
+
+    []
+
+
+
+**Get the data as a dict usung datasource**
+
+
+```python
+maven_pm_libio.fetch_package("org.apache.commons:commons-lang3").to_dict()
+```
+
+
+
+
+    {'name': 'org.apache.commons:commons-lang3',
+     'version': '3.9',
+     'url': 'https://repo1.maven.org/maven2/org/apache/commons/commons-lang3',
+     'dependencies': [{'name': 'org.openjdk.jmh:jmh-generator-annprocess',
+       'version': '1.25.2',
+       'url': None,
+       'dependencies': []},
+      {'name': 'org.openjdk.jmh:jmh-core',
+       'version': '1.25.2',
+       'url': None,
+       'dependencies': []},
+      {'name': 'org.easymock:easymock',
+       'version': '5.1.0',
+       'url': None,
+       'dependencies': []},
+      {'name': 'org.hamcrest:hamcrest',
+       'version': None,
+       'url': None,
+       'dependencies': []},
+      {'name': 'org.junit-pioneer:junit-pioneer',
+       'version': '2.0.1',
+       'url': None,
+       'dependencies': []},
+      {'name': 'org.junit.jupiter:junit-jupiter',
+       'version': '5.9.3',
+       'url': None,
+       'dependencies': []}]}
+
+
+
+
+```python
+cran_pm_csv.get_package('nmfem').to_dict()
+```
+
+
+
+
+    {'name': 'nmfem',
+     'version': '1.0.4',
+     'url': None,
+     'dependencies': [{'name': 'rmarkdown',
+       'version': None,
+       'url': None,
+       'dependencies': []},
+      {'name': 'testthat', 'version': None, 'url': None, 'dependencies': []},
+      {'name': 'knitr', 'version': None, 'url': None, 'dependencies': []},
+      {'name': 'tidyr', 'version': None, 'url': None, 'dependencies': []},
+      {'name': 'mixtools', 'version': None, 'url': None, 'dependencies': []},
+      {'name': 'd3heatmap', 'version': None, 'url': None, 'dependencies': []},
+      {'name': 'dplyr', 'version': None, 'url': None, 'dependencies': []},
+      {'name': 'plyr', 'version': None, 'url': None, 'dependencies': []},
+      {'name': 'R', 'version': None, 'url': None, 'dependencies': []}]}
+
+
+
+**Get a package from self data**
+
+
+```python
+cran_pm_loaded.get_package('A3')
+```
+
+
+
+
+    <olivia_finder.package.Package at 0x7f3c3722fe20>
+
+
+
+
+```python
+npm_pm_loaded.get_package("react").to_dict()
+```
+
+
+
+
+    {'name': 'react',
+     'version': '18.2.0',
+     'url': 'https://www.npmjs.com/package/react',
+     'dependencies': [{'name': 'loose-envify',
+       'version': '^1.1.0',
+       'url': None,
+       'dependencies': []}]}
+
+
+
+**List package objects**
+
+
+
+```python
+len(npm_pm_loaded.package_names())
+```
+
+
+
+
+    1919072
+
+
+
+
+```python
+pypi_pm_loaded.get_packages()[300:320]
+```
+
+
+
+
+    [<olivia_finder.package.Package at 0x7f3c58ea7ac0>,
+     <olivia_finder.package.Package at 0x7f3c58ea7be0>,
+     <olivia_finder.package.Package at 0x7f3c58ea7d00>,
+     <olivia_finder.package.Package at 0x7f3c58ea7e20>,
+     <olivia_finder.package.Package at 0x7f3c58ea7f40>,
+     <olivia_finder.package.Package at 0x7f3c590e80a0>,
+     <olivia_finder.package.Package at 0x7f3c590e81c0>,
+     <olivia_finder.package.Package at 0x7f3c590e82e0>,
+     <olivia_finder.package.Package at 0x7f3c590e83a0>,
+     <olivia_finder.package.Package at 0x7f3c590e8520>,
+     <olivia_finder.package.Package at 0x7f3c590e86a0>,
+     <olivia_finder.package.Package at 0x7f3c590e87c0>,
+     <olivia_finder.package.Package at 0x7f3c590e88e0>,
+     <olivia_finder.package.Package at 0x7f3c590e89a0>,
+     <olivia_finder.package.Package at 0x7f3c590e8b20>,
+     <olivia_finder.package.Package at 0x7f3c590e8c40>,
+     <olivia_finder.package.Package at 0x7f3c590e8d00>,
+     <olivia_finder.package.Package at 0x7f3c590e8e80>,
+     <olivia_finder.package.Package at 0x7f3c590e8fa0>,
+     <olivia_finder.package.Package at 0x7f3c590e90c0>]
+
+
+
+**Obtain dependency networks**
+
+Using the data previously obtained and that are already loaded in the structure
+
+
+```python
+a4_network = bioconductor_pm_loaded.fetch_adjlist("a4")
+a4_network
+```
+
+
+
+
+    {'a4': ['a4Base', 'a4Preproc', 'a4Classif', 'a4Core', 'a4Reporting'],
+     'a4Base': ['a4Preproc',
+      'a4Core',
+      'methods',
+      'graphics',
+      'grid',
+      'Biobase',
+      'annaffy',
+      'mpm',
+      'genefilter',
+      'limma',
+      'multtest',
+      'glmnet',
+      'gplots'],
+     'a4Preproc': ['BiocGenerics', 'Biobase'],
+     'BiocGenerics': ['R', 'methods', 'utils', 'graphics', 'stats'],
+     'R': [],
+     'methods': [],
+     'utils': [],
+     'graphics': [],
+     'stats': [],
+     'Biobase': ['R', 'BiocGenerics', 'utils', 'methods'],
+     'a4Core': ['Biobase', 'glmnet', 'methods', 'stats'],
+     'glmnet': [],
+     'grid': [],
+     'annaffy': ['R',
+      'methods',
+      'Biobase',
+      'BiocManager',
+      'GO.db',
+      'AnnotationDbi',
+      'DBI'],
+     'BiocManager': [],
+     'GO.db': [],
+     'AnnotationDbi': ['R',
+      'methods',
+      'stats4',
+      'BiocGenerics',
+      'Biobase',
+      'IRanges',
+      'DBI',
+      'RSQLite',
+      'S4Vectors',
+      'stats',
+      'KEGGREST'],
+     'stats4': [],
+     'IRanges': ['R',
+      'methods',
+      'utils',
+      'stats',
+      'BiocGenerics',
+      'S4Vectors',
+      'stats4'],
+     'DBI': [],
+     'RSQLite': [],
+     'S4Vectors': ['R', 'methods', 'utils', 'stats', 'stats4', 'BiocGenerics'],
+     'KEGGREST': ['R', 'methods', 'httr', 'png', 'Biostrings'],
+     'mpm': [],
+     'genefilter': ['MatrixGenerics',
+      'AnnotationDbi',
+      'annotate',
+      'Biobase',
+      'graphics',
+      'methods',
+      'stats',
+      'survival',
+      'grDevices'],
+     'MatrixGenerics': ['matrixStats', 'methods'],
+     'matrixStats': [],
+     'annotate': ['R',
+      'AnnotationDbi',
+      'XML',
+      'Biobase',
+      'DBI',
+      'xtable',
+      'graphics',
+      'utils',
+      'stats',
+      'methods',
+      'BiocGenerics',
+      'httr'],
+     'XML': [],
+     'xtable': [],
+     'httr': [],
+     'survival': [],
+     'grDevices': [],
+     'limma': ['R', 'grDevices', 'graphics', 'stats', 'utils', 'methods'],
+     'multtest': ['R',
+      'methods',
+      'BiocGenerics',
+      'Biobase',
+      'survival',
+      'MASS',
+      'stats4'],
+     'MASS': [],
+     'gplots': [],
+     'a4Classif': ['a4Core',
+      'a4Preproc',
+      'methods',
+      'Biobase',
+      'ROCR',
+      'pamr',
+      'glmnet',
+      'varSelRF',
+      'utils',
+      'graphics',
+      'stats'],
+     'ROCR': [],
+     'pamr': [],
+     'varSelRF': [],
+     'a4Reporting': ['methods', 'xtable']}
+
+
+
+Get transitive dependency network graph
+
+
+```python
+commons_lang3_network = maven_pm_libio.get_transitive_network_graph("org.apache.commons:commons-lang3", generate=True)
+commons_lang3_network
+```
+
+
+
+
+    <networkx.classes.digraph.DiGraph at 0x7f3c67ee3d90>
+
+
+
+
+```python
+# Draw the network
+from matplotlib import patches
+pos = nx.spring_layout(commons_lang3_network)
+nx.draw(commons_lang3_network, pos, node_size=50, font_size=8)
+
+nx.draw_networkx_nodes(commons_lang3_network, pos, nodelist=["org.apache.commons:commons-lang3"], node_size=100, node_color="r")
+plt.title("org.apache.commons:commons-lang3 transitive network", fontsize=15)
+# add legend for red node
+red_patch = patches.Patch(color='red', label='org.apache.commons:commons-lang3')
+plt.legend(handles=[red_patch])
+plt.show()
+```
+
+
+    
+![png](Olivia%20Finder%20-%20Implementation_files/Olivia%20Finder%20-%20Implementation_229_0.png)
+    
+
+
+**Obtaining updated data**
+
+
+```python
+a4_network2 = bioconductor_pm_loaded.get_adjlist("a4")
+a4_network2
+```
+
+
+
+
+    {'a4': ['a4Base', 'a4Preproc', 'a4Classif', 'a4Core', 'a4Reporting'],
+     'a4Base': ['a4Preproc',
+      'a4Core',
+      'methods',
+      'graphics',
+      'grid',
+      'Biobase',
+      'annaffy',
+      'mpm',
+      'genefilter',
+      'limma',
+      'multtest',
+      'glmnet',
+      'gplots'],
+     'a4Preproc': ['BiocGenerics', 'Biobase'],
+     'BiocGenerics': ['R', 'methods', 'utils', 'graphics', 'stats'],
+     'Biobase': ['R', 'BiocGenerics', 'utils', 'methods'],
+     'a4Core': ['Biobase', 'glmnet', 'methods', 'stats'],
+     'annaffy': ['R',
+      'methods',
+      'Biobase',
+      'BiocManager',
+      'GO.db',
+      'AnnotationDbi',
+      'DBI'],
+     'AnnotationDbi': ['R',
+      'methods',
+      'utils',
+      'stats4',
+      'BiocGenerics',
+      'Biobase',
+      'IRanges',
+      'DBI',
+      'RSQLite',
+      'S4Vectors',
+      'stats',
+      'KEGGREST'],
+     'IRanges': ['R',
+      'methods',
+      'utils',
+      'stats',
+      'BiocGenerics',
+      'S4Vectors',
+      'stats4'],
+     'S4Vectors': ['R', 'methods', 'utils', 'stats', 'stats4', 'BiocGenerics'],
+     'KEGGREST': ['R', 'methods', 'httr', 'png', 'Biostrings'],
+     'genefilter': ['MatrixGenerics',
+      'AnnotationDbi',
+      'annotate',
+      'Biobase',
+      'graphics',
+      'methods',
+      'stats',
+      'survival',
+      'grDevices'],
+     'MatrixGenerics': ['matrixStats', 'methods'],
+     'annotate': ['R',
+      'AnnotationDbi',
+      'XML',
+      'Biobase',
+      'DBI',
+      'xtable',
+      'graphics',
+      'utils',
+      'stats',
+      'methods',
+      'BiocGenerics',
+      'httr'],
+     'limma': ['R', 'grDevices', 'graphics', 'stats', 'utils', 'methods'],
+     'multtest': ['R',
+      'methods',
+      'BiocGenerics',
+      'Biobase',
+      'survival',
+      'MASS',
+      'stats4'],
+     'a4Classif': ['a4Core',
+      'a4Preproc',
+      'methods',
+      'Biobase',
+      'ROCR',
+      'pamr',
+      'glmnet',
+      'varSelRF',
+      'utils',
+      'graphics',
+      'stats'],
+     'a4Reporting': ['methods', 'xtable']}
+
+
+
+Note that some package managers use dependencies that are not found is their repositories, as is the case of the 'xable' package, which although it is not in bioconductor, is dependence on a bioconductor package
+
+
+```python
+xtable_bioconductor = bioconductor_pm_scraper.fetch_package("xtable")
+xtable_bioconductor
+```
+
+In concrete this package is in Cran
+
+
+```python
+cran_pm = PackageManager(
+    data_sources=[                  # List of data sources
+        CranScraper(),
+    ]
+)
+
+cran_pm.fetch_package("xtable")
+```
+
+
+
+
+    <olivia_finder.package.Package at 0x7f3c2a19d090>
+
+
+
+To solve this incongruity, we can supply the packet manager the Datasource de Cran, such as auxiliary datasource in which to perform searches if data is not found in the main datasource
+
+
+```python
+bioconductor_cran_pm = PackageManager(
+    # Name of the package manager
+    data_sources=[                                          # List of data sources
+        BioconductorScraper(),
+        CranScraper(),
+    ]
+)
+
+bioconductor_cran_pm.fetch_package("xtable")
+```
+
+
+
+
+    <olivia_finder.package.Package at 0x7f3c2a19c910>
+
+
+
+In this way we can obtain the network of dependencies for a package recursively, now having access to packages and dependencies that are from CRAN repository
+
+
+```python
+a4_network3 = bioconductor_cran_pm.get_adjlist("a4")
+a4_network3
+```
+
+
+
+
+    {'a4': []}
+
+
+
+As you can see, we can get a more complete network when we combine datasources
+
+It is necessary that there be compatibility as in the case of Bioconductor/CRAN
+
+
+```python
+a4_network.keys() == a4_network2.keys()
+```
+
+
+
+
+    False
+
+
+
+
+```python
+print(len(a4_network.keys()))
+print(len(a4_network2.keys()))
+print(len(a4_network3.keys()))
+```
+
+    42
+    18
+    1
+
+
+## Export the data
+
+
+```python
+bioconductor_df = bioconductor_pm_loaded.export_dataframe(full_data=False)
+
+#Export the dataframe to a csv file
+bioconductor_df.to_csv("aux_data/bioconductor_adjlist_scraping.csv", index=False)
+bioconductor_df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>dependency</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>ABSSeq</td>
+      <td>R</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>ABSSeq</td>
+      <td>methods</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>ABSSeq</td>
+      <td>locfit</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>ABSSeq</td>
+      <td>limma</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>AMOUNTAIN</td>
+      <td>R</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>28322</th>
+      <td>zenith</td>
+      <td>reshape2</td>
+    </tr>
+    <tr>
+      <th>28323</th>
+      <td>zenith</td>
+      <td>progress</td>
+    </tr>
+    <tr>
+      <th>28324</th>
+      <td>zenith</td>
+      <td>utils</td>
+    </tr>
+    <tr>
+      <th>28325</th>
+      <td>zenith</td>
+      <td>Rdpack</td>
+    </tr>
+    <tr>
+      <th>28326</th>
+      <td>zenith</td>
+      <td>stats</td>
+    </tr>
+  </tbody>
+</table>
+<p>28327 rows × 2 columns</p>
+</div>
+
+
+
+
+```python
+pypi_df = pypi_pm_loaded.export_dataframe(full_data=True)
+pypi_df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>version</th>
+      <th>url</th>
+      <th>dependency</th>
+      <th>dependency_version</th>
+      <th>dependency_url</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0x-sra-client</td>
+      <td>4.0.0</td>
+      <td>https://pypi.org/project/0x-sra-client/</td>
+      <td>urllib3</td>
+      <td>2.0.2</td>
+      <td>https://pypi.org/project/urllib3/</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0x-sra-client</td>
+      <td>4.0.0</td>
+      <td>https://pypi.org/project/0x-sra-client/</td>
+      <td>six</td>
+      <td>1.16.0</td>
+      <td>https://pypi.org/project/six/</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0x-sra-client</td>
+      <td>4.0.0</td>
+      <td>https://pypi.org/project/0x-sra-client/</td>
+      <td>certifi</td>
+      <td>2022.12.7</td>
+      <td>https://pypi.org/project/certifi/</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0x-sra-client</td>
+      <td>4.0.0</td>
+      <td>https://pypi.org/project/0x-sra-client/</td>
+      <td>python</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0x-sra-client</td>
+      <td>4.0.0</td>
+      <td>https://pypi.org/project/0x-sra-client/</td>
+      <td>0x</td>
+      <td>0.1</td>
+      <td>https://pypi.org/project/0x/</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>933950</th>
+      <td>zyfra-check</td>
+      <td>0.0.9</td>
+      <td>https://pypi.org/project/zyfra-check/</td>
+      <td>pytest</td>
+      <td>7.3.1</td>
+      <td>https://pypi.org/project/pytest/</td>
+    </tr>
+    <tr>
+      <th>933951</th>
+      <td>zyfra-check</td>
+      <td>0.0.9</td>
+      <td>https://pypi.org/project/zyfra-check/</td>
+      <td>jira</td>
+      <td>3.5.0</td>
+      <td>https://pypi.org/project/jira/</td>
+    </tr>
+    <tr>
+      <th>933952</th>
+      <td>zyfra-check</td>
+      <td>0.0.9</td>
+      <td>https://pypi.org/project/zyfra-check/</td>
+      <td>testit</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>933953</th>
+      <td>zython</td>
+      <td>0.4.1</td>
+      <td>https://pypi.org/project/zython/</td>
+      <td>wheel</td>
+      <td>0.40.0</td>
+      <td>https://pypi.org/project/wheel/</td>
+    </tr>
+    <tr>
+      <th>933954</th>
+      <td>zython</td>
+      <td>0.4.1</td>
+      <td>https://pypi.org/project/zython/</td>
+      <td>minizinc</td>
+      <td>0.9.0</td>
+      <td>https://pypi.org/project/minizinc/</td>
+    </tr>
+  </tbody>
+</table>
+<p>933955 rows × 6 columns</p>
+</div>
+
+
+
+
+```python
+npm_df = npm_pm_loaded.export_dataframe(full_data=True)
+npm_df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>version</th>
+      <th>url</th>
+      <th>dependency</th>
+      <th>dependency_version</th>
+      <th>dependency_url</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>--hoodmane-test-pyodide</td>
+      <td>0.21.0</td>
+      <td>https://www.npmjs.com/package/--hoodmane-test-...</td>
+      <td>base-64</td>
+      <td>1.0.0</td>
+      <td>https://www.npmjs.com/package/base-64</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>--hoodmane-test-pyodide</td>
+      <td>0.21.0</td>
+      <td>https://www.npmjs.com/package/--hoodmane-test-...</td>
+      <td>node-fetch</td>
+      <td>3.3.1</td>
+      <td>https://www.npmjs.com/package/node-fetch</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>--hoodmane-test-pyodide</td>
+      <td>0.21.0</td>
+      <td>https://www.npmjs.com/package/--hoodmane-test-...</td>
+      <td>ws</td>
+      <td>8.13.0</td>
+      <td>https://www.npmjs.com/package/ws</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-lidonghui</td>
+      <td>1.0.0</td>
+      <td>https://www.npmjs.com/package/-lidonghui</td>
+      <td>axios</td>
+      <td>1.4.0</td>
+      <td>https://www.npmjs.com/package/axios</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-lidonghui</td>
+      <td>1.0.0</td>
+      <td>https://www.npmjs.com/package/-lidonghui</td>
+      <td>commander</td>
+      <td>10.0.1</td>
+      <td>https://www.npmjs.com/package/commander</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>4855089</th>
+      <td>zzzzz-first-module</td>
+      <td>1.0.0</td>
+      <td>https://www.npmjs.com/package/zzzzz-first-module</td>
+      <td>rxjs</td>
+      <td>7.8.1</td>
+      <td>https://www.npmjs.com/package/rxjs</td>
+    </tr>
+    <tr>
+      <th>4855090</th>
+      <td>zzzzz-first-module</td>
+      <td>1.0.0</td>
+      <td>https://www.npmjs.com/package/zzzzz-first-module</td>
+      <td>zone.js</td>
+      <td>0.13.0</td>
+      <td>https://www.npmjs.com/package/zone.js</td>
+    </tr>
+    <tr>
+      <th>4855091</th>
+      <td>zzzzzwszzzz</td>
+      <td>1.0.0</td>
+      <td>https://www.npmjs.com/package/zzzzzwszzzz</td>
+      <td>commander</td>
+      <td>10.0.1</td>
+      <td>https://www.npmjs.com/package/commander</td>
+    </tr>
+    <tr>
+      <th>4855092</th>
+      <td>zzzzzwszzzz</td>
+      <td>1.0.0</td>
+      <td>https://www.npmjs.com/package/zzzzzwszzzz</td>
+      <td>inquirer</td>
+      <td>9.2.2</td>
+      <td>https://www.npmjs.com/package/inquirer</td>
+    </tr>
+    <tr>
+      <th>4855093</th>
+      <td>zzzzzwszzzz</td>
+      <td>1.0.0</td>
+      <td>https://www.npmjs.com/package/zzzzzwszzzz</td>
+      <td>link</td>
+      <td>1.5.1</td>
+      <td>https://www.npmjs.com/package/link</td>
+    </tr>
+  </tbody>
+</table>
+<p>4855094 rows × 6 columns</p>
+</div>
+
+
+
+**Get Network graph**
+
+
+```python
+bioconductor_G = bioconductor_pm_loaded.get_network_graph()
+bioconductor_G
+```
+
+
+
+
+    <networkx.classes.digraph.DiGraph at 0x7f3c229451b0>
+
+
+
+
+```python
+# Draw the graph
+# ----------------
+# Note:
+#   - Execution time can take a bit
+
+pos = nx.spring_layout(bioconductor_G)
+plt.figure(figsize=(10, 10))
+nx.draw_networkx_nodes(bioconductor_G, pos, node_size=10, node_color="blue")
+nx.draw_networkx_edges(bioconductor_G, pos, alpha=0.4, edge_color="black", width=0.1)
+plt.title("Bioconductor network graph", fontsize=15)
+plt.show()
+```
+  
+
+
+## Explore the data 
+
+
+We can appreciate the difference, as we explained before if we use a combined datasource
+
+
+```python
+bioconductor_cran_pm = PackageManager(
+    data_sources=[BioconductorScraper(), CranScraper()]
+)
+
+a4_network_2 = bioconductor_cran_pm.fetch_adjlist("a4")
+```
+
+
+```python
+import json
+print(json.dumps(a4_network_2, indent=4))
+```
+
+    {
+        "a4": [
+            "a4Base",
+            "a4Preproc",
+            "a4Classif",
+            "a4Core",
+            "a4Reporting"
+        ],
+        "a4Base": [
+            "a4Preproc",
+            "a4Core",
+            "methods",
+            "graphics",
+            "grid",
+            "Biobase",
+            "annaffy",
+            "mpm",
+            "genefilter",
+            "limma",
+            "multtest",
+            "glmnet",
+            "gplots"
+        ],
+        "a4Preproc": [
+            "BiocGenerics",
+            "Biobase"
+        ],
+        "BiocGenerics": [
+            "R",
+            "methods",
+            "utils",
+            "graphics",
+            "stats"
+        ],
+        "R": [],
+        "methods": [],
+        "utils": [],
+        "graphics": [],
+        "stats": [],
+        "Biobase": [
+            "R",
+            "BiocGenerics",
+            "utils",
+            "methods"
+        ],
+        "a4Core": [
+            "Biobase",
+            "glmnet",
+            "methods",
+            "stats"
+        ],
+        "glmnet": [
+            "R",
+            "Matrix",
+            "methods",
+            "utils",
+            "foreach",
+            "shape",
+            "survival",
+            "Rcpp"
+        ],
+        "Matrix": [
+            "R",
+            "methods",
+            "graphics",
+            "grid",
+            "lattice",
+            "stats",
+            "utils"
+        ],
+        "foreach": [
+            "R",
+            "codetools",
+            "utils",
+            "iterators"
+        ],
+        "shape": [
+            "R",
+            "stats",
+            "graphics",
+            "grDevices"
+        ],
+        "survival": [
+            "R",
+            "graphics",
+            "Matrix",
+            "methods",
+            "splines",
+            "stats",
+            "utils"
+        ],
+        "Rcpp": [
+            "methods",
+            "utils"
+        ],
+        "grid": [],
+        "annaffy": [
+            "R",
+            "methods",
+            "Biobase",
+            "BiocManager",
+            "GO.db",
+            "AnnotationDbi",
+            "DBI"
+        ],
+        "BiocManager": [
+            "utils"
+        ],
+        "GO.db": [],
+        "AnnotationDbi": [
+            "R",
+            "methods",
+            "stats4",
+            "BiocGenerics",
+            "Biobase",
+            "IRanges",
+            "DBI",
+            "RSQLite",
+            "S4Vectors",
+            "stats",
+            "KEGGREST"
+        ],
+        "stats4": [],
+        "IRanges": [
+            "R",
+            "methods",
+            "utils",
+            "stats",
+            "BiocGenerics",
+            "S4Vectors",
+            "stats4"
+        ],
+        "DBI": [
+            "methods",
+            "R"
+        ],
+        "RSQLite": [
+            "R",
+            "bit64",
+            "blob",
+            "DBI",
+            "memoise",
+            "methods",
+            "pkgconfig"
+        ],
+        "S4Vectors": [
+            "R",
+            "methods",
+            "utils",
+            "stats",
+            "stats4",
+            "BiocGenerics"
+        ],
+        "KEGGREST": [
+            "R",
+            "methods",
+            "httr",
+            "png",
+            "Biostrings"
+        ],
+        "mpm": [
+            "R",
+            "MASS",
+            "KernSmooth"
+        ],
+        "MASS": [
+            "R",
+            "grDevices",
+            "graphics",
+            "stats",
+            "utils",
+            "methods"
+        ],
+        "grDevices": [],
+        "KernSmooth": [
+            "R",
+            "stats"
+        ],
+        "genefilter": [
+            "MatrixGenerics",
+            "AnnotationDbi",
+            "annotate",
+            "Biobase",
+            "graphics",
+            "methods",
+            "stats",
+            "survival",
+            "grDevices"
+        ],
+        "MatrixGenerics": [
+            "matrixStats",
+            "methods"
+        ],
+        "matrixStats": [
+            "R"
+        ],
+        "annotate": [
+            "R",
+            "AnnotationDbi",
+            "XML",
+            "Biobase",
+            "DBI",
+            "xtable",
+            "graphics",
+            "utils",
+            "stats",
+            "methods",
+            "BiocGenerics",
+            "httr"
+        ],
+        "XML": [
+            "R",
+            "methods",
+            "utils"
+        ],
+        "xtable": [
+            "R",
+            "stats",
+            "utils"
+        ],
+        "httr": [
+            "R",
+            "curl",
+            "jsonlite",
+            "mime",
+            "openssl",
+            "R6"
+        ],
+        "limma": [
+            "R",
+            "grDevices",
+            "graphics",
+            "stats",
+            "utils",
+            "methods"
+        ],
+        "multtest": [
+            "R",
+            "methods",
+            "BiocGenerics",
+            "Biobase",
+            "survival",
+            "MASS",
+            "stats4"
+        ],
+        "gplots": [
+            "R",
+            "gtools",
+            "stats",
+            "caTools",
+            "KernSmooth",
+            "methods"
+        ],
+        "gtools": [
+            "methods",
+            "stats",
+            "utils"
+        ],
+        "caTools": [
+            "R",
+            "bitops"
+        ],
+        "bitops": [],
+        "a4Classif": [
+            "a4Core",
+            "a4Preproc",
+            "methods",
+            "Biobase",
+            "ROCR",
+            "pamr",
+            "glmnet",
+            "varSelRF",
+            "utils",
+            "graphics",
+            "stats"
+        ],
+        "ROCR": [
+            "R",
+            "methods",
+            "graphics",
+            "grDevices",
+            "gplots",
+            "stats"
+        ],
+        "pamr": [
+            "R",
+            "cluster",
+            "survival"
+        ],
+        "cluster": [
+            "R",
+            "graphics",
+            "grDevices",
+            "stats",
+            "utils"
+        ],
+        "varSelRF": [
+            "R",
+            "randomForest",
+            "parallel"
+        ],
+        "randomForest": [
+            "R",
+            "stats"
+        ],
+        "parallel": [],
+        "a4Reporting": [
+            "methods",
+            "xtable"
+        ]
+    }
+
+
+'''
 
 from __future__ import annotations
 from typing import Dict, List, Optional, Union
