@@ -28,7 +28,6 @@ The documentation includes details about the functionalities implemented in the 
 <!---
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/771e39014ceb48688cb9d341c705ecf9)](https://www.codacy.com/gh/dab0012/olivia-finder/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dab0012/olivia-finder&amp;utm_campaign=Badge_Grade)
 -->
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
@@ -36,8 +35,6 @@ The documentation includes details about the functionalities implemented in the 
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=bugs)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=dab0012_olivia&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=dab0012_olivia) 
-
 
 ## Intended audience
 
@@ -45,12 +42,11 @@ Olivia Finder is destined to be used by developers, researchers and centralized 
 
 ## Olivia Finder Notebooks
 Run olivia-finder notebooks in Deepnote cloud 
-<br>
+<br> 
 
 |  Implementation | Data manipulation | Usage | Bowtie Metrics |Github Example  | 
 |---|---|---|---|---|
-| [![Olivia Finder - Implementation](https://img.shields.io/badge/Kaggle-Implementation%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/olivia-finder-implementation-details) | [![Data Manipulation](https://img.shields.io/badge/Kaggle-Data%20Manipulation%20-%23ffff)](https://www.kaggle.com/danielalonsob/olivia-finder-data-manipulation) | [<img src="https://deepnote.com/buttons/try-in-a-jupyter-notebook-white-small.svg">](https://deepnote.com/@olivia-0732/olivia-finder-eacd7775-abe3-4a75-89fa-db586279d05f) | [![Bowtie](https://img.shields.io/badge/Kaggle-Bowtie%20Metrics%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/bowtie-network-analisys) | [![Github example](https://img.shields.io/badge/Kaggle-Github%20Example%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/olivia-finder-github-example)
-
+| [![Olivia Finder - Implementation](https://img.shields.io/badge/Kaggle-Implementation%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/olivia-finder-implementation-details) | [![Data Manipulation](https://img.shields.io/badge/Kaggle-Data%20Manipulation%20-%23ffff)](https://www.kaggle.com/danielalonsob/olivia-finder-data-manipulation) | [![Usage](https://img.shields.io/badge/Github-Usage-purple)](https://github.com/dab0012/olivia-finder/blob/master/notebooks/olivia_finder/Olivia%20Finder%20-%20Usage.ipynb) | [![Static analysis (Bow-tie)](https://img.shields.io/badge/Kaggle-Bowtie%20Metrics%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/bowtie-network-analisys) | [![Github example](https://img.shields.io/badge/Kaggle-Github%20Example%20-%23ffff)](https://www.kaggle.com/code/danielalonsob/olivia-finder-github-example)
 
 ## Olivia Notebooks (Previous TFG)
 
