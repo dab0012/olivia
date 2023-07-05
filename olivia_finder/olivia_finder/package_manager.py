@@ -1780,7 +1780,9 @@ class PackageManager():
         chunk_size : int
             Size of the chunks to load the packages, this is done to avoid memory errors
 
-        .. warning:: for large package lists, this method can take a long time to complete
+    .. warning:: 
+    
+        For large package lists, this method can take a long time to complete
 
         '''
 
