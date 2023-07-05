@@ -195,7 +195,8 @@ class CSVDataSource(DataSource):
 
         if package_rows.empty:
             self.logger.debug(f"Package {package_name} not found in data.")
-            raise ValueError(f"Package {package_name} not found in data.")
+            return None
+            #raise ValueError(f"Package {package_name} not found in data.")
 
         # Get the dependencies
         dependencies = []
